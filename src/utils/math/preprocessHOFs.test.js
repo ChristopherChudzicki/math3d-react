@@ -1,6 +1,12 @@
 import preprocessHOFs, { normalizeHOFExpression } from './preprocessHOFs'
 
 describe('preprocessHOFs', () => {
+  test('behaves correctly if no HOFs present', () => {
+    const preprocess = preprocessHOFs( ['diff'] )
+    const input = 'cos(t)*i + sin(t)*j'
+    expect(preprocess(input)).toBe(input)
+  })
+
   test('unnested HOFs are converted correctly', () => {
     const preprocess = preprocessHOFs( ['diff'] )
     const input = 'diff(g)(t) + diff(f)(u,v)'
