@@ -1,5 +1,13 @@
 import ParsedExpression from './ParsedExpression'
 
-describe('ParserCache', () => {
+describe('ParsedExpression', () => {
+
+  // Describe dependency detection
+
+  // Describe operator replacement & test with evaluation
+
+  // Describe preprocess & test with evaluation
+
+  // Describe error handling
 
 } )
