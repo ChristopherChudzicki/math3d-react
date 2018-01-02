@@ -17,17 +17,16 @@ import { escapeRegExp, replaceAll, findClosingBrace } from '../helpers'
  *  which can show up second derivatives:
  *    diff( diff(f) )(u, v) --> diff( diff(f), u, v)
  */
-export default function preprocessHOFs(hofNames){
+export default function preprocessHOFs(hofNames) {
   return string => hofNames.reduce((acc, c) => convertSingleHOF(acc, c), string)
 }
 
-export function convertSingleHOF(string, hofName){
-
+export function convertSingleHOF(string, hofName) {
   string = normalizeHOFExpression(string, hofName)
 
   const hofStart = string.indexOf(hofName)
 
-  if (hofStart < 0){
+  if (hofStart < 0) {
     return string
   }
 
@@ -35,25 +34,22 @@ export function convertSingleHOF(string, hofName){
   const funcClose = findClosingBrace(string, funcStart)
 
   // 'PLACEHOLDER' marks a hofName as finished. Brittle, I guess.
-  if (string[funcClose+1] !== '('){
-      string = string.slice(0, hofStart) + "PLACEHOLDER" + string.slice(funcStart, string.length)
+  if (string[funcClose + 1] !== '(') {
+    string = string.slice(0, hofStart) + 'PLACEHOLDER' + string.slice(funcStart, string.length)
   }
   else {
-      const argStart = funcClose+1
-      const argClose = findClosingBrace(string, argStart)
-      string = string.slice(0, hofStart) + "PLACEHOLDER" + string.slice(funcStart,funcClose) + ',' + string.slice(argStart+1,string.length)
+    const argStart = funcClose + 1
+    string = string.slice(0, hofStart) + 'PLACEHOLDER' + string.slice(funcStart, funcClose) + ',' + string.slice(argStart + 1, string.length)
   }
 
   // Test if any hofName remain
-  if (string.indexOf(hofName) < 0){
-      return replaceAll(string,'PLACEHOLDER',hofName);
+  if (string.indexOf(hofName) < 0) {
+    return replaceAll(string, 'PLACEHOLDER', hofName)
   }
   else {
-      return convertSingleHOF(string, hofName);
+    return convertSingleHOF(string, hofName)
   }
-
 }
-
 
 /**
  * Removes some whitespace:
@@ -63,9 +59,8 @@ export function convertSingleHOF(string, hofName){
  * Example:
  *  diff  (f)  (u, v) --> diff(f)(u, v)
  */
-export function normalizeHOFExpression(string, hofName){
+export function normalizeHOFExpression(string, hofName) {
   return string
-    .replace(new RegExp(`${escapeRegExp(hofName)}\\s\+\\(`), `${hofName}(`)
+    .replace(new RegExp(`${escapeRegExp(hofName)}\\s+\\(`), `${hofName}(`)
     .replace(/\)\s+\(/g, ')(')
-
 }
