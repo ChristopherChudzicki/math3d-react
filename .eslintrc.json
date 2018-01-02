@@ -1,0 +1,19 @@
+{
+	"env": {
+		"browser": true,
+		"es6": true,
+		"node": true
+	},
+  "plugins": ["jest"],
+	"extends": ["standard", "plugin:jest/recommended"],
+	"parser": "babel-eslint",
+	"rules": {
+		"space-in-parens": ["error", "never", { "exceptions": ["{}", "[]"] }],
+		"object-curly-spacing": ["error", "always"],
+		"no-use-before-define": ["error", { "functions": false }],
+		"complexity": [1, 10],
+    "space-before-function-paren": ["error", "never"],
+    "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+    "padded-blocks": ["error", {"blocks": "never", "classes": "always", "switches": "always"}]
+	}
+}
