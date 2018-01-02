@@ -1,4 +1,4 @@
-import { replaceAll, findClosingBrace } from '../helpers'
+import { escapeRegExp, replaceAll, findClosingBrace } from '../helpers'
 
 /**
  * A preprocessor to be used before mathjs's math.parse function.
@@ -21,12 +21,9 @@ export default function preprocessHOFs(hofNames){
   return string => hofNames.reduce((acc, c) => convertSingleHOF(acc, c), string)
 }
 
-function convertSingleHOF(string, hofName){
-  // Remove whitespace preceeding or following parentheses
-  // This makes reasoning about slice points a bit easier.
-  string = string
-    .replace(/\s+\)/g, '\)').replace(/\s+\(/g, '\(')
-    .replace(/\)\s+/g, '\)').replace(/\(\s+/g, '\(')
+export function convertSingleHOF(string, hofName){
+
+  string = normalizeHOFExpression(string, hofName)
 
   const hofStart = string.indexOf(hofName)
 
@@ -55,5 +52,20 @@ function convertSingleHOF(string, hofName){
       return convertSingleHOF(string, hofName);
   }
 
+}
+
+
+/**
+ * Removes some whitespace:
+ *  - between hofName and opening parenthesis
+ *  - between closing and opening parentheses
+ *
+ * Example:
+ *  diff  (f)  (u, v) --> diff(f)(u, v)
+ */
+export function normalizeHOFExpression(string, hofName){
+  return string
+    .replace(new RegExp(`${escapeRegExp(hofName)}\\s\+\\(`), `${hofName}(`)
+    .replace(/\)\s+\(/g, ')(')
 
 }
