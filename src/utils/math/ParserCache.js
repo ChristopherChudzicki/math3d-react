@@ -1,8 +1,40 @@
 import ParsedExpression from './ParsedExpression'
+import { preprocessHOFs, preprocessMathQuill } from './preprocessors'
+import { reassignOperators } from './postprocessors'
 
-export default class ParsedExpressionCache {
+export default class ParserCache {
 
-  cache = {}
-  preprocessors = []
+  _cache = {}
+  _preprocessors = []
+  _postprocessors = []
+
+  static _defaultPreprocessors = [
+    preprocessMathQuill,
+    preprocessHOFs( ['diff', 'unitT', 'unitN', 'unitB'] )
+  ]
+  static _defaultPostprocessors = [
+    reassignOperators( { '|': 'dot', '&': 'cross' } )
+  ]
+
+  constructor(
+    preprocessors = ParserCache._defaultPreprocessors,
+    postprocessors = ParserCache._defaultPostprocessors
+  ) {
+    this._preprocessors = preprocessors
+    this._postprocessors = postprocessors
+  }
+
+  getParsed(string) {
+    if (this._cache[string] !== undefined) {
+      return this._cache[string]
+    }
+
+    this.addToCache(string)
+    return this._cache[string]
+  }
+
+  addToCache(string) {
+    this._cache[string] = new ParsedExpression(string, this._preprocessors, this._postprocessors)
+  }
 
 }
