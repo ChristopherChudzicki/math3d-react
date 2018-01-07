@@ -41,7 +41,7 @@ export default function mathquillToMathJS(fromMQ) {
  */
 export function fracToDivision(string) {
   const frac = '\\frac'
-  let fracStart = string.indexOf(frac)
+  const fracStart = string.indexOf(frac)
   const numStart = fracStart + frac.length
 
   if (fracStart < 0) { return string }
@@ -51,11 +51,6 @@ export function fracToDivision(string) {
   const newString = string.slice(0, fracStart) +
     string.slice(numStart, divIdx + 1) + '/' +
     string.slice(divIdx + 1)
-  // Test if any fracs remain
-  fracStart = string.indexOf(frac)
-  if (fracStart < 0) {
-    return newString
-  }
 
   return fracToDivision(newString)
 }
