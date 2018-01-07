@@ -13,9 +13,11 @@ export default class ParsedExpression {
   functionsUsed = null
   variablesUsed = null
 
-  constructor(string) {
+  constructor(string, { preprocessors = [] } = {} ) {
     try {
-      this.parseTree = math.parse(string)
+      const preprocessed = preprocessors.reduce((expr, f) => f(expr), string)
+      this.parseTree = math.parse(preprocessed)
+
       const { variablesUsed, functionsUsed } = this.getDependencies()
       this.variablesUsed = variablesUsed
       this.functionsUsed = functionsUsed
@@ -24,6 +26,10 @@ export default class ParsedExpression {
       this.error = error
       throw (error)
     }
+  }
+
+  preProcess(string) {
+
   }
 
   getDependencies() {

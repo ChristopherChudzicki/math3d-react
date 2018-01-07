@@ -11,6 +11,17 @@ describe('ParsedExpression', () => {
     expect(parsed.functionsUsed.sort()).toEqual(functionsUsed.sort())
   } )
 
+  test('applies preprocessors', () => {
+    const preprocessors = [
+      str => `${str} + 1`,
+      str => `${str} + 1/2`
+    ]
+    const expression = '0'
+    const parsed = new ParsedExpression(expression, { preprocessors } )
+    const nDigits = 6
+    expect(parsed.parseTree.eval( {} )).toBeCloseTo(1.5, nDigits)
+  } )
+
   // Describe operator replacement & test with evaluation
 
   // Describe preprocess & test with evaluation
