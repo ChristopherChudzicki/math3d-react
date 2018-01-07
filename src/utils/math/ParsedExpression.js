@@ -28,10 +28,6 @@ export default class ParsedExpression {
     }
   }
 
-  preProcess(string) {
-
-  }
-
   getDependencies() {
     const variablesUsed = []
     const functionsUsed = []
