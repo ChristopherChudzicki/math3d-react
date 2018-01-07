@@ -9,33 +9,36 @@ export default class ParsedExpression {
 
   string = null // original expression
   parseTree = null // mathjs parse tree
-  error = null // errors generated during mathjs parsing
   eval = null // compiled evaluation function, scope => value
   functionsUsed = null // functions required in scope for evaluation
   variablesUsed = null // variables required in scope for evaluation
 
   /**
-  * @param {string} string math expression to be parsed
-  * @param {{preprocessors: array}} config options:
+  * @param {string} expression to be parsed
+  * @param {array<function>} preprocessors array of functions mapping strings to strings. These functions are applied to expression before being parsed by mathjs.
+  * @param {array<function>} postprocessors array of functions mapping strings to strings. These functions are applied to expression before being parsed by mathjs.
   *  - preprocessors is an array of function mapping strings to strings.
   */
-  constructor(string, { preprocessors = [] } = {} ) {
-    try {
-      this.string = string
-      this.parseTree = math.parse(this._preprocess(preprocessors))
-      this.eval = this._assignEval()
-      const { variablesUsed, functionsUsed } = this._getDependencies()
-      this.variablesUsed = variablesUsed
-      this.functionsUsed = functionsUsed
-    }
-    catch (error) {
-      this.error = error
-      throw (error)
-    }
+  constructor(expression, preprocessors = [], postprocessors = [] ) {
+    this.string = expression
+
+    this.parseTree = math.parse(this._preprocess(preprocessors))
+    this._postprocess(postprocessors)
+
+    this.eval = this._assignEval()
+    const { variablesUsed, functionsUsed } = this._getDependencies()
+    this.variablesUsed = variablesUsed
+    this.functionsUsed = functionsUsed
   }
 
   _preprocess(preprocessors) {
     return preprocessors.reduce((acc, f) => f(acc), this.string)
+  }
+
+  _postprocess(postprocessors) {
+    postprocessors.map(f => {
+      this.parseTree.traverse(node => f(node))
+    } )
   }
 
   _getDependencies() {

@@ -1,4 +1,4 @@
-import { replaceAll, findClosingBrace } from '../helpers'
+import { replaceAll, findClosingBrace } from '../../helpers'
 
 /**
  * Makes a series of replacements on MathQuill-generated LaTeX strings so that

@@ -31,14 +31,26 @@ describe('ParsedExpression', () => {
     expect(parsed.eval(scope)).toBeDeepCloseTo(expected, DIGITS)
   } )
 
-  test('applies preprocessors', () => {
+  test('applies all preprocessors', () => {
     const preprocessors = [
       str => `${str} + 1`,
       str => `${str} + 1/2`
     ]
     const expression = '0'
-    const parsed = new ParsedExpression(expression, { preprocessors } )
+    const parsed = new ParsedExpression(expression, preprocessors)
     expect(parsed.eval( {} )).toBeCloseTo(1.5, DIGITS)
+  } )
+
+  test('applies all postprocessors', () => {
+    const postprocessors = [
+      node => { node.comment += '1' },
+      node => { node.comment += '2' }
+    ]
+    const parsed = new ParsedExpression('a + b', [], postprocessors)
+    const plusNode = parsed.parseTree
+    expect(plusNode.comment).toBe('12')
+    expect(plusNode.args[0].comment).toBe('12')
+    expect(plusNode.args[1].comment).toBe('12')
   } )
 
   // Describe operator replacement & test with evaluation

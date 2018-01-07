@@ -1,4 +1,4 @@
-import { escapeRegExp, replaceAll, findClosingBrace } from '../helpers'
+import { escapeRegExp, replaceAll, findClosingBrace } from '../../helpers'
 
 /**
  * A preprocessor to be used before mathjs's math.parse function. Motivation:
