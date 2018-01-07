@@ -1,4 +1,8 @@
 import ParsedExpression from './ParsedExpression'
+import { toBeDeepCloseTo } from 'jest-matcher-deep-close-to'
+expect.extend( { toBeDeepCloseTo } )
+
+const DIGITS = 6
 
 describe('ParsedExpression', () => {
   test('detects variables and function dependencies', () => {
@@ -11,6 +15,22 @@ describe('ParsedExpression', () => {
     expect(parsed.functionsUsed.sort()).toEqual(functionsUsed.sort())
   } )
 
+  test('eval function is assigned and works', () => {
+    const expression = 'a + b^2 + f(4)'
+    const scope = { a: 3, b: 5, f: Math.sqrt }
+    const expected = 3 + 25 + 2
+    const parsed = new ParsedExpression(expression)
+    expect(parsed.eval(scope)).toBeCloseTo(expected, DIGITS)
+  } )
+
+  test('eval function returns array when expression contains [', () => {
+    const expression = 'i + [1, 2, 3]'
+    const scope = { i: [1, 0, 0] }
+    const expected = [2, 2, 3]
+    const parsed = new ParsedExpression(expression)
+    expect(parsed.eval(scope)).toBeDeepCloseTo(expected, DIGITS)
+  } )
+
   test('applies preprocessors', () => {
     const preprocessors = [
       str => `${str} + 1`,
@@ -18,13 +38,10 @@ describe('ParsedExpression', () => {
     ]
     const expression = '0'
     const parsed = new ParsedExpression(expression, { preprocessors } )
-    const nDigits = 6
-    expect(parsed.parseTree.eval( {} )).toBeCloseTo(1.5, nDigits)
+    expect(parsed.eval( {} )).toBeCloseTo(1.5, DIGITS)
   } )
 
   // Describe operator replacement & test with evaluation
-
-  // Describe preprocess & test with evaluation
 
   // Describe error handling
 } )

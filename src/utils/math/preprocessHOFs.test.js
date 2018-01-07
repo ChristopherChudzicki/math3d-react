@@ -5,7 +5,7 @@ describe('preprocessHOFs', () => {
     const preprocess = preprocessHOFs( ['diff'] )
     const input = 'cos(t)*i + sin(t)*j'
     expect(preprocess(input)).toBe(input)
-  })
+  } )
 
   test('unnested HOFs are converted correctly', () => {
     const preprocess = preprocessHOFs( ['diff'] )

@@ -19,7 +19,7 @@ import { escapeRegExp, replaceAll, findClosingBrace } from '../helpers'
  *
  * diff( diff(f) )(u, v) --> diff( diff(f), u, v)
  *
- * @param  {array} hofNames An array of higher-order function names
+ * @param  {array<string>} hofNames An array of higher-order function names
  */
 export default function preprocessHOFs(hofNames) {
   return string => hofNames.reduce((acc, c) => convertSingleHOF(acc, c), string)

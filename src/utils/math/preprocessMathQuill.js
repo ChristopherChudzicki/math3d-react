@@ -10,11 +10,10 @@ import { replaceAll, findClosingBrace } from '../helpers'
  * (i.e., not MathQuill.) The main bit that is MathQuill-specific is probably
  * the operatorname replacements.
  *
- * @param  {[string]} fromMQ a MathQuill-generated LaTeX expression
+ * @param  {string} fromMQ a MathQuill-generated LaTeX expression
+ * @return {string} the input expression with LaTeX commands converted to mathjs
  */
-export default function mathquillToMathJS(tex) {
-  tex = fracToDivision(tex)
-
+export default function mathquillToMathJS(fromMQ) {
   const replacements = [
     { tex: '\\operatorname{diff}', mathjs: 'diff' },
     { tex: '\\operatorname{unitT}', mathjs: 'unitT' },
@@ -29,18 +28,16 @@ export default function mathquillToMathJS(tex) {
     { tex: '\\', mathjs: ' ' }
   ]
 
-  for (const r of replacements) {
-    tex = replaceAll(tex, r['tex'], r['mathjs'] )
-  }
-
-  return tex
+  // remove fractions, then apply replacements
+  const noFrac = fracToDivision(fromMQ)
+  return replacements.reduce(
+    (acc, r) => replaceAll(acc, r['tex'], r['mathjs'] ),
+    noFrac)
 }
 
 /**
  * Recursively replaces LaTeX fractions with normal divison
  *   - example: \frac{a}{1 + \frac{b}{c}} --> {a}/{1 + {b}/{c}}
- *
- * @param  {[string]} string
  */
 export function fracToDivision(string) {
   const frac = '\\frac'

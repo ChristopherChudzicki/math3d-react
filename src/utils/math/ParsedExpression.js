@@ -7,18 +7,24 @@ import math from 'mathjs'
  */
 export default class ParsedExpression {
 
-  parseTree = null
-  error = null
-  // these store dependencies required before evaluation
-  functionsUsed = null
-  variablesUsed = null
+  string = null // original expression
+  parseTree = null // mathjs parse tree
+  error = null // errors generated during mathjs parsing
+  eval = null // compiled evaluation function, scope => value
+  functionsUsed = null // functions required in scope for evaluation
+  variablesUsed = null // variables required in scope for evaluation
 
+  /**
+  * @param {string} string math expression to be parsed
+  * @param {{preprocessors: array}} config options:
+  *  - preprocessors is an array of function mapping strings to strings.
+  */
   constructor(string, { preprocessors = [] } = {} ) {
     try {
-      const preprocessed = preprocessors.reduce((expr, f) => f(expr), string)
-      this.parseTree = math.parse(preprocessed)
-
-      const { variablesUsed, functionsUsed } = this.getDependencies()
+      this.string = string
+      this.parseTree = math.parse(this._preprocess(preprocessors))
+      this.eval = this._assignEval()
+      const { variablesUsed, functionsUsed } = this._getDependencies()
       this.variablesUsed = variablesUsed
       this.functionsUsed = functionsUsed
     }
@@ -28,7 +34,11 @@ export default class ParsedExpression {
     }
   }
 
-  getDependencies() {
+  _preprocess(preprocessors) {
+    return preprocessors.reduce((acc, f) => f(acc), this.string)
+  }
+
+  _getDependencies() {
     const variablesUsed = []
     const functionsUsed = []
 
@@ -42,6 +52,19 @@ export default class ParsedExpression {
     } )
 
     return { variablesUsed, functionsUsed }
+  }
+
+  _assignEval() {
+    const compiled = this.parseTree.compile()
+
+    // If expression contains '[', assume that it is an array and will evaluate
+    // to a MathJS DenseMatrix. Covert it to a normal js array
+    // TODO: this is brittle. E.g., would try to covert [1, 2, 3] dot [2,0,1]
+    // to an array.
+    if (this.string.includes('[')) {
+      return scope => compiled.eval(scope).toArray()
+    }
+    return scope => compiled.eval(scope)
   }
 
 }
