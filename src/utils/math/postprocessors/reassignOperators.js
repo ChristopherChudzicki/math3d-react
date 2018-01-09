@@ -1,5 +1,8 @@
 import math from 'mathjs'
 
+// TODO: Might be better to fork mathjs and add cross / dot to the operator list
+// https://github.com/josdejong/mathjs/issues/75
+
 /**
  * Returns a node hander to be used as a mathjs's ExpressionTree.traverse callback
  *
