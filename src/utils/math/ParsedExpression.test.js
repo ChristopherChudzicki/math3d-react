@@ -5,14 +5,12 @@ expect.extend( { toBeDeepCloseTo } )
 const DIGITS = 6
 
 describe('ParsedExpression', () => {
-  test('detects variables and function dependencies', () => {
+  test('detects dependencies', () => {
     const expression = 'f(4x, b*y, g(z)) + sin(t^2) - sqrt(4*B)'
-    const variablesUsed = ['B', 't', 'z', 'y', 'b', 'x']
-    const functionsUsed = ['f', 'g', 'sin', 'sqrt']
+    const dependencies = ['B', 't', 'z', 'y', 'b', 'x', 'f', 'g', 'sin', 'sqrt']
     const parsed = new ParsedExpression(expression)
 
-    expect(parsed.variablesUsed.sort()).toEqual(variablesUsed.sort())
-    expect(parsed.functionsUsed.sort()).toEqual(functionsUsed.sort())
+    expect(parsed.dependencies.sort()).toEqual(dependencies.sort())
   } )
 
   test('eval function is assigned and works', () => {

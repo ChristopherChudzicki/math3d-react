@@ -10,8 +10,7 @@ export default class ParsedExpression {
   string = null // original expression
   parseTree = null // mathjs parse tree
   eval = null // compiled evaluation function, scope => value
-  functionsUsed = null // functions required in scope for evaluation
-  variablesUsed = null // variables required in scope for evaluation
+  dependencies = [] // variables and functions required for evaluation
 
   /**
   * @param {string} expression to be parsed
@@ -26,9 +25,7 @@ export default class ParsedExpression {
     this._postprocess(postprocessors)
 
     this.eval = this._assignEval()
-    const { variablesUsed, functionsUsed } = this._getDependencies()
-    this.variablesUsed = variablesUsed
-    this.functionsUsed = functionsUsed
+    this.dependencies = this._getDependencies()
   }
 
   _preprocess(preprocessors) {
@@ -42,19 +39,16 @@ export default class ParsedExpression {
   }
 
   _getDependencies() {
-    const variablesUsed = []
-    const functionsUsed = []
+    const dependencies = []
 
     this.parseTree.traverse(node => {
-      if (node.type === 'SymbolNode') {
-        variablesUsed.push(node.name)
+      if (node.type === 'SymbolNode' || node.type === 'FunctionNode') {
+        dependencies.push(node.name)
       }
-      else if (node.type === 'FunctionNode') {
-        functionsUsed.push(node.name)
-      }
+      return dependencies
     } )
 
-    return { variablesUsed, functionsUsed }
+    return dependencies
   }
 
   _assignEval() {
