@@ -12,7 +12,7 @@ const DIGITS = 6
 
 describe('deserializing mathscope', () => {
 
-  test('scope generated correctly when no errors present', () => {
+  test('scope created correctly when no errors present', () => {
     // scope
     // a = b/2 - c
     // f(x, y) = a * x^2 - b * y
@@ -182,6 +182,26 @@ describe('generating evaluation order', () => {
     expect(evalOrder).toEqual(expected)
   } )
 
+  test('cyclic dependencies raises error', () => {
+    const cyclicSymbols = {
+      a: {
+        expression: 'b + 1',
+        arguments: null
+      },
+      b: {
+        expression: 'c + 1',
+        arguments: null
+      },
+      c: {
+        expression: 'a + 1',
+        arguments: null
+      }
+    }
+    const parserCache = new ParserCache()
+
+    expect(() => getEvalOrder(cyclicSymbols, parserCache)).toThrow('Cyclic dependency:')
+  } )
+
 } )
 
 describe('deserializing functions', () => {
@@ -220,30 +240,6 @@ describe('deserializing functions', () => {
 
     expect(() => func(1, 2, 3))
       .toThrow('3 arguments supplied to function "h", expected 2 arguments')
-  } )
-
-} )
-
-describe('some possible errors', () => {
-
-  test('cyclic dependencies raises error', () => {
-    const symbols = {
-      a: {
-        expression: 'b + 1',
-        arguments: null
-      },
-      b: {
-        expression: 'c + 1',
-        arguments: null
-      },
-      c: {
-        expression: 'a + 1',
-        arguments: null
-      }
-    }
-    const parserCache = new ParserCache()
-
-    expect(() => getEvalOrder(symbols, parserCache)).toThrow('Cyclic dependency:')
   } )
 
 } )
