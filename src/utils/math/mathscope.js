@@ -144,3 +144,41 @@ function setMergeInto(target, source) {
   }
   return target
 }
+
+/**
+ * [makeFunction description]
+ *
+ * @param  {string} expression a math expression parseable by parserCache
+ * @param  {array<string>} args array of argument variable names
+ * @param  {object} mathScope maps symbols to JS variables
+ * @param  {parserCache} parserCache
+ * @return {function} an evaluateable function
+ */
+export function deserializeFunction(funcName, { expression, argNames }, mathScope, parserCache) {
+  const localScope = Object.assign( {}, mathScope)
+
+  function func() {
+    if (arguments.length !== argNames.length) {
+      throw Error(`${arguments.length} arguments supplied to function "${funcName}", expected ${argNames.length} arguments`)
+    }
+
+    const argsScope = argNames.reduce((scope, arg, idx) => {
+      scope[arg] = arguments[idx]
+      return scope
+    }, {} )
+
+    Object.assign(localScope, argsScope)
+    return parserCache.getParsed(expression).eval(localScope)
+  }
+
+  Object.defineProperties(func, {
+    name: {
+      value: funcName
+    },
+    length: {
+      value: argNames.length
+    }
+  } )
+
+  return func
+}

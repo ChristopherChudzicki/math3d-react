@@ -1,4 +1,11 @@
-import { genMathScope, getEvalOrder, getChildMap, getDescendants } from './mathscope'
+import {
+  genMathScope,
+  getEvalOrder,
+  getChildMap,
+  getDescendants,
+  deserializeFunction
+}
+  from './mathscope'
 import ParserCache from './ParserCache'
 
 const DIGITS = 6
@@ -173,6 +180,46 @@ describe('generating evaluation order', () => {
     const expected = [ 'b', 'a', 'a2', 'f' ]
 
     expect(evalOrder).toEqual(expected)
+  } )
+
+} )
+
+describe('deserializing functions', () => {
+
+  const funcName = 'h'
+  const expression = 'a\\cdot s^2-b\\cdot g\\left(t\\right)'
+  const argNames = ['s', 't']
+  const mathScope = {
+    a: 5,
+    b: 2,
+    g: t => t + 1 / t
+  }
+  const parserCache = new ParserCache()
+  const func = deserializeFunction(funcName, { expression, argNames }, mathScope, parserCache)
+  const expected = (s, t) => {
+    const { a, b, g } = mathScope
+    return a * s ** 2 - b * g(t)
+  }
+
+  test('deserialized function evaluates correctly', () => {
+    expect(func(1.3, 4.1)).toBeCloseTo(expected(1.3, 4.1), DIGITS)
+    expect(func(2.5, -3.6)).toBeCloseTo(expected(2.5, -3.6), DIGITS)
+  } )
+
+  test('deserialized function stores number of Arguments', () => {
+    expect(func).toHaveLength(2)
+  } )
+
+  test('deserialized function name', () => {
+    expect(func.name).toEqual('h')
+  } )
+
+  test('deserialized function raises error with wrong number of args', () => {
+    expect(() => func(1))
+      .toThrow('1 arguments supplied to function "h", expected 2 arguments')
+
+    expect(() => func(1, 2, 3))
+      .toThrow('3 arguments supplied to function "h", expected 2 arguments')
   } )
 
 } )
