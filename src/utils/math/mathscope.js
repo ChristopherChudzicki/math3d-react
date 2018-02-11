@@ -42,16 +42,15 @@ import toposort from 'toposort'
  * Generates an object mapping symbol names to symbol values
  *
  * @param  {object} symbols
- * @param  {string} symbols[symbolName].expression A valid mathjs expression
- * @param  {?array<string>} symbols[symbolName].arguments Array of argument names
- * @param  {ParserCache} parserCache
+ * @param  {string} symbols[symbolName] An assignment expression, e.g., a = b^2 or f(r, q) = r*sin(q)
+ * @param  {Parser} parser
  */
-export function genMathScope(symbols, parserCache) {
+export function genMathScope(symbols, parser) {
   // Get the evaluation order
   // add symbols to scope
   //  - be careful with functions
 
-  getEvalOrder(symbols, parserCache)
+  getEvalOrder(symbols, parser)
 
   return {}
 }
@@ -61,16 +60,15 @@ export function genMathScope(symbols, parserCache) {
  * only returns children of that node.
  *
  * @param  {object} symbols
- * @param  {string} symbols[symbolName].expression A valid mathjs expression
- * @param  {?array<string>} symbols[symbolName].arguments Array of argument names
- * @param  {ParserCache} parserCache
+ * @param  {string} symbols[symbolName] An assignment expression, e.g., a = b^2 or f(r, q) = r*sin(q)
+ * @param  {Parser} parser
  * @param  {?string} startingNode
  *
  * @returns {array} of symbol names, a valid evaluation order for symbols
  */
-export function getEvalOrder(symbols, parserCache, startingNode) {
+export function getEvalOrder(symbols, parser, startingNode) {
   // construct dependency graph as array of nodes
-  const childMap = getChildMap(symbols, parserCache)
+  const childMap = getChildMap(symbols, parser)
   const nodesToInclude = startingNode ? getDescendants(startingNode, childMap) : null
 
   const nodes = Object.keys(childMap).reduce((acc, node) => {
@@ -90,14 +88,13 @@ export function getEvalOrder(symbols, parserCache, startingNode) {
 /**
  * Generates an object mapping symbol names to child symbols
  *
- * @param  {object} symbols Object of form
- * @param  {string} symbols[symbolName].expression A valid mathjs expression
- * @param  {?array<string>} symbols[symbolName].arguments Array of argument names
- * @param  {ParserCache} parserCache
+ * @param  {object} symbols
+ * @param  {string} symbols[symbolName] An assignment expression, e.g., a = b^2 or f(r, q) = r*sin(q)
+ * @param  {Parser} parser
  *
  * @returns {object} a mapping from symbol names to a set of direct children node names
  */
-export function getChildMap(symbols, parserCache) {
+export function getChildMap(symbols, parser) {
 
   const initial = Object.keys(symbols).reduce((acc, symbolName) => {
     acc[symbolName] = new Set()
@@ -106,9 +103,10 @@ export function getChildMap(symbols, parserCache) {
 
   return Object.keys(symbols).reduce((childMap, symbolName) => {
     const symbol = symbols[symbolName]
-    parserCache.getParsed(symbol.expression).dependencies
-      .filter(dep => symbol.arguments === null ? true : !symbol.arguments.includes(dep))
-      .map(dep => childMap[dep].add(symbolName))
+    const dependencies = parser.parse(symbol).dependencies
+    for (const dep of dependencies) {
+      childMap[dep].add(symbolName)
+    }
     return childMap
   }, initial)
 
@@ -148,13 +146,13 @@ function setMergeInto(target, source) {
 /**
  * [makeFunction description]
  *
- * @param  {string} expression a math expression parseable by parserCache
+ * @param  {string} expression a math expression parseable by parser
  * @param  {array<string>} args array of argument variable names
  * @param  {object} mathScope maps symbols to JS variables
- * @param  {parserCache} parserCache
+ * @param  {Parser} parser
  * @return {function} an evaluateable function
  */
-export function deserializeFunction(funcName, { expression, argNames }, mathScope, parserCache) {
+export function deserializeFunction(funcName, { expression, argNames }, mathScope, parser) {
   const localScope = Object.assign( {}, mathScope)
 
   function func() {
@@ -168,7 +166,7 @@ export function deserializeFunction(funcName, { expression, argNames }, mathScop
     }, {} )
 
     Object.assign(localScope, argsScope)
-    return parserCache.getParsed(expression).eval(localScope)
+    return parser.parse(expression).eval(localScope)
   }
 
   Object.defineProperties(func, {

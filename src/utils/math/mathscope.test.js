@@ -6,7 +6,7 @@ import {
   deserializeFunction
 }
   from './mathscope'
-import ParserCache from './ParserCache'
+import Parser from './Parser'
 
 const DIGITS = 6
 
@@ -21,6 +21,15 @@ describe('deserializing mathscope', () => {
     // c = - 1
     // d = 1
 
+    const symbols = {
+      a: 'a=\\frac{b}{2}-c',
+      f: 'f\\left(x,y\\right)=a\\cdot x^2-b\\cdot y',
+      b: 'b=g\\left(4\\right)',
+      g: 'g\\left(t\\right)=t^{2+d}+c',
+      c: 'c=-1',
+      d: 'd=1'
+    }
+
     const expectedScope = {
       a: 14,
       b: 26,
@@ -30,35 +39,8 @@ describe('deserializing mathscope', () => {
       g: t => t ** 3 - 1
     }
 
-    const symbols = {
-      a: {
-        expression: '\\frac{b}{2}-c',
-        arguments: null
-      },
-      f: {
-        arguments: ['x', 'y'],
-        expression: 'a\\cdot x^2-b\\cdot y'
-      },
-      b: {
-        expression: 'g\\left(4\\right)',
-        arguments: null
-      },
-      g: {
-        arguments: ['t'],
-        expression: 't^{2+d}+c'
-      },
-      c: {
-        expression: '-1',
-        arguments: null
-      },
-      d: {
-        expression: '1',
-        arguments: null
-      }
-    }
-
-    const parserCache = new ParserCache()
-    const mathScope = genMathScope(symbols, parserCache)
+    const parser = new Parser()
+    const mathScope = genMathScope(symbols, parser)
 
     // expect(mathScope.a).toBeCloseTo(expectedScope.a, DIGITS)
     // expect(mathScope.b).toBeCloseTo(expectedScope.b, DIGITS)
@@ -99,42 +81,18 @@ describe('generating evaluation order', () => {
    */
 
   const symbols = {
-    a: {
-      expression: '\\frac{b}{2}-c',
-      arguments: null
-    },
-    a2: {
-      expression: 'a^2',
-      arguments: null
-    },
-    f: {
-      arguments: ['x', 'y'],
-      expression: 'a\\cdot x^2-b\\cdot y'
-    },
-    b: {
-      expression: 'h\\left(4\\right)+c',
-      arguments: null
-    },
-    h: {
-      arguments: ['t'],
-      expression: 't^{2}-1'
-    },
-    c: {
-      expression: '-1',
-      arguments: null
-    },
-    d: {
-      expression: '1',
-      arguments: null
-    },
-    p: {
-      expression: 'c^2+d^2',
-      arguments: null
-    }
+    a: 'a=\\frac{b}{2}-c',
+    a2: 'a2=a^2',
+    f: 'f\\left(x,y\\right)=a\\cdot x^2-b\\cdot y',
+    b: 'h\\left(4\\right)+c',
+    h: 'h\\left(t\\right)=t^{2}-1',
+    c: '-1',
+    d: '1',
+    p: 'c^2+d^2'
   }
 
   test('childMap is generated correctly', () => {
-    const parserCache = new ParserCache()
+    const parser = new Parser()
     const expectedChildMap = {
       a: new Set( ['a2', 'f'] ),
       a2: new Set(),
@@ -146,7 +104,7 @@ describe('generating evaluation order', () => {
       p: new Set()
     }
 
-    const actualChildMap = getChildMap(symbols, parserCache)
+    const actualChildMap = getChildMap(symbols, parser)
 
     expect(actualChildMap).toEqual(expectedChildMap)
 
@@ -170,8 +128,8 @@ describe('generating evaluation order', () => {
   } )
 
   test('total evaluation order is generated correctly', () => {
-    const parserCache = new ParserCache()
-    const evalOrder = getEvalOrder(symbols, parserCache)
+    const parser = new Parser()
+    const evalOrder = getEvalOrder(symbols, parser)
     // This is a valid order. there are other valid orders, too
     const expected = ['h', 'c', 'b', 'a', 'a2', 'f', 'd', 'p']
 
@@ -179,9 +137,9 @@ describe('generating evaluation order', () => {
   } )
 
   test('Subset of evaluation order is generated correct', () => {
-    const parserCache = new ParserCache()
+    const parser = new Parser()
     const startingNode = 'b'
-    const evalOrder = getEvalOrder(symbols, parserCache, startingNode)
+    const evalOrder = getEvalOrder(symbols, parser, startingNode)
     // This is a valid order. there are other valid orders, too
     const expected = [ 'b', 'a', 'a2', 'f' ]
 
@@ -190,22 +148,13 @@ describe('generating evaluation order', () => {
 
   test('cyclic dependencies raises error', () => {
     const cyclicSymbols = {
-      a: {
-        expression: 'b + 1',
-        arguments: null
-      },
-      b: {
-        expression: 'c + 1',
-        arguments: null
-      },
-      c: {
-        expression: 'a + 1',
-        arguments: null
-      }
+      a: 'a=b+1',
+      b: 'b=c+1',
+      c: 'c=a+1'
     }
-    const parserCache = new ParserCache()
+    const parser = new Parser()
 
-    expect(() => getEvalOrder(cyclicSymbols, parserCache)).toThrow('Cyclic dependency:')
+    expect(() => getEvalOrder(cyclicSymbols, parser)).toThrow('Cyclic dependency:')
   } )
 
 } )
@@ -220,8 +169,8 @@ describe('deserializing functions', () => {
     b: 2,
     g: t => t + 1 / t
   }
-  const parserCache = new ParserCache()
-  const func = deserializeFunction(funcName, { expression, argNames }, mathScope, parserCache)
+  const parser = new Parser()
+  const func = deserializeFunction(funcName, { expression, argNames }, mathScope, parser)
   const expected = (s, t) => {
     const { a, b, g } = mathScope
     return a * s ** 2 - b * g(t)

@@ -2,7 +2,7 @@ import MathExpression from './MathExpression'
 import { preprocessHOFs, preprocessMathQuill } from './preprocessors'
 import { reassignOperators } from './postprocessors'
 
-export default class ParserCache {
+export default class Parser {
 
   _cache = {}
   _preprocessors = []
@@ -17,14 +17,14 @@ export default class ParserCache {
   ]
 
   constructor(
-    preprocessors = ParserCache._defaultPreprocessors,
-    postprocessors = ParserCache._defaultPostprocessors
+    preprocessors = Parser._defaultPreprocessors,
+    postprocessors = Parser._defaultPostprocessors
   ) {
     this._preprocessors = preprocessors
     this._postprocessors = postprocessors
   }
 
-  getParsed(string) {
+  parse(string) {
     if (this._cache[string] !== undefined) {
       return this._cache[string]
     }
