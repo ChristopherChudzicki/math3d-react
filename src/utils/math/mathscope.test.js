@@ -2,7 +2,7 @@ import {
   genMathScope,
   getEvalOrder,
   getChildMap,
-  getDescendants,
+  getDescendants
 }
   from './mathscope'
 import Parser from './Parser'
@@ -12,13 +12,6 @@ const DIGITS = 6
 describe('deserializing mathscope', () => {
 
   test('scope created correctly when no errors present', () => {
-    // scope
-    // a = b/2 - c
-    // f(x, y) = a * x^2 - b * y
-    // b = g(4)
-    // g(t) = t^(2+d) + c
-    // c = - 1
-    // d = 1
 
     const symbols = {
       a: 'a=\\frac{b}{2}-c',
@@ -30,28 +23,28 @@ describe('deserializing mathscope', () => {
     }
 
     const expectedScope = {
-      a: 14,
-      b: 26,
+      a: 32.5,
+      b: 63,
       c: -1,
       d: 1,
-      f: (x, y) => 14 * (x ** 2) - 26 * y,
+      f: (x, y) => 32.5 * (x ** 2) - 63 * y,
       g: t => t ** 3 - 1
     }
 
     const parser = new Parser()
-    const mathScope = genMathScope(symbols, parser)
+    const { mathScope } = genMathScope(symbols, parser)
 
-    // expect(mathScope.a).toBeCloseTo(expectedScope.a, DIGITS)
-    // expect(mathScope.b).toBeCloseTo(expectedScope.b, DIGITS)
-    // expect(mathScope.c).toBeCloseTo(expectedScope.c, DIGITS)
-    // expect(mathScope.d).toBeCloseTo(expectedScope.d, DIGITS)
+    expect(mathScope.a).toBeCloseTo(expectedScope.a, DIGITS)
+    expect(mathScope.b).toBeCloseTo(expectedScope.b, DIGITS)
+    expect(mathScope.c).toBeCloseTo(expectedScope.c, DIGITS)
+    expect(mathScope.d).toBeCloseTo(expectedScope.d, DIGITS)
+    expect(mathScope.f(2, 7)).toBeCloseTo(expectedScope.f(2, 7), DIGITS)
+    expect(mathScope.g(5)).toBeCloseTo(expectedScope.g(5), DIGITS)
   } )
 
-  // If errors happen, evaluate as much as possible return scope + error
-  // some errors:
-  // un-met dependencies ... don't evaluate them?
-  // .eval() mathjs error ... catch these and wrap in special class?
-  // cyclic dependency ? already tested
+  // Need test to confirm updating
+
+  // Need test to confirm error handling
 
 } )
 

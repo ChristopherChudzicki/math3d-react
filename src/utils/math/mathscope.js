@@ -1,5 +1,7 @@
 import toposort from 'toposort'
 
+const DEFAULT_SCOPE = {}
+
 /**
  * @module mathscope
  * Functions for evaluating a serialized description of mathematical symbols.
@@ -45,14 +47,30 @@ import toposort from 'toposort'
  * @param  {string} symbols[symbolName] An assignment expression, e.g., a = b^2 or f(r, q) = r*sin(q)
  * @param  {Parser} parser
  */
-export function genMathScope(symbols, parser) {
+export function updateMathScope(symbols, parser, initialScope, startingNode) {
   // Get the evaluation order
   // add symbols to scope
   //  - be careful with functions
 
-  getEvalOrder(symbols, parser)
+  const evalOrder = getEvalOrder(symbols, parser, startingNode)
+  const initial = {
+    mathScope: initialScope,
+    errors: {}
+  }
 
-  return {}
+  return evalOrder.reduce((acc, symbolName) => {
+    try {
+      acc.mathScope[symbolName] = parser.parse(symbols[symbolName] ).eval(acc.mathScope)
+    }
+    catch (err) {
+      acc.errors[symbolName] = err
+    }
+    return acc
+  }, initial)
+
+}
+export function genMathScope(symbols, parser) {
+  return updateMathScope(symbols, parser, DEFAULT_SCOPE)
 }
 
 /**
