@@ -33,13 +33,13 @@ describe('Dependency Detection', () => {
 
   test('Cyclic Assignment raises error', () => {
     expect(() => {
-      const parsed = new MathExpression('a = 4 + a')
+      new MathExpression('a = 4 + a') // eslint-disable-line no-new
     } ).toThrow('Cyclic Assignment Error')
   } )
 
   test('Cyclic Paramater Assignment raises error', () => {
     expect(() => {
-      const parsed = new MathExpression('f(f) = x^2')
+      new MathExpression('f(f) = x^2') // eslint-disable-line no-new
     } ).toThrow('Cyclic Assignment Error')
   } )
 
