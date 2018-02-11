@@ -1,4 +1,4 @@
-import ParsedExpression from './ParsedExpression'
+import MathExpression from './MathExpression'
 import { preprocessHOFs, preprocessMathQuill } from './preprocessors'
 import { reassignOperators } from './postprocessors'
 
@@ -34,7 +34,7 @@ export default class ParserCache {
   }
 
   addToCache(string) {
-    this._cache[string] = new ParsedExpression(string, this._preprocessors, this._postprocessors)
+    this._cache[string] = new MathExpression(string, this._preprocessors, this._postprocessors)
   }
 
 }

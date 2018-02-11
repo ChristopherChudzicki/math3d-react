@@ -2,15 +2,15 @@ import math from 'mathjs'
 
 /**
  * Uses math.parse to parse a math expression into a tree. Holds the tree and
- * some helper information (e.g., variable and function dependencies) and
- * provides some helper methods.
+ * some helper information/methods.
  */
-export default class ParsedExpression {
+export default class MathExpression {
 
+  name = null
   string = null // original expression
-  parseTree = null // mathjs parse tree
+  tree = null // mathjs parse tree
   eval = null // compiled evaluation function, scope => value
-  dependencies = [] // variables and functions required for evaluation
+  dependencies = null // variables and functions required for evaluation
 
   /**
   * @param {string} expression to be parsed
@@ -20,11 +20,11 @@ export default class ParsedExpression {
   */
   constructor(expression, preprocessors = [], postprocessors = [] ) {
     this.string = expression
-
-    this.parseTree = math.parse(this._preprocess(preprocessors))
+    this.tree = math.parse(this._preprocess(preprocessors))
+    this.name = this.tree.name ? this.tree.name : null
     this._postprocess(postprocessors)
 
-    this.eval = this._assignEval()
+    this.eval = this._getEval()
     this.dependencies = this._getDependencies()
   }
 
@@ -34,16 +34,25 @@ export default class ParsedExpression {
 
   _postprocess(postprocessors) {
     postprocessors.map(f => {
-      this.parseTree.traverse(node => f(node))
+      this.tree.traverse(node => f(node))
     } )
   }
 
   _getDependencies() {
-    const dependencies = []
+    const dependencies = new Set()
+    const tree = this.tree
+    // In case of assignment, variable/function name and parameters are not dependencies
+    const notDependencies = (tree.type === 'AssignmentNode')
+      ? [tree.name]
+      : (tree.type === 'FunctionAssignmentNode')
+        ? [tree.name, ...tree.params]
+        : []
 
-    this.parseTree.traverse(node => {
+    tree.traverse(node => {
       if (node.type === 'SymbolNode' || node.type === 'FunctionNode') {
-        dependencies.push(node.name)
+        if (!notDependencies.includes(node.name)) {
+          dependencies.add(node.name)
+        }
       }
       return dependencies
     } )
@@ -51,17 +60,18 @@ export default class ParsedExpression {
     return dependencies
   }
 
-  _assignEval() {
-    const compiled = this.parseTree.compile()
+  _getEval() {
+    const compiled = this.tree.compile()
 
     // If expression contains '[', assume that it is an array and will evaluate
     // to a MathJS DenseMatrix. Covert it to a normal js array
     // TODO: this is brittle. E.g., would try to covert [1, 2, 3] dot [2,0,1]
     // to an array.
-    if (this.string.includes('[')) {
-      return scope => compiled.eval(scope).toArray()
-    }
-    return scope => compiled.eval(scope)
+    const toArray = this.string.includes('[')
+
+    return toArray
+      ? scope => compiled.eval(scope).toArray()
+      : scope => compiled.eval(scope)
   }
 
 }
