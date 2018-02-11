@@ -3,7 +3,6 @@ import {
   getEvalOrder,
   getChildMap,
   getDescendants,
-  deserializeFunction
 }
   from './mathscope'
 import Parser from './Parser'
