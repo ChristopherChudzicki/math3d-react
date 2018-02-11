@@ -53,5 +53,4 @@ describe('ParsedExpression', () => {
 
   // Describe operator replacement & test with evaluation
 
-  // Describe error handling
 } )

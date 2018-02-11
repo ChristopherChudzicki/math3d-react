@@ -66,6 +66,12 @@ describe('deserializing mathscope', () => {
     // expect(mathScope.d).toBeCloseTo(expectedScope.d, DIGITS)
   } )
 
+  // If errors happen, evaluate as much as possible return scope + error
+  // some errors:
+  // un-met dependencies ... don't evaluate them?
+  // .eval() mathjs error ... catch these and wrap in special class?
+  // cyclic dependency ? already tested
+
 } )
 
 describe('generating evaluation order', () => {
