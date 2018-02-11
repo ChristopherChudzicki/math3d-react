@@ -31,6 +31,18 @@ describe('Dependency Detection', () => {
     expect(parsed.dependencies).toEqualAsSet(dependencies)
   } )
 
+  test('Cyclic Assignment raises error', () => {
+    expect(() => {
+      const parsed = new MathExpression('a = 4 + a')
+    } ).toThrow('Cyclic Assignment Error')
+  } )
+
+  test('Cyclic Paramater Assignment raises error', () => {
+    expect(() => {
+      const parsed = new MathExpression('f(f) = x^2')
+    } ).toThrow('Cyclic Assignment Error')
+  } )
+
 } )
 
 describe('Preprocessors and Postprocessors function correctly', () => {
