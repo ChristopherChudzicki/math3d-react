@@ -1,4 +1,5 @@
 import {
+  updateMathScope,
   genMathScope,
   getEvalOrder,
   getChildMap,
@@ -30,9 +31,10 @@ describe('deserializing mathscope', () => {
       f: (x, y) => 32.5 * (x ** 2) - 63 * y,
       g: t => t ** 3 - 1
     }
+    const expectedUpdated = ['a', 'b', 'c', 'd', 'f', 'g']
 
     const parser = new Parser()
-    const { mathScope } = genMathScope(symbols, parser)
+    const { mathScope, updated, errors } = genMathScope(symbols, parser)
 
     expect(mathScope.a).toBeCloseTo(expectedScope.a, DIGITS)
     expect(mathScope.b).toBeCloseTo(expectedScope.b, DIGITS)
@@ -40,6 +42,59 @@ describe('deserializing mathscope', () => {
     expect(mathScope.d).toBeCloseTo(expectedScope.d, DIGITS)
     expect(mathScope.f(2, 7)).toBeCloseTo(expectedScope.f(2, 7), DIGITS)
     expect(mathScope.g(5)).toBeCloseTo(expectedScope.g(5), DIGITS)
+
+    expect(updated.sort()).toEqual(expectedUpdated.sort())
+    expect(errors).toEqual( {} )
+  } )
+
+  test('updating an existing mathscope', () => {
+    const symbols = {
+      a: 'a=\\frac{b}{2}-c',
+      f: 'f\\left(x,y\\right)=a\\cdot x^2-b\\cdot y',
+      b: 'b=g\\left(5\\right)',
+      g: 'g\\left(t\\right)=t^{2+d}+c',
+      c: 'c=-1',
+      d: 'd=1'
+    }
+
+    const initialScope = {
+      a: 32.5,
+      b: 63,
+      c: -1,
+      d: 1,
+      f: (x, y) => 32.5 * (x ** 2) - 63 * y,
+      g: t => t ** 3 - 1
+    }
+
+    const expectedScope = {
+      a: 63,
+      b: 124,
+      c: -1,
+      d: 1,
+      f: (x, y) => 63 * (x ** 2) - 124 * y,
+      g: t => t ** 3 - 1
+    }
+    const expectedUpdated = ['a', 'b', 'f']
+
+    const parser = new Parser()
+    const { mathScope, updated, errors } = updateMathScope(symbols, parser, initialScope, 'b')
+
+    // mathscope should be a new object, not the same as initialScope
+    expect(mathScope).not.toBe(initialScope)
+
+    // mathscope should behave correctly
+    expect(mathScope.a).toBeCloseTo(expectedScope.a, DIGITS)
+    expect(mathScope.b).toBeCloseTo(expectedScope.b, DIGITS)
+    expect(mathScope.c).toBeCloseTo(expectedScope.c, DIGITS)
+    expect(mathScope.d).toBeCloseTo(expectedScope.d, DIGITS)
+    expect(mathScope.f(2, 7)).toBeCloseTo(expectedScope.f(2, 7), DIGITS)
+    expect(mathScope.g(5)).toBeCloseTo(expectedScope.g(5), DIGITS)
+
+    // updated list should be correct
+    expect(updated.sort()).toEqual(expectedUpdated.sort())
+
+    // no errors
+    expect(errors).toEqual( {} )
   } )
 
   // Need test to confirm updating

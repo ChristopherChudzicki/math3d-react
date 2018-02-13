@@ -54,8 +54,9 @@ export function updateMathScope(symbols, parser, initialScope, startingNode) {
 
   const evalOrder = getEvalOrder(symbols, parser, startingNode)
   const initial = {
-    mathScope: initialScope,
-    errors: {}
+    mathScope: { ...initialScope }, // copy initialScope, not mutate
+    errors: {},
+    updated: evalOrder
   }
 
   return evalOrder.reduce((acc, symbolName) => {
@@ -84,21 +85,19 @@ export function genMathScope(symbols, parser) {
  *
  * @returns {array} of symbol names, a valid evaluation order for symbols
  */
-export function getEvalOrder(symbols, parser, startingNode) {
+export function getEvalOrder(symbols, parser, startingNode = null) {
   // construct dependency graph as array of nodes
   const childMap = getChildMap(symbols, parser)
   const nodesToInclude = startingNode ? getDescendants(startingNode, childMap) : null
 
-  const nodes = Object.keys(childMap).reduce((acc, node) => {
-    if (startingNode && !nodesToInclude.has(node)) {
+  const nodes = Object.keys(childMap)
+    .filter(node => !startingNode || nodesToInclude.has(node))
+    .reduce((acc, node) => {
+      for (const child of childMap[node] ) {
+        acc.push( [node, child] )
+      }
       return acc
-    }
-
-    for (const child of childMap[node] ) {
-      acc.push( [node, child] )
-    }
-    return acc
-  }, [] )
+    }, [] )
 
   return toposort(nodes)
 }
@@ -137,10 +136,12 @@ export function getChildMap(symbols, parser) {
  * @param  {Set<string>} childMap[node] set of direct children nodenames
  */
 export function getDescendants(node, childMap) {
+  const descendants = new Set( [node] )
+
   if (childMap[node].size === 0) {
-    return new Set( [node] )
+    return descendants
   }
-  const descendants = new Set(node)
+
   childMap[node].forEach(child => {
     setMergeInto(descendants, getDescendants(child, childMap))
   } )
