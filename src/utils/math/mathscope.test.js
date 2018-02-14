@@ -97,9 +97,21 @@ describe('deserializing mathscope', () => {
     expect(errors).toEqual( {} )
   } )
 
-  // Need test to confirm updating
+  test('errors get stored', () => {
+    const symbols = {
+      a: '[1, 2, 3]',
+      b: '2^a'
+    }
 
-  // Need test to confirm error handling
+    const parser = new Parser()
+    const { mathScope, errors } = genMathScope(symbols, parser)
+
+    expect(mathScope.a).toEqual( [1, 2, 3] )
+    expect(errors.b).toBeInstanceOf(Error)
+    expect(() => { throw errors.b } )
+      .toThrow('Unexpected type of argument')
+
+  } )
 
 } )
 
