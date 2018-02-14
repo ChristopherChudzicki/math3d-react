@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash'
 
-function setToJSON(key, value) {
+export function setToJSON(key, value) {
   if (typeof value === 'object' && value instanceof Set) {
     return [...value]
   }

@@ -1,5 +1,24 @@
-import { toEqualAsSet } from './jest-matchers'
+import { setToJSON, toEqualAsSet } from './jest-matchers'
 expect.extend( { toEqualAsSet } )
+
+describe('setToJSON replacer function for JSON.stringify', () => {
+  test('stringifies correctly', () => {
+    const setA = new Set( [
+      1,
+      'cat',
+      new Set( ['a', 'b'] ),
+      { first: 'Harry', last: 'Skywalker' },
+      [3, 4]
+    ] )
+
+    expect(
+      JSON.stringify(setA, setToJSON)
+    ).toEqual(
+      '[1,"cat",["a","b"],{"first":"Harry","last":"Skywalker"},[3,4]]'
+    )
+
+  } )
+} )
 
 describe('toEqualAsSets', () => {
 
@@ -12,6 +31,27 @@ describe('toEqualAsSets', () => {
     expect(A).toEqualAsSet(B)
     expect(A).not.toEqualAsSet(C)
     expect(A).not.toEqualAsSet(D)
+
+  } )
+
+  test('messages  ', () => {
+    const A = new Set( ['1', 3, 'cat'] )
+    const B = new Set( [3, 'cat', '1'] )
+    const C = new Set( ['1', 'cat'] )
+
+    // Verify messages working:
+    const resultPassed = toEqualAsSet(A, B)
+    expect(
+      resultPassed.message()
+    ).toEqual('expected ["1",3,"cat"] to have same elements as [3,"cat","1"]')
+    expect(resultPassed.pass).toBe(true)
+
+    // Verify messages working:
+    const resultFailed = toEqualAsSet(A, C)
+    expect(
+      resultFailed.message()
+    ).toEqual('expected ["1",3,"cat"] to have same elements as ["1","cat"]')
+    expect(resultFailed.pass).toBe(false)
   } )
 
   test('works with nested sets', () => {
