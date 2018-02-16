@@ -6,6 +6,7 @@
     "eslint": "^4.14.0",
     "lodash": "^4.17.4",
     "mathjs": "^3.18.1",
+    "mathquill": "^0.10.1-a",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.1",
@@ -25,6 +26,7 @@
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
-    "jest-matcher-deep-close-to": "^1.0.2"
+    "jest-matcher-deep-close-to": "^1.0.2",
+    "jquery": "^3.3.1"
   }
 }

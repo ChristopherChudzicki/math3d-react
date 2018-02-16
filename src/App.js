@@ -1,8 +1,14 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import logo from './logo.svg'
+import './App.css'
+import MathQuill from './components/MathQuill'
 
 class App extends Component {
+
+  state = {
+    latex: 'E=mc^2'
+  }
+
   render() {
     return (
       <div className="App">
@@ -13,9 +19,18 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
+        <MathQuill
+          latex={this.state.latex}
+          onEdit = { mq => {
+            console.log(mq.latex())
+            this.setState( { latex: mq.latex() } )
+          }
+          }
+        />
       </div>
-    );
+    )
   }
+
 }
 
-export default App;
+export default App
