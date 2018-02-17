@@ -2,6 +2,15 @@ import React, { Component } from 'react'
 import logo from './logo.svg'
 import './App.css'
 import MathQuill from './components/MathQuill'
+import styled from 'styled-components'
+
+const MainMath = styled(MathQuill)`
+  color:red;
+  border:none;
+  &.mq-editable-field.mq-math-mode.mq-focused {
+    color:blue
+  }
+`
 
 class App extends Component {
 
@@ -19,7 +28,7 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <MathQuill
+        <MainMath
           latex={this.state.latex}
           onEdit = { mq => {
             console.log(mq.latex())

@@ -9,6 +9,9 @@ const MQ = window.MathQuill.getInterface(2)
 export default class MathQuill extends PureComponent {
 
   // For configuration details, see http://docs.mathquill.com/en/latest/Config/#setting-configuration
+  // Outer Span CSS Info:
+  //   default classes: .mq-editable-field.mq-math-mode
+  //   when focused: .mq-focused
 
   static propTypes = {
     latex: PropTypes.string,
