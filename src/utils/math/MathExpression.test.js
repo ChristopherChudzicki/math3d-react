@@ -1,7 +1,6 @@
 import MathExpression from './MathExpression'
-import { toEqualAsSet } from '../jest-matchers'
 import { toBeDeepCloseTo } from 'jest-matcher-deep-close-to'
-expect.extend( { toBeDeepCloseTo, toEqualAsSet } )
+expect.extend( { toBeDeepCloseTo } )
 
 const DIGITS = 6
 
@@ -12,7 +11,7 @@ describe('Dependency Detection', () => {
     const dependencies = new Set( ['A', 'B', 't', 'z', 'y', 'b', 'x', 'f', 'g', 'sin', 'sqrt'] )
     const parsed = new MathExpression(expression)
 
-    expect(parsed.dependencies).toEqualAsSet(dependencies)
+    expect(parsed.dependencies).toEqual(dependencies)
   } )
 
   test('dependencies detected for variable assignment', () => {
@@ -20,7 +19,7 @@ describe('Dependency Detection', () => {
     const dependencies = new Set( ['B', 't', 'z', 'y', 'b', 'x', 'f', 'g', 'sin', 'sqrt'] )
     const parsed = new MathExpression(expression)
 
-    expect(parsed.dependencies).toEqualAsSet(dependencies)
+    expect(parsed.dependencies).toEqual(dependencies)
   } )
 
   test('dependencies detected for function assignment', () => {
@@ -28,7 +27,7 @@ describe('Dependency Detection', () => {
     const dependencies = new Set( ['B', 't', 'y', 'b', 'f', 'g', 'sin', 'sqrt'] )
     const parsed = new MathExpression(expression)
 
-    expect(parsed.dependencies).toEqualAsSet(dependencies)
+    expect(parsed.dependencies).toEqual(dependencies)
   } )
 
   test('Cyclic Assignment raises error', () => {
