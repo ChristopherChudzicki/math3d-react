@@ -8,7 +8,9 @@
     "mathquill": "^0.10.1-a",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-redux": "^5.0.7",
     "react-scripts": "next",
+    "redux": "^3.7.2",
     "styled-components": "^3.1.6",
     "toposort": "^1.0.6"
   },
@@ -28,5 +30,18 @@
     "eslint-plugin-standard": "^3.0.1",
     "jest-matcher-deep-close-to": "^1.0.2",
     "jquery": "^3.3.1"
+  },
+  "browserslist": {
+    "development": [
+      "last 2 chrome versions",
+      "last 2 firefox versions",
+      "last 2 edge versions"
+    ],
+    "production": [
+      ">1%",
+      "last 4 versions",
+      "Firefox ESR",
+      "not ie < 11"
+    ]
   }
 }
