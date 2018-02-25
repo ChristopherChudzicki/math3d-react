@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import Header from './components/Header'
-import Container from './components/Container'
+import FlexContainer from './components/FlexContainer'
 import Drawer from './containers/Drawer'
 import MathQuill from './components/MathQuill'
 
@@ -21,24 +21,26 @@ class App extends Component {
 
   render() {
     return (
-      <Container>
+      <FlexContainer flexDirection={'column'}>
         <Header />
-        <Container>
+        <FlexContainer>
           <Drawer id='main'>
-            <Container></Container>
+            <FlexContainer></FlexContainer>
           </Drawer>
-          <Container>
-            <StyledMath
-              latex={this.state.latex}
-              onEdit = { mq => {
-                console.log(mq.latex())
-                this.setState( { latex: mq.latex() } )
-              }
-              }
-            />
-          </Container>
-        </Container>
-      </Container>
+          <FlexContainer>
+            <div>
+              <StyledMath
+                latex={this.state.latex}
+                onEdit = { mq => {
+                  console.log(mq.latex())
+                  this.setState( { latex: mq.latex() } )
+                }
+                }
+              />
+            </div>
+          </FlexContainer>
+        </FlexContainer>
+      </FlexContainer>
     )
   }
 
