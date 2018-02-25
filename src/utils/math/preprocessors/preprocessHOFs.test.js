@@ -15,12 +15,10 @@ describe('preprocessHOFs', () => {
   } )
 
   test('nested HOF is converted correctly', () => {
-    test('single HOF is converted correctly', () => {
-      const preprocess = preprocessHOFs( ['diff'] )
-      const input = 'e^t + diff( diff(r) )(t)'
-      const goal = 'e^t + diff(diff(r),t)'
-      expect(preprocess(input)).toBe(goal)
-    } )
+    const preprocess = preprocessHOFs( ['diff'] )
+    const input = 'e^t + diff( diff(r) )(t)'
+    const goal = 'e^t + diff( diff(r) ,t)'
+    expect(preprocess(input)).toBe(goal)
   } )
 
   test('multiple HOFs are converted correctly', () => {
