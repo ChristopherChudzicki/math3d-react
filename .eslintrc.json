@@ -5,7 +5,7 @@
 		"node": true
 	},
   "plugins": ["jest"],
-	"extends": ["standard", "plugin:jest/recommended"],
+	"extends": ["standard", "plugin:jest/recommended", "plugin:react/recommended"],
 	"parser": "babel-eslint",
 	"rules": {
 		"space-in-parens": ["error", "never", { "exceptions": ["{}", "[]"] }],
