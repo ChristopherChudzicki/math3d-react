@@ -3,21 +3,25 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 const DrawerContainer = styled.div`
-  width: 0;
+  width: ${props => `${props.width}px`};
   position: relative;
-  &.isOpen {
-    width: ${props => `${props.width}px`};
+  &.closing {
+    transform: ${props => `translateX(-${props.width}px)`};
+    transition-duration: 1s;
+    margin-right: ${props => `-${props.width}px`};
+  }
+  &.opening {
+    transform: translateX(0px);
+    transition-duration: 1s;
+    margin-right: 0;
   }
 `
 const DrawerContents = styled.div`
   width: ${props => `${props.width}px`};
-  left: ${props => `-${props.width}px`};
+  left: 0;
   background-color:lightblue;
   position:absolute;
   height:100%;
-  &.isOpen {
-    left: 0
-  }
 `
 
 const DrawerToggle = styled.button`
@@ -43,20 +47,26 @@ export default class Drawer extends PureComponent {
   }
 
   state = {
-    isOpen: true
+    isOpen: true,
+    animate: false
   }
 
   handleToggle = () => {
-    this.setState( { isOpen: !this.state.isOpen } )
+    this.setState( { isOpen: !this.state.isOpen, animate: true } )
   }
 
   render() {
     const { width, children } = this.props
-    const { isOpen } = this.state
+    const { isOpen, animate } = this.state
+    const classNames = isOpen && animate
+      ? 'opening'
+      : animate
+        ? 'closing' : ''
+
     return (
       <Fragment>
-        <DrawerContainer width={width} className={isOpen ? 'isOpen' : ''}>
-          <DrawerContents width={width} className={isOpen ? 'isOpen' : ''}>
+        <DrawerContainer width={width} className={classNames}>
+          <DrawerContents width={width} className={classNames}>
             <span>Drawer Visibility: {JSON.stringify(this.props.isVisible)}</span>
             <span>Drawer Open: {JSON.stringify(isOpen)}</span>
             <div>
@@ -70,4 +80,5 @@ export default class Drawer extends PureComponent {
       </Fragment>
     )
   }
+
 }
