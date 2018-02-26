@@ -1,7 +1,8 @@
 import { SET_VISIBILITY } from './actions'
 
 const initialState = {
-  main: true
+  main: true,
+  examples: true
 }
 
 export default (state = initialState, { type, payload } ) => {
