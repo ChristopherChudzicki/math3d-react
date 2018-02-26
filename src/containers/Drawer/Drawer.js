@@ -1,6 +1,7 @@
-import React, { Fragment, PureComponent } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import DrawerToggleButton from './DrawerToggleButton'
 
 const DrawerContainer = styled.div`
   width: ${props => `${props.width}px`};
@@ -24,61 +25,38 @@ const DrawerContents = styled.div`
   height:100%;
 `
 
-const DrawerToggle = styled.button`
-  position:absolute;
-  top:0;
-  right:-50px;
-  width:50px;
-`
+export default function Drawer(props) {
+  const { width, children, isOpen, onOpen, onClose } = props
+  const classNames = isOpen ? 'opening' : 'closing'
 
-export default class Drawer extends PureComponent {
+  return (
+    <DrawerContainer width={width} className={classNames}>
+      <DrawerContents width={width} className={classNames}>
+        <span>Drawer Open: {JSON.stringify(isOpen)}</span>
+        <div>
+          {children}
+        </div>
+      </DrawerContents>
+      <DrawerToggleButton
+        isDrawerOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
+      />
+    </DrawerContainer>
+  )
+}
 
-  static propTypes = {
-    width: PropTypes.number,
-    isVisible: PropTypes.bool,
-    children: PropTypes.oneOfType( [
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node
-    ] ).isRequired
-  }
+Drawer.propTypes = {
+  width: PropTypes.number.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  onOpen: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.oneOfType( [
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ] ).isRequired
+}
 
-  static defaultProps = {
-    width: 300
-  }
-
-  state = {
-    isOpen: true,
-    animate: false
-  }
-
-  handleToggle = () => {
-    this.setState( { isOpen: !this.state.isOpen, animate: true } )
-  }
-
-  render() {
-    const { width, children } = this.props
-    const { isOpen, animate } = this.state
-    const classNames = isOpen && animate
-      ? 'opening'
-      : animate
-        ? 'closing' : ''
-
-    return (
-      <Fragment>
-        <DrawerContainer width={width} className={classNames}>
-          <DrawerContents width={width} className={classNames}>
-            <span>Drawer Visibility: {JSON.stringify(this.props.isVisible)}</span>
-            <span>Drawer Open: {JSON.stringify(isOpen)}</span>
-            <div>
-              {children}
-            </div>
-          </DrawerContents>
-          <DrawerToggle onClick={this.handleToggle}>
-            Hello
-          </DrawerToggle>
-        </DrawerContainer>
-      </Fragment>
-    )
-  }
-
+Drawer.defaultProps = {
+  width: 300
 }

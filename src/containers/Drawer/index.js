@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { setVisibility } from './actions'
 
 const mapStateToProps = ( { drawers }, ownProps) => ( {
-  isVisible: drawers[ownProps.id]
+  isOpen: drawers[ownProps.id]
 } )
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {
