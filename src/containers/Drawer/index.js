@@ -1,4 +1,4 @@
-import Drawer from './Drawer'
+import Drawer from './components/Drawer'
 import { connect } from 'react-redux'
 import { setVisibility } from './actions'
 

@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Button, Icon } from 'antd'
 
-const ToggleButton = styled.button`
+const StyledButton = styled(Button)`
   position:absolute;
   top:0;
   width:50px;
@@ -17,23 +18,23 @@ const ToggleButton = styled.button`
 // slideTo, isDrawerOpen
 const buttonIcons = {
   left: {
-    true: '<',
-    false: '>'
+    true: 'left',
+    false: 'right'
   },
   right: {
-    true: '>',
-    false: '<'
+    true: 'right',
+    false: 'left'
   }
 }
 
 export default function DrawerToggleButton(props) {
   const onClick = props.isDrawerOpen ? props.onClose : props.onOpen
-  const icon = buttonIcons[props.slideTo][props.isDrawerOpen]
+  const iconType = buttonIcons[props.slideTo][props.isDrawerOpen]
   const classNames = props.onSide === 'right' ? 'onRight' : 'onLeft'
   return (
-    <ToggleButton onClick={onClick} className={classNames}>
-      { icon }
-    </ToggleButton>
+    <StyledButton onClick={onClick} className={classNames}>
+      <Icon type={iconType} />
+    </StyledButton>
   )
 }
 
