@@ -1,6 +1,30 @@
 export const SET_VISIBILITY = 'SET_VISIBILITY'
+export const SET_ANIMATION_STATUS = 'SET_ANIMATION_STATUS'
+export const OPEN_DRAWER = 'OPEN_DRAWER'
+export const CLOSE_DRAWER = 'CLOSE_DRAWER'
 
-export const setVisibility = (id, visibility) => ( {
+export const setVisibility = (id, isVisible) => ( {
   type: SET_VISIBILITY,
-  payload: { id, visibility }
+  payload: { id, isVisible }
 } )
+
+export const setAnimationStatus = (id, isAnimating) => ( {
+  type: SET_ANIMATION_STATUS,
+  payload: { id, isAnimating }
+} )
+
+export const closeDrawer = (id, animationSpeed) => {
+  return dispatch => {
+    dispatch(setVisibility(id, false))
+    dispatch(setAnimationStatus(id, true))
+    setTimeout(() => dispatch(setAnimationStatus(id, false)), animationSpeed)
+  }
+}
+
+export const openDrawer = (id, animationSpeed) => {
+  return dispatch => {
+    dispatch(setVisibility(id, true))
+    dispatch(setAnimationStatus(id, true))
+    setTimeout(() => dispatch(setAnimationStatus(id, false)), animationSpeed)
+  }
+}
