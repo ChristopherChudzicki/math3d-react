@@ -5,6 +5,7 @@
   "dependencies": {
     "antd": "^3.2.2",
     "classnames": "^2.2.5",
+    "immutability-helper": "^2.6.6",
     "lodash": "^4.17.4",
     "mathjs": "^3.18.1",
     "mathquill": "^0.10.1-a",

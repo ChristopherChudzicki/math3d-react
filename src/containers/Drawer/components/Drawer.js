@@ -37,30 +37,16 @@ const DrawerContainer = styled.div`
   }
 `
 
-Drawer.propTypes = {
-  width: PropTypes.number.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  isAnimating: PropTypes.bool.isRequired,
-  animationSpeed: PropTypes.number.isRequired,
-  onOpen: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  slideTo: PropTypes.oneOf( ['left', 'right'] ).isRequired,
-  children: PropTypes.oneOfType( [
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ] ).isRequired
-}
-
-Drawer.defaultProps = {
-  width: 300,
-  animationSpeed: 1000,
-  slideTo: 'left'
-}
-
 /**
- * A sliding drawer React component.
+ * A sliding drawer component. Can be made to slide left or right off of These
+ * viewport.
  *
- * For slideTo:right to work properly, Drawer's container must have overflow:hidden
+ * Notes:
+ *  - for rightward sliding drawer gto function correctly, Drawer's parent
+ *    container must have overflow:hidden
+ *  - css transforms are used to animate the sliding. However, no transforms
+ *    are applied in drawer's open state.
+ *
  */
 export default function Drawer(props) {
   const {
@@ -99,4 +85,24 @@ export default function Drawer(props) {
       />
     </DrawerContainer>
   )
+}
+
+Drawer.propTypes = {
+  width: PropTypes.number.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  isAnimating: PropTypes.bool.isRequired,
+  animationSpeed: PropTypes.number.isRequired,
+  onOpen: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  slideTo: PropTypes.oneOf( ['left', 'right'] ).isRequired,
+  children: PropTypes.oneOfType( [
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ] ).isRequired
+}
+
+Drawer.defaultProps = {
+  width: 300,
+  animationSpeed: 1000,
+  slideTo: 'left'
 }

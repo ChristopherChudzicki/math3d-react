@@ -35,7 +35,7 @@ const getItemStyle = (isDragging, draggableStyle) => ( {
 const getListStyle = isDraggingOver => ( {
   background: isDraggingOver ? 'lightblue' : 'lightgrey',
   padding: grid,
-  width: 250
+  width: '100%'
 } )
 
 class SortableList extends Component {
@@ -69,32 +69,32 @@ class SortableList extends Component {
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="droppable">
-          {(provided, snapshot) => (
+          {(droppableProvided, snapshot) => (
             <div
-              ref={provided.innerRef}
+              ref={droppableProvided.innerRef}
               style={getListStyle(snapshot.isDraggingOver)}
             >
               {this.state.items.map((item, index) => (
                 <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided, snapshot) => (
+                  {(draggableProvided, snapshot) => (
                     <div>
                       <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
+                        ref={draggableProvided.innerRef}
+                        {...draggableProvided.draggableProps}
+                        {...draggableProvided.dragHandleProps}
                         style={getItemStyle(
                           snapshot.isDragging,
-                          provided.draggableProps.style
+                          draggableProvided.draggableProps.style
                         )}
                       >
                         {item.content}
                       </div>
-                      {provided.placeholder}
+                      {draggableProvided.placeholder}
                     </div>
                   )}
                 </Draggable>
               ))}
-              {provided.placeholder}
+              {droppableProvided.placeholder}
             </div>
           )}
         </Droppable>
