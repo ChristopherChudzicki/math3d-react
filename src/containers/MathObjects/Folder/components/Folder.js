@@ -20,7 +20,7 @@ Folder.propTypes = {
   isCollapsed: PropTypes.bool.isRequired,
   onToggleContentCollapsed: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
-  items: PropTypes.string.isRequired,
+  items: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
   animationSpeed: PropTypes.number.isRequired
 }

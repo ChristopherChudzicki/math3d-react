@@ -6,7 +6,7 @@ import { makeMockStore } from './mockData'
 
 // const initialState = {}
 const initialState = makeMockStore()
-console.log(initialState)
+
 const enhancers = []
 const middleware = [
   thunk
