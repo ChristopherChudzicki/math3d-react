@@ -1,13 +1,13 @@
 import React from 'react'
 import Drawer from '../containers/Drawer'
 import FlexContainer from '../components/FlexContainer'
-import SortableListOld from '../containers/MathTree/components/SortableListOld'
+import SortableTree from 'containers/SortableTree'
 
 const Math3dController = (props) => {
   return (
     <Drawer id='main'>
       <FlexContainer style={ { overflow: 'scroll' } }>
-        <SortableListOld/>
+        <SortableTree />
       </FlexContainer>
     </Drawer>
   )

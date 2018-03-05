@@ -16,7 +16,6 @@ export default function SortableList(props) {
     <Droppable
       droppableId={props.droppableId}
       type={droppableType}
-      // isDropDisabled={props.isDropDisabled}
     >
       {
         (provided, snapshot) => (

@@ -2,7 +2,11 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import rootReducer from './reducer.js'
 import thunk from 'redux-thunk'
 
-const initialState = {}
+import { makeMockStore } from './mockData'
+
+// const initialState = {}
+const initialState = makeMockStore()
+console.log(initialState)
 const enhancers = []
 const middleware = [
   thunk

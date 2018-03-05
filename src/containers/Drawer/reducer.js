@@ -1,6 +1,6 @@
 import { SET_VISIBILITY, SET_ANIMATION_STATUS } from './actions'
 
-const initialState = {
+export const initialState = {
   main: {
     isVisible: true,
     isAnimating: false

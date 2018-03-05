@@ -17,22 +17,22 @@ const DrawerContainer = styled.div`
   height:100%;
   &.closing-or-closed.left {
     transform: ${props => `translateX(-${props.width}px)`};
-    transition-duration: ${props => `${props.animationSpeed / 1000}s`};
+    transition-duration: ${props => `${props.animationSpeed}ms`};
     margin-right: ${props => `-${props.width}px`};
   }
   &.opening.left {
     transform: translateX(0px);
-    transition-duration: ${props => `${props.animationSpeed / 1000}s`};
+    transition-duration: ${props => `${props.animationSpeed}ms`};
     margin-right: 0;
   }
   &.closing-or-closed.right {
     transform: ${props => `translateX(${props.width}px)`};
-    transition-duration: ${props => `${props.animationSpeed / 1000}s`};
+    transition-duration: ${props => `${props.animationSpeed}ms`};
     margin-left: ${props => `-${props.width}px`};
   }
   &.opening.right {
     transform: translateX(0px);
-    transition-duration: ${props => `${props.animationSpeed / 1000}s`};
+    transition-duration: ${props => `${props.animationSpeed}ms`};
     margin-right: 0;
   }
 `

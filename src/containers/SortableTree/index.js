@@ -1,36 +1,34 @@
 import React from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
-import SortableList from './components/SortableList'
+import SortableList from 'components/SortableList'
 import { connect } from 'react-redux'
 import {
   reorderWithinDroppable,
   dragToNewDroppable
 } from './actions'
-import Folder from './Folder'
+import Folder from 'containers/MathObjects/Folder'
+import styled from 'styled-components'
+
+const SortableListOfFolders = styled(SortableList)`
+  width:100%
+`
 
 function MathTree(props) {
   return (
     <DragDropContext onDragEnd={props.onDragEnd}>
-      <SortableList
-        // isDropDisabled={true}
+      <SortableListOfFolders
         droppableType='FOLDER'
         draggableType='FOLDER'
         droppableId={'root'}
         items={props.items}
-        renderItem={
-          (item) => (
-            <Folder
-              id={item}
-            />
-          )
-        }
+        renderItem={item => <Folder id={item} />}
       />
     </DragDropContext>
   )
 }
 
-const mapStateToProps = ( { mathTree }, ownProps) => ( {
-  items: mathTree.root.children
+const mapStateToProps = ( { sortableTree }, ownProps) => ( {
+  items: sortableTree.root
 } )
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {
