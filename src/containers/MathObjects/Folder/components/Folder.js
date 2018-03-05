@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import ObjectIcon from 'containers/MathObjects/components/ObjectIcon'
 import VisibilityIndicator from './VisibilityIndicator'
 import Collapsible from 'react-collapsible'
+import PropTypes from 'prop-types'
 
 const OuterContainer = styled.div`
   border: 1px solid black;
@@ -14,6 +15,19 @@ const HeaderContainer = styled.div`
   align-items:center;
   background-color:rgba(1,1,1,0.1);
 `
+
+Folder.propTypes = {
+  isCollapsed: PropTypes.bool.isRequired,
+  onToggleContentCollapsed: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
+  items: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  animationSpeed: PropTypes.number.isRequired
+}
+
+Folder.defaultProps = {
+  animationSpeed: 200
+}
 
 export default function Folder(props) {
   const listClassName = props.isCollapsed ? 'collapsed' : ''
@@ -46,8 +60,4 @@ export default function Folder(props) {
 
     </OuterContainer>
   )
-}
-
-Folder.defaultProps = {
-  animationSpeed: 200
 }

@@ -2,12 +2,28 @@ import React from 'react'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import PropTypes from 'prop-types'
 
+/**
+ * SortableList, React Component
+ *
+ * A list component with draggable items, constructed with react-beautiful-dnd.
+ * Must be placed inside a DragDropContext.
+ *
+ */
+
 SortableList.propTypes = {
-  droppableId: PropTypes.string.isRequired,
-  className: PropTypes.string,
+  // array of items to be rendered inisde <Draggable>s
   items: PropTypes.array.isRequired,
+  // function to render each item
   renderItem: PropTypes.func.isRequired,
-  style: PropTypes.object
+  // Type identifier for droppable and its contained draggables.
+  // Draggables can only be dragged to Droppables with same type.
+  droppableType: PropTypes.string.isRequired,
+  draggableType: PropTypes.string.isRequired,
+  // Identifier for the droppable
+  droppableId: PropTypes.string.isRequired,
+  // css applied to Droppable's outermost div
+  style: PropTypes.object,
+  className: PropTypes.string
 }
 
 export default function SortableList(props) {

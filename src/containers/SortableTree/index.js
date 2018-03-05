@@ -8,10 +8,16 @@ import {
 } from './actions'
 import Folder from 'containers/MathObjects/Folder'
 import styled from 'styled-components'
+import PropTypes from 'prop-types'
 
 const SortableListOfFolders = styled(SortableList)`
   width:100%
 `
+
+MathTree.propTypes = {
+  onDragEnd: PropTypes.func.isRequired,
+  items: PropTypes.array.isRequired
+}
 
 function MathTree(props) {
   return (
