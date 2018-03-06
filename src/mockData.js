@@ -12,7 +12,7 @@ function addFolder(store) {
   store.sortableTree[id] = []
   store.folders[id] = {
     title: `Folder ${id}`,
-    isCollapsed: false
+    isCollapsed: Math.random() > 0.5
   }
 
   return id
