@@ -1,6 +1,11 @@
 import React from 'react'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
+
+const DraggableItemContainer = styled.div`
+  box-shadow: ${props => props.isDragging ? '0 0 5px gray' : ''}
+`
 
 /**
  * SortableList, React Component
@@ -12,7 +17,11 @@ import PropTypes from 'prop-types'
 
 SortableList.propTypes = {
   // array of items to be rendered inisde <Draggable>s
-  items: PropTypes.array.isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.shape( {
+      id: PropTypes.string.isRequired
+    } )
+  ).isRequired,
   // function to render each item
   renderItem: PropTypes.func.isRequired,
   // Type identifier for droppable and its contained draggables.
@@ -21,6 +30,7 @@ SortableList.propTypes = {
   draggableType: PropTypes.string.isRequired,
   // Identifier for the droppable
   droppableId: PropTypes.string.isRequired,
+  isDropDisabled: PropTypes.bool,
   // css applied to Droppable's outermost div
   style: PropTypes.object,
   className: PropTypes.string
@@ -31,6 +41,7 @@ export default function SortableList(props) {
   return (
     <Droppable
       droppableId={props.droppableId}
+      isDropDisabled={props.isDropDisabled}
       type={droppableType}
     >
       {
@@ -42,7 +53,11 @@ export default function SortableList(props) {
             style={style}
           >
             {props.items.map((item, index) => (
-              renderDraggableItem(item, index, renderItem, draggableType)
+              renderDraggableItem(
+                item,
+                renderItem,
+                { index, type: draggableType }
+              )
             ))}
             {provided.placeholder}
           </div>
@@ -52,9 +67,13 @@ export default function SortableList(props) {
   )
 }
 
-function renderDraggableItem(item, index, renderItem, draggableType) {
+function renderDraggableItem(item, renderItem, draggableProps) {
   return (
-    <Draggable key={item} draggableId={item} index={index} type={draggableType}>
+    <Draggable
+      key={item.id}
+      draggableId={item.id}
+      {...draggableProps}
+    >
       {(provided, snapshot) => (
         <div>
           <div
@@ -62,7 +81,9 @@ function renderDraggableItem(item, index, renderItem, draggableType) {
             {...provided.draggableProps}
             {...provided.dragHandleProps}
           >
-            {renderItem(item)}
+            <DraggableItemContainer isDragging={snapshot.isDragging}>
+              {renderItem(item)}
+            </DraggableItemContainer>
           </div>
           {provided.placeholder}
         </div>

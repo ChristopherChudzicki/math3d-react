@@ -27,14 +27,14 @@ function MathTree(props) {
         draggableType='FOLDER'
         droppableId={'root'}
         items={props.items}
-        renderItem={item => <Folder id={item} />}
+        renderItem={item => <Folder id={item.id} /> }
       />
     </DragDropContext>
   )
 }
 
 const mapStateToProps = ( { sortableTree }, ownProps) => ( {
-  items: sortableTree.root
+  items: sortableTree.root.map(id => { return { id } } )
 } )
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {

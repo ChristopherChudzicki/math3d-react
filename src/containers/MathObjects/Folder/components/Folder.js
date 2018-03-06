@@ -50,10 +50,12 @@ export default function Folder(props) {
           className={listClassName}
           droppableType='FOLDER_ITEM'
           draggableType='FOLDER_ITEM'
+          // this prevents dropping into collapsed folders
+          isDropDisabled={props.isCollapsed}
           droppableId={props.id}
           items={props.items}
           renderItem={
-            (item) => (<div>{item}</div>)
+            (item, itemProps) => (<div>{item.id}</div>)
           }
         />
       </Collapsible>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { toggleContentCollapsed } from './actions'
 
 const mapStateToProps = ( { sortableTree, folders }, ownProps) => ( {
-  items: sortableTree[ownProps.id],
+  items: sortableTree[ownProps.id].map(id => { return { id } } ),
   title: folders[ownProps.id].title,
   isCollapsed: folders[ownProps.id].isCollapsed
 } )
