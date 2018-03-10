@@ -1,20 +1,13 @@
 import React from 'react'
 import SortableList from 'components/SortableList'
-import styled from 'styled-components'
-import ObjectIcon from 'containers/MathObjects/components/ObjectIcon'
-import VisibilityIndicator from './VisibilityIndicator'
+import {
+  OuterContainer,
+  HeaderContainer
+} from 'containers/MathObjects/components/MathObject'
+import Point from 'containers/MathObjects/Point'
+import CollapsedIndicator from './CollapsedIndicator'
 import Collapsible from 'react-collapsible'
 import PropTypes from 'prop-types'
-
-const OuterContainer = styled.div`
-  border: 1px solid black;
-  margin: 2px;
-`
-const HeaderContainer = styled.div`
-  display: flex;
-  align-items:center;
-  background-color:rgba(1,1,1,0.1);
-`
 
 Folder.propTypes = {
   isCollapsed: PropTypes.bool.isRequired,
@@ -34,8 +27,7 @@ export default function Folder(props) {
   return (
     <OuterContainer>
       <HeaderContainer>
-        <ObjectIcon/>
-        <VisibilityIndicator
+        <CollapsedIndicator
           isCollapsed={props.isCollapsed}
           onToggleContentCollapsed={props.onToggleContentCollapsed}
           animationSpeed={props.animationSpeed}
@@ -55,11 +47,10 @@ export default function Folder(props) {
           droppableId={props.id}
           items={props.items}
           renderItem={
-            (item, itemProps) => (<div>{item.id}</div>)
+            (item, itemProps) => <Point id={item.id}/>
           }
         />
       </Collapsible>
-
     </OuterContainer>
   )
 }
