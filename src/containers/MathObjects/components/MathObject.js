@@ -22,7 +22,6 @@ const FolderStatusSymbol = styled.div`
   width:1px;
   height:100%;
   background-color:gray;
-  align-self: center;
 `
 
 const MainContainer = styled.div`

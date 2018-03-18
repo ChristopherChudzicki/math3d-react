@@ -13,12 +13,13 @@ const CollapseIndicatorButton = styled.button`
   height: ${FOLDER_STATUS_WIDTH}px;
   background-color:rgba(1,0,0,0.1);
   border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding:0px;
 `
 
 const RotatingSpan = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition-duration: ${props => `${props.animationSpeed}ms`};
   &.collapsed {
     transform: rotate(-90deg);
