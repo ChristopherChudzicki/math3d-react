@@ -6,11 +6,16 @@ import './index.css'
 import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 
+import theme from './theme'
+import { ThemeProvider } from 'styled-components'
+
 const target = document.querySelector('#root')
 
 render(
   <Provider store={store}>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </Provider>,
   target
 )

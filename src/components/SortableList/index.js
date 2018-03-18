@@ -55,6 +55,7 @@ export default function SortableList(props) {
             {props.items.map((item, index) => (
               renderDraggableItem(
                 item,
+                { listIndex: index, listLength: props.items.length },
                 renderItem,
                 { index, type: draggableType }
               )
@@ -67,7 +68,7 @@ export default function SortableList(props) {
   )
 }
 
-function renderDraggableItem(item, renderItem, draggableProps) {
+function renderDraggableItem(item, itemProps, renderItem, draggableProps) {
   return (
     <Draggable
       key={item.id}
@@ -82,7 +83,7 @@ function renderDraggableItem(item, renderItem, draggableProps) {
             {...provided.dragHandleProps}
           >
             <DraggableItemContainer isDragging={snapshot.isDragging}>
-              {renderItem(item)}
+              {renderItem(item, itemProps)}
             </DraggableItemContainer>
           </div>
           {provided.placeholder}

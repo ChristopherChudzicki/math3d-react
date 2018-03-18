@@ -8,10 +8,11 @@ import {
 } from 'containers/MathObjects/components/MathObject'
 
 const CollapseIndicatorButton = styled.button`
-  margin: ${FOLDER_STATUS_MARGIN}px;
+  margin-left: ${FOLDER_STATUS_MARGIN}px;
+  margin-right: ${FOLDER_STATUS_MARGIN}px;
   width: ${FOLDER_STATUS_WIDTH}px;
   height: ${FOLDER_STATUS_WIDTH}px;
-  background-color:rgba(1,0,0,0.1);
+  background-color: ${props => props.theme.medium};
   border: none;
   padding:0px;
 `

@@ -5,6 +5,7 @@
   "dependencies": {
     "antd": "^3.2.2",
     "classnames": "^2.2.5",
+    "color": "^3.0.0",
     "immutability-helper": "^2.6.6",
     "lodash": "^4.17.4",
     "mathjs": "^3.18.1",

@@ -13,7 +13,7 @@ const DrawerContainer = styled.div`
   min-width: ${props => `${props.width}px`};
   max-width: ${props => `${props.width}px`};
   position: relative;
-  background-color:lightblue;
+  background-color: ${props => props.theme.light};
   height:100%;
   &.closing-or-closed.left {
     transform: ${props => `translateX(-${props.width}px)`};

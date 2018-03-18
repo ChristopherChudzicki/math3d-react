@@ -27,7 +27,7 @@ function MathTree(props) {
         draggableType='FOLDER'
         droppableId={'root'}
         items={props.items}
-        renderItem={item => <Folder id={item.id} /> }
+        renderItem={(item, itemProps) => <Folder id={item.id} {...itemProps} /> }
       />
     </DragDropContext>
   )

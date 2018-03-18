@@ -3,17 +3,22 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 export const OuterContainer = styled.div`
-  margin-top: 2px;
-  margin-bottom: 2px;
-  margin-left: 0px;
-  margin-right: 0px;
+  display:flex;
+  padding-top:2px;
+  padding-bottom:2px;
+  background-color: ${props => props.theme.light};
+  border-top: 1px solid ${props => props.theme.medium};
+  border-bottom: 1px solid ${props => props.theme.medium};
+  margin-top: ${props => props.isFirst ? '0px' : '-1px'};
+  margin-bottom: ${props => props.isLast ? '-1px' : '0px'};
 `
 
 export const FOLDER_STATUS_WIDTH = 20
 export const FOLDER_STATUS_MARGIN = 3
 export const FolderStatusContainer = styled.div`
   width: ${FOLDER_STATUS_WIDTH}px;
-  margin: ${FOLDER_STATUS_MARGIN}px;
+  margin-left: ${FOLDER_STATUS_MARGIN}px;
+  margin-right: ${FOLDER_STATUS_MARGIN}px;
   display: flex;
   flex-direction:column;
   align-items: center;
@@ -21,7 +26,7 @@ export const FolderStatusContainer = styled.div`
 const FolderStatusSymbol = styled.div`
   width:1px;
   height:100%;
-  background-color:gray;
+  background-color: ${props => props.theme.medium};
 `
 
 const MainContainer = styled.div`
@@ -30,14 +35,24 @@ const MainContainer = styled.div`
 `
 
 export const HeaderContainer = styled.div`
+  margin-top:2px;
+  margin-bottom:2px;
   display: flex;
   align-items:center;
-  background-color:rgba(1,1,1,0.1);
 `
 
+MathObject.propTypes = {
+  listIndex: PropTypes.number.isRequired,
+  listLength: PropTypes.number.isRequired
+}
+
 export default function MathObject(props) {
+
+  const isFirst = props.listIndex === 0
+  const isLast = props.listIndex === (props.listLength - 1)
+
   return (
-    <OuterContainer style={ { display: 'flex' } }>
+    <OuterContainer isFirst={isFirst} isLast={isLast} >
       <FolderStatusContainer>
         <FolderStatusSymbol />
       </FolderStatusContainer>
