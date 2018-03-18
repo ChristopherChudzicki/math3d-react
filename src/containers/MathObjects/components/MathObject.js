@@ -43,7 +43,12 @@ export const HeaderContainer = styled.div`
 
 MathObject.propTypes = {
   listIndex: PropTypes.number.isRequired,
-  listLength: PropTypes.number.isRequired
+  listLength: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  children: PropTypes.oneOfType( [
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ] ).isRequired
 }
 
 export default function MathObject(props) {
