@@ -2,15 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
+// TODO: The focus-within does not work in Edge. Find a polyfill.
 export const OuterContainer = styled.div`
   display:flex;
-  padding-top:2px;
-  padding-bottom:2px;
+  margin-top: ${props => props.isFirst ? '0px' : '-1px'};
+  margin-bottom: ${props => props.isLast ? '-1px' : '0px'};
   background-color: white;
   border-top: 1px solid ${props => props.theme.medium};
   border-bottom: 1px solid ${props => props.theme.medium};
-  margin-top: ${props => props.isFirst ? '0px' : '-1px'};
-  margin-bottom: ${props => props.isLast ? '-1px' : '0px'};
+  &:focus-within {
+    background-color: ${props => props.theme.primaryLight};
+  };
 `
 
 export const FOLDER_STATUS_WIDTH = 20
@@ -22,6 +24,7 @@ export const FolderStatusContainer = styled.div`
   display: flex;
   flex-direction:column;
   align-items: center;
+  padding:2px;
 `
 const FolderStatusSymbol = styled.div`
   width:1px;
@@ -32,6 +35,12 @@ const FolderStatusSymbol = styled.div`
 const MainContainer = styled.div`
   display:flex;
   flex-direction:column;
+  background-color:white;
+  width:100%;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left:6px;
+  padding-right:2px;
 `
 
 export const HeaderContainer = styled.div`
