@@ -6,7 +6,7 @@ export const OuterContainer = styled.div`
   display:flex;
   padding-top:2px;
   padding-bottom:2px;
-  background-color: ${props => props.theme.light};
+  background-color: white;
   border-top: 1px solid ${props => props.theme.medium};
   border-bottom: 1px solid ${props => props.theme.medium};
   margin-top: ${props => props.isFirst ? '0px' : '-1px'};

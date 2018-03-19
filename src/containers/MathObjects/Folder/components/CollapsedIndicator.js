@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon } from 'antd'
+import { Button, Icon } from 'antd'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import {
@@ -7,14 +7,13 @@ import {
   FOLDER_STATUS_MARGIN
 } from 'containers/MathObjects/components/MathObject'
 
-const CollapseIndicatorButton = styled.button`
+const CollapseIndicatorButton = styled(Button)`
   margin-left: ${FOLDER_STATUS_MARGIN}px;
   margin-right: ${FOLDER_STATUS_MARGIN}px;
   width: ${FOLDER_STATUS_WIDTH}px;
   height: ${FOLDER_STATUS_WIDTH}px;
-  background-color: ${props => props.theme.medium};
-  border: none;
   padding:0px;
+  border-radius: ${props => props.theme.borderRadius};
 `
 
 const RotatingSpan = styled.span`

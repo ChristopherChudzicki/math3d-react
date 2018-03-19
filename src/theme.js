@@ -8,7 +8,8 @@ const theme = {
   primaryDark: primary.darken(0.5).toString(),
   light: '#f8f8f8',
   medium: '#bfbfbf',
-  dark: 'darkgray'
+  dark: 'darkgray',
+  borderRadius: '4px'
 }
 
 export default theme

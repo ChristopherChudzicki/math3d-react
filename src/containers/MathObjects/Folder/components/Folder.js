@@ -23,9 +23,8 @@ Folder.defaultProps = {
 }
 
 const FolderOuterContainer = styled.div`
-  background-color: ${props => props.theme.light};
-  border-bottom: 1px solid ${props => props.theme.medium};
-  border-top: 1px solid ${props => props.theme.medium};
+  background-color: white;
+  border: 1px solid ${props => props.theme.medium};
 `
 
 export default function Folder(props) {
