@@ -21,6 +21,9 @@ function addFolder(store) {
 function addPoint(store, folderId) {
   const itemId = `item-${uniqueId()}`
   store.sortableTree[folderId].push(itemId)
+  store.points[itemId] = {
+    description: `Point ${itemId}`
+  }
 }
 
 export function makeMockStore() {
@@ -29,7 +32,8 @@ export function makeMockStore() {
     sortableTree: {
       root: []
     },
-    folders: {}
+    folders: {},
+    points: {}
   }
 
   for (let j = 0; j < 5; j++) {

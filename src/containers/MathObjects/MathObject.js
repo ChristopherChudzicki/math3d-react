@@ -52,14 +52,20 @@ export const HeaderContainer = styled.div`
 `
 
 MathObject.propTypes = {
+  // passed as ownProps
   id: PropTypes.string.isRequired,
-  listIndex: PropTypes.number.isRequired,
-  listLength: PropTypes.number.isRequired,
   description: PropTypes.string.isRequired,
   children: PropTypes.oneOfType( [
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
-  ] ).isRequired
+  ] ).isRequired,
+  // passed as ownProps, provided by Draggable
+  listIndex: PropTypes.number.isRequired,
+  listLength: PropTypes.number.isRequired,
+  // passed by mapStateToProps / mapDispatchToProps
+  isActive: PropTypes.bool.isRequired,
+  onFocus: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired
 }
 
 function MathObject(props) {
@@ -89,7 +95,7 @@ function MathObject(props) {
 }
 
 const mapStateToProps = (state, ownProps) => ( {
-  isActive: state.activeObject === ownProps.id,
+  isActive: state.activeObject === ownProps.id
 } )
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {
