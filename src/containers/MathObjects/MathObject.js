@@ -6,11 +6,10 @@ import { setActiveObject } from 'containers/MathObjects/services/ActiveObject/ac
 
 export const OuterContainer = styled.div`
   display:flex;
-  margin-top: ${props => props.isFirst ? '0px' : '-1px'};
-  margin-bottom: ${props => props.isLast ? '-1px' : '0px'};
+  margin-top: -1px;
+  margin-bottom: -1px;
   background-color: white;
-  border-top: 1px solid ${props => props.theme.medium};
-  border-bottom: 1px solid ${props => props.theme.medium};
+  border: 1px solid ${props => props.theme.medium};
   ${props => props.isActive && css`
     background-color: ${props => props.theme.primaryLight}
   `}
@@ -38,8 +37,8 @@ const MainContainer = styled.div`
   flex-direction:column;
   background-color:white;
   width:100%;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   padding-left:6px;
   padding-right:2px;
 `
@@ -59,9 +58,6 @@ MathObject.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ] ).isRequired,
-  // passed as ownProps, provided by Draggable
-  listIndex: PropTypes.number.isRequired,
-  listLength: PropTypes.number.isRequired,
   // passed by mapStateToProps / mapDispatchToProps
   isActive: PropTypes.bool.isRequired,
   onFocus: PropTypes.func.isRequired,
@@ -70,13 +66,8 @@ MathObject.propTypes = {
 
 function MathObject(props) {
 
-  const isFirst = props.listIndex === 0
-  const isLast = props.listIndex === (props.listLength - 1)
-
   return (
     <OuterContainer
-      isFirst={isFirst}
-      isLast={isLast}
       isActive={props.isActive}
       onFocus={props.onFocus}
       onBlur={props.onBlur}

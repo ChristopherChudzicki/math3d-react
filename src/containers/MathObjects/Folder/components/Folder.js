@@ -1,8 +1,5 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import SortableList from 'components/SortableList'
-import {
-  HeaderContainer
-} from 'containers/MathObjects/MathObject'
 import Point from 'containers/MathObjects/Point'
 import CollapsedIndicator from './CollapsedIndicator'
 import Collapsible from 'react-collapsible'
@@ -22,23 +19,27 @@ Folder.defaultProps = {
   animationSpeed: 200
 }
 
-const FolderOuterContainer = styled.div`
+const FolderHeader = styled.div`
+  display: flex;
+  align-items:center;
   background-color: white;
   border: 1px solid ${props => props.theme.medium};
+  padding-top:4px;
+  padding-bottom:4px;
 `
 
 export default function Folder(props) {
   const listClassName = props.isCollapsed ? 'collapsed' : ''
   return (
-    <FolderOuterContainer>
-      <HeaderContainer>
+    <Fragment>
+      <FolderHeader>
         <CollapsedIndicator
           isCollapsed={props.isCollapsed}
           onToggleContentCollapsed={props.onToggleContentCollapsed}
           animationSpeed={props.animationSpeed}
         />
         {props.description}
-      </HeaderContainer>
+      </FolderHeader>
       <Collapsible
         open={!props.isCollapsed}
         transitionTime={props.animationSpeed}
@@ -52,10 +53,10 @@ export default function Folder(props) {
           droppableId={props.id}
           items={props.items}
           renderItem={
-            (item, itemProps) => <Point id={item.id} {...itemProps}/>
+            (item) => <Point id={item.id} />
           }
         />
       </Collapsible>
-    </FolderOuterContainer>
+    </Fragment>
   )
 }
