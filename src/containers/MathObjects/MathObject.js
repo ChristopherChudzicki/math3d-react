@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import { connect } from 'react-redux'
+import { setActiveObject } from 'containers/MathObjects/services/ActiveObject/actions'
 
-// TODO: The focus-within does not work in Edge. Find a polyfill.
 export const OuterContainer = styled.div`
   display:flex;
   margin-top: ${props => props.isFirst ? '0px' : '-1px'};
@@ -10,9 +11,9 @@ export const OuterContainer = styled.div`
   background-color: white;
   border-top: 1px solid ${props => props.theme.medium};
   border-bottom: 1px solid ${props => props.theme.medium};
-  &:focus-within {
-    background-color: ${props => props.theme.primaryLight};
-  };
+  ${props => props.isActive && css`
+    background-color: ${props => props.theme.primaryLight}
+  `}
 `
 
 export const FOLDER_STATUS_WIDTH = 20
@@ -51,31 +52,49 @@ export const HeaderContainer = styled.div`
 `
 
 MathObject.propTypes = {
+  id: PropTypes.string.isRequired,
   listIndex: PropTypes.number.isRequired,
   listLength: PropTypes.number.isRequired,
-  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
   children: PropTypes.oneOfType( [
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ] ).isRequired
 }
 
-export default function MathObject(props) {
+function MathObject(props) {
 
   const isFirst = props.listIndex === 0
   const isLast = props.listIndex === (props.listLength - 1)
 
   return (
-    <OuterContainer isFirst={isFirst} isLast={isLast} >
+    <OuterContainer
+      isFirst={isFirst}
+      isLast={isLast}
+      isActive={props.isActive}
+      onFocus={props.onFocus}
+      onBlur={props.onBlur}
+    >
       <FolderStatusContainer>
         <FolderStatusSymbol />
       </FolderStatusContainer>
       <MainContainer>
         <HeaderContainer>
-          <input type="text" placeholder={props.title}/>
+          <input type="text" placeholder={props.description}/>
         </HeaderContainer>
         {props.children}
       </MainContainer>
     </OuterContainer>
   )
 }
+
+const mapStateToProps = (state, ownProps) => ( {
+  isActive: state.activeObject === ownProps.id,
+} )
+
+const mapDispatchToProps = (dispatch, ownProps) => ( {
+  onFocus: () => dispatch(setActiveObject(ownProps.id)),
+  onBlur: () => dispatch(setActiveObject(null))
+} )
+
+export default connect(mapStateToProps, mapDispatchToProps)(MathObject)

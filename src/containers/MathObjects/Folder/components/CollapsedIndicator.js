@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import {
   FOLDER_STATUS_WIDTH,
   FOLDER_STATUS_MARGIN
-} from 'containers/MathObjects/components/MathObject'
+} from 'containers/MathObjects/MathObject'
 
 const CollapseIndicatorButton = styled(Button)`
   margin-left: ${FOLDER_STATUS_MARGIN}px;

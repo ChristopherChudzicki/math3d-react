@@ -12,6 +12,4 @@ const theme = {
   borderRadius: '4px'
 }
 
-console.log(theme.primaryLight)
-
 export default theme

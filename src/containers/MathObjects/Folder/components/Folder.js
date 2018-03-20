@@ -2,7 +2,7 @@ import React from 'react'
 import SortableList from 'components/SortableList'
 import {
   HeaderContainer
-} from 'containers/MathObjects/components/MathObject'
+} from 'containers/MathObjects/MathObject'
 import Point from 'containers/MathObjects/Point'
 import CollapsedIndicator from './CollapsedIndicator'
 import Collapsible from 'react-collapsible'
@@ -14,7 +14,7 @@ Folder.propTypes = {
   onToggleContentCollapsed: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
   items: PropTypes.array.isRequired,
-  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
   animationSpeed: PropTypes.number.isRequired
 }
 
@@ -37,7 +37,7 @@ export default function Folder(props) {
           onToggleContentCollapsed={props.onToggleContentCollapsed}
           animationSpeed={props.animationSpeed}
         />
-        {props.title}
+        {props.description}
       </HeaderContainer>
       <Collapsible
         open={!props.isCollapsed}

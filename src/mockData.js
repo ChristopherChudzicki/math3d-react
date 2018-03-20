@@ -11,7 +11,7 @@ function addFolder(store) {
   store.sortableTree.root.push(id)
   store.sortableTree[id] = []
   store.folders[id] = {
-    title: `Folder ${id}`,
+    description: `Folder ${id}`,
     isCollapsed: Math.random() > 0.5
   }
 
