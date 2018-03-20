@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import { connect } from 'react-redux'
 import { setActiveObject } from 'containers/MathObjects/services/ActiveObject/actions'
+import EditableDescription from 'containers/MathObjects/components/EditableDescription'
 
 export const OuterContainer = styled.div`
   display:flex;
@@ -15,10 +16,11 @@ export const OuterContainer = styled.div`
   `}
 `
 
-export const FOLDER_STATUS_WIDTH = 20
+export const FOLDER_STATUS_WIDTH = 22
 export const FOLDER_STATUS_MARGIN = 3
 export const FolderStatusContainer = styled.div`
-  width: ${FOLDER_STATUS_WIDTH}px;
+  max-width: ${FOLDER_STATUS_WIDTH}px;
+  min-width: ${FOLDER_STATUS_WIDTH}px;
   margin-left: ${FOLDER_STATUS_MARGIN}px;
   margin-right: ${FOLDER_STATUS_MARGIN}px;
   display: flex;
@@ -32,15 +34,16 @@ const FolderStatusSymbol = styled.div`
   background-color: ${props => props.theme.medium};
 `
 
+export const MAIN_PADDING = { top: '4px', bottom: '4px', 'left': '6px', right: '6px' }
 const MainContainer = styled.div`
   display:flex;
   flex-direction:column;
   background-color:white;
   width:100%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left:6px;
-  padding-right:2px;
+  padding-top: ${MAIN_PADDING.top};
+  padding-bottom: ${MAIN_PADDING.bottom};
+  padding-left: ${MAIN_PADDING.left};
+  padding-right: ${MAIN_PADDING.right};
 `
 
 export const HeaderContainer = styled.div`
@@ -76,9 +79,9 @@ function MathObject(props) {
         <FolderStatusSymbol />
       </FolderStatusContainer>
       <MainContainer>
-        <HeaderContainer>
-          <input type="text" placeholder={props.description}/>
-        </HeaderContainer>
+        <EditableDescription
+          value={props.description}
+        />
         {props.children}
       </MainContainer>
     </OuterContainer>

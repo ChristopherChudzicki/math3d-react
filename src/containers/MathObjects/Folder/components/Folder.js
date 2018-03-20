@@ -5,6 +5,8 @@ import CollapsedIndicator from './CollapsedIndicator'
 import Collapsible from 'react-collapsible'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import EditableDescription from 'containers/MathObjects/components/EditableDescription'
+import { MAIN_PADDING } from 'containers/MathObjects/MathObject'
 
 Folder.propTypes = {
   isCollapsed: PropTypes.bool.isRequired,
@@ -28,6 +30,12 @@ const FolderHeader = styled.div`
   padding-bottom:4px;
 `
 
+const DescriptionContainer = styled.div`
+  padding-left: ${MAIN_PADDING.left};
+  padding-right: ${MAIN_PADDING.right};
+  width:100%;
+`
+
 export default function Folder(props) {
   const listClassName = props.isCollapsed ? 'collapsed' : ''
   return (
@@ -38,7 +46,11 @@ export default function Folder(props) {
           onToggleContentCollapsed={props.onToggleContentCollapsed}
           animationSpeed={props.animationSpeed}
         />
-        {props.description}
+        <DescriptionContainer>
+          <EditableDescription
+            value={props.description}
+          />
+        </DescriptionContainer>
       </FolderHeader>
       <Collapsible
         open={!props.isCollapsed}
