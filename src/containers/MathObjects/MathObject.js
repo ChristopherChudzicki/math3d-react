@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import EditableDescription from 'containers/MathObjects/components/EditableDescription'
-import { setActiveObject } from 'containers/MathObjects/services/ActiveObject/actions'
+import { setActiveObject } from 'containers/MathObjects/services/activeObject/actions'
 
 export const OuterContainer = styled.div`
   display:flex;
