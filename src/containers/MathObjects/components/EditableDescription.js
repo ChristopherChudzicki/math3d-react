@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 // ant design also has an autosizing textarea, but I found it too hard to resize
 import Textarea from 'react-textarea-autosize'
+import PropTypes from 'prop-types'
 
 const StyledTextarea = styled(Textarea)`
   width:100%;
@@ -17,13 +18,19 @@ const StyledTextarea = styled(Textarea)`
   &:focus {
     outline-width:0px;
     border-bottom: 2px solid ${props => props.theme.primary};
+    margin-bottom: -1px;
   }
 `
+
+EditableDescription.propTypes = {
+  value: PropTypes.string.isRequired
+}
 
 export default function EditableDescription(props) {
   return (
     <StyledTextarea
       rows={1}
+      value={props.value}
     />
   )
 }
