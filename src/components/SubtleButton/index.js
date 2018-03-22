@@ -60,10 +60,17 @@ export default class SubtleButton extends PureComponent {
     pressing: false
   }
 
+  getRef = ref => {
+    this.button = ref
+  }
+
   endPress = () => {
     this.setState( { pressing: false } )
   }
+
   beginPress = () => {
+    // button focus triggers unreliably
+    this.button.focus()
     this.setState( { pressing: true } )
   }
 
