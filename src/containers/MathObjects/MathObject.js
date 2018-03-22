@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import EditableDescription from 'containers/MathObjects/components/EditableDescription'
+import DeleteButton from 'containers/MathObjects/components/DeleteButton'
 import { setActiveObject } from 'containers/MathObjects/services/activeObject/actions'
 
 export const OuterContainer = styled.div`
@@ -10,9 +11,6 @@ export const OuterContainer = styled.div`
   background-color: white;
   margin-bottom: -1px;
   border: 1px solid ${props => props.theme.medium};
-  ${props => props.isActive && css`
-    background-color: ${props => props.theme.primaryLight}
-  `}
 `
 
 export const SidePanel = styled.div`
@@ -22,11 +20,16 @@ export const SidePanel = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  transition-duration: ${props => props.theme.transitionDuration};
+  transition-timing-function: ${props => props.theme.transitionTimingFunction};
+  transition-property: background-color;
   /* This makes fixed-width */
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-
+  ${props => props.isActive && css`
+    background-color: ${props => props.theme.primaryLight}
+  `}
 `
 const FolderStatusSymbol = styled.div`
   width:1px;
@@ -37,7 +40,6 @@ const FolderStatusSymbol = styled.div`
 const MainContainer = styled.div`
   display:flex;
   flex-direction:column;
-  background-color:white;
   width:100%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -45,9 +47,7 @@ const MainContainer = styled.div`
   padding-right: 6px;
 `
 
-export const HeaderContainer = styled.div`
-  margin-top:2px;
-  margin-bottom:2px;
+const HeaderContainer = styled.div`
   display: flex;
   align-items:center;
 `
@@ -77,17 +77,21 @@ function MathObject(props) {
   return (
     <Fragment>
       <OuterContainer
-        isActive={props.isActive}
         onFocus={props.onFocus}
         onBlur={props.onBlur}
       >
-        <SidePanel>
+        <SidePanel isActive={props.isActive}>
           {props.sidePanelContent}
         </SidePanel>
         <MainContainer>
-          <EditableDescription
-            value={props.description}
-          />
+          <HeaderContainer>
+            <EditableDescription
+              value={props.description}
+            />
+            <DeleteButton
+              onClick={() => console.log(`Delete object ${props.id}`)}
+            />
+          </HeaderContainer>
           {!props.isFolder && props.children}
         </MainContainer>
       </OuterContainer>

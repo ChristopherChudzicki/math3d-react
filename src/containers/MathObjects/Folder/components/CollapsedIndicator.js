@@ -1,17 +1,20 @@
 import React from 'react'
-import { Button, Icon } from 'antd'
+import { Icon } from 'antd'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import SubtleButton from 'components/SubtleButton'
 
-const CollapseIndicatorButton = styled(Button)`
+const CollapseIndicatorButton = styled(SubtleButton)`
   padding-left: 2px;
   padding-right: 2px;
   max-width: 22px;
   min-width: 22px;
   max-height: 22px;
   min-height: 22px;
-  border-radius: ${props => props.theme.borderRadius};
-  font-weight: 900;
+  color: ${props => props.theme.dark};
+  &:hover, &:focus {
+    color: ${props => props.theme.dark};
+  }
 `
 
 const RotatingSpan = styled.span`
@@ -27,7 +30,9 @@ const RotatingSpan = styled.span`
 CollapsedIndicator.propTypes = {
   onToggleContentCollapsed: PropTypes.func.isRequired,
   isCollapsed: PropTypes.bool.isRequired,
-  animationSpeed: PropTypes.number.isRequired
+  animationSpeed: PropTypes.number.isRequired,
+  lightenOnHover: PropTypes.bool.isRequired,
+  backgroundColor: PropTypes.string.isRequired
 }
 
 export default function CollapsedIndicator(props) {
@@ -35,6 +40,8 @@ export default function CollapsedIndicator(props) {
   return (
     <CollapseIndicatorButton
       onClick={props.onToggleContentCollapsed}
+      lightenOnHover={props.lightenOnHover}
+      backgroundColor={props.backgroundColor}
     >
       <RotatingSpan
         className={className}

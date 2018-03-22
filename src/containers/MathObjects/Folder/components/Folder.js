@@ -5,6 +5,7 @@ import CollapsedIndicator from './CollapsedIndicator'
 import Collapsible from 'react-collapsible'
 import PropTypes from 'prop-types'
 import MathObject from 'containers/MathObjects/MathObject'
+import theme from 'theme'
 
 Folder.propTypes = {
   // Provided by ownProps
@@ -14,7 +15,8 @@ Folder.propTypes = {
   isCollapsed: PropTypes.bool.isRequired,
   onToggleContentCollapsed: PropTypes.func.isRequired,
   items: PropTypes.array.isRequired,
-  description: PropTypes.string.isRequired
+  description: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired
 }
 
 Folder.defaultProps = {
@@ -35,6 +37,8 @@ export default function Folder(props) {
           isCollapsed={props.isCollapsed}
           onToggleContentCollapsed={props.onToggleContentCollapsed}
           animationSpeed={props.animationSpeed}
+          lightenOnHover={props.isActive}
+          backgroundColor={props.isActive ? theme.primaryLight : 'white'}
         />
       }
     >
