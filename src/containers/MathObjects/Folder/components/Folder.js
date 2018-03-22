@@ -14,7 +14,7 @@ Folder.propTypes = {
   // Provided by mapStateToProps / mapDispatchToProps
   isCollapsed: PropTypes.bool.isRequired,
   onToggleContentCollapsed: PropTypes.func.isRequired,
-  items: PropTypes.array.isRequired,
+  itemIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   description: PropTypes.string.isRequired,
   isActive: PropTypes.bool.isRequired
 }
@@ -53,7 +53,7 @@ export default function Folder(props) {
           // this prevents dropping into collapsed folders
           isDropDisabled={props.isCollapsed}
           droppableId={props.id}
-          items={props.items}
+          items={props.itemIds.map(id => ( { id } ))}
           renderItem={
             (item) => <Point id={item.id} />
           }

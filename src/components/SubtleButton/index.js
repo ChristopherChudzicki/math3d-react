@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import styled, { css } from 'styled-components'
 import { lighten } from 'theme'
 import PropTypes from 'prop-types'
@@ -18,13 +18,19 @@ const SubtleButtonContainer = styled.div`
     transition-property: all;
   };
   & button, & button:focus {
-    background-color: ${props => props.backgroundColor}
+    background-color: ${props => props.backgroundColor};
+    outline: none;
   };
   /* by default, button darkens on hover*/
   & button:hover {
     background-color: rgba(0,0,0,0.10);
     font-weight:900;
   };
+  & button:hover.sb-pressing {
+    background-color: rgba(0,0,0,0.20);
+    transition-duration: 0.1s;
+    transform: translateY(1px);
+  }
   /* if lightenOnHover, then lighten background on hover */
   ${props => props.lightenOnHover && css`
     & button {
@@ -33,6 +39,10 @@ const SubtleButtonContainer = styled.div`
     & button:hover {
       background-color: ${props => lighten(props.backgroundColor, 0.75)};
     };
+    & button:hover.sb-pressing {
+      background-color: ${props => lighten(props.backgroundColor, 1)};
+      transition-duration: 0.1s;
+    }
   `}
 `
 
@@ -44,29 +54,58 @@ const SubtleButtonContainer = styled.div`
   *   is lightened on hover instead.
  */
 
-export default function SubtleButton(props) {
-  const { lightenOnHover, backgroundColor, ...otherProps } = props
+export default class SubtleButton extends PureComponent {
 
-  if (lightenOnHover && !backgroundColor) {
-    throw Error('lightenOnHover requires backgroundColor to be specified.')
+  state = {
+    pressing: false
   }
 
-  return (
-    <SubtleButtonContainer
-      lightenOnHover={lightenOnHover}
-      backgroundColor={backgroundColor}
-    >
-      <button {...otherProps}/>
-    </SubtleButtonContainer>
-  )
+  endPress = () => {
+    this.setState( { pressing: false } )
+  }
+  beginPress = () => {
+    this.setState( { pressing: true } )
+  }
+
+  render() {
+    const {
+      lightenOnHover,
+      backgroundColor,
+      className,
+      ...otherProps } = this.props
+
+    if (lightenOnHover && !backgroundColor) {
+      throw Error('lightenOnHover requires backgroundColor to be specified.')
+    }
+
+    const fullClassName = `${className} ${this.state.pressing ? ' sb-pressing' : ''}`
+    return (
+      <SubtleButtonContainer
+        lightenOnHover={lightenOnHover}
+        backgroundColor={backgroundColor}
+      >
+        <button
+          ref={this.getRef}
+          className={fullClassName}
+          onMouseDown={this.beginPress}
+          onMouseUp={this.endPress}
+          onMouseLeave={this.endPress}
+          {...otherProps}
+        />
+      </SubtleButtonContainer>
+    )
+  }
+
 }
 
 SubtleButton.propTypes = {
   lightenOnHover: PropTypes.bool.isRequired,
-  backgroundColor: PropTypes.string.isRequired
+  backgroundColor: PropTypes.string.isRequired,
+  className: PropTypes.string.isRequired
 }
 
 SubtleButton.defaultProps = {
   lightenOnHover: false,
-  backgroundColor: 'rgba(0,0,0,0)'
+  backgroundColor: 'rgba(0,0,0,0)',
+  className: ''
 }
