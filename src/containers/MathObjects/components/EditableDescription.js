@@ -69,6 +69,7 @@ export default class EditableDescription extends PureComponent {
 }
 
 function getTextWidth(text, font) {
+  // from https://stackoverflow.com/a/21015393/2747370
   // re-use canvas object for better performance
   const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement('canvas'))
   const context = canvas.getContext('2d')
