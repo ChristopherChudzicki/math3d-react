@@ -1,14 +1,18 @@
 import React from 'react'
 import Drawer from '../containers/Drawer'
-import FlexContainer from '../components/FlexContainer'
 import SortableTree from 'containers/SortableTree'
+import styled from 'styled-components'
+
+const ScrollingDiv = styled.div`
+  overflow: scroll;
+`
 
 const Math3dController = (props) => {
   return (
-    <Drawer id='main'>
-      <FlexContainer style={ { overflow: 'scroll' } }>
+    <Drawer id='main' width='400px'>
+      <ScrollingDiv>
         <SortableTree />
-      </FlexContainer>
+      </ScrollingDiv>
     </Drawer>
   )
 }
