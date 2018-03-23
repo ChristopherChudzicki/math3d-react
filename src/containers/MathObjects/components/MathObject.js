@@ -9,6 +9,13 @@ export const OuterContainer = styled.div`
   background-color: white;
   margin-bottom: -1px;
   border: 1px solid ${props => props.theme.medium};
+  /*
+  Note:
+  - above, margin-bottom: -1px prevents double-thick borders between (Folders
+    are also mathObjects)
+  - But this causes very last MathObject in very last folder to lose its border.
+  - This is taken care of by border on SortableListOfFolders
+   */
 `
 
 const SIDEPANEL_WIDTH = '40px'
