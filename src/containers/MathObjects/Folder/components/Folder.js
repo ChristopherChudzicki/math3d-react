@@ -7,8 +7,6 @@ import PropTypes from 'prop-types'
 import MathObject from 'containers/MathObjects/MathObject'
 import theme from 'theme'
 
-export const FOLDER = 'FOLDER'
-
 Folder.propTypes = {
   // Provided by ownProps
   id: PropTypes.string.isRequired,
@@ -17,7 +15,6 @@ Folder.propTypes = {
   isCollapsed: PropTypes.bool.isRequired,
   onToggleContentCollapsed: PropTypes.func.isRequired,
   itemIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  description: PropTypes.string.isRequired,
   isActive: PropTypes.bool.isRequired
 }
 
@@ -29,42 +26,32 @@ export default function Folder(props) {
 
   const listClassName = props.isCollapsed ? 'collapsed' : ''
 
-  const {
-    isCollapsed,
-    onToggleContentCollapsed,
-    itemIds,
-    animationSpeed,
-    ...otherProps
-  } = props
-
   return (
     <MathObject
-      {...otherProps}
       id={props.id}
-      description={props.description}
       isFolder={true}
       sidePanelContent={
         <CollapsedIndicator
-          isCollapsed={isCollapsed}
-          onToggleContentCollapsed={onToggleContentCollapsed}
-          animationSpeed={animationSpeed}
+          isCollapsed={props.isCollapsed}
+          onToggleContentCollapsed={props.onToggleContentCollapsed}
+          animationSpeed={props.animationSpeed}
           lightenOnHover={props.isActive}
           backgroundColor={props.isActive ? theme.primaryLight : 'white'}
         />
       }
     >
       <Collapsible
-        open={!isCollapsed}
-        transitionTime={animationSpeed}
+        open={!props.isCollapsed}
+        transitionTime={props.animationSpeed}
       >
         <SortableList
           className={listClassName}
           droppableType='FOLDER_ITEM'
           draggableType='FOLDER_ITEM'
           // this prevents dropping into collapsed folders
-          isDropDisabled={isCollapsed}
+          isDropDisabled={props.isCollapsed}
           droppableId={props.id}
-          items={itemIds.map(id => ( { id } ))}
+          items={props.itemIds.map(id => ( { id } ))}
           renderItem={
             (item) => <Point id={item.id} />
           }

@@ -5,10 +5,6 @@ import {
 
 export const FOLDER = 'FOLDER'
 
-export const toggleFolderContent = (id) => {
+export const toggleContentCollapsed = (id) => {
   return toggleProperty(id, FOLDER, 'isCollapsed')
-}
-
-export const setFolderDescription = (id, value) => {
-  return setProperty(id, FOLDER, 'description', value)
 }
