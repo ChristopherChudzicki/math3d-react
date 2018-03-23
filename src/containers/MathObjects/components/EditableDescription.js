@@ -34,3 +34,8 @@ export default function EditableDescription(props) {
     />
   )
 }
+
+// TODO: Currently we autosize the height only. It would be nice to autosize the
+// width also. Possibly using this method:
+// https://stackoverflow.com/a/21015393/2747370
+// would need to cap at max-width at some point.
