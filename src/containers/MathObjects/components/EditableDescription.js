@@ -5,7 +5,8 @@ import Textarea from 'react-textarea-autosize'
 import PropTypes from 'prop-types'
 
 const StyledTextarea = styled(Textarea)`
-  width:100%;
+  width: 700px;
+  max-width: calc(100% - 35px);
   resize: none;
   border-top:none;
   border-left: none;

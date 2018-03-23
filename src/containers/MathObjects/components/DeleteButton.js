@@ -8,6 +8,9 @@ const StyledDeleteButton = styled(SubtleButton)`
   min-width:25px;
   max-width:25px;
   height:25px;
+  position:absolute;
+  right:0;
+  top:0;
   display:flex;
   justify-content: center;
   align-items: center;

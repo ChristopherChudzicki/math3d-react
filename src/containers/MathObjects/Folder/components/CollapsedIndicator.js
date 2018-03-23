@@ -7,10 +7,10 @@ import SubtleButton from 'components/SubtleButton'
 const CollapseIndicatorButton = styled(SubtleButton)`
   padding-left: 2px;
   padding-right: 2px;
-  max-width: 22px;
-  min-width: 22px;
-  max-height: 22px;
-  min-height: 22px;
+  max-width: 28px;
+  min-width: 28px;
+  max-height: 28px;
+  min-height: 28px;
   color: ${props => props.theme.dark};
   &:hover, &:focus {
     color: ${props => props.theme.dark};

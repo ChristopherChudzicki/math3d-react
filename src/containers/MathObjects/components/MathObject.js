@@ -11,9 +11,10 @@ export const OuterContainer = styled.div`
   border: 1px solid ${props => props.theme.medium};
 `
 
+const SIDEPANEL_WIDTH = '40px'
 export const SidePanel = styled.div`
   padding: 2px;
-  width: 30px;
+  width: ${SIDEPANEL_WIDTH};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -38,7 +39,7 @@ const FolderStatusSymbol = styled.div`
 const MainContainer = styled.div`
   display:flex;
   flex-direction:column;
-  width:100%;
+  width: calc(100% - ${SIDEPANEL_WIDTH});
   padding-top: 4px;
   padding-bottom: 4px;
   padding-left: 6px;
@@ -46,8 +47,7 @@ const MainContainer = styled.div`
 `
 
 const HeaderContainer = styled.div`
-  display: flex;
-  align-items:center;
+  position:relative;
 `
 
 MathObject.propTypes = {
