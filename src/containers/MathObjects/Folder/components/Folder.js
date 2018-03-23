@@ -7,6 +7,8 @@ import PropTypes from 'prop-types'
 import MathObject from 'containers/MathObjects/MathObject'
 import theme from 'theme'
 
+export const FOLDER = 'FOLDER'
+
 Folder.propTypes = {
   // Provided by ownProps
   id: PropTypes.string.isRequired,
@@ -27,33 +29,42 @@ export default function Folder(props) {
 
   const listClassName = props.isCollapsed ? 'collapsed' : ''
 
+  const {
+    isCollapsed,
+    onToggleContentCollapsed,
+    itemIds,
+    animationSpeed,
+    ...otherProps
+  } = props
+
   return (
     <MathObject
+      {...otherProps}
       id={props.id}
       description={props.description}
       isFolder={true}
       sidePanelContent={
         <CollapsedIndicator
-          isCollapsed={props.isCollapsed}
-          onToggleContentCollapsed={props.onToggleContentCollapsed}
-          animationSpeed={props.animationSpeed}
+          isCollapsed={isCollapsed}
+          onToggleContentCollapsed={onToggleContentCollapsed}
+          animationSpeed={animationSpeed}
           lightenOnHover={props.isActive}
           backgroundColor={props.isActive ? theme.primaryLight : 'white'}
         />
       }
     >
       <Collapsible
-        open={!props.isCollapsed}
-        transitionTime={props.animationSpeed}
+        open={!isCollapsed}
+        transitionTime={animationSpeed}
       >
         <SortableList
           className={listClassName}
           droppableType='FOLDER_ITEM'
           draggableType='FOLDER_ITEM'
           // this prevents dropping into collapsed folders
-          isDropDisabled={props.isCollapsed}
+          isDropDisabled={isCollapsed}
           droppableId={props.id}
-          items={props.itemIds.map(id => ( { id } ))}
+          items={itemIds.map(id => ( { id } ))}
           renderItem={
             (item) => <Point id={item.id} />
           }

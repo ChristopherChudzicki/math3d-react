@@ -23,7 +23,8 @@ const StyledTextarea = styled(Textarea)`
 `
 
 EditableDescription.propTypes = {
-  value: PropTypes.string.isRequired
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired
 }
 
 export default function EditableDescription(props) {
@@ -31,6 +32,7 @@ export default function EditableDescription(props) {
     <StyledTextarea
       rows={1}
       value={props.value}
+      onChange={e => props.onChange(e.target.value)}
     />
   )
 }

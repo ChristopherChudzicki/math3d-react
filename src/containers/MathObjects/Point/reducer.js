@@ -1,11 +1,4 @@
-const initialState = {}
+import { POINT } from './actions'
+import { createReducer } from 'containers/MathObjects/reducer'
 
-export default function(state = initialState, { type, payload } ) {
-
-  switch (type) {
-
-    default:
-      return state
-
-  }
-}
+export default createReducer(POINT)
