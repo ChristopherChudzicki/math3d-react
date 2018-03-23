@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 
 const SortableListOfFolders = styled(SortableList)`
   width:100%;
-  border: 1px solid ${props => props.theme.medium};
+  border-bottom: 1px solid ${props => props.theme.medium};
 `
 
 MathTree.propTypes = {
