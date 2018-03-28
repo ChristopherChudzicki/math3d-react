@@ -43,6 +43,7 @@ export default function Folder(props) {
       <Collapsible
         open={!props.isCollapsed}
         transitionTime={props.animationSpeed}
+        overflowWhenOpen='visible'
       >
         <SortableList
           className={listClassName}
