@@ -21,7 +21,7 @@ function addFolder(store) {
 function addPoint(store, folderId) {
   const itemId = `item-${uniqueId()}`
   store.sortableTree[folderId].push(itemId)
-  store.points[itemId] = { }
+  store.points[itemId] = { coords: '\\left[0,0,0\\right]' }
   store.descriptions[itemId] = `Point ${itemId}`
 }
 
