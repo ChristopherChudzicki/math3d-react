@@ -1,6 +1,5 @@
 import {
-  toggleProperty,
-  setProperty
+  toggleProperty
 } from 'containers/MathObjects/actions'
 
 export const FOLDER = 'FOLDER'

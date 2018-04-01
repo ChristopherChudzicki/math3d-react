@@ -5,6 +5,8 @@ import { Icon } from 'antd'
 
 const StyledDeleteButton = styled(SubtleButton)`
   padding:0px;
+  margin-right: -4px;
+  margin-top: -2px;
   min-width:25px;
   max-width:25px;
   height:25px;
@@ -14,6 +16,8 @@ const StyledDeleteButton = styled(SubtleButton)`
   display:flex;
   justify-content: center;
   align-items: center;
+  font-size:133%;
+  color: ${props => props.theme.medium}
 `
 
 export default function DeleteButton(props) {

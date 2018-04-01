@@ -21,7 +21,6 @@ const StyledTextarea = styled(Textarea)`
   &:focus {
     outline-width:0px;
     border-bottom: 2px solid ${props => props.theme.primary};
-    margin-bottom: -1px;
   }
 `
 

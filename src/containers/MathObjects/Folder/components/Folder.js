@@ -53,9 +53,7 @@ export default function Folder(props) {
           isDropDisabled={props.isCollapsed}
           droppableId={props.id}
           items={props.itemIds.map(id => ( { id } ))}
-          renderItem={
-            (item) => <Point id={item.id} />
-          }
+          renderItem={(item) => <Point id={item.id} />}
         />
       </Collapsible>
     </MathObject>

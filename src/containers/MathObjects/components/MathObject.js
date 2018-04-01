@@ -4,8 +4,10 @@ import styled, { css } from 'styled-components'
 import EditableDescription from './EditableDescription'
 import DeleteButton from './DeleteButton'
 
-export const OuterContainer = styled.div`
-  display:flex;
+export const OuterContainer = styled.span`
+  display: ${props => props.isActive ? 'inline-flex' : 'flex'};
+  vertical-align: top; /*Removes extra space below inline element's baseline*/
+  min-width:100%;
   background-color: white;
   margin-bottom: -1px;
   border: 1px solid ${props => props.theme.medium};
@@ -20,7 +22,9 @@ export const OuterContainer = styled.div`
 
 const SIDEPANEL_WIDTH = '40px'
 export const SidePanel = styled.div`
-  padding: 2px;
+  margin-bottom:-1px; /*Compensates for margin-bottom:-1px in OuterContainer*/
+  padding-top: 2px;
+  padding-bottom: 2px;
   width: ${SIDEPANEL_WIDTH};
   display: flex;
   flex-direction: column;
@@ -48,7 +52,7 @@ const MainContainer = styled.div`
   flex-direction:column;
   width: calc(100% - ${SIDEPANEL_WIDTH});
   padding-top: 4px;
-  padding-bottom: 4px;
+  padding-bottom: ${props => props.isFolder ? '4px' : '8px'};
   padding-left: 6px;
   padding-right: 6px;
 `
@@ -85,6 +89,7 @@ export default function MathObject(props) {
       <OuterContainer
         onFocus={props.onFocus}
         onBlur={props.onBlur}
+        isActive={props.isActive}
       >
         <SidePanel isActive={props.isActive}>
           {props.sidePanelContent}
