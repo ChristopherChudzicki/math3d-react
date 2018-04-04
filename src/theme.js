@@ -9,7 +9,7 @@ export function lighten(colorStr, amount) {
   return color.lighten(increaseBy).toString()
 }
 
-const theme = {
+export const theme = {
   primary: primary.toString(),
   primaryLight: primary.lighten(0.3).toString(),
   primaryDark: primary.darken(0.5).toString(),

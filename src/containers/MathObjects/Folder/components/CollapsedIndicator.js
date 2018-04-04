@@ -3,18 +3,13 @@ import { Icon } from 'antd'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import SubtleButton from 'components/SubtleButton'
+import { theme } from 'theme'
 
 const CollapseIndicatorButton = styled(SubtleButton)`
   padding-left: 2px;
   padding-right: 2px;
-  max-width: 28px;
-  min-width: 28px;
-  max-height: 28px;
-  min-height: 28px;
-  color: ${props => props.theme.dark};
-  &:hover, &:focus {
-    color: ${props => props.theme.dark};
-  }
+  width:28px;
+  height:28px;
 `
 
 const RotatingSpan = styled.span`
@@ -42,6 +37,7 @@ export default function CollapsedIndicator(props) {
       onClick={props.onToggleContentCollapsed}
       lightenOnHover={props.lightenOnHover}
       backgroundColor={props.backgroundColor}
+      focusColor={theme.dark}
     >
       <RotatingSpan
         className={className}

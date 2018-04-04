@@ -17,7 +17,7 @@ const StyledDeleteButton = styled(SubtleButton)`
   justify-content: center;
   align-items: center;
   font-size:133%;
-  color: ${props => props.theme.medium}
+  color: ${props => props.theme.medium};
 `
 
 export default function DeleteButton(props) {

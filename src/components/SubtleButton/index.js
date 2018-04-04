@@ -21,6 +21,9 @@ const SubtleButtonContainer = styled.div`
     background-color: ${props => props.backgroundColor};
     outline: none;
   };
+  & button:focus {
+    color: ${props => props.focusColor || props.theme.primary};
+  }
   /* by default, button darkens on hover*/
   & button:hover {
     background-color: rgba(0,0,0,0.10);
@@ -34,7 +37,7 @@ const SubtleButtonContainer = styled.div`
   /* if lightenOnHover, then lighten background on hover */
   ${props => props.lightenOnHover && css`
     & button {
-      background-color: ${props => props.backgroundColor};
+      background-color: ${props => props.backgroundColor || 'rgba(0,0,0,0)'};
     }
     & button:hover {
       background-color: ${props => lighten(props.backgroundColor, 0.75)};
@@ -69,7 +72,7 @@ export default class SubtleButton extends PureComponent {
   }
 
   beginPress = () => {
-    // button focus triggers unreliably
+    // button focus triggers unreliably, so force it
     this.button.focus()
     this.setState( { pressing: true } )
   }
@@ -79,6 +82,8 @@ export default class SubtleButton extends PureComponent {
       lightenOnHover,
       backgroundColor,
       className,
+      style,
+      focusColor,
       ...otherProps } = this.props
 
     if (lightenOnHover && !backgroundColor) {
@@ -90,13 +95,15 @@ export default class SubtleButton extends PureComponent {
       <SubtleButtonContainer
         lightenOnHover={lightenOnHover}
         backgroundColor={backgroundColor}
+        focusColor={focusColor}
+        onMouseDown={this.beginPress}
+        onMouseUp={this.endPress}
+        onMouseLeave={this.endPress}
       >
         <button
           ref={this.getRef}
           className={fullClassName}
-          onMouseDown={this.beginPress}
-          onMouseUp={this.endPress}
-          onMouseLeave={this.endPress}
+          style={style}
           {...otherProps}
         />
       </SubtleButtonContainer>
@@ -107,12 +114,12 @@ export default class SubtleButton extends PureComponent {
 
 SubtleButton.propTypes = {
   lightenOnHover: PropTypes.bool.isRequired,
-  backgroundColor: PropTypes.string.isRequired,
+  backgroundColor: PropTypes.string,
+  focusColor: PropTypes.string,
   className: PropTypes.string.isRequired
 }
 
 SubtleButton.defaultProps = {
   lightenOnHover: false,
-  backgroundColor: 'rgba(0,0,0,0)',
   className: ''
 }

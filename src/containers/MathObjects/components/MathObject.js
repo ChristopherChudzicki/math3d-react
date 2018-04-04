@@ -11,6 +11,7 @@ export const OuterContainer = styled.span`
   background-color: white;
   margin-bottom: -1px;
   border: 1px solid ${props => props.theme.medium};
+  transition: all 5s;
   /*
   Note:
   - above, margin-bottom: -1px prevents double-thick borders between (Folders

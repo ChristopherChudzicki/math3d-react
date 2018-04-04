@@ -15,7 +15,7 @@ const StyledSettingsButton = styled(SubtleButton)`
 
 export default function SettingsButton(props) {
   return (
-    <StyledSettingsButton>
+    <StyledSettingsButton {...props}>
       <Icon
         type='setting'
       />
