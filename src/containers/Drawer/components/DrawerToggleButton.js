@@ -1,17 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Icon } from 'antd'
+import { Icon } from 'antd'
+import SubtleButton from 'components/SubtleButton'
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(SubtleButton)`
   position:absolute;
   top:0;
-  width:50px;
+  width:30px;
+  height:30px;
   &.onRight {
-    right:-50px;
+    right:-30px;
   };
   &.onLeft {
-    left:-50px;
+    left:-30px;
   };
 `
 

@@ -2,9 +2,15 @@ import { combineReducers } from 'redux'
 import drawers from './containers/Drawer/reducer'
 import sortableTree from './containers/SortableTree/reducer'
 import folders from './containers/MathObjects/Folder/reducer'
+import points from './containers/MathObjects/Point/reducer'
+import activeObject from './containers/MathObjects/services/activeObject/reducer'
+import descriptions from './containers/MathObjects/services/descriptions/reducer'
 
 export default combineReducers( {
-  drawers: drawers,
-  sortableTree: sortableTree,
-  folders: folders
+  drawers,
+  sortableTree,
+  folders,
+  points,
+  activeObject,
+  descriptions
 } )

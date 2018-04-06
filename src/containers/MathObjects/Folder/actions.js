@@ -1,6 +1,9 @@
-export const TOGGLE_CONTENT_COLLAPSED = 'TOGGLE_CONTENT_COLLAPSED'
+import {
+  toggleProperty
+} from 'containers/MathObjects/actions'
 
-export const toggleContentCollapsed = (id) => ( {
-  type: TOGGLE_CONTENT_COLLAPSED,
-  payload: { id }
-} )
+export const FOLDER = 'FOLDER'
+
+export const toggleContentCollapsed = (id) => {
+  return toggleProperty(id, FOLDER, 'isCollapsed')
+}

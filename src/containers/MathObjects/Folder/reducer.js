@@ -1,18 +1,4 @@
-import { TOGGLE_CONTENT_COLLAPSED } from './actions'
-import update from 'immutability-helper'
+import { FOLDER } from './actions'
+import { createReducer } from 'containers/MathObjects/reducer'
 
-const initialState = {}
-
-export default (state = initialState, { type, payload } ) => {
-  switch (type) {
-
-    case TOGGLE_CONTENT_COLLAPSED:
-      return update(state, {
-        [payload.id]: { $toggle: ['isCollapsed'] }
-      } )
-
-    default:
-      return state
-
-  }
-}
+export default createReducer(FOLDER)

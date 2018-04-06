@@ -11,9 +11,9 @@ function addFolder(store) {
   store.sortableTree.root.push(id)
   store.sortableTree[id] = []
   store.folders[id] = {
-    title: `Folder ${id}`,
     isCollapsed: Math.random() > 0.5
   }
+  store.descriptions[id] = `Folder ${id}`
 
   return id
 }
@@ -21,6 +21,8 @@ function addFolder(store) {
 function addPoint(store, folderId) {
   const itemId = `item-${uniqueId()}`
   store.sortableTree[folderId].push(itemId)
+  store.points[itemId] = { coords: '\\left[0,0,0\\right]' }
+  store.descriptions[itemId] = `Point ${itemId}`
 }
 
 export function makeMockStore() {
@@ -29,7 +31,9 @@ export function makeMockStore() {
     sortableTree: {
       root: []
     },
-    folders: {}
+    folders: {},
+    points: {},
+    descriptions: {}
   }
 
   for (let j = 0; j < 5; j++) {

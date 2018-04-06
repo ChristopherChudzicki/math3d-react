@@ -9,30 +9,28 @@ import classNames from 'classnames'
 // Transforms interfere with react-beautiful-dnd in Drawer children, so the
 // default open class is implemented without any transforms
 const DrawerContainer = styled.div`
-  width: ${props => `${props.width}px`};
-  min-width: ${props => `${props.width}px`};
-  max-width: ${props => `${props.width}px`};
+  width: ${props => props.width};
   position: relative;
-  background-color:lightblue;
+  background-color: ${props => props.theme.light};
   height:100%;
   &.closing-or-closed.left {
-    transform: ${props => `translateX(-${props.width}px)`};
-    transition-duration: ${props => `${props.animationSpeed}ms`};
-    margin-right: ${props => `-${props.width}px`};
+    transform: ${props => `translateX(-${props.width})`};
+    transition-duration: ${props => props.animationSpeed};
+    margin-right: ${props => `-${props.width}`};
   }
   &.opening.left {
     transform: translateX(0px);
-    transition-duration: ${props => `${props.animationSpeed}ms`};
+    transition-duration: ${props => props.animationSpeed};
     margin-right: 0;
   }
   &.closing-or-closed.right {
-    transform: ${props => `translateX(${props.width}px)`};
-    transition-duration: ${props => `${props.animationSpeed}ms`};
-    margin-left: ${props => `-${props.width}px`};
+    transform: ${props => `translateX(${props.width})`};
+    transition-duration: ${props => props.animationSpeed};
+    margin-left: ${props => `-${props.width}`};
   }
   &.opening.right {
     transform: translateX(0px);
-    transition-duration: ${props => `${props.animationSpeed}ms`};
+    transition-duration: ${props => props.animationSpeed};
     margin-right: 0;
   }
 `
@@ -88,10 +86,10 @@ export default function Drawer(props) {
 }
 
 Drawer.propTypes = {
-  width: PropTypes.number.isRequired,
+  width: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
   isAnimating: PropTypes.bool.isRequired,
-  animationSpeed: PropTypes.number.isRequired,
+  animationSpeed: PropTypes.string.isRequired,
   onOpen: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   slideTo: PropTypes.oneOf( ['left', 'right'] ).isRequired,
@@ -102,7 +100,7 @@ Drawer.propTypes = {
 }
 
 Drawer.defaultProps = {
-  width: 300,
-  animationSpeed: 1000,
+  width: '300px',
+  animationSpeed: '500ms',
   slideTo: 'left'
 }

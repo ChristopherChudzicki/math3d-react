@@ -1,11 +1,15 @@
 import Folder from './components/Folder'
 import { connect } from 'react-redux'
-import { toggleContentCollapsed } from './actions'
+import {
+  toggleContentCollapsed
+} from './actions'
 
-const mapStateToProps = ( { sortableTree, folders }, ownProps) => ( {
-  items: sortableTree[ownProps.id].map(id => { return { id } } ),
-  title: folders[ownProps.id].title,
-  isCollapsed: folders[ownProps.id].isCollapsed
+export const FOLDER = 'FOLDER'
+
+const mapStateToProps = ( { sortableTree, folders, activeObject }, ownProps) => ( {
+  itemIds: sortableTree[ownProps.id],
+  isCollapsed: folders[ownProps.id].isCollapsed,
+  isActive: activeObject === ownProps.id
 } )
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {

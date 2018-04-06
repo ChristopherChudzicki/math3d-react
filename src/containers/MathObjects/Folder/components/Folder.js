@@ -1,28 +1,21 @@
 import React from 'react'
 import SortableList from 'components/SortableList'
-import styled from 'styled-components'
-import ObjectIcon from 'containers/MathObjects/components/ObjectIcon'
-import VisibilityIndicator from './VisibilityIndicator'
+import Point from 'containers/MathObjects/Point'
+import CollapsedIndicator from './CollapsedIndicator'
 import Collapsible from 'react-collapsible'
 import PropTypes from 'prop-types'
-
-const OuterContainer = styled.div`
-  border: 1px solid black;
-  margin: 2px;
-`
-const HeaderContainer = styled.div`
-  display: flex;
-  align-items:center;
-  background-color:rgba(1,1,1,0.1);
-`
+import MathObject from 'containers/MathObjects/MathObject'
+import theme from 'theme'
 
 Folder.propTypes = {
+  // Provided by ownProps
+  id: PropTypes.string.isRequired,
+  animationSpeed: PropTypes.number.isRequired, // has default
+  // Provided by mapStateToProps / mapDispatchToProps
   isCollapsed: PropTypes.bool.isRequired,
   onToggleContentCollapsed: PropTypes.func.isRequired,
-  id: PropTypes.string.isRequired,
-  items: PropTypes.array.isRequired,
-  title: PropTypes.string.isRequired,
-  animationSpeed: PropTypes.number.isRequired
+  itemIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  isActive: PropTypes.bool.isRequired
 }
 
 Folder.defaultProps = {
@@ -30,21 +23,27 @@ Folder.defaultProps = {
 }
 
 export default function Folder(props) {
+
   const listClassName = props.isCollapsed ? 'collapsed' : ''
+
   return (
-    <OuterContainer>
-      <HeaderContainer>
-        <ObjectIcon/>
-        <VisibilityIndicator
+    <MathObject
+      id={props.id}
+      isFolder={true}
+      sidePanelContent={
+        <CollapsedIndicator
           isCollapsed={props.isCollapsed}
           onToggleContentCollapsed={props.onToggleContentCollapsed}
           animationSpeed={props.animationSpeed}
+          lightenOnHover={props.isActive}
+          backgroundColor={props.isActive ? theme.primaryLight : 'white'}
         />
-        {props.title}
-      </HeaderContainer>
+      }
+    >
       <Collapsible
         open={!props.isCollapsed}
         transitionTime={props.animationSpeed}
+        overflowWhenOpen='visible'
       >
         <SortableList
           className={listClassName}
@@ -53,13 +52,10 @@ export default function Folder(props) {
           // this prevents dropping into collapsed folders
           isDropDisabled={props.isCollapsed}
           droppableId={props.id}
-          items={props.items}
-          renderItem={
-            (item, itemProps) => (<div>{item.id}</div>)
-          }
+          items={props.itemIds.map(id => ( { id } ))}
+          renderItem={(item) => <Point id={item.id} />}
         />
       </Collapsible>
-
-    </OuterContainer>
+    </MathObject>
   )
 }
