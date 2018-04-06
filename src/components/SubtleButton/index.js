@@ -3,49 +3,37 @@ import styled, { css } from 'styled-components'
 import { lighten } from 'theme'
 import PropTypes from 'prop-types'
 
-/**
- * Parent container for SubtleButton. Its purpose is to filter which props are
- * handed to the button component. (React gets mad if unexpected properties are
- * passed to HTML elements.
- */
-
-const SubtleButtonContainer = styled.div`
-  & button {
-    border: none;
-    border-radius: ${props => props.theme.borderRadius};
-    transition-duration: ${props => props.theme.transitionDuration};
-    transition-timing-function: ${props => props.theme.transitionTimingFunction};
-    transition-property: all;
-  };
-  & button, & button:focus {
-    background-color: ${props => props.backgroundColor};
+const StyledButton = styled.button`
+  border: none;
+  border-radius: ${props => props.theme.borderRadius};
+  transition-duration: ${props => props.theme.transitionDuration};
+  transition-timing-function: ${props => props.theme.transitionTimingFunction};
+  transition-property: all;
+  background-color: ${props => props.backgroundColor};
+  &:focus {
     outline: none;
-  };
-  & button:focus {
     color: ${props => props.focusColor || props.theme.primary};
-  }
+  };
   /* by default, button darkens on hover*/
-  & button:hover {
+  &:hover {
     background-color: rgba(0,0,0,0.10);
     font-weight:900;
+    ${props => props.pressing && css`
+      background-color: rgba(0,0,0,0.20);
+      transition-duration: 0.1s;
+      transform: translateY(1px);
+    `};
   };
-  & button:hover.sb-pressing {
-    background-color: rgba(0,0,0,0.20);
-    transition-duration: 0.1s;
-    transform: translateY(1px);
-  }
   /* if lightenOnHover, then lighten background on hover */
   ${props => props.lightenOnHover && css`
-    & button {
-      background-color: ${props => props.backgroundColor || 'rgba(0,0,0,0)'};
-    }
-    & button:hover {
+    background-color: ${props => props.backgroundColor || 'rgba(0,0,0,0)'};
+    &:hover {
       background-color: ${props => lighten(props.backgroundColor, 0.75)};
+      ${props => props.pressing && css`
+        background-color: ${props => lighten(props.backgroundColor, 1)};
+        transition-duration: 0.1s;
+      `};
     };
-    & button:hover.sb-pressing {
-      background-color: ${props => lighten(props.backgroundColor, 1)};
-      transition-duration: 0.1s;
-    }
   `}
 `
 
@@ -62,14 +50,11 @@ export default class SubtleButton extends PureComponent {
   static propTypes = {
     lightenOnHover: PropTypes.bool.isRequired,
     backgroundColor: PropTypes.string,
-    focusColor: PropTypes.string,
-    className: PropTypes.string.isRequired,
-    style: PropTypes.string
+    focusColor: PropTypes.string
   }
 
   static defaultProps = {
-    lightenOnHover: false,
-    className: ''
+    lightenOnHover: false
   }
 
   state = {
@@ -94,8 +79,6 @@ export default class SubtleButton extends PureComponent {
     const {
       lightenOnHover,
       backgroundColor,
-      className,
-      style,
       focusColor,
       ...otherProps } = this.props
 
@@ -103,23 +86,22 @@ export default class SubtleButton extends PureComponent {
       throw Error('lightenOnHover requires backgroundColor to be specified.')
     }
 
-    const fullClassName = `${className} ${this.state.pressing ? ' sb-pressing' : ''}`
     return (
-      <SubtleButtonContainer
-        lightenOnHover={lightenOnHover}
-        backgroundColor={backgroundColor}
-        focusColor={focusColor}
+      // The only purpose of outer div is to capture press events
+      <div
         onMouseDown={this.beginPress}
         onMouseUp={this.endPress}
         onMouseLeave={this.endPress}
       >
-        <button
-          ref={this.getRef}
-          className={fullClassName}
-          style={style}
+        <StyledButton
+          lightenOnHover={lightenOnHover}
+          backgroundColor={backgroundColor}
+          focusColor={focusColor}
+          innerRef={this.getRef}
+          pressing={this.state.pressing}
           {...otherProps}
         />
-      </SubtleButtonContainer>
+      </div>
     )
   }
 
