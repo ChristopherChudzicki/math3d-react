@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 /**
  * Parent container for SubtleButton. Its purpose is to filter which props are
  * handed to the button component. (React gets mad if unexpected properties are
- * passed to HTML elements.)
+ * passed to HTML elements.
  */
 
 const SubtleButtonContainer = styled.div`
@@ -59,6 +59,19 @@ const SubtleButtonContainer = styled.div`
 
 export default class SubtleButton extends PureComponent {
 
+  static propTypes = {
+    lightenOnHover: PropTypes.bool.isRequired,
+    backgroundColor: PropTypes.string,
+    focusColor: PropTypes.string,
+    className: PropTypes.string.isRequired,
+    style: PropTypes.string
+  }
+
+  static defaultProps = {
+    lightenOnHover: false,
+    className: ''
+  }
+
   state = {
     pressing: false
   }
@@ -110,16 +123,4 @@ export default class SubtleButton extends PureComponent {
     )
   }
 
-}
-
-SubtleButton.propTypes = {
-  lightenOnHover: PropTypes.bool.isRequired,
-  backgroundColor: PropTypes.string,
-  focusColor: PropTypes.string,
-  className: PropTypes.string.isRequired
-}
-
-SubtleButton.defaultProps = {
-  lightenOnHover: false,
-  className: ''
 }
