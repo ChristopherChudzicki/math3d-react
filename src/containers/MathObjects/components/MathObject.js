@@ -42,17 +42,21 @@ export const SidePanel = styled.div`
     background-color: ${props => props.theme.primaryLight}
   `}
 `
-const FolderStatusSymbol = styled.div`
+const AncestryLine = styled.div`
   width:1px;
   height:100%;
   background-color: ${props => props.theme.medium};
+  display:flex;
+  flex-direction:column;
+  justify-content: space-around;
+  align-items: center;
 `
 
 const MainContainer = styled.div`
   display:flex;
   flex-direction:column;
   width: calc(100% - ${SIDEPANEL_WIDTH});
-  padding-top: 4px;
+  padding-top: 8px;
   padding-bottom: ${props => props.isFolder ? '4px' : '8px'};
   padding-left: 6px;
   padding-right: 6px;
@@ -60,6 +64,13 @@ const MainContainer = styled.div`
 
 const HeaderContainer = styled.div`
   position:relative;
+`
+
+const StatusSymbol = styled.div`
+  width: 28px;
+  height: 28px;
+  border-radius:28px;
+  background-color: darkred;
 `
 
 MathObject.propTypes = {
@@ -74,13 +85,13 @@ MathObject.propTypes = {
   // passed by mapStateToProps / mapDispatchToProps
   isActive: PropTypes.bool.isRequired,
   onFocus: PropTypes.func.isRequired,
-  onBlur: PropTypes.func.isRequired,
   description: PropTypes.string.isRequired,
   onEditDescription: PropTypes.func.isRequired
 }
 
 MathObject.defaultProps = {
-  sidePanelContent: <FolderStatusSymbol />,
+  sidePanelContent: <StatusSymbol />,
+  showAncestry: true,
   isFolder: false
 }
 
@@ -89,11 +100,13 @@ export default function MathObject(props) {
     <Fragment>
       <OuterContainer
         onFocus={props.onFocus}
-        onBlur={props.onBlur}
         isActive={props.isActive}
       >
         <SidePanel isActive={props.isActive}>
-          {props.sidePanelContent}
+          {props.isFolder
+            ? props.sidePanelContent
+            : <AncestryLine> {props.sidePanelContent} </AncestryLine>
+          }
         </SidePanel>
         <MainContainer>
           <HeaderContainer>

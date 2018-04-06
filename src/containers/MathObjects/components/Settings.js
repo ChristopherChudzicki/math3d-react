@@ -40,9 +40,7 @@ export default class Settings extends PureComponent {
           visible={this.state.isVisible}
           onVisibleChange={this.handleVisibleChange}
         >
-          <SettingsButton
-            onClick={()=>{console.log("Hello")}}
-          />
+          <SettingsButton />
         </Popover>
       </div>
     )

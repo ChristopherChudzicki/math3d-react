@@ -10,7 +10,6 @@ const mapStateToProps = (state, ownProps) => ( {
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {
   onFocus: () => dispatch(setActiveObject(ownProps.id)),
-  onBlur: () => dispatch(setActiveObject(null)),
   onEditDescription: val => dispatch(setDescription(ownProps.id, val))
 } )
 
