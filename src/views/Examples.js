@@ -2,7 +2,7 @@ import React from 'react'
 import Drawer from 'containers/Drawer'
 import FlexContainer from 'components/FlexContainer'
 
-const Examples = (props) => {
+const Examples = () => {
   return (
     <Drawer id='examples' slideTo='right'>
       <FlexContainer>
