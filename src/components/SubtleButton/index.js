@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { lighten } from 'theme'
 import PropTypes from 'prop-types'
 
-const StyledButton = styled.button`
+const SubtleButtonInner = styled.button`
   border: none;
   border-radius: ${props => props.theme.borderRadius};
   transition-duration: ${props => props.theme.transitionDuration};
@@ -49,12 +49,13 @@ export default class SubtleButton extends PureComponent {
 
   static propTypes = {
     lightenOnHover: PropTypes.bool.isRequired,
-    backgroundColor: PropTypes.string,
+    backgroundColor: PropTypes.string.isRequired,
     focusColor: PropTypes.string
   }
 
   static defaultProps = {
-    lightenOnHover: false
+    lightenOnHover: false,
+    backgroundColor: 'rgba(0,0,0,0)'
   }
 
   state = {
@@ -93,7 +94,7 @@ export default class SubtleButton extends PureComponent {
         onMouseUp={this.endPress}
         onMouseLeave={this.endPress}
       >
-        <StyledButton
+        <SubtleButtonInner
           lightenOnHover={lightenOnHover}
           backgroundColor={backgroundColor}
           focusColor={focusColor}
