@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import MathObject from 'containers/MathObjects/MathObject'
 import Settings from 'containers/MathObjects/components/Settings'
+import StatusSymbol from 'containers/MathObjects/components/StatusSymbol'
 import MathQuill from 'components/MathQuill'
 import styled from 'styled-components'
 
@@ -48,7 +49,9 @@ export default class Point extends PureComponent {
 
   render() {
     return (
-      <MathObject {...this.props}>
+      <MathObject {...this.props}
+        sidePanelContent={<StatusSymbol/>}
+      >
         <MainRow
           innerRef={this.getRef}
         >

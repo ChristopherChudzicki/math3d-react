@@ -9,7 +9,7 @@ const SubtleButtonInner = styled.button`
   transition-duration: ${props => props.theme.transitionDuration};
   transition-timing-function: ${props => props.theme.transitionTimingFunction};
   transition-property: all;
-  background-color: ${props => props.backgroundColor};
+  background-color: rgba(0,0,0,0);
   &:focus {
     outline: none;
     color: ${props => props.focusColor || props.theme.primary};
@@ -26,7 +26,7 @@ const SubtleButtonInner = styled.button`
   };
   /* if lightenOnHover, then lighten background on hover */
   ${props => props.lightenOnHover && css`
-    background-color: ${props => props.backgroundColor || 'rgba(0,0,0,0)'};
+    background-color: ${props => props.backgroundColor};
     &:hover {
       background-color: ${props => lighten(props.backgroundColor, 0.75)};
       ${props => props.pressing && css`
@@ -49,13 +49,12 @@ export default class SubtleButton extends PureComponent {
 
   static propTypes = {
     lightenOnHover: PropTypes.bool.isRequired,
-    backgroundColor: PropTypes.string.isRequired,
+    backgroundColor: PropTypes.string,
     focusColor: PropTypes.string
   }
 
   static defaultProps = {
-    lightenOnHover: false,
-    backgroundColor: 'rgba(0,0,0,0)'
+    lightenOnHover: false
   }
 
   state = {
