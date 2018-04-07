@@ -1,7 +1,7 @@
 import React from 'react'
 import FlexContainer from '../components/FlexContainer'
 
-const Math3dScene = (props) => {
+const Math3dScene = () => {
   return (
     <FlexContainer style={ { flex: 1 } }>
       <div>

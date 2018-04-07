@@ -16,7 +16,7 @@ const Brand = styled.span`
   color: ${props => props.theme.medium};
 `
 
-const Header = (props) => {
+const Header = () => {
   return (
     <HeaderContainer>
       <Brand>Math3D</Brand>

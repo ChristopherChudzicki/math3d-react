@@ -45,10 +45,10 @@ export default function SortableList(props) {
       type={droppableType}
     >
       {
+        // eslint-disable-next-line no-unused-vars
         (provided, snapshot) => (
           <div
             ref={provided.innerRef}
-            // TODO: conditionally add a class .isDraggingOver
             className={className}
             style={style}
           >

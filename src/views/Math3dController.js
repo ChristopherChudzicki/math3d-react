@@ -11,7 +11,7 @@ const ScrollingDiv = styled.div`
   height:100%;
 `
 
-const Math3dController = (props) => {
+const Math3dController = () => {
   return (
     <Drawer id='main' width='400px'>
       <ScrollingDiv>

@@ -9,7 +9,7 @@ const mapStateToProps = ( { sortableTree } ) => ( {
   itemIds: sortableTree.root
 } )
 
-const mapDispatchToProps = (dispatch, ownProps) => ( {
+const mapDispatchToProps = (dispatch) => ( {
   onDragEnd: (dropResult) => {
     if (!dropResult.destination) {
       return
