@@ -90,7 +90,6 @@ MathObject.propTypes = {
 }
 
 MathObject.defaultProps = {
-  sidePanelContent: <StatusSymbol />,
   showAncestry: true,
   isFolder: false
 }
