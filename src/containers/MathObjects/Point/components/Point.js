@@ -28,6 +28,7 @@ const MainMathQuill = styled(MathQuill)`
       outline-width:0px;
       box-shadow:none;
       border-bottom: 2px solid ${props => props.theme.primary};
+      margin-bottom: -1px;
     }
   }
 `
