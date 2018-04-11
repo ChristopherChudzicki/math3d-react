@@ -1,7 +1,5 @@
 import Color from 'color'
 
-const primary = Color.rgb(64, 169, 255)
-
 export function lighten(colorStr, amount) {
   const color = Color(colorStr)
   const lightness = color.lightness()
@@ -10,15 +8,35 @@ export function lighten(colorStr, amount) {
 }
 
 export const theme = {
-  primary: primary.toString(),
-  primaryLight: primary.lighten(0.3).toString(),
-  primaryDark: primary.darken(0.5).toString(),
-  light: '#f8f8f8',
-  medium: '#bfbfbf',
-  dark: '#696969',
   borderRadius: '4px',
   transitionDuration: '0.3s',
-  transitionTimingFunction: 'cubic-bezier(0.645, 0.045, 0.355, 1);'
+  transitionTimingFunction: 'cubic-bezier(0.645, 0.045, 0.355, 1);',
+  // From ant design
+  gray: [
+    '#ffffff',
+    '#fafafa',
+    '#f5f5f5',
+    '#e8e8e8',
+    '#d9d9d9',
+    '#bfbfbf',
+    '#8c8c8c',
+    '#595959',
+    '#262626',
+    '#000000'
+  ],
+  // from ant design, daybreak blue
+  primary: [
+    '#e6f7ff',
+    '#bae7ff',
+    '#91d5ff',
+    '#69c0ff',
+    '#40a9ff',
+    '#1890ff',
+    '#096dd9',
+    '#0050b3',
+    '#003a8c',
+    '#002766'
+  ]
 }
 
 export default theme

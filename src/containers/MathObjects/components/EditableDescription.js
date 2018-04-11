@@ -16,11 +16,11 @@ const StyledTextarea = styled(Textarea)`
   padding-top: 0px;
   padding-right:2px;
   padding-left:2px;
-  border-bottom: 1px solid ${props => props.theme.medium};
-  color: ${props => props.theme.dark};
+  border-bottom: 1px solid ${props => props.theme.gray[5]};
+  color: ${props => props.theme.gray[6]};
   &:focus {
     outline-width:0px;
-    border-bottom: 2px solid ${props => props.theme.primary};
+    border-bottom: 2px solid ${props => props.theme.primary[4]};
   }
 `
 

@@ -36,7 +36,7 @@ export default function Folder(props) {
           onToggleContentCollapsed={props.onToggleContentCollapsed}
           animationSpeed={props.animationSpeed}
           lightenOnHover={props.isActive}
-          backgroundColor={props.isActive ? theme.primaryLight : 'white'}
+          backgroundColor={props.isActive ? theme.primary[1] : 'white'}
         />
       }
     >

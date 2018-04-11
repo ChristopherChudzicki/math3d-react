@@ -11,7 +11,7 @@ import classNames from 'classnames'
 const DrawerContainer = styled.div`
   width: ${props => props.width};
   position: relative;
-  background-color: ${props => props.theme.light};
+  background-color: ${props => props.theme.gray[1]};
   height:100%;
   &.closing-or-closed.left {
     transform: ${props => `translateX(-${props.width})`};
