@@ -66,13 +66,6 @@ const HeaderContainer = styled.div`
   position:relative;
 `
 
-const StatusSymbol = styled.div`
-  width: 28px;
-  height: 28px;
-  border-radius:28px;
-  background-color: darkred;
-`
-
 MathObject.propTypes = {
   // passed as ownProps
   id: PropTypes.string.isRequired,
