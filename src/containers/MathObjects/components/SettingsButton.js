@@ -10,7 +10,7 @@ const StyledSettingsButton = styled(SubtleButton)`
   justify-content:center;
   align-items:center;
   font-size:150%;
-  color: ${props => props.theme.medium};
+  color: ${props => props.theme.gray[5]};
 `
 
 export default function SettingsButton(props) {

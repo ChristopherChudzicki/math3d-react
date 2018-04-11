@@ -12,7 +12,7 @@ const SubtleButtonInner = styled.button`
   background-color: rgba(0,0,0,0);
   &:focus {
     outline: none;
-    color: ${props => props.focusColor || props.theme.primary};
+    color: ${props => props.focusColor || props.theme.primary[4]};
   };
   /* by default, button darkens on hover*/
   &:hover {

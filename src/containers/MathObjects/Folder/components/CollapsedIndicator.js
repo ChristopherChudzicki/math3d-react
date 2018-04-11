@@ -37,7 +37,7 @@ export default function CollapsedIndicator(props) {
       onClick={props.onToggleContentCollapsed}
       lightenOnHover={props.lightenOnHover}
       backgroundColor={props.backgroundColor}
-      focusColor={theme.dark}
+      focusColor={theme.gray[6]}
     >
       <RotatingSpan
         className={className}

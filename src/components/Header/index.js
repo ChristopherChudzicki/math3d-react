@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const HeaderContainer = styled.div`
   height:30px;
-  background-color: ${props => props.theme.light};
+  background-color: ${props => props.theme.gray[1]};
   display:flex;
   width:100%;
   align-items:center;
@@ -13,7 +13,7 @@ const HeaderContainer = styled.div`
 const Brand = styled.span`
   font-weight:900;
   font-size:125%;
-  color: ${props => props.theme.medium};
+  color: ${props => props.theme.gray[5]};
 `
 
 const Header = () => {

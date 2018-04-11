@@ -10,7 +10,7 @@ export const OuterContainer = styled.span`
   min-width:100%;
   background-color: white;
   margin-bottom: -1px;
-  border: 1px solid ${props => props.theme.medium};
+  border: 1px solid ${props => props.theme.gray[5]};
   transition: all 5s;
   /*
   Note:
@@ -39,13 +39,13 @@ export const SidePanel = styled.div`
   flex-grow: 0;
   flex-shrink: 0;
   ${props => props.isActive && css`
-    background-color: ${props => props.theme.primaryLight}
+    background-color: ${props => props.theme.primary[1]}
   `}
 `
 const AncestryLine = styled.div`
   width:1px;
   height:100%;
-  background-color: ${props => props.theme.medium};
+  background-color: ${props => props.theme.gray[5]};
   display:flex;
   flex-direction:column;
   justify-content: space-around;
@@ -64,13 +64,6 @@ const MainContainer = styled.div`
 
 const HeaderContainer = styled.div`
   position:relative;
-`
-
-const StatusSymbol = styled.div`
-  width: 28px;
-  height: 28px;
-  border-radius:28px;
-  background-color: darkred;
 `
 
 MathObject.propTypes = {

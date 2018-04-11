@@ -23,11 +23,11 @@ const MainMathQuill = styled(MathQuill)`
     border-top none;
     border-left: none;
     border-right: none;
-    border-bottom: 1pt solid ${props => props.theme.medium};
+    border-bottom: 1pt solid ${props => props.theme.gray[5]};
     &.mq-focused {
       outline-width:0px;
       box-shadow:none;
-      border-bottom: 2px solid ${props => props.theme.primary};
+      border-bottom: 2px solid ${props => props.theme.primary[4]};
       margin-bottom: -1px;
     }
   }
