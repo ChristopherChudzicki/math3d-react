@@ -23,7 +23,7 @@ const MainMathQuill = styled(MathQuill)`
     border-top none;
     border-left: none;
     border-right: none;
-    border-bottom: 1pt solid ${props => props.theme.gray[5]};
+    border-bottom: 1px solid ${props => props.theme.gray[5]};
     &.mq-focused {
       outline-width:0px;
       box-shadow:none;
