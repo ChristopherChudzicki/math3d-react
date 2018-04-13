@@ -9,7 +9,7 @@ const SubtleButtonInner = styled.button`
   transition-duration: ${props => props.theme.transitionDuration};
   transition-timing-function: ${props => props.theme.transitionTimingFunction};
   transition-property: all;
-  background-color: rgba(0,0,0,0);
+  background-color: ${props => props.backgroundColor}
   &:focus {
     outline: none;
     color: ${props => props.focusColor || props.theme.primary[4]};
