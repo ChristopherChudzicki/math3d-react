@@ -5,13 +5,16 @@ import EditableDescription from './EditableDescription'
 import DeleteButton from './DeleteButton'
 
 export const OuterContainer = styled.span`
-  display: ${props => props.isActive ? 'inline-flex' : 'flex'};
+  display: inline-flex;
   vertical-align: top; /*Removes extra space below inline element's baseline*/
   min-width:100%;
+  max-width: ${props => props.isActive ? 'auto' : '100%'};
   background-color: white;
   margin-bottom: -1px;
   border: 1px solid ${props => props.theme.gray[5]};
-  transition: all 5s;
+  ${props => props.isFolder && css`
+    height:40px;
+  `};
   /*
   Note:
   - above, margin-bottom: -1px prevents double-thick borders between (Folders
@@ -93,6 +96,7 @@ export default function MathObject(props) {
       <OuterContainer
         onFocus={props.onFocus}
         isActive={props.isActive}
+        isFolder={props.isFolder}
       >
         <SidePanel isActive={props.isActive}>
           {props.isFolder
@@ -105,6 +109,7 @@ export default function MathObject(props) {
             <EditableDescription
               value={props.description}
               onChange={props.onEditDescription}
+              isFolder={props.isFolder}
             />
             <DeleteButton
               onClick={() => console.log(`Delete object ${props.id}`)}

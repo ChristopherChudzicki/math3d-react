@@ -23,12 +23,12 @@ const MainMathQuill = styled(MathQuill)`
     border-top none;
     border-left: none;
     border-right: none;
+    margin-bottom:1px;
     border-bottom: 1px solid ${props => props.theme.gray[5]};
     &.mq-focused {
-      outline-width:0px;
       box-shadow:none;
+      margin-bottom: 0px;
       border-bottom: 2px solid ${props => props.theme.primary[4]};
-      margin-bottom: -1px;
     }
   }
 `

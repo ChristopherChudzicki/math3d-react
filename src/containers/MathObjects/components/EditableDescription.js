@@ -19,9 +19,9 @@ const StyledTextarea = styled(Textarea)`
   border-bottom: 1px solid ${props => props.theme.gray[5]};
   color: ${props => props.theme.gray[6]};
   &:focus {
-    outline-width:0px;
+    outline: none;
     border-bottom: 2px solid ${props => props.theme.primary[4]};
-  }
+  };
 `
 
 export default class EditableDescription extends PureComponent {
