@@ -6,9 +6,9 @@ import styled from 'styled-components'
 const ScrollingDiv = styled.div`
   overflow-y: scroll;
   overflow-x: hidden;
-  padding-right: 500px;
-  margin-right: -500px;
-  height:100%;
+  padding-right: 100vw;
+  margin-right: -100vw;
+  height: 100%;
 `
 
 const Math3dController = () => {
