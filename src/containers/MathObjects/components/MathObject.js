@@ -10,7 +10,7 @@ export const OuterContainer = styled.span`
   min-width:100%;
   max-width: ${props => props.isActive ? 'auto' : '100%'};
   background-color: white;
-  margin-bottom: -1px;
+  margin-bottom: -2px;
   border: 1px solid ${props => props.theme.gray[5]};
   ${props => props.isFolder && css`
     height:40px;

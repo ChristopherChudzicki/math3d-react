@@ -12,7 +12,7 @@ const StyledTextarea = styled(Textarea)`
   border-left: none;
   border-right:none;
   border-radius: 0px;
-  padding-bottom: 0px;
+  padding-bottom: 1px; /*MO border was appearing too small. This fixed it. I do not understand ... */
   padding-top: 0px;
   padding-right:2px;
   padding-left:2px;
