@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Menu, Dropdown, Button, Icon } from 'antd'
+import PropTypes from 'prop-types'
 
 const ControllerHeaderContainer = styled.div`
   box-sizing:border-box;
@@ -34,6 +35,10 @@ const menu = (
     <Menu.Item key="3">3rd item</Menu.Item>
   </Menu>
 )
+
+ControllerHeader.propTypes = {
+  height: PropTypes.string.isRequired
+}
 
 export default function ControllerHeader(props) {
   return (
