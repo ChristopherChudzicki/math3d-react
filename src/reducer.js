@@ -4,13 +4,11 @@ import sortableTree from './containers/SortableTree/reducer'
 import folders from './containers/MathObjects/Folder/reducer'
 import points from './containers/MathObjects/Point/reducer'
 import activeObject from './containers/MathObjects/services/activeObject/reducer'
-import descriptions from './containers/MathObjects/services/descriptions/reducer'
 
 export default combineReducers( {
   drawers,
   sortableTree,
   folders,
   points,
-  activeObject,
-  descriptions
+  activeObject
 } )
