@@ -56,7 +56,8 @@ export default class SubtleButton extends PureComponent {
 
   static defaultProps = {
     lightenOnHover: false,
-    disabled: false
+    disabled: false,
+    backgroundColor: 'transparent'
   }
 
   state = {
