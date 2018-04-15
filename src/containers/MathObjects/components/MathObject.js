@@ -154,7 +154,7 @@ export default class MathObject extends PureComponent {
           <MainContainer>
             <HeaderContainer>
               <EditableDescription
-                value={`${description}: ${id}`}
+                value={description}
                 onChange={onEditDescription}
                 isFolder={isFolder}
               />
