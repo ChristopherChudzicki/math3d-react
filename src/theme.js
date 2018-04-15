@@ -9,7 +9,8 @@ export function lighten(colorStr, amount) {
 
 export const theme = {
   borderRadius: '4px',
-  transitionDuration: '0.3s',
+  transitionDuration: '300ms',
+  transitionDurationMS: 300,
   transitionTimingFunction: 'cubic-bezier(0.645, 0.045, 0.355, 1);',
   // From ant design
   gray: [

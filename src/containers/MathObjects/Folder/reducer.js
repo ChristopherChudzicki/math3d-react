@@ -1,4 +1,8 @@
-import { FOLDER } from './actions'
+import { FOLDER } from 'containers/MathObjects/mathObjectTypes'
 import { createReducer } from 'containers/MathObjects/reducer'
 
-export default createReducer(FOLDER)
+const defaultSettings = {
+  isCollapsed: false
+}
+
+export default createReducer(FOLDER, defaultSettings)

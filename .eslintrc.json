@@ -8,6 +8,7 @@
 	"extends": ["standard", "plugin:jest/recommended", "plugin:react/recommended"],
 	"parser": "babel-eslint",
 	"rules": {
+    "multiline-ternary": ["error", "always-multiline"],
 		"space-in-parens": ["error", "never", { "exceptions": ["{}", "[]"] }],
 		"object-curly-spacing": ["error", "always"],
 		"no-use-before-define": ["error", { "functions": false }],

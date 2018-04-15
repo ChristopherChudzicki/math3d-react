@@ -48,13 +48,15 @@ const SubtleButtonInner = styled.button`
 export default class SubtleButton extends PureComponent {
 
   static propTypes = {
+    disabled: PropTypes.bool.isRequired,
     lightenOnHover: PropTypes.bool.isRequired,
     backgroundColor: PropTypes.string,
     focusColor: PropTypes.string
   }
 
   static defaultProps = {
-    lightenOnHover: false
+    lightenOnHover: false,
+    disabled: false
   }
 
   state = {
@@ -99,6 +101,7 @@ export default class SubtleButton extends PureComponent {
           focusColor={focusColor}
           innerRef={this.getRef}
           pressing={this.state.pressing}
+          disabled={this.props.disabled}
           {...otherProps}
         />
       </div>

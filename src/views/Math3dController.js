@@ -15,7 +15,7 @@ const ScrollingDiv = styled.div`
 const Math3dController = () => {
   return (
     <Drawer id='main' width='400px'>
-      <ControllerHeader height='50px'/>
+      <ControllerHeader/>
       <ScrollingDiv>
         <SortableTree />
       </ScrollingDiv>

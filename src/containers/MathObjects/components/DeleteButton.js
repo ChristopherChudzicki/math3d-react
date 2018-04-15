@@ -22,7 +22,7 @@ const StyledDeleteButton = styled(SubtleButton)`
 
 export default function DeleteButton(props) {
   return (
-    <StyledDeleteButton {...props} >
+    <StyledDeleteButton {...props}>
       <Icon
         type='close'
       />

@@ -5,6 +5,7 @@ import CollapsedIndicator from './CollapsedIndicator'
 import Collapsible from 'react-collapsible'
 import PropTypes from 'prop-types'
 import MathObject from 'containers/MathObjects/MathObject'
+import { FOLDER } from 'containers/MathObjects/mathObjectTypes'
 import theme from 'theme'
 
 Folder.propTypes = {
@@ -29,6 +30,7 @@ export default function Folder(props) {
   return (
     <MathObject
       id={props.id}
+      type={FOLDER}
       isFolder={true}
       sidePanelContent={
         <CollapsedIndicator

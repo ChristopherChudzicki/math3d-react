@@ -86,12 +86,17 @@ export default class MathQuill extends PureComponent {
     const config = this.getConfig(this.props)
     const mathField = MQ.MathField(this._span, config)
 
+    // mathField.latex will trigger onEdit, but let's
+    // not do that the first time. This is initialization, not edit.
+    this.preventOnEdit = true
     mathField.latex(this.props.latex)
+    this.preventOnEdit = false
   }
 
   onEdit = (mathField) => {
     const handler = this.props.onEdit
-    if (handler) {
+
+    if (handler && !this.preventOnEdit) {
       handler(mathField)
     }
 

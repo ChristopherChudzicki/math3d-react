@@ -1,12 +1,14 @@
 import update from 'immutability-helper'
 import {
   TOGGLE_PROPERTY,
-  SET_PROPERTY
+  SET_PROPERTY,
+  CREATE_MATH_OBJECT,
+  DELETE_MATH_OBJECT
 } from './actions'
 
 const initialState = {}
 
-export function createReducer(mathObjectName = '') {
+export function createReducer(mathObjectName, defaultSettings) {
 
   return (state = initialState, action) => {
 
@@ -15,6 +17,14 @@ export function createReducer(mathObjectName = '') {
 
     switch (type) {
 
+      case CREATE_MATH_OBJECT:
+        return update(state, {
+          $merge: { [payload.id]: { ...payload.settings, ...defaultSettings } }
+        } )
+      case DELETE_MATH_OBJECT:
+        return update(state, {
+          $unset: [ payload.id ]
+        } )
       case TOGGLE_PROPERTY:
         return update(state, {
           [payload.id]: { $toggle: [payload.property] }
