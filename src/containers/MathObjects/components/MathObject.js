@@ -1,17 +1,29 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import EditableDescription from './EditableDescription'
 import DeleteButton from './DeleteButton'
+import { mathObjectTypes, FOLDER } from 'containers/MathObjects/mathObjectTypes'
+import { theme } from 'theme'
 
 export const OuterContainer = styled.span`
-  display: ${props => props.isActive ? 'inline-flex' : 'flex'};
+  display: inline-flex;
   vertical-align: top; /*Removes extra space below inline element's baseline*/
   min-width:100%;
+  max-width: ${props => props.isActive ? 'auto' : '100%'};
   background-color: white;
-  margin-bottom: -1px;
+  margin-bottom: -2px;
   border: 1px solid ${props => props.theme.gray[5]};
-  transition: all 5s;
+  transition-duration: ${props => props.theme.transitionDuration};
+  transition-timing-function: ${props => props.theme.transitionTimingFunction};
+  transition-property: all;
+  ${props => props.isFolder && css`
+    height:40px;
+  `};
+  ${props => props.isDeleting && css`
+    transform: scale(0);
+    transform-origin: top left;
+  `}
   /*
   Note:
   - above, margin-bottom: -1px prevents double-thick borders between (Folders
@@ -66,54 +78,94 @@ const HeaderContainer = styled.div`
   position:relative;
 `
 
-MathObject.propTypes = {
-  // passed as ownProps
-  id: PropTypes.string.isRequired,
-  isFolder: PropTypes.bool.isRequired,
-  sidePanelContent: PropTypes.node.isRequired,
-  children: PropTypes.oneOfType( [
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ] ).isRequired,
-  // passed by mapStateToProps / mapDispatchToProps
-  isActive: PropTypes.bool.isRequired,
-  onFocus: PropTypes.func.isRequired,
-  description: PropTypes.string.isRequired,
-  onEditDescription: PropTypes.func.isRequired
-}
+export default class MathObject extends PureComponent {
 
-MathObject.defaultProps = {
-  showAncestry: true,
-  isFolder: false
-}
+  static propTypes = {
+    // passed as ownProps
+    id: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(mathObjectTypes).isRequired,
+    sidePanelContent: PropTypes.node.isRequired,
+    children: PropTypes.oneOfType( [
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node
+    ] ).isRequired,
+    // passed by mapStateToProps / mapDispatchToProps
+    isActive: PropTypes.bool.isRequired,
+    setActiveObject: PropTypes.func.isRequired,
+    description: PropTypes.string.isRequired,
+    onEditDescription: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    parentId: PropTypes.string.isRequired,
+    positionInParent: PropTypes.number.isRequired,
+    isDeleteable: PropTypes.bool.isRequired
+  }
 
-export default function MathObject(props) {
-  return (
-    <Fragment>
-      <OuterContainer
-        onFocus={props.onFocus}
-        isActive={props.isActive}
-      >
-        <SidePanel isActive={props.isActive}>
-          {props.isFolder
-            ? props.sidePanelContent
-            : <AncestryLine> {props.sidePanelContent} </AncestryLine>
-          }
-        </SidePanel>
-        <MainContainer>
-          <HeaderContainer>
-            <EditableDescription
-              value={props.description}
-              onChange={props.onEditDescription}
-            />
-            <DeleteButton
-              onClick={() => console.log(`Delete object ${props.id}`)}
-            />
-          </HeaderContainer>
-          {!props.isFolder && props.children}
-        </MainContainer>
-      </OuterContainer>
-      {props.isFolder && props.children}
-    </Fragment>
-  )
+  static defaultProps = {
+    showAncestry: true
+  }
+
+  state = {
+    isDeleting: false
+  }
+
+  onDelete = () => {
+    this.props.setActiveObject(null)
+    this.setState( { isDeleting: true } )
+    setTimeout(
+      () => this.props.onDelete(this.props.parentId, this.props.positionInParent),
+      theme.transitionDurationMS
+    )
+
+  }
+
+  onFocus = () => {
+    this.props.setActiveObject(this.props.id)
+  }
+
+  render() {
+
+    const {
+      isActive,
+      sidePanelContent,
+      description,
+      onEditDescription,
+      id,
+      type,
+      children,
+      isDeleteable
+    } = this.props
+
+    const isFolder = type === FOLDER
+
+    return (
+      <Fragment>
+        <OuterContainer
+          onFocus={this.onFocus}
+          isActive={isActive}
+          isFolder={isFolder}
+          isDeleting={this.state.isDeleting}
+        >
+          <SidePanel isActive={isActive}>
+            {isFolder
+              ? sidePanelContent
+              : <AncestryLine> {sidePanelContent} </AncestryLine>
+            }
+          </SidePanel>
+          <MainContainer>
+            <HeaderContainer>
+              <EditableDescription
+                value={`${description}: ${id}`}
+                onChange={onEditDescription}
+                isFolder={isFolder}
+              />
+              <DeleteButton onClick={this.onDelete} disabled={!isDeleteable} />
+            </HeaderContainer>
+            {!isFolder && children}
+          </MainContainer>
+        </OuterContainer>
+        {isFolder && children}
+      </Fragment>
+    )
+  }
+
 }

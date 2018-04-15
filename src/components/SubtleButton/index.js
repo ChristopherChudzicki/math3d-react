@@ -9,7 +9,7 @@ const SubtleButtonInner = styled.button`
   transition-duration: ${props => props.theme.transitionDuration};
   transition-timing-function: ${props => props.theme.transitionTimingFunction};
   transition-property: all;
-  background-color: rgba(0,0,0,0);
+  background-color: ${props => props.backgroundColor}
   &:focus {
     outline: none;
     color: ${props => props.focusColor || props.theme.primary[4]};
@@ -48,13 +48,15 @@ const SubtleButtonInner = styled.button`
 export default class SubtleButton extends PureComponent {
 
   static propTypes = {
+    disabled: PropTypes.bool.isRequired,
     lightenOnHover: PropTypes.bool.isRequired,
     backgroundColor: PropTypes.string,
     focusColor: PropTypes.string
   }
 
   static defaultProps = {
-    lightenOnHover: false
+    lightenOnHover: false,
+    disabled: false
   }
 
   state = {
@@ -99,6 +101,7 @@ export default class SubtleButton extends PureComponent {
           focusColor={focusColor}
           innerRef={this.getRef}
           pressing={this.state.pressing}
+          disabled={this.props.disabled}
           {...otherProps}
         />
       </div>

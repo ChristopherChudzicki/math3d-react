@@ -12,16 +12,16 @@ const StyledTextarea = styled(Textarea)`
   border-left: none;
   border-right:none;
   border-radius: 0px;
-  padding-bottom: 0px;
+  padding-bottom: 1px; /*MO border was appearing too small. This fixed it. I do not understand ... */
   padding-top: 0px;
   padding-right:2px;
   padding-left:2px;
   border-bottom: 1px solid ${props => props.theme.gray[5]};
   color: ${props => props.theme.gray[6]};
   &:focus {
-    outline-width:0px;
+    outline: none;
     border-bottom: 2px solid ${props => props.theme.primary[4]};
-  }
+  };
 `
 
 export default class EditableDescription extends PureComponent {

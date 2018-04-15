@@ -4,8 +4,6 @@ import {
   toggleContentCollapsed
 } from './actions'
 
-export const FOLDER = 'FOLDER'
-
 const mapStateToProps = ( { sortableTree, folders, activeObject }, ownProps) => ( {
   itemIds: sortableTree[ownProps.id],
   isCollapsed: folders[ownProps.id].isCollapsed,

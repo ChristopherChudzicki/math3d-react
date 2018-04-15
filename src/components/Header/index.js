@@ -8,7 +8,7 @@ const HeaderContainer = styled.div`
   width:100%;
   align-items:center;
   padding-left:5px;
-  border-bottom: 1pt solid darkgray;
+  border-bottom: 1pt solid ${props => props.theme.gray[5]};
 `
 const Brand = styled.span`
   font-weight:900;

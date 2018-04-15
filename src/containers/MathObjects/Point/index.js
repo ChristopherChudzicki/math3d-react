@@ -1,6 +1,8 @@
 import Point from './components/Point'
 import { connect } from 'react-redux'
-import { setCoords } from './actions'
+import {
+  setCoords
+} from './actions'
 
 const mapStateToProps = ( { points }, ownProps) => ( {
   coords: points[ownProps.id].coords

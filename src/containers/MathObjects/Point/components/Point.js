@@ -5,6 +5,7 @@ import Settings from 'containers/MathObjects/components/Settings'
 import StatusSymbol from 'containers/MathObjects/components/StatusSymbol'
 import MathQuill from 'components/MathQuill'
 import styled from 'styled-components'
+import { POINT } from 'containers/MathObjects/mathObjectTypes'
 
 const MainRow = styled.div`
   position:relative;
@@ -23,12 +24,12 @@ const MainMathQuill = styled(MathQuill)`
     border-top none;
     border-left: none;
     border-right: none;
-    border-bottom: 1pt solid ${props => props.theme.gray[5]};
+    margin-bottom:1px;
+    border-bottom: 1px solid ${props => props.theme.gray[5]};
     &.mq-focused {
-      outline-width:0px;
       box-shadow:none;
+      margin-bottom: 0px;
       border-bottom: 2px solid ${props => props.theme.primary[4]};
-      margin-bottom: -1px;
     }
   }
 `
@@ -40,6 +41,7 @@ export default class Point extends PureComponent {
   }
 
   static propTypes = {
+    id: PropTypes.string.isRequired,
     coords: PropTypes.string.isRequired, // latex
     onEditCoords: PropTypes.func.isRequired
   }
@@ -50,7 +52,9 @@ export default class Point extends PureComponent {
 
   render() {
     return (
-      <MathObject {...this.props}
+      <MathObject
+        id={this.props.id}
+        type={POINT}
         sidePanelContent={<StatusSymbol/>}
       >
         <MainRow
@@ -63,7 +67,7 @@ export default class Point extends PureComponent {
           <Settings title='Point Settings'>
             <p>Hello</p>
             <p>World</p>
-            <div style={{height:'20px', width:'300px', backgroundColor: 'blue'}}/>
+            <div style={ { height: '20px', width: '300px', backgroundColor: 'blue' } }/>
           </Settings>
 
         </MainRow>
