@@ -55,7 +55,14 @@ export default class Point extends PureComponent {
       <MathObject
         id={this.props.id}
         type={POINT}
-        sidePanelContent={<StatusSymbol/>}
+        sidePanelContent={
+          <StatusSymbol
+            color={this.props.color}
+            isFilled={this.props.visible}
+            onToggleVisibility={this.props.onToggleVisibility}
+            onPickColor={this.props.onSetColor}
+          />
+        }
       >
         <MainRow
           innerRef={this.getRef}
