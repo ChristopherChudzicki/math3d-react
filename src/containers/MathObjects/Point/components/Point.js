@@ -43,7 +43,11 @@ export default class Point extends PureComponent {
   static propTypes = {
     id: PropTypes.string.isRequired,
     coords: PropTypes.string.isRequired, // latex
-    onEditCoords: PropTypes.func.isRequired
+    color: PropTypes.string.isRequired,
+    visible: PropTypes.bool.isRequired,
+    onEditCoords: PropTypes.func.isRequired,
+    onToggleVisibility: PropTypes.func.isRequired,
+    onSetColor: PropTypes.func.isRequired
   }
 
   onEditCoords = (mq) => {
