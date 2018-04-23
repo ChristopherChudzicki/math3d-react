@@ -30,12 +30,17 @@ export default class StatusSymbol extends React.Component {
     this.setState( { displayColorPicker: true } )
   }
 
+  hideColorPicker = () => {
+    this.setState( { displayColorPicker: false } )
+  }
+
   render() {
     return (
       <ColorPickerPopover
         color={this.props.color}
         visible={this.state.displayColorPicker}
         onPickColor={this.props.onPickColor}
+        onHideColorPicker={this.hideColorPicker}
       >
         <LongPressable
           onLongPress={this.showColorPicker}

@@ -21,6 +21,7 @@ export default class ColorPickerPopover extends React.Component {
   static propTypes = {
     visible: PropTypes.bool.isRequired,
     onPickColor: PropTypes.func.isRequired,
+    onHideColorPicker: PropTypes.func.isRequired,
     children: PropTypes.element.isRequired
   }
 
@@ -37,6 +38,12 @@ export default class ColorPickerPopover extends React.Component {
 
   getContainerRef = () => this.ref
 
+  handleVisibleChange = (visible) => {
+    if (!visible) {
+      this.props.onHideColorPicker()
+    }
+  }
+
   render() {
     return (
       <div
@@ -45,9 +52,10 @@ export default class ColorPickerPopover extends React.Component {
       >
         <Popover
           placement='right'
-          trigger='none'
+          trigger='click'
           content={this.swatch}
           visible={this.props.visible}
+          onVisibleChange={this.handleVisibleChange}
           getPopupContainer={this.getContainerRef}
         >
           {this.props.children}
