@@ -43,8 +43,18 @@ describe('<LongPressable />', () => {
     expect(onLongPress).toHaveBeenCalledTimes(1)
   } )
 
-  // Other tests to add:
-  // calls onShortPress (and not onLongPress) when press is onShortPress
+  it('fires onShortPress and not onLongPress when short-pressed', async() => {
+    const onLongPress = jest.fn()
+    const onShortPress = jest.fn()
+    const emptyEvent = { }
+    const longPressTime = 300
+
+    const wrapper = renderLongPressable(onShortPress, onLongPress, longPressTime)
+    wrapper.instance().onPointerDown(emptyEvent)
+    wrapper.instance().onPointerUp(emptyEvent)
+    expect(onShortPress).toHaveBeenCalledTimes(1)
+    expect(onLongPress).toHaveBeenCalledTimes(0)
+  } )
   //
   // regarding dragging:
   //  it might be nice to have a prop dragThreshhold such that the
