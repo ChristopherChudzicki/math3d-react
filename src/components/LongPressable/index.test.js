@@ -16,6 +16,16 @@ function timeout(delay) {
 
 Enzyme.configure( { adapter: new Adapter() } )
 
+function renderLongPressable(onShortPress, onLongPress, longPressTime) {
+  return shallow(
+    <LongPressable
+      onShortPress={onShortPress}
+      onLongPress={onLongPress}
+      longPressTime={longPressTime}
+    />
+  )
+}
+
 describe('<LongPressable />', () => {
 
   it('fires onLongPress and not onShortPress when long-pressed', async() => {
@@ -25,13 +35,7 @@ describe('<LongPressable />', () => {
     const upEvent = { }
     const longPressTime = 300
 
-    const wrapper = shallow(
-      <LongPressable
-        onShortPress={onShortPress}
-        onLongPress={onLongPress}
-        longPressTime={longPressTime}
-      />
-    )
+    const wrapper = renderLongPressable(onShortPress, onLongPress, longPressTime)
     wrapper.instance().onPointerDown(downEvent)
     await timeout(longPressTime + 1)
     wrapper.instance().onPointerUp(upEvent)
