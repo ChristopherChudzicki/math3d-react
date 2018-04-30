@@ -26,28 +26,31 @@ function renderLongPressable(onShortPress, onLongPress, longPressTime) {
   )
 }
 
+function getDefaultProps() {
+  return {
+    onLongPress: jest.fn(),
+    onShortPress: jest.fn(),
+    longPressTime: 300
+  }
+}
+
 describe('<LongPressable />', () => {
 
   it('fires onLongPress and not onShortPress when long-pressed', async() => {
-    const onLongPress = jest.fn()
-    const onShortPress = jest.fn()
-    const downEvent = { }
-    const upEvent = { }
-    const longPressTime = 300
+    const { onLongPress, onShortPress, longPressTime } = getDefaultProps()
+    let emptyEvent = { }
 
     const wrapper = renderLongPressable(onShortPress, onLongPress, longPressTime)
-    wrapper.instance().onPointerDown(downEvent)
+    wrapper.instance().onPointerDown(emptyEvent)
     await timeout(longPressTime + 1)
-    wrapper.instance().onPointerUp(upEvent)
+    wrapper.instance().onPointerUp(emptyEvent)
     expect(onShortPress).toHaveBeenCalledTimes(0)
     expect(onLongPress).toHaveBeenCalledTimes(1)
   } )
 
   it('fires onShortPress and not onLongPress when short-pressed', async() => {
-    const onLongPress = jest.fn()
-    const onShortPress = jest.fn()
+    const { onLongPress, onShortPress, longPressTime } = getDefaultProps()
     const emptyEvent = { }
-    const longPressTime = 300
 
     const wrapper = renderLongPressable(onShortPress, onLongPress, longPressTime)
     wrapper.instance().onPointerDown(emptyEvent)
