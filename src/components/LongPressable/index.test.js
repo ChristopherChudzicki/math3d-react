@@ -94,12 +94,5 @@ describe('<LongPressable />', () => {
     expect(onShortPress).toHaveBeenCalledTimes(1)
     expect(onLongPress).toHaveBeenCalledTimes(0)
   } )
-  // regarding dragging:
-  //  it might be nice to have a prop dragThreshhold such that the
-  //  callbacks are fired if and only if pointer movement is less toHaveBeenCalledTimes
-  //  dragThreshhold. In which case, also add tests for:
-  //
-  //  calls onShortPress / onLongPress as appropriate when press is short AND movement is small
-  //  does NOT call onShortPress / onLongPress when press is short/long AND movement is large (dragging)
 
 } )
