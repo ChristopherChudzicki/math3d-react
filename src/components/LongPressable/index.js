@@ -9,15 +9,18 @@ export default class LongPressable extends React.PureComponent {
     onShortPress: PropType.func,
     longPressTime: PropType.number,
     primaryMouseButtonOnly: PropType.bool,
+    dragThreshold: PropType.number,
     children: PropType.node
   }
 
   static defaultProps = {
     longPressTime: 500,
-    primaryMouseButtonOnly: true
+    primaryMouseButtonOnly: true,
+    dragThreshold: 0
   }
 
   isLongPressing = false
+  dragCounter = 0
 
   onPointerUp = () => {
     if (this.timerID) {
@@ -39,6 +42,8 @@ export default class LongPressable extends React.PureComponent {
       }
     }
 
+    this.dragCounter = 0
+
     this.timerID = setTimeout(() => {
       this.isLongPressing = true
       this.props.onLongPress()
@@ -46,7 +51,9 @@ export default class LongPressable extends React.PureComponent {
   }
 
   onPointerMove = () => {
-    if (this.timerID) {
+    this.dragCounter++
+
+    if (this.timerID && this.dragCounter > this.props.dragThreshold) {
       this.clearLongPressTimer()
     }
   }

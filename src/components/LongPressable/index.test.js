@@ -16,12 +16,14 @@ function timeout(delay) {
 
 Enzyme.configure( { adapter: new Adapter() } )
 
-function renderLongPressable(onShortPress, onLongPress, longPressTime) {
+function renderLongPressable(onShortPress, onLongPress, longPressTime,
+  dragThreshold = 0) {
   return shallow(
     <LongPressable
       onShortPress={onShortPress}
       onLongPress={onLongPress}
       longPressTime={longPressTime}
+      dragThreshold={dragThreshold}
     />
   )
 }
@@ -58,7 +60,40 @@ describe('<LongPressable />', () => {
     expect(onShortPress).toHaveBeenCalledTimes(1)
     expect(onLongPress).toHaveBeenCalledTimes(0)
   } )
-  //
+
+  it('still fires onLongPress if pointer moves less than dragThreshold', async() => {
+    const { onLongPress, onShortPress, longPressTime } = getDefaultProps()
+    const dragThreshold = 3
+    const emptyEvent = { }
+
+    const wrapper = renderLongPressable(onShortPress, onLongPress, longPressTime,
+      dragThreshold)
+    wrapper.instance().onPointerDown(emptyEvent)
+    for (let i = 0; i < dragThreshold - 1; i++) {
+      wrapper.instance().onPointerMove(emptyEvent)
+    }
+    await timeout(longPressTime + 1)
+    wrapper.instance().onPointerUp(emptyEvent)
+    expect(onShortPress).toHaveBeenCalledTimes(0)
+    expect(onLongPress).toHaveBeenCalledTimes(1)
+  } )
+
+  it('does not fire onLongPress if pointer moves more than dragThreshold', async() => {
+    const { onLongPress, onShortPress, longPressTime } = getDefaultProps()
+    const dragThreshold = 3
+    const emptyEvent = { }
+
+    const wrapper = renderLongPressable(onShortPress, onLongPress, longPressTime,
+      dragThreshold)
+    wrapper.instance().onPointerDown(emptyEvent)
+    for (let i = 0; i < dragThreshold + 1; i++) {
+      wrapper.instance().onPointerMove(emptyEvent)
+    }
+    await timeout(longPressTime + 1)
+    wrapper.instance().onPointerUp(emptyEvent)
+    expect(onShortPress).toHaveBeenCalledTimes(1)
+    expect(onLongPress).toHaveBeenCalledTimes(0)
+  } )
   // regarding dragging:
   //  it might be nice to have a prop dragThreshhold such that the
   //  callbacks are fired if and only if pointer movement is less toHaveBeenCalledTimes
