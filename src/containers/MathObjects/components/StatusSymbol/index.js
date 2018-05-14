@@ -13,7 +13,7 @@ const Circle = styled.div`
   cursor: pointer;
 `
 
-export default class StatusSymbol extends React.Component {
+export default class StatusSymbol extends React.PureComponent {
 
   state = {
     displayColorPicker: false
