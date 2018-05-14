@@ -17,7 +17,7 @@ function timeout(delay) {
 Enzyme.configure( { adapter: new Adapter() } )
 
 function renderLongPressable(onShortPress, onLongPress, longPressTime,
-  dragThreshold = 0) {
+  dragThreshold = 5) {
   return shallow(
     <LongPressable
       onShortPress={onShortPress}
@@ -40,57 +40,73 @@ describe('<LongPressable />', () => {
 
   it('fires onLongPress and not onShortPress when long-pressed', async() => {
     const { onLongPress, onShortPress, longPressTime } = getDefaultProps()
-    let emptyEvent = { }
+    const defaultEvent = {
+      clientX: 0,
+      clientY: 0
+    }
 
     const wrapper = renderLongPressable(onShortPress, onLongPress, longPressTime)
-    wrapper.instance().onPointerDown(emptyEvent)
+    wrapper.instance().onPointerDown(defaultEvent)
     await timeout(longPressTime + 1)
-    wrapper.instance().onPointerUp(emptyEvent)
+    wrapper.instance().onPointerUp(defaultEvent)
     expect(onShortPress).toHaveBeenCalledTimes(0)
     expect(onLongPress).toHaveBeenCalledTimes(1)
   } )
 
   it('fires onShortPress and not onLongPress when short-pressed', async() => {
     const { onLongPress, onShortPress, longPressTime } = getDefaultProps()
-    const emptyEvent = { }
+    const defaultEvent = {
+      clientX: 0,
+      clientY: 0
+    }
 
     const wrapper = renderLongPressable(onShortPress, onLongPress, longPressTime)
-    wrapper.instance().onPointerDown(emptyEvent)
-    wrapper.instance().onPointerUp(emptyEvent)
+    wrapper.instance().onPointerDown(defaultEvent)
+    wrapper.instance().onPointerUp(defaultEvent)
     expect(onShortPress).toHaveBeenCalledTimes(1)
     expect(onLongPress).toHaveBeenCalledTimes(0)
   } )
 
   it('still fires onLongPress if pointer moves less than dragThreshold', async() => {
     const { onLongPress, onShortPress, longPressTime } = getDefaultProps()
-    const dragThreshold = 3
-    const emptyEvent = { }
+    const dragThreshold = 5
+    const defaultEvent = {
+      clientX: 0,
+      clientY: 0
+    }
+    const movedEvent = {
+      clientX: 1,
+      clientY: 1
+    }
 
     const wrapper = renderLongPressable(onShortPress, onLongPress, longPressTime,
       dragThreshold)
-    wrapper.instance().onPointerDown(emptyEvent)
-    for (let i = 0; i < dragThreshold - 1; i++) {
-      wrapper.instance().onPointerMove(emptyEvent)
-    }
+    wrapper.instance().onPointerDown(defaultEvent)
+    wrapper.instance().onPointerMove(movedEvent)
     await timeout(longPressTime + 1)
-    wrapper.instance().onPointerUp(emptyEvent)
+    wrapper.instance().onPointerUp(defaultEvent)
     expect(onShortPress).toHaveBeenCalledTimes(0)
     expect(onLongPress).toHaveBeenCalledTimes(1)
   } )
 
   it('does not fire onLongPress if pointer moves more than dragThreshold', async() => {
     const { onLongPress, onShortPress, longPressTime } = getDefaultProps()
-    const dragThreshold = 3
-    const emptyEvent = { }
+    const dragThreshold = 5
+    const defaultEvent = {
+      clientX: 0,
+      clientY: 0
+    }
+    const movedEvent = {
+      clientX: 100,
+      clientY: 100
+    }
 
     const wrapper = renderLongPressable(onShortPress, onLongPress, longPressTime,
       dragThreshold)
-    wrapper.instance().onPointerDown(emptyEvent)
-    for (let i = 0; i < dragThreshold + 1; i++) {
-      wrapper.instance().onPointerMove(emptyEvent)
-    }
+    wrapper.instance().onPointerDown(defaultEvent)
+    wrapper.instance().onPointerMove(movedEvent)
     await timeout(longPressTime + 1)
-    wrapper.instance().onPointerUp(emptyEvent)
+    wrapper.instance().onPointerUp(defaultEvent)
     expect(onShortPress).toHaveBeenCalledTimes(1)
     expect(onLongPress).toHaveBeenCalledTimes(0)
   } )
