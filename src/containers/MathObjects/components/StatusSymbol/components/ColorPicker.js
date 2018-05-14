@@ -10,7 +10,7 @@ const Container = styled.div`
   grid-gap: 5px;
 `
 
-export default class Swatch extends React.Component {
+export default class ColorPicker extends React.Component {
 
   static propTypes = {
     colors: PropType.arrayOf(PropType.string).isRequired,

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Popover } from 'antd'
-import Swatch from './Swatch'
+import ColorPicker from './ColorPicker'
 
 const colors = [
   '#1abc9c',
@@ -26,7 +26,7 @@ export default class ColorPickerPopover extends React.Component {
   }
 
   swatch = (
-    <Swatch
+    <ColorPicker
       colors={colors}
       onPickColor={this.props.onPickColor}
     />
