@@ -4,8 +4,8 @@ import {
   setCoords
 } from './actions'
 
-const mapStateToProps = ( { points }, ownProps) => ( {
-  coords: points[ownProps.id].coords
+const mapStateToProps = ( { mathGraphics }, ownProps) => ( {
+  coords: mathGraphics[ownProps.id].coords
 } )
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {

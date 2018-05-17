@@ -1,12 +1,13 @@
 import ControllerHeader from './components/ControllerHeader'
 import { connect } from 'react-redux'
 import { getActiveFolder } from './selectors'
-import { createPoint } from 'containers/MathObjects/Point/actions'
-import { setActiveObject } from 'containers/MathObjects/services/activeObject/actions'
 import {
-  createFolder,
-  setContentCollapsed
-} from 'containers/MathObjects/Folder/actions'
+  createPoint,
+  createVariable,
+  createFolder
+} from 'containers/MathObjects'
+import { setActiveObject } from 'containers/MathObjects/services/activeObject/actions'
+import { setContentCollapsed } from 'containers/MathObjects/Folder/actions'
 
 const mapStateToProps = ( { activeObject, sortableTree } ) => {
   const treeRoot = sortableTree.root
@@ -37,6 +38,7 @@ const mapStateToProps = ( { activeObject, sortableTree } ) => {
 const mapDispatchToProps = ( {
   createPoint,
   createFolder,
+  createVariable,
   setActiveObject,
   setContentCollapsed
 } )

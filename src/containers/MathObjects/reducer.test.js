@@ -12,9 +12,9 @@ describe("createReducer's created reducer", () => {
     a1: { species: 'dragon', isMammal: false, name: 'george' }
   }
 
-  const animals = createReducer('ANIMAL')
+  const livingThings = createReducer(new Set( ['ANIMAL', 'PLANTS'] ))
 
-  it('sets properties correctly', () => {
+  it('sets properties correctly if name matches', () => {
     const action = {
       type: SET_PROPERTY,
       name: 'ANIMAL',
@@ -24,7 +24,7 @@ describe("createReducer's created reducer", () => {
         value: 'ginny'
       }
     }
-    const newState = animals(state, action)
+    const newState = livingThings(state, action)
     const expectedState = {
       a0: { species: 'cat', isMammal: true, name: 'fred' },
       a1: { species: 'dragon', isMammal: false, name: 'ginny' }
@@ -32,6 +32,23 @@ describe("createReducer's created reducer", () => {
 
     expect(newState).not.toBe(state)
     expect(newState).toEqual(expectedState)
+  } )
+
+  it('does not set property if name not match', () => {
+    const action = {
+      type: SET_PROPERTY,
+      name: 'ELEMENTS',
+      payload: {
+        id: 'helium',
+        property: 'atomicMass',
+        value: '4'
+      }
+    }
+    const clonedState = JSON.parse(JSON.stringify(state))
+    const newState = livingThings(state, action)
+
+    expect(newState).toBe(state)
+    expect(newState).toEqual(clonedState)
   } )
 
   it('toggles properties correctly', () => {
@@ -43,7 +60,7 @@ describe("createReducer's created reducer", () => {
         property: 'isMammal'
       }
     }
-    const newState = animals(state, action)
+    const newState = livingThings(state, action)
     const expectedState = {
       a0: { species: 'cat', isMammal: true, name: 'fred' },
       a1: { species: 'dragon', isMammal: true, name: 'george' }

@@ -6,7 +6,7 @@ import DeleteButton from './DeleteButton'
 import { mathObjectTypes, FOLDER } from 'containers/MathObjects/mathObjectTypes'
 import { theme } from 'theme'
 
-export const OuterContainer = styled.span`
+const OuterContainer = styled.span`
   display: inline-flex;
   vertical-align: top; /*Removes extra space below inline element's baseline*/
   min-width:100%;
@@ -34,7 +34,7 @@ export const OuterContainer = styled.span`
 `
 
 const SIDEPANEL_WIDTH = '40px'
-export const SidePanel = styled.div`
+const SidePanel = styled.div`
   margin-bottom:-1px; /*Compensates for margin-bottom:-1px in OuterContainer*/
   padding-top: 2px;
   padding-bottom: 2px;
@@ -84,7 +84,7 @@ export default class MathObject extends PureComponent {
     // passed as ownProps
     id: PropTypes.string.isRequired,
     type: PropTypes.oneOf(mathObjectTypes).isRequired,
-    sidePanelContent: PropTypes.node.isRequired,
+    sidePanelContent: PropTypes.node,
     children: PropTypes.oneOfType( [
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
@@ -101,7 +101,8 @@ export default class MathObject extends PureComponent {
   }
 
   static defaultProps = {
-    showAncestry: true
+    showAncestry: true,
+    sidePanelContent: null
   }
 
   state = {
@@ -129,12 +130,10 @@ export default class MathObject extends PureComponent {
       sidePanelContent,
       description,
       onEditDescription,
-      id,
       type,
       children,
       isDeleteable
     } = this.props
-
     const isFolder = type === FOLDER
 
     return (

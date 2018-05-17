@@ -3,11 +3,12 @@ import { connect } from 'react-redux'
 import {
   toggleContentCollapsed
 } from './actions'
+import { getItems } from './selectors'
 
-const mapStateToProps = ( { sortableTree, folders, activeObject }, ownProps) => ( {
-  itemIds: sortableTree[ownProps.id],
-  isCollapsed: folders[ownProps.id].isCollapsed,
-  isActive: activeObject === ownProps.id
+const mapStateToProps = (state, ownProps) => ( {
+  items: getItems(state, ownProps.id),
+  isCollapsed: state.folders[ownProps.id].isCollapsed,
+  isActive: state.activeObject === ownProps.id
 } )
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {

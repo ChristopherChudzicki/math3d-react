@@ -35,7 +35,8 @@ export default class ControllerHeader extends PureComponent {
     setActiveObject: PropTypes.func.isRequired,
     setContentCollapsed: PropTypes.func.isRequired,
     createPoint: PropTypes.func.isRequired,
-    createFolder: PropTypes.func.isRequired
+    createFolder: PropTypes.func.isRequired,
+    createVariable: PropTypes.func.isRequired
   }
 
   static defaultProps = {
@@ -63,6 +64,7 @@ export default class ControllerHeader extends PureComponent {
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key='createPoint'>Point</Menu.Item>
         <Menu.Item key="createFolder">Folder</Menu.Item>
+        <Menu.Item key="createVariable">Variable</Menu.Item>
       </Menu>
     )
   }

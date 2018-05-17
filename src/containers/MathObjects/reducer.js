@@ -8,18 +8,24 @@ import {
 
 const initialState = {}
 
-export function createReducer(mathObjectName, defaultSettings) {
+/**
+ * creates a reducer
+ *
+ * @param  {Set} mathObjectNames names of mathObjects handled by this reducer
+ * @return {function}
+ */
+export function createReducer(mathObjectNames) {
 
   return (state = initialState, action) => {
 
     const { name, type, payload } = action
-    if (name !== mathObjectName) return state
+    if (!mathObjectNames.has(name)) return state
 
     switch (type) {
 
       case CREATE_MATH_OBJECT:
         return update(state, {
-          $merge: { [payload.id]: { ...payload.settings, ...defaultSettings } }
+          $merge: { [payload.id]: { ...payload.settings } }
         } )
       case DELETE_MATH_OBJECT:
         return update(state, {

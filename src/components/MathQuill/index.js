@@ -117,3 +117,33 @@ export default class MathQuill extends PureComponent {
   }
 
 }
+
+export class StaticMath extends PureComponent {
+
+  // For configuration details, see http://docs.mathquill.com/en/latest/Config/#setting-configuration
+  // Outer Span CSS Info:
+  //   default classes: .mq-editable-field.mq-math-mode
+  //   when focused: .mq-focused
+
+  static propTypes = {
+    latex: PropTypes.string,
+    style: PropTypes.object,
+    className: PropTypes.string
+  }
+
+  componentDidMount = () => {
+    MQ.StaticMath(this._span)
+  }
+
+  render() {
+    return (
+      <span
+        style={this.props.style}
+        className={this.props.className}
+        ref={ ref => { this._span = ref } }>
+        {this.props.latex}
+      </span>
+    )
+  }
+
+}

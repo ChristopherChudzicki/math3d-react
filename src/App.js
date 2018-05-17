@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import Header from './components/Header'
 import FlexContainer from './components/FlexContainer'
 
-import Math3dController from './views/Math3dController'
-import Math3dScene from './views/Math3dScene'
+import UserControls from './views/UserControls'
+import Scene from './views/Scene'
 import Examples from './views/Examples'
 
 class App extends Component {
@@ -13,8 +13,8 @@ class App extends Component {
       <FlexContainer style={ { overflow: 'hidden', flexDirection: 'column' } }>
         <Header />
         <FlexContainer>
-          <Math3dController />
-          <Math3dScene />
+          <UserControls />
+          <Scene />
           <Examples />
         </FlexContainer>
       </FlexContainer>
