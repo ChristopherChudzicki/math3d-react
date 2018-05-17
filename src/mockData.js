@@ -11,6 +11,19 @@ function getRandomInt(a, b) {
   return Math.floor(a + Math.random() * Math.floor(range))
 }
 
+const colors = [
+  '#1abc9c',
+  '#2ecc71',
+  '#3498db',
+  '#9b59b6',
+  '#8e44ad',
+  '#2c3e50',
+  '#f1c40f',
+  '#e67e22',
+  '#e74c3c',
+  '#f39c12'
+]
+
 function addFolder(store) {
   const id = `folder-${uniqueId()}`
   store.sortableTree.root.push(id)
@@ -30,7 +43,9 @@ function addPoint(store, folderId) {
   store.mathGraphics[itemId] = {
     type: POINT,
     description: 'Point',
-    coords: '\\left[0,\\ 0,\\ 0\\right]'
+    coords: '\\left[0,\\ 0,\\ 0\\right]',
+    visible: true,
+    color: colors[getRandomInt(0, colors.length - 1)]
   }
 }
 
