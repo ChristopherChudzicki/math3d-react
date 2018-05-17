@@ -1,8 +1,6 @@
 import { POINT } from 'containers/MathObjects/mathObjectTypes'
 import { createReducer } from 'containers/MathObjects/reducer'
 
-const defaultSettings = {
-  coords: '\\left[0,0,0\\right]'
-}
+const mathGraphics = new Set( [POINT] )
 
-export default createReducer(POINT, defaultSettings)
+export default createReducer(mathGraphics)

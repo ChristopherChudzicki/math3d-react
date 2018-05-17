@@ -6,10 +6,10 @@ import {
   setColor
 } from './actions'
 
-const mapStateToProps = ( { points }, ownProps) => ( {
-  coords: points[ownProps.id].coords,
-  color: points[ownProps.id].color,
-  visible: points[ownProps.id].visible
+const mapStateToProps = ( { mathGraphics }, ownProps) => ( {
+  coords: mathGraphics[ownProps.id].coords,
+  color: mathGraphics[ownProps.id].color,
+  visible: mathGraphics[ownProps.id].visible
 } )
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {

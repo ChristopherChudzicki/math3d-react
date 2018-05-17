@@ -1,11 +1,11 @@
 import React from 'react'
 import SortableList from 'components/SortableList'
-import Point from 'containers/MathObjects/Point'
+import { Point, Variable } from 'containers/MathObjects'
 import CollapsedIndicator from './CollapsedIndicator'
 import Collapsible from 'react-collapsible'
 import PropTypes from 'prop-types'
 import MathObject from 'containers/MathObjects/MathObject'
-import { FOLDER } from 'containers/MathObjects/mathObjectTypes'
+import { FOLDER, POINT, VARIABLE } from 'containers/MathObjects/mathObjectTypes'
 import theme from 'theme'
 
 Folder.propTypes = {
@@ -15,7 +15,7 @@ Folder.propTypes = {
   // Provided by mapStateToProps / mapDispatchToProps
   isCollapsed: PropTypes.bool.isRequired,
   onToggleContentCollapsed: PropTypes.func.isRequired,
-  itemIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  items: PropTypes.arrayOf(PropTypes.object).isRequired,
   isActive: PropTypes.bool.isRequired
 }
 
@@ -54,10 +54,23 @@ export default function Folder(props) {
           // this prevents dropping into collapsed folders
           isDropDisabled={props.isCollapsed}
           droppableId={props.id}
-          items={props.itemIds.map(id => ( { id } ))}
-          renderItem={(item) => <Point id={item.id} />}
+          items={props.items}
+          renderItem={renderItem}
         />
       </Collapsible>
     </MathObject>
   )
+}
+
+function renderItem( { id, type } ) {
+  switch (type) {
+
+    case POINT:
+      return <Point id={id}/>
+    case VARIABLE:
+      return <Variable id={id}/>
+    default:
+      throw Error(`Cannot render object ${id} with type ${type}`)
+
+  }
 }

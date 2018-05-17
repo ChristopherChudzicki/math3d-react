@@ -9,28 +9,29 @@ import classNames from 'classnames'
 // Transforms interfere with react-beautiful-dnd in Drawer children, so the
 // default open class is implemented without any transforms
 const DrawerContainer = styled.div`
+  z-index:10;
   width: ${props => props.width};
   position: relative;
   background-color: ${props => props.theme.gray[1]};
   height:100%;
   &.closing-or-closed.left {
     transform: ${props => `translateX(-${props.width})`};
-    transition-duration: ${props => props.animationSpeed};
+    transition-duration: ${props => props.animationSpeed || props.theme.transitionDuration};
     margin-right: ${props => `-${props.width}`};
   }
   &.opening.left {
     transform: translateX(0px);
-    transition-duration: ${props => props.animationSpeed};
+    transition-duration: ${props => props.animationSpeed || props.theme.transitionDuration};
     margin-right: 0;
   }
   &.closing-or-closed.right {
     transform: ${props => `translateX(${props.width})`};
-    transition-duration: ${props => props.animationSpeed};
+    transition-duration: ${props => props.animationSpeed || props.theme.transitionDuration};
     margin-left: ${props => `-${props.width}`};
   }
   &.opening.right {
     transform: translateX(0px);
-    transition-duration: ${props => props.animationSpeed};
+    transition-duration: ${props => props.animationSpeed || props.theme.transitionDuration};
     margin-right: 0;
   }
 `
@@ -89,7 +90,7 @@ Drawer.propTypes = {
   width: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
   isAnimating: PropTypes.bool.isRequired,
-  animationSpeed: PropTypes.string.isRequired,
+  animationSpeed: PropTypes.string,
   onOpen: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   slideTo: PropTypes.oneOf( ['left', 'right'] ).isRequired,
@@ -101,6 +102,5 @@ Drawer.propTypes = {
 
 Drawer.defaultProps = {
   width: '300px',
-  animationSpeed: '500ms',
   slideTo: 'left'
 }

@@ -1,5 +1,10 @@
 import { uniqueId } from 'lodash'
 import { initialState as drawerInitialState } from './containers/Drawer/reducer'
+import {
+  POINT,
+  FOLDER,
+  VARIABLE
+} from 'containers/MathObjects/mathObjectTypes'
 
 function getRandomInt(a, b) {
   const range = b - a + 1
@@ -24,6 +29,7 @@ function addFolder(store) {
   store.sortableTree.root.push(id)
   store.sortableTree[id] = []
   store.folders[id] = {
+    tyoe: FOLDER,
     description: 'Folder',
     isCollapsed: Math.random() > 0.5
   }
@@ -34,7 +40,8 @@ function addFolder(store) {
 function addPoint(store, folderId) {
   const itemId = `item-${uniqueId()}`
   store.sortableTree[folderId].push(itemId)
-  store.points[itemId] = {
+  store.mathGraphics[itemId] = {
+    type: POINT,
     description: 'Point',
     coords: '\\left[0,\\ 0,\\ 0\\right]',
     visible: true,
@@ -46,10 +53,36 @@ export function makeMockStore() {
   const store = {
     drawers: drawerInitialState,
     sortableTree: {
-      root: []
+      root: ['vars'],
+      vars: ['var0', 'var1', 'var2']
     },
-    folders: {},
-    points: {}
+    folders: {
+      'vars': {
+        description: 'Some Variables',
+        isCollapsed: false
+      }
+    },
+    mathGraphics: {},
+    mathScope: {
+      var0: {
+        type: VARIABLE,
+        description: 'A variable',
+        name: 'f\\left(x\\right)',
+        value: 'e^x\\ +\\ \\frac{1}{2}'
+      },
+      var1: {
+        type: VARIABLE,
+        description: 'Another variable',
+        name: 'a',
+        value: '2'
+      },
+      var2: {
+        type: VARIABLE,
+        description: 'One more variable',
+        name: 'b',
+        value: '[-2,1,4]'
+      }
+    }
   }
 
   for (let j = 0; j < 5; j++) {

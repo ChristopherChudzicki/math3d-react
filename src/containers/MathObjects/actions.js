@@ -19,7 +19,7 @@ export function setProperty(id, name, property, value) {
   }
 }
 
-export function createMathObject(id, name, parentFolderId, positionInFolder, settings = {} ) {
+export function createMathObject(id, name, parentFolderId, positionInFolder, settings) {
   return {
     type: CREATE_MATH_OBJECT,
     name,

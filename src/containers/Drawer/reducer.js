@@ -6,7 +6,7 @@ export const initialState = {
     isAnimating: false
   },
   examples: {
-    isVisible: true,
+    isVisible: false,
     isAnimating: false
   }
 }
