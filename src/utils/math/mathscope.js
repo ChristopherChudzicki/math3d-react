@@ -47,12 +47,11 @@ const DEFAULT_SCOPE = {}
  * @param  {string} symbols[symbolName] An assignment expression, e.g., a = b^2 or f(r, q) = r*sin(q)
  * @param  {Parser} parser
  */
-export function updateMathScope(symbols, parser, initialScope, startingNode) {
+export function updateMathScope(symbols, parser, initialScope, updateChildrenOf) {
   // Get the evaluation order
   // add symbols to scope
-  //  - be careful with functions
 
-  const evalOrder = getEvalOrder(symbols, parser, startingNode)
+  const evalOrder = getEvalOrder(symbols, parser, updateChildrenOf)
   const initial = {
     mathScope: { ...initialScope }, // copy initialScope, not mutate
     errors: {},
@@ -71,35 +70,45 @@ export function updateMathScope(symbols, parser, initialScope, startingNode) {
 
 }
 export function genMathScope(symbols, parser) {
-  return updateMathScope(symbols, parser, DEFAULT_SCOPE)
+  return updateMathScope(symbols, parser, DEFAULT_SCOPE, null)
 }
 
 /**
- * Determines a valid evaluation order for symbols. If startingNode is supplied,
- * only returns children of that node.
+ * Determines a valid evaluation order for symbols. If onlyChildrenOf is
+ * supplied, only returns children of those node.
  *
  * @param  {object} symbols
  * @param  {string} symbols[symbolName] An assignment expression, e.g., a = b^2 or f(r, q) = r*sin(q)
  * @param  {Parser} parser
- * @param  {?string} startingNode
+ * @param  {?array || Set} onlyChildrenOf
  *
  * @returns {array} of symbol names, a valid evaluation order for symbols
  */
-export function getEvalOrder(symbols, parser, startingNode = null) {
+export function getEvalOrder(symbols, parser, onlyChildrenOf = null) {
   // construct dependency graph as array of nodes
   const childMap = getChildMap(symbols, parser)
-  const nodesToInclude = startingNode ? getDescendants(startingNode, childMap) : null
+  const nodesToInclude = onlyChildrenOf
+    ? [...getDescendants(onlyChildrenOf, childMap)]
+    : Object.keys(childMap)
 
-  const nodes = Object.keys(childMap)
-    .filter(node => !startingNode || nodesToInclude.has(node))
-    .reduce((acc, node) => {
-      for (const child of childMap[node] ) {
-        acc.push( [node, child] )
-      }
-      return acc
-    }, [] )
+  // Sort the nodes with children
+  const edges = nodesToInclude.reduce((acc, node) => {
+    for (const child of childMap[node] ) {
+      acc.push( [node, child] )
+    }
+    return acc
+  }, [] )
+  const sorted = toposort(edges)
 
-  return toposort(nodes)
+  // If the changed node has no children, it will not be included in the sorting
+  // above. So add it now.
+  onlyChildrenOf && onlyChildrenOf.forEach(item => {
+    if (!sorted.includes(item)) {
+      sorted.push(item)
+    }
+  } )
+
+  return sorted
 }
 
 /**
@@ -130,12 +139,12 @@ export function getChildMap(symbols, parser) {
 }
 
 /**
- * get all descendants of a given node in a directed graph
+ * get all descendants of a single node in a directed graph
  *
  * @param  {object} childMap
  * @param  {Set<string>} childMap[node] set of direct children nodenames
  */
-export function getDescendants(node, childMap) {
+export function getDescendantsOfNode(node, childMap) {
   const descendants = new Set( [node] )
 
   if (childMap[node].size === 0) {
@@ -143,10 +152,18 @@ export function getDescendants(node, childMap) {
   }
 
   childMap[node].forEach(child => {
-    setMergeInto(descendants, getDescendants(child, childMap))
+    setMergeInto(descendants, getDescendantsOfNode(child, childMap))
   } )
 
   return descendants
+}
+
+export function getDescendants(nodes, childMap) {
+  const children = new Set()
+  nodes.forEach(node => {
+    setMergeInto(children, getDescendantsOfNode(node, childMap))
+  } )
+  return children
 }
 
 /**
