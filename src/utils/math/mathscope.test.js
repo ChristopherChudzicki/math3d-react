@@ -3,6 +3,7 @@ import {
   genMathScope,
   getEvalOrder,
   getChildMap,
+  getDescendantsOfNode,
   getDescendants
 }
   from './mathscope'
@@ -20,7 +21,8 @@ describe('deserializing mathscope', () => {
       b: 'b=g\\left(4\\right)',
       g: 'g\\left(t\\right)=t^{2+d}+c',
       c: 'c=-1',
-      d: 'd=1'
+      d: 'd=1',
+      w: 'w=(d+1)^2'
     }
 
     const expectedScope = {
@@ -28,10 +30,11 @@ describe('deserializing mathscope', () => {
       b: 63,
       c: -1,
       d: 1,
+      w: 4,
       f: (x, y) => 32.5 * (x ** 2) - 63 * y,
       g: t => t ** 3 - 1
     }
-    const expectedUpdated = ['a', 'b', 'c', 'd', 'f', 'g']
+    const expectedUpdated = ['a', 'b', 'c', 'd', 'w', 'f', 'g']
 
     const parser = new Parser()
     const { mathScope, updated, errors } = genMathScope(symbols, parser)
@@ -40,6 +43,7 @@ describe('deserializing mathscope', () => {
     expect(mathScope.b).toBeCloseTo(expectedScope.b, DIGITS)
     expect(mathScope.c).toBeCloseTo(expectedScope.c, DIGITS)
     expect(mathScope.d).toBeCloseTo(expectedScope.d, DIGITS)
+    expect(mathScope.w).toBeCloseTo(expectedScope.w, DIGITS)
     expect(mathScope.f(2, 7)).toBeCloseTo(expectedScope.f(2, 7), DIGITS)
     expect(mathScope.g(5)).toBeCloseTo(expectedScope.g(5), DIGITS)
 
@@ -48,13 +52,14 @@ describe('deserializing mathscope', () => {
   } )
 
   test('updating an existing mathscope', () => {
-    const symbols = {
+    const newSymbols = {
       a: 'a=\\frac{b}{2}-c',
       f: 'f\\left(x,y\\right)=a\\cdot x^2-b\\cdot y',
       b: 'b=g\\left(5\\right)',
       g: 'g\\left(t\\right)=t^{2+d}+c',
       c: 'c=-1',
-      d: 'd=1'
+      d: 'd=1',
+      w: 'w=(d+1)^3'
     }
 
     const initialScope = {
@@ -62,6 +67,7 @@ describe('deserializing mathscope', () => {
       b: 63,
       c: -1,
       d: 1,
+      w: 4,
       f: (x, y) => 32.5 * (x ** 2) - 63 * y,
       g: t => t ** 3 - 1
     }
@@ -71,13 +77,18 @@ describe('deserializing mathscope', () => {
       b: 124,
       c: -1,
       d: 1,
+      w: 8,
       f: (x, y) => 63 * (x ** 2) - 124 * y,
       g: t => t ** 3 - 1
     }
-    const expectedUpdated = ['a', 'b', 'f']
+    const expectedUpdated = ['a', 'b', 'f', 'w']
 
     const parser = new Parser()
-    const { mathScope, updated, errors } = updateMathScope(symbols, parser, initialScope, 'b')
+    const {
+      mathScope,
+      updated,
+      errors
+    } = updateMathScope(newSymbols, parser, initialScope, ['b', 'w'] )
 
     // mathscope should be a new object, not the same as initialScope
     expect(mathScope).not.toBe(initialScope)
@@ -87,6 +98,7 @@ describe('deserializing mathscope', () => {
     expect(mathScope.b).toBeCloseTo(expectedScope.b, DIGITS)
     expect(mathScope.c).toBeCloseTo(expectedScope.c, DIGITS)
     expect(mathScope.d).toBeCloseTo(expectedScope.d, DIGITS)
+    expect(mathScope.w).toBeCloseTo(expectedScope.w, DIGITS)
     expect(mathScope.f(2, 7)).toBeCloseTo(expectedScope.f(2, 7), DIGITS)
     expect(mathScope.g(5)).toBeCloseTo(expectedScope.g(5), DIGITS)
 
@@ -180,8 +192,12 @@ describe('generating evaluation order', () => {
       h: new Set( ['b'] ),
       p: new Set()
     }
-    expect(getDescendants('b', childMap)).toEqual(
+    expect(getDescendantsOfNode('b', childMap)).toEqual(
       new Set( ['b', 'a', 'f', 'a2'] )
+    )
+
+    expect(getDescendants(['b', 'd'], childMap)).toEqual(
+      new Set( ['b', 'a', 'f', 'a2', 'd', 'p'] )
     )
 
   } )
@@ -197,10 +213,10 @@ describe('generating evaluation order', () => {
 
   test('Subset of evaluation order is generated correct', () => {
     const parser = new Parser()
-    const startingNode = 'b'
-    const evalOrder = getEvalOrder(symbols, parser, startingNode)
+    const onlyChildrenOf = ['b']
+    const evalOrder = getEvalOrder(symbols, parser, onlyChildrenOf)
     // This is a valid order. there are other valid orders, too
-    const expected = [ 'b', 'a', 'a2', 'f' ]
+    const expected = [ 'b', 'a', 'f', 'a2' ]
 
     expect(evalOrder).toEqual(expected)
   } )
