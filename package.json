@@ -21,6 +21,7 @@
     "react-textarea-autosize": "^6.0.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
+    "shallow-diff": "0.0.5",
     "styled-components": "^3.1.6",
     "toposort": "^1.0.6"
   },
@@ -41,6 +42,8 @@
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
+    "jest-diff": "^23.0.0",
+    "jest-get-type": "^22.4.3",
     "jest-matcher-deep-close-to": "^1.0.2",
     "jquery": "^3.3.1"
   },
