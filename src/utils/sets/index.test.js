@@ -1,6 +1,7 @@
 import {
   union,
-  intersect
+  intersect,
+  setMergeInto
 } from './index'
 
 describe('union', () => {
@@ -38,5 +39,22 @@ describe('intersection', () => {
     const expectedB = new Set( [1, 'whale', 'cat'] )
     expect(a).toEqual(expectedA)
     expect(b).toEqual(expectedB)
+  } )
+} )
+
+describe('setMergeInto', () => {
+
+  const target = new Set( ['cat', 1, 'fish'] )
+  const source = new Set( [1, 'whale', 'cat'] )
+  const expectedMerge = new Set( ['cat', 1, 'fish', 'whale'] )
+  setMergeInto(target, source)
+
+  test('union contains expected items', () => {
+    expect(target).toEqual(expectedMerge)
+  } )
+
+  test('source was not mutated', () => {
+    const expectedSource = new Set( [1, 'whale', 'cat'] )
+    expect(source).toEqual(expectedSource)
   } )
 } )
