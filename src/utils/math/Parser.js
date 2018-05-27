@@ -25,16 +25,30 @@ export default class Parser {
   }
 
   parse(string) {
-    if (this._cache[string] !== undefined) {
-      return this._cache[string]
+    if (this._cache[string] === undefined) {
+      this.addToCache(string)
     }
+    const { parsed, error } = this._cache[string]
 
-    this.addToCache(string)
-    return this._cache[string]
+    if (error) {
+      throw error
+    }
+    return parsed
   }
 
   addToCache(string) {
-    this._cache[string] = new MathExpression(string, this._preprocessors, this._postprocessors)
+    try {
+      this._cache[string] = {
+        parsed: new MathExpression(string, this._preprocessors, this._postprocessors),
+        error: null
+      }
+    }
+    catch (err) {
+      this._cache[string] = {
+        parsed: null,
+        error: err
+      }
+    }
   }
 
 }

@@ -23,4 +23,21 @@ describe('Parser', () => {
     expect(parser.parse).toHaveBeenCalledTimes(3)
     expect(parser.addToCache).toHaveBeenCalledTimes(1)
   } )
+
+  test('Errors are cached before being thrown', () => {
+    const parser = new Parser()
+    jest.spyOn(parser, 'parse')
+    jest.spyOn(parser, 'addToCache')
+
+    try { parser.parse('a + ') }
+    catch (err) { }
+    try { parser.parse('a + ') }
+    catch (err) { }
+    try { parser.parse('a + ') }
+    catch (err) { }
+
+    expect(parser.parse).toHaveBeenCalledTimes(3)
+    expect(parser.addToCache).toHaveBeenCalledTimes(1)
+
+  } )
 } )
