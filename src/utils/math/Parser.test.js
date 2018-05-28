@@ -1,4 +1,4 @@
-import Parser from './Parser'
+import Parser, { getUsedSymbols } from './Parser'
 import MathExpression from './MathExpression'
 const DIGITS = 6
 
@@ -40,4 +40,16 @@ describe('Parser', () => {
     expect(parser.addToCache).toHaveBeenCalledTimes(1)
 
   } )
+} )
+
+test('getUsedSymbols', () => {
+  const parser = new Parser()
+  const expressions = [
+    'a+f\\left(t\\right)',
+    'b + x',
+    '2^{g\\left(x,y\\right)}'
+  ]
+  // Function arguments should not be deteceted
+  const usedSymbols = new Set( ['a', 'f', 't', 'b', 'x', 'g', 'y'] )
+  expect(getUsedSymbols(parser, expressions)).toEqual(usedSymbols)
 } )

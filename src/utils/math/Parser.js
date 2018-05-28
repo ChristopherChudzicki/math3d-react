@@ -1,6 +1,7 @@
 import MathExpression from './MathExpression'
 import { preprocessHOFs, preprocessMathQuill } from './preprocessors'
 import { reassignOperators } from './postprocessors'
+import { setMergeInto } from 'utils/sets'
 
 export default class Parser {
 
@@ -51,4 +52,17 @@ export default class Parser {
     }
   }
 
+}
+
+/**
+ * returns which symbols are used in expressions
+ *
+ * @param  {Parser} parser Parser instance
+ * @param  {string[]} expressions array of mathematical expression strings
+ * @return {set} set of used symbols
+ */
+export function getUsedSymbols(parser, expressions) {
+  return expressions.reduce((usedSymbols, expression) => {
+    return setMergeInto(usedSymbols, parser.parse(expression).dependencies)
+  }, new Set())
 }
