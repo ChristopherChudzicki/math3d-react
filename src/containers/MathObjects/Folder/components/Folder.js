@@ -6,7 +6,7 @@ import Collapsible from 'react-collapsible'
 import PropTypes from 'prop-types'
 import MathObject from 'containers/MathObjects/MathObject'
 import { FOLDER, POINT, VARIABLE } from 'containers/MathObjects/mathObjectTypes'
-import theme from 'theme'
+import theme from 'constants/theme'
 
 Folder.propTypes = {
   // Provided by ownProps

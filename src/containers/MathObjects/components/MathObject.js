@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import EditableDescription from './EditableDescription'
 import DeleteButton from './DeleteButton'
 import { mathObjectTypes, FOLDER } from 'containers/MathObjects/mathObjectTypes'
-import { theme } from 'theme'
+import { theme } from 'constants/theme'
 
 const OuterContainer = styled.span`
   display: inline-flex;
