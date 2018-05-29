@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import styled, { css } from 'styled-components'
-import { lighten } from 'theme'
+import { lighten } from 'constants/theme'
 import PropTypes from 'prop-types'
 
 const SubtleButtonInner = styled.button`
