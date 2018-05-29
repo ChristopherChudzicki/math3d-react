@@ -5,9 +5,9 @@ import {
 import Variable from './components/Variable'
 import { connect } from 'react-redux'
 
-const mapStateToProps = ( { mathScope }, ownProps) => ( {
-  name: mathScope[ownProps.id].name,
-  value: mathScope[ownProps.id].value
+const mapStateToProps = ( { mathSymbols }, ownProps) => ( {
+  name: mathSymbols[ownProps.id].name,
+  value: mathSymbols[ownProps.id].value
 } )
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {

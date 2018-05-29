@@ -2,11 +2,11 @@ function getType(state, id) {
   if (state.mathGraphics[id] ) {
     return state.mathGraphics[id].type
   }
-  else if (state.mathScope[id] ) {
-    return state.mathScope[id].type
+  else if (state.mathSymbols[id] ) {
+    return state.mathSymbols[id].type
   }
   else {
-    throw Error(`Folder child item ${id} is not a mathGraphic or mathScope variable`)
+    throw Error(`Folder child item ${id} is not a mathGraphic or mathSymbols variable`)
   }
 }
 

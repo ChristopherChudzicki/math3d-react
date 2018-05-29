@@ -63,7 +63,7 @@ export function makeMockStore() {
       }
     },
     mathGraphics: {},
-    mathScope: {
+    mathSymbols: {
       var0: {
         type: VARIABLE,
         description: 'A variable',
