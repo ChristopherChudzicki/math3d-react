@@ -1,5 +1,8 @@
 import toposort from 'toposort'
 import diff from 'shallow-diff'
+import {
+  setMergeInto
+} from 'utils/sets'
 
 const DEFAULT_SCOPE = {}
 
@@ -174,19 +177,6 @@ export function getDescendants(nodes, childMap) {
     setMergeInto(children, getDescendantsOfNode(node, childMap))
   } )
   return children
-}
-
-/**
- * merges one set into another
- *
- * @param {set} target target set, mutated and returned
- * @param {set} source whose elements are merged into target
- */
-function setMergeInto(target, source) {
-  for (const item of source) {
-    target.add(item)
-  }
-  return target
 }
 
 export class ScopeEvaluator {
