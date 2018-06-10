@@ -9,7 +9,8 @@ const defaultSettings = {
   type: VARIABLE,
   name: 'f(x)',
   value: 'e^x',
-  description: 'Variable'
+  description: 'Variable',
+  errors: {}
 }
 
 export const setName = (id, value) => {

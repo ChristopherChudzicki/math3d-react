@@ -6,11 +6,19 @@ const borderStyling = css`
   border-left: none;
   border-right: none;
   margin-bottom:1px;
-  border-bottom: 1px solid ${props => props.theme.gray[5]};
+  border-bottom-width: 1px;
+  border-bottom-color: ${props => props.theme.gray[5]};
   &.mq-focused {
     box-shadow:none;
     margin-bottom: 0px;
-    border-bottom: 2px solid ${props => props.theme.primary[4]};
+    border-bottom-width: 2px;
+    border-bottom-color: ${props => props.theme.primary[4]}
+  };
+`
+
+const errorStyling = css`
+  &, &.mq-focused {
+    border-bottom-color: red;
   }
 `
 
@@ -24,11 +32,12 @@ const alignmentStyling = css`
 export const MathQuillLarge = styled(MathQuill)`
   &.mq-editable-field.mq-math-mode {
     flex:1;
-    max-width: calc(100% - 30px);
+    max-width: 100%;
     font-size:125%;
     font-weight:bolder;
-    ${alignmentStyling};
     ${borderStyling};
+    ${props => props.hasError && errorStyling}
+    ${alignmentStyling};
   }
 `
 

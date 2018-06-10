@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import MathObject from 'containers/MathObjects/MathObject'
 import {
-  MathQuillLarge,
+  MathInput,
   StaticMathLarge,
   MainRow
 } from 'containers/MathObjects/components'
@@ -15,15 +15,10 @@ export default class Variable extends PureComponent {
     value: PropTypes.string.isRequired, // latex
     name: PropTypes.string.isRequired, // latex
     onEditValue: PropTypes.func.isRequired,
-    onEditName: PropTypes.func.isRequired
-  }
-
-  onEditValue = (mq) => {
-    return this.props.onEditValue(mq.latex())
-  }
-
-  onEditName = (mq) => {
-    return this.props.onEditName(mq.latex())
+    onEditName: PropTypes.func.isRequired,
+    onErrorChange: PropTypes.func.isRequired,
+    errors: PropTypes.objectOf(PropTypes.string).isRequired,
+    nameValidators: PropTypes.arrayOf(PropTypes.func).isRequired
   }
 
   render() {
@@ -35,17 +30,24 @@ export default class Variable extends PureComponent {
         <MainRow
           innerRef={this.getRef}
         >
-          <MathQuillLarge
+          <MathInput
             style={{ flex: 0 }}
+            field={'name'}
             latex={this.props.name}
-            onEdit={this.onEditName}
+            onTextChange={this.props.onEditName}
+            errorMsg={this.props.errors.name}
+            onErrorChange={this.props.onErrorChange}
+            validators={this.props.nameValidators}
           />
           <StaticMathLarge
             latex='='
           />
-          <MathQuillLarge
+          <MathInput
+            field='value'
             latex={this.props.value}
-            onEdit={this.onEditValue}
+            onTextChange={this.props.onEditValue}
+            onErrorChange={this.props.onErrorChange}
+            errorMsg={this.props.errors.value}
           />
         </MainRow>
       </MathObject>

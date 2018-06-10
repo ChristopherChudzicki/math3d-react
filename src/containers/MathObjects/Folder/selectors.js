@@ -1,17 +1,23 @@
-function getType(state, id) {
-  if (state.mathGraphics[id] ) {
-    return state.mathGraphics[id].type
+import createCachedSelector from 're-reselect'
+function getType(mathGraphics, mathSymbols, id) {
+  if (mathGraphics[id] ) {
+    return mathGraphics[id].type
   }
-  else if (state.mathSymbols[id] ) {
-    return state.mathSymbols[id].type
+  else if (mathSymbols[id] ) {
+    return mathSymbols[id].type
   }
   else {
     throw Error(`Folder child item ${id} is not a mathGraphic or mathSymbols variable`)
   }
 }
 
-export function getItems(state, folderId) {
-  const itemIds = state.sortableTree[folderId]
-  return itemIds.map(id => ( { id, type: getType(state, id) } )
+export const getItems = createCachedSelector(
+  (state, folderId) => state.mathGraphics,
+  (state, folderId) => state.mathSymbols,
+  (state, folderId) => state.sortableTree[folderId], // itemIds
+  (mathGraphics, mathSymbols, itemIds) => itemIds.map(
+    id => ( { id, type: getType(mathGraphics, mathSymbols, id) } )
   )
-}
+)(
+  (state, folderId) => folderId
+)

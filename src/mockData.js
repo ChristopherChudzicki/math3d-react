@@ -45,7 +45,8 @@ function addPoint(store, folderId) {
     description: 'Point',
     coords: '\\left[0,\\ 0,\\ 0\\right]',
     visible: true,
-    color: colors[getRandomInt(0, colors.length - 1)]
+    color: colors[getRandomInt(0, colors.length - 1)],
+    errors: {}
   }
 }
 
@@ -68,19 +69,22 @@ export function makeMockStore() {
         type: VARIABLE,
         description: 'A variable',
         name: 'f\\left(x\\right)',
-        value: 'e^x\\ +\\ \\frac{1}{2}'
+        value: 'e^x\\ +\\ \\frac{1}{2}',
+        errors: {}
       },
       var1: {
         type: VARIABLE,
         description: 'Another variable',
         name: 'a',
-        value: '2'
+        value: '2',
+        errors: {}
       },
       var2: {
         type: VARIABLE,
         description: 'One more variable',
         name: 'b',
-        value: '[-2,1,4]'
+        value: '[-2,1,4]',
+        errors: {}
       }
     }
   }
