@@ -36,6 +36,12 @@ describe('Dependency Detection', () => {
     } ).toThrow('Cyclic Assignment Error')
   } )
 
+  test('Single symbol does not raise cyclic assignment raises error', () => {
+    expect(() => {
+      new MathExpression('a') // eslint-disable-line no-new
+    } ).not.toThrow('Cyclic Assignment Error')
+  } )
+
   test('Cyclic Paramater Assignment raises error', () => {
     expect(() => {
       new MathExpression('f(f) = x^2') // eslint-disable-line no-new

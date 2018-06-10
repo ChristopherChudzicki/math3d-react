@@ -40,11 +40,13 @@ export default class MathExpression {
 
   _getDependencies() {
     const dependencies = new Set()
+    const isAssignmentNode = (this.tree.type === 'AssignmentNode')
+    const isFunctionAssignmentNode = (this.tree.type === 'FunctionAssignmentNode')
 
     // In case of assignment, use right-hand-side as tree
-    const rhs = (this.tree.type === 'AssignmentNode')
+    const rhs = isAssignmentNode
       ? this.tree.value
-      : (this.tree.type === 'FunctionAssignmentNode')
+      : isFunctionAssignmentNode
         ? this.tree.expr
         : this.tree
 
@@ -59,8 +61,10 @@ export default class MathExpression {
         }
       }
 
-      if ( [...dependencies, ...params].includes(this.tree.name)) {
-        throw Error('Cyclic Assignment Error')
+      if (isAssignmentNode || isFunctionAssignmentNode) {
+        if ( [...dependencies, ...params].includes(this.tree.name)) {
+          throw Error('Cyclic Assignment Error')
+        }
       }
 
       return dependencies

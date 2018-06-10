@@ -5,7 +5,7 @@ import {
   Settings,
   StatusSymbol,
   MainRow,
-  MathQuillLarge
+  MathInput
 } from 'containers/MathObjects/components'
 import { POINT } from 'containers/MathObjects/mathObjectTypes'
 
@@ -22,11 +22,9 @@ export default class Point extends PureComponent {
     visible: PropTypes.bool.isRequired,
     onEditCoords: PropTypes.func.isRequired,
     onToggleVisibility: PropTypes.func.isRequired,
-    onSetColor: PropTypes.func.isRequired
-  }
-
-  onEditCoords = (mq) => {
-    return this.props.onEditCoords(mq.latex())
+    onSetColor: PropTypes.func.isRequired,
+    onErrorChange: PropTypes.func.isRequired,
+    errors: PropTypes.objectOf(PropTypes.string).isRequired
   }
 
   render() {
@@ -46,9 +44,12 @@ export default class Point extends PureComponent {
         <MainRow
           innerRef={this.getRef}
         >
-          <MathQuillLarge
+          <MathInput
+            field='coords'
+            errorMsg={this.props.errors.coords}
             latex={this.props.coords}
-            onEdit={this.onEditCoords}
+            onTextChange={this.props.onEditCoords}
+            onErrorChange={this.props.onErrorChange}
           />
           <Settings title='Point Settings'>
             <p>Hello</p>

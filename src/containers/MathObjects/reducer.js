@@ -3,7 +3,9 @@ import {
   TOGGLE_PROPERTY,
   SET_PROPERTY,
   CREATE_MATH_OBJECT,
-  DELETE_MATH_OBJECT
+  DELETE_MATH_OBJECT,
+  ADD_ERROR,
+  REMOVE_ERROR
 } from './actions'
 
 const initialState = {}
@@ -39,6 +41,26 @@ export function createReducer(mathObjectNames) {
         return update(state, {
           [payload.id]: { [payload.property]: { $set: payload.value } }
         } )
+      case ADD_ERROR: {
+        const { id, errorProp, errorMsg } = payload
+        return update(state, {
+          [id]: {
+            errors: {
+              [errorProp]: { $set: errorMsg }
+            }
+          }
+        } )
+      }
+      case REMOVE_ERROR: {
+        const { id, errorProp } = payload
+        return update(state, {
+          [id]: {
+            errors: {
+              $unset: [errorProp]
+            }
+          }
+        } )
+      }
       default:
         return state
 

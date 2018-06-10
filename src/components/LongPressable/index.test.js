@@ -2,17 +2,7 @@ import React from 'react'
 import LongPressable from './index'
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-
-// TODO Move this somewhere better, or find it in a library?
-/**
- * Creates a Promise that is resolved after delay.
- * Good for using with async/await
- *
- * @param  {number} delay in milliseconds
- */
-function timeout(delay) {
-  return new Promise(resolve => setTimeout(resolve, delay))
-}
+import { timeout } from 'utils/functions'
 
 Enzyme.configure( { adapter: new Adapter() } )
 

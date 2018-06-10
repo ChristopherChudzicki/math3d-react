@@ -8,7 +8,8 @@ import { POINT } from 'containers/MathObjects/mathObjectTypes'
 const defaultSettings = {
   type: POINT,
   coords: '\\left[0,0,0\\right]',
-  description: 'Point'
+  description: 'Point',
+  errors: {}
 }
 
 export const setCoords = (id, value) => {
