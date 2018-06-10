@@ -1,9 +1,7 @@
 import {
-  // toggleProperty,
-  setProperty,
   createMathObject
 } from 'containers/MathObjects/actions'
-import { VARIABLE } from 'containers/MathObjects/mathObjectTypes'
+export const VARIABLE = 'VARIABLE'
 
 const defaultSettings = {
   type: VARIABLE,
@@ -11,14 +9,6 @@ const defaultSettings = {
   value: 'e^x',
   description: 'Variable',
   errors: {}
-}
-
-export const setName = (id, value) => {
-  return setProperty(id, VARIABLE, 'name', value)
-}
-
-export const setValue = (id, value) => {
-  return setProperty(id, VARIABLE, 'value', value)
 }
 
 export const createVariable = (id, parentFolderId, positionInFolder) => {

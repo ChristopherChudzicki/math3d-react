@@ -20,7 +20,7 @@ export default class Point extends PureComponent {
     coords: PropTypes.string.isRequired, // latex
     color: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
-    onEditCoords: PropTypes.func.isRequired,
+    onEditProperty: PropTypes.func.isRequired,
     onToggleVisibility: PropTypes.func.isRequired,
     onSetColor: PropTypes.func.isRequired,
     onErrorChange: PropTypes.func.isRequired,
@@ -48,7 +48,7 @@ export default class Point extends PureComponent {
             field='coords'
             errorMsg={this.props.errors.coords}
             latex={this.props.coords}
-            onTextChange={this.props.onEditCoords}
+            onTextChange={this.props.onEditProperty}
             onErrorChange={this.props.onErrorChange}
           />
           <Settings title='Point Settings'>

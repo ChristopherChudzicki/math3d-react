@@ -1,11 +1,7 @@
-import {
-  setName,
-  setValue
-} from './actions'
 import Variable from './components/Variable'
 import { connect } from 'react-redux'
-import { setError } from 'containers/MathObjects/actions'
-import { VARIABLE } from 'containers/MathObjects/mathObjectTypes'
+import { setError, setProperty } from 'containers/MathObjects/actions'
+import { VARIABLE } from './actions'
 import { getNameValidators } from '../selectors'
 import { parser } from 'constants/parsing'
 
@@ -19,8 +15,9 @@ const mapStateToProps = ( { mathSymbols }, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {
-  onEditName: val => dispatch(setName(ownProps.id, val)),
-  onEditValue: val => dispatch(setValue(ownProps.id, val)),
+  onEditProperty: (property, value) => dispatch(
+    setProperty(ownProps.id, VARIABLE, property, value)
+  ),
   onErrorChange: (errProp, errMsg) => dispatch(
     setError(ownProps.id, VARIABLE, errProp, errMsg)
   )

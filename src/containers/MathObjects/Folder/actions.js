@@ -3,7 +3,7 @@ import {
   setProperty,
   createMathObject
 } from 'containers/MathObjects/actions'
-import { FOLDER } from 'containers/MathObjects/mathObjectTypes'
+export const FOLDER = 'FOLDER'
 
 const defaultSettings = {
   isCollapsed: false,
