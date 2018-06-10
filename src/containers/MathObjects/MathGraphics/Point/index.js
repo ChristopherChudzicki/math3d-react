@@ -1,12 +1,7 @@
 import Point from './components/Point'
 import { connect } from 'react-redux'
-import {
-  setCoords,
-  toggleVisibility,
-  setColor
-} from './actions'
-import { setError } from 'containers/MathObjects/actions'
-import { POINT } from 'containers/MathObjects/mathObjectTypes'
+import { makeMapDispatchToProps } from '../actions'
+import { POINT } from './actions'
 
 const mapStateToProps = ( { mathGraphics }, ownProps) => ( {
   coords: mathGraphics[ownProps.id].coords,
@@ -15,13 +10,6 @@ const mapStateToProps = ( { mathGraphics }, ownProps) => ( {
   errors: mathGraphics[ownProps.id].errors
 } )
 
-const mapDispatchToProps = (dispatch, ownProps) => ( {
-  onEditCoords: val => dispatch(setCoords(ownProps.id, val)),
-  onToggleVisibility: () => dispatch(toggleVisibility(ownProps.id)),
-  onSetColor: val => dispatch(setColor(ownProps.id, val)),
-  onErrorChange: (errProp, errMsg) => dispatch(
-    setError(ownProps.id, POINT, errProp, errMsg)
-  )
-} )
+const mapDispatchToProps = makeMapDispatchToProps(POINT)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Point)

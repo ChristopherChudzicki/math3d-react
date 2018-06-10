@@ -83,7 +83,7 @@ export default class MathInput extends PureComponent {
   }
   onEdit(mq) {
     const latex = mq.latex()
-    this.props.onTextChange(latex)
+    this.props.onTextChange(this.props.field, latex)
   }
   onFocus() {
     this.setState( { isFocused: true } )
