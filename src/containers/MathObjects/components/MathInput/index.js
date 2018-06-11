@@ -2,6 +2,7 @@ export { default } from './MathInput'
 export {
   isAssignmentRHS,
   isAssignmentLHS,
-  isValidName
+  isValidName,
+  isNumeric
 } from './validators'
 export { StaticMathLarge } from './MathQuillStyled'

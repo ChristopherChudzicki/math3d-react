@@ -3,7 +3,8 @@ import { initialState as drawerInitialState } from './containers/Drawer/reducer'
 import {
   POINT,
   FOLDER,
-  VARIABLE
+  VARIABLE,
+  VARIABLE_SLIDER
 } from 'containers/MathObjects/mathObjectTypes'
 
 function getRandomInt(a, b) {
@@ -55,7 +56,7 @@ export function makeMockStore() {
     drawers: drawerInitialState,
     sortableTree: {
       root: ['vars'],
-      vars: ['var0', 'var1', 'var2']
+      vars: ['var0', 'var1', 'var2', 'var3']
     },
     folders: {
       'vars': {
@@ -85,7 +86,19 @@ export function makeMockStore() {
         name: 'b',
         value: '[-2,1,4]',
         errors: {}
+      },
+      var3: {
+        type: VARIABLE_SLIDER,
+        description: 'A slider!',
+        name: 'T',
+        value: null,
+        min: '-\\pi',
+        max: '2\\pi',
+        errors: {}
       }
+    },
+    sliderValues: {
+      var3: 7.3
     }
   }
 

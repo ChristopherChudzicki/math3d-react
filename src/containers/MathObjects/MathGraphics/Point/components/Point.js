@@ -41,9 +41,7 @@ export default class Point extends PureComponent {
           />
         }
       >
-        <MainRow
-          innerRef={this.getRef}
-        >
+        <MainRow>
           <MathInput
             field='coords'
             errorMsg={this.props.errors.coords}
@@ -56,7 +54,6 @@ export default class Point extends PureComponent {
             <p>World</p>
             <div style={ { height: '20px', width: '300px', backgroundColor: 'blue' } }/>
           </Settings>
-
         </MainRow>
       </MathObject>
     )

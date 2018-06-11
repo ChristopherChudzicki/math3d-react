@@ -199,5 +199,5 @@ test("MathInput's onEdit calls props.onTexTchange", () => {
   const mq = { latex: () => 'testLatex' }
   wrapper.instance().onEdit(mq)
   expect(wrapper.instance().props.onTextChange).toHaveBeenCalledTimes(1)
-  expect(wrapper.instance().props.onTextChange).toHaveBeenCalledWith('testLatex')
+  expect(wrapper.instance().props.onTextChange).toHaveBeenCalledWith('TEST', 'testLatex')
 } )

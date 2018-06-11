@@ -56,3 +56,15 @@ export function isValidName(usedNames, parser, latex) {
     isValid: true
   }
 }
+
+export function isNumeric(parser, latex) {
+  if (isNaN(latex)) {
+    return {
+      isValid: false,
+      errorMsg: `Value Error: ${latex} is not a plain number`
+    }
+  }
+  return {
+    isValid: true
+  }
+}

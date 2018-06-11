@@ -1,7 +1,8 @@
 import {
   isAssignmentRHS,
   isAssignmentLHS,
-  isValidName
+  isValidName,
+  isNumeric
 } from './validators'
 import { Parser } from 'utils/mathParsing'
 
@@ -80,6 +81,21 @@ describe('isNameValid', () => {
     expect(result).toEqual( {
       isValid: false,
       errorMsg: "Name Error: name 'g' is used more than once."
+    } )
+  } )
+} )
+
+describe('isNumeric', () => {
+  it('should mark numbers as valid', () => {
+    const parser = null
+    expect(isNumeric(parser, '4.3')).toEqual( { isValid: true } )
+  } )
+
+  it('should mark non-numbers as invalid', () => {
+    const parser = null
+    expect(isNumeric(parser, '4.3.1')).toEqual( {
+      isValid: false,
+      errorMsg: 'Value Error: 4.3.1 is not a plain number'
     } )
   } )
 } )
