@@ -4,6 +4,7 @@ import sortableTree from './containers/SortableTree/reducer'
 import folders from './containers/MathObjects/Folder/reducer'
 import mathGraphics from './containers/MathObjects/MathGraphics/reducer'
 import mathSymbols from './containers/MathObjects/MathSymbols/reducer'
+import sliderValues from './containers/MathObjects/MathSymbols/VariableSlider/reducer'
 import activeObject from './containers/MathObjects/services/activeObject/reducer'
 
 export default combineReducers( {
@@ -12,5 +13,6 @@ export default combineReducers( {
   folders,
   mathGraphics,
   mathSymbols,
+  sliderValues,
   activeObject
 } )

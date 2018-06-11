@@ -1,11 +1,11 @@
 import React from 'react'
 import SortableList from 'components/SortableList'
-import { Point, Variable } from 'containers/MathObjects'
+import { Point, Variable, VariableSlider } from 'containers/MathObjects'
 import CollapsedIndicator from './CollapsedIndicator'
 import Collapsible from 'react-collapsible'
 import PropTypes from 'prop-types'
 import MathObject from 'containers/MathObjects/MathObject'
-import { FOLDER, POINT, VARIABLE } from 'containers/MathObjects/mathObjectTypes'
+import { FOLDER, POINT, VARIABLE, VARIABLE_SLIDER } from 'containers/MathObjects/mathObjectTypes'
 import theme from 'constants/theme'
 
 Folder.propTypes = {
@@ -69,6 +69,8 @@ function renderItem( { id, type } ) {
       return <Point id={id}/>
     case VARIABLE:
       return <Variable id={id}/>
+    case VARIABLE_SLIDER:
+      return <VariableSlider id={id}/>
     default:
       throw Error(`Cannot render object ${id} with type ${type}`)
 

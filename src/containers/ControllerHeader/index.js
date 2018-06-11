@@ -4,7 +4,8 @@ import { getActiveFolder } from './selectors'
 import {
   createPoint,
   createVariable,
-  createFolder
+  createFolder,
+  createVariableSlider
 } from 'containers/MathObjects'
 import { setActiveObject } from 'containers/MathObjects/services/activeObject/actions'
 import { setContentCollapsed } from 'containers/MathObjects/Folder/actions'
@@ -39,6 +40,7 @@ const mapDispatchToProps = ( {
   createPoint,
   createFolder,
   createVariable,
+  createVariableSlider,
   setActiveObject,
   setContentCollapsed
 } )

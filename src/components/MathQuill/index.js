@@ -91,14 +91,24 @@ export default class MathQuill extends PureComponent {
       }, config)
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     const config = this.getConfig(this.props)
-    const mathField = MQ.MathField(this._span, config)
-    // mathField.latex will trigger onEdit, but let's
-    // not do that the first time. This is initialization, not edit.
+    this.mathField = MQ.MathField(this._span, config)
+    this.setLatex(this.props.latex)
+  }
+
+  setLatex(latex) {
+    if (latex === this.mathField.latex()) {
+      return
+    }
+    // mathField.latex will trigger onEdit, so supress that.
     this.preventOnEdit = true
-    mathField.latex(this.props.latex)
+    this.mathField.latex(this.props.latex)
     this.preventOnEdit = false
+  }
+
+  componentDidUpdate() {
+    this.setLatex(this.props.latex)
   }
 
   onEdit = (mathField) => {
@@ -106,10 +116,6 @@ export default class MathQuill extends PureComponent {
 
     if (handler && !this.preventOnEdit) {
       handler(mathField)
-    }
-
-    if (this.props.latex !== mathField.latex()) {
-      mathField.latex(this.props.latex)
     }
 
   }
@@ -161,8 +167,14 @@ export class StaticMath extends PureComponent {
     className: PropTypes.string
   }
 
-  componentDidMount = () => {
-    MQ.StaticMath(this._span)
+  componentDidMount() {
+    this.staticMath = MQ.StaticMath(this._span)
+  }
+
+  componentDidUpdate() {
+    if (this.props.latex !== this.staticMath.latex()) {
+      this.staticMath.latex(this.props.latex)
+    }
   }
 
   render() {

@@ -26,9 +26,7 @@ export default class Variable extends PureComponent {
         id={this.props.id}
         type={VARIABLE}
       >
-        <MainRow
-          innerRef={this.getRef}
-        >
+        <MainRow>
           <MathInput
             style={{ flex: 0 }}
             field={'name'}
