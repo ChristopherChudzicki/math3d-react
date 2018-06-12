@@ -8,6 +8,7 @@ import {
 SliderValueDisplay.propTypes = {
   name: PropTypes.string.isRequired,
   nameValidators: PropTypes.arrayOf(PropTypes.func).isRequired,
+  validateNameAgainst: PropTypes.any,
   valueText: PropTypes.string.isRequired,
   onTextChange: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
@@ -25,6 +26,7 @@ export default function SliderValueDisplay(props) {
         errorMsg={props.errors.name}
         onErrorChange={props.onErrorChange}
         validators={props.nameValidators}
+        validateAgainst={props.validateNameAgainst}
       />
       <StaticMathLarge
         latex='='

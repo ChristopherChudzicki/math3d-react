@@ -40,7 +40,7 @@ export function isAssignmentLHS(parser, latex) {
   }
 }
 
-export function isValidName(usedNames, parser, latex) {
+export function isValidName(parser, latex, { usedNames } ) {
   const name = parser.parse(latex).name
   if (name === undefined) {
     throw Error(`Parse Error: Expression ${latex} does not have a name.`)
@@ -54,6 +54,28 @@ export function isValidName(usedNames, parser, latex) {
 
   return {
     isValid: true
+  }
+}
+
+// This validates the overall assignment, but we associate it with LHS for
+// convenience
+export function isAssignment(parser, latexLHS, { latexRHS } ) {
+  const { isValid: validRHS } = isAssignmentRHS(parser, latexRHS)
+  if (!validRHS) {
+    // The overall assignment is not valid, but it's not the LHS's fault
+    return { isValid: true }
+  }
+  try {
+    parser.parse(latexLHS + '=' + latexRHS)
+    return {
+      isValid: true
+    }
+  }
+  catch (error) {
+    return {
+      isValid: false,
+      errorMsg: `Parse Error: ${error.message}`
+    }
   }
 }
 
