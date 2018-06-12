@@ -2,7 +2,7 @@ import VariableSlider from './components/VariableSlider'
 import { connect } from 'react-redux'
 import { setError, setProperty } from 'containers/MathObjects/actions'
 import { VARIABLE_SLIDER, setSliderValue } from './actions'
-import { getUsedSymbols } from '../selectors'
+import { getValidateNameAgainst } from '../selectors'
 import { parser } from 'constants/parsing'
 
 const mapStateToProps = ( { mathSymbols, sliderValues }, ownProps) => {
@@ -14,7 +14,7 @@ const mapStateToProps = ( { mathSymbols, sliderValues }, ownProps) => {
     value: sliderValues[id], // number
     valueText: mathSymbols[id].value, // nullable string
     errors: mathSymbols[id].errors,
-    validateNameAgainst: getUsedSymbols(parser, mathSymbols, id)
+    validateNameAgainst: getValidateNameAgainst(parser, mathSymbols, id)
   }
 }
 

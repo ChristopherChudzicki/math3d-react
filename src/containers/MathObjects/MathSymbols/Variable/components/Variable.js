@@ -9,7 +9,8 @@ import {
 import { VARIABLE } from 'containers/MathObjects/mathObjectTypes'
 import {
   isAssignmentLHS,
-  isValidName
+  isValidName,
+  isAssignment
 } from 'containers/MathObjects/components/MathInput'
 
 export default class Variable extends PureComponent {
@@ -26,7 +27,8 @@ export default class Variable extends PureComponent {
 
   static nameValidators = [
     isAssignmentLHS,
-    isValidName
+    isValidName,
+    isAssignment
   ]
 
   render() {

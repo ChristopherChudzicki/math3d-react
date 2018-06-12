@@ -1,8 +1,4 @@
 import createCachedSelector from 're-reselect'
-import {
-  isValidName,
-  isAssignmentLHS
-} from 'containers/MathObjects/components/MathInput'
 
 /**
  * Given an object mapping id to name, get set of all names except name
@@ -14,7 +10,7 @@ import {
  * @param  {string} omittedId id to omit
  * @returns {set} of names
  */
-export function calculateUsedSymbols(parser, mathSymbols, omittedId) {
+export function calculateUsedNames(parser, mathSymbols, omittedId) {
   return new Set(Object.keys(mathSymbols).filter(
     id => id !== omittedId
   ).map(
@@ -34,11 +30,23 @@ export function calculateUsedSymbols(parser, mathSymbols, omittedId) {
  * @param {string} id id of mathObject to omit
  * @returns {Set}
  */
-export const getUsedSymbols = createCachedSelector(
+export const getUsedNames = createCachedSelector(
   (parser, mathSymbols, omittedId) => parser,
   (parser, mathSymbols, omittedId) => mathSymbols,
   (parser, mathSymbols, omittedId) => omittedId,
-  (parser, mathSymbols, omittedId) => calculateUsedSymbols(parser, mathSymbols, omittedId)
+  (parser, mathSymbols, omittedId) => calculateUsedNames(parser, mathSymbols, omittedId)
 )(
   (parser, mathSymbols, omittedId) => omittedId
+)
+
+export const getValidateNameAgainst = createCachedSelector(
+  (parser, mathSymbols, id) => parser,
+  (parser, mathSymbols, id) => mathSymbols,
+  (parser, mathSymbols, id) => id,
+  (parser, mathSymbols, id) => ( {
+    usedNames: getUsedNames(parser, mathSymbols, id),
+    latexRHS: mathSymbols[id].value
+  } )
+)(
+  (parser, mathSymbols, id) => id
 )

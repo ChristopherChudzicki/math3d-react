@@ -70,14 +70,14 @@ describe('isNameValid', () => {
   test('accepts expressions with unused names', () => {
     const usedNames = new Set( ['a', 'f', 'g'] )
     const parser = new Parser()
-    const result = isValidName(parser, 'h\\left(x,y\\right)', usedNames)
+    const result = isValidName(parser, 'h\\left(x,y\\right)', { usedNames } )
     expect(result).toEqual( { isValid: true } )
   } )
 
   test('rejects expressions with already used names', () => {
     const usedNames = new Set( ['a', 'f', 'g'] )
     const parser = new Parser()
-    const result = isValidName(parser, 'g\\left(x,y\\right)', usedNames)
+    const result = isValidName(parser, 'g\\left(x,y\\right)', { usedNames } )
     expect(result).toEqual( {
       isValid: false,
       errorMsg: "Name Error: name 'g' is used more than once."
