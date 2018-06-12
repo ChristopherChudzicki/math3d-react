@@ -7,6 +7,10 @@ import {
   MainRow
 } from 'containers/MathObjects/components'
 import { VARIABLE } from 'containers/MathObjects/mathObjectTypes'
+import {
+  isAssignmentLHS,
+  isValidName
+} from 'containers/MathObjects/components/MathInput'
 
 export default class Variable extends PureComponent {
 
@@ -17,8 +21,13 @@ export default class Variable extends PureComponent {
     onEditProperty: PropTypes.func.isRequired,
     onErrorChange: PropTypes.func.isRequired,
     errors: PropTypes.objectOf(PropTypes.string).isRequired,
-    nameValidators: PropTypes.arrayOf(PropTypes.func).isRequired
+    validateNameAgainst: PropTypes.any
   }
+
+  static nameValidators = [
+    isAssignmentLHS,
+    isValidName
+  ]
 
   render() {
     return (
@@ -34,7 +43,8 @@ export default class Variable extends PureComponent {
             onTextChange={this.props.onEditProperty}
             errorMsg={this.props.errors.name}
             onErrorChange={this.props.onErrorChange}
-            validators={this.props.nameValidators}
+            validators={Variable.nameValidators}
+            validateAgainst={this.props.validateNameAgainst}
           />
           <StaticMathLarge
             latex='='

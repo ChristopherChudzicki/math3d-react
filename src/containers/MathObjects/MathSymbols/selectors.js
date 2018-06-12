@@ -42,29 +42,3 @@ export const getUsedSymbols = createCachedSelector(
 )(
   (parser, mathSymbols, omittedId) => omittedId
 )
-
-/**
- * returns array of name validators to be used by MathInput component
- * @param  {set} usedNames symbol names that have already been used
- * @return {function[]}
- */
-const calculateNameValidators = usedNames => [
-  isAssignmentLHS,
-  (parser, latex) => isValidName(usedNames, parser, latex)
-]
-
-/**
- * memoized selector that returns array of name validators to be used by
- * MathInput component
- * @param {Parser} parser instance
- * @param {object} mathSymbols
- * @param {string} mathSymbols[id]
- * @param {string} id id of mathObject to omit
- * @returns {function[]}
- */
-export const getNameValidators = createCachedSelector(
-  (parser, mathSymbols, omittedId) => getUsedSymbols(parser, mathSymbols, omittedId),
-  usedNames => calculateNameValidators(usedNames)
-)(
-  (parser, mathSymbols, omittedId) => omittedId
-)

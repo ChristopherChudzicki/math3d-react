@@ -2,7 +2,7 @@ import Variable from './components/Variable'
 import { connect } from 'react-redux'
 import { setError, setProperty } from 'containers/MathObjects/actions'
 import { VARIABLE } from './actions'
-import { getNameValidators } from '../selectors'
+import { getUsedSymbols } from '../selectors'
 import { parser } from 'constants/parsing'
 
 const mapStateToProps = ( { mathSymbols }, ownProps) => {
@@ -10,7 +10,7 @@ const mapStateToProps = ( { mathSymbols }, ownProps) => {
     name: mathSymbols[ownProps.id].name,
     value: mathSymbols[ownProps.id].value,
     errors: mathSymbols[ownProps.id].errors,
-    nameValidators: getNameValidators(parser, mathSymbols, ownProps.id)
+    validateNameAgainst: getUsedSymbols(parser, mathSymbols, ownProps.id)
   }
 }
 

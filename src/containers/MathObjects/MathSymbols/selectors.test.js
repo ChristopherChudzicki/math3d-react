@@ -1,10 +1,8 @@
 import {
   calculateUsedSymbols,
-  getUsedSymbols,
-  getNameValidators
- } from './selectors'
+  getUsedSymbols
+} from './selectors'
 import { Parser } from 'utils/mathParsing'
-import { isAssignmentLHS } from 'containers/MathObjects/components/MathInput'
 
 describe('calculateUsedSymbols', () => {
 
@@ -101,32 +99,4 @@ describe('getUsedSymbols', () => {
     )
   } )
 
-} )
-
-describe('getNameValidators', () => {
-
-  test('caching works as expected', () => {
-    const parser = new Parser()
-    const mathScope = { id0: { name: 'a' } }
-
-    getNameValidators(parser, mathScope, 'id0')
-    const selector = getNameValidators.getMatchingSelector(parser, mathScope, 'id0')
-
-    expect(
-      getNameValidators(parser, mathScope, 'id0')
-    ).toBe(
-      getNameValidators(parser, mathScope, 'id0')
-    )
-    expect(selector.recomputations()).toBe(1)
-
-  } )
-
-  test('Returns the expected result', () => {
-    const parser = new Parser()
-    const mathScope = { id0: { name: 'a' } }
-    const nameValidators = getNameValidators(parser, mathScope, 'id0')
-    expect(nameValidators[0] ).toBe(isAssignmentLHS)
-    expect(nameValidators[1] ).toEqual(expect.any(Function))
-    expect(nameValidators[1] ).toHaveLength(2)
-  } )
 } )

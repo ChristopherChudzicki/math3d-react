@@ -40,7 +40,7 @@ export function isAssignmentLHS(parser, latex) {
   }
 }
 
-export function isValidName(usedNames, parser, latex) {
+export function isValidName(parser, latex, usedNames) {
   const name = parser.parse(latex).name
   if (name === undefined) {
     throw Error(`Parse Error: Expression ${latex} does not have a name.`)

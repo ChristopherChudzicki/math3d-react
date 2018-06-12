@@ -19,10 +19,10 @@ const ErrorContainer = styled.div`
 
 export default class MathInput extends PureComponent {
 
-  static validate(validators, parser, latex) {
+  static validate(validators, parser, latex, validateAgainst) {
 
     for (const validator of validators) {
-      const { isValid, errorMsg } = validator(parser, latex)
+      const { isValid, errorMsg } = validator(parser, latex, validateAgainst)
       if (errorMsg) {
         return { isValid, errorMsg }
       }
@@ -39,6 +39,7 @@ export default class MathInput extends PureComponent {
     parser: PropTypes.object.isRequired,
     size: PropTypes.oneOf( ['large', 'small'] ).isRequired, // TODO: implement this
     validators: PropTypes.arrayOf(PropTypes.func).isRequired,
+    validateAgainst: PropTypes.any,
     // (latex) => ...
     onTextChange: PropTypes.func.isRequired,
     // (errorProp, errorMsg) => ...
@@ -95,13 +96,14 @@ export default class MathInput extends PureComponent {
   componentDidMount() {
     const {
       validators,
+      validateAgainst,
       field: errorProp,
       errorMsg,
       latex
     } = this.props
     const {
       errorMsg: newErrorMsg
-    } = MathInput.validate(validators, parser, latex)
+    } = MathInput.validate(validators, parser, latex, validateAgainst)
     if (errorMsg !== newErrorMsg) {
       this.onErrorChange(errorProp, newErrorMsg)
     }
@@ -116,14 +118,16 @@ export default class MathInput extends PureComponent {
   componentDidUpdate(prevProps) {
     const {
       validators,
+      validateAgainst,
       errorMsg,
       parser,
       latex,
       field: errorProp
     } = this.props
 
-    const needsValidation = validators !== prevProps.validators ||
-      latex !== prevProps.latex
+    const needsValidation = validateAgainst !== prevProps.validateAgainst ||
+      latex !== prevProps.latex ||
+      validators !== prevProps.validators
 
     if (!needsValidation) {
       return
@@ -131,7 +135,7 @@ export default class MathInput extends PureComponent {
 
     const {
       errorMsg: newErrorMsg
-    } = MathInput.validate(validators, parser, latex)
+    } = MathInput.validate(validators, parser, latex, validateAgainst)
     if (errorMsg !== newErrorMsg) {
       this.onErrorChange(errorProp, newErrorMsg)
     }

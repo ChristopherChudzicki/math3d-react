@@ -4,7 +4,11 @@ import MathObject from 'containers/MathObjects/MathObject'
 import {
   MainRow
 } from 'containers/MathObjects/components'
-import { isNumeric } from 'containers/MathObjects/components/MathInput'
+import {
+  isNumeric,
+  isAssignmentLHS,
+  isValidName
+} from 'containers/MathObjects/components/MathInput'
 import { VARIABLE_SLIDER } from 'containers/MathObjects/mathObjectTypes'
 import SliderValueDisplay from './SliderValueDisplay'
 import SliderWithLimits from './SliderWithLimits'
@@ -27,7 +31,7 @@ export default class VariableSlider extends PureComponent {
     onErrorChange: PropTypes.func.isRequired,
     onSliderChange: PropTypes.func.isRequired,
     errors: PropTypes.objectOf(PropTypes.string).isRequired,
-    nameValidators: PropTypes.arrayOf(PropTypes.func).isRequired
+    validateNameAgainst: PropTypes.any
   }
 
   static defaultProps = {
@@ -36,6 +40,11 @@ export default class VariableSlider extends PureComponent {
     baseAnimationDuration: 4,
     animationMultiplier: 1
   }
+
+  static nameValidators = [
+    isAssignmentLHS,
+    isValidName
+  ]
 
   static valueValidators = [
     isNumeric
@@ -63,7 +72,8 @@ export default class VariableSlider extends PureComponent {
         <MainRow>
           <SliderValueDisplay
             name={this.props.name}
-            nameValidators={this.props.nameValidators}
+            nameValidators={VariableSlider.nameValidators}
+            validateNameAgainst={this.props.validateNameAgainst}
             valueText={valueText === null ? `${value}` : valueText}
             onTextChange={this.props.onEditProperty}
             errors={this.props.errors}
