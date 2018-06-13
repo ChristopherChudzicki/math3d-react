@@ -50,32 +50,40 @@ const DEFAULT_SCOPE = {}
  */
 
 /**
+ * @typedef {Object.<string, string>} Symbols
+ * mapping from symbol names to symbol values. Symbol values *must* be
+ * parserable by a Parser class instance. Example:
+ * { a: 'a=5', f: 'f(t)=t^2 + a' }
+ *
+ * @typedef {Object.<string, number|function|array>} Scope
+ * mapping from symbol names to evaluated symbol values. Example:
+ * { a: 5, f: t => t**2 + 5 }
+ *
+ * @typedef {Object.<string, error>} SymbolsErrors
+ * mapping from symbol names to evaluation errors
+ *
+ * @typedef {Object.<string, set>} ChildMap
+ * mapping from symbol name to direct children their direct children in the
+ * dependency graph. Example:
+ * { a: Set() { 'b', 'c' }  b: Set() { 'c' }, c: Set() {} }
+ *
+ * @typedef {Object.<string, string>} UnmetDependencies
+ * object that maps node names to name of one of its unmet dependencies
+ */
+
+/**
  * evaluates a serialized scope from scratch or updates an existing scope
  *
  * @param  {Parser} parser for evaluating mathematical expressions
- * @param  {object} symbols
- * @param  {string} symbols[symbolName] An assignment expression,e.g.,
- *         a = b^2 or f(r, q) = r*sin(q)
- * @param  {?object} oldScope
- * @param  {number | function} oldScope[symbolName] a partial initial scope,
- *         e.g., { a: 4, b: -2, f: x => x**2 }
- * @param {?array | set} changed which serialized symbol values have changed.
- *  Starting from oldScope, only update these symbols and their children
+ * @param  {Symbols} symbols
+ * @param  {?Scope} oldScope
+ * @param {?array|set} changed which serialized symbol values have changed.
+ *   Starting from oldScope, only update these symbols and their children
  *
  * Note: The optional arguments oldScope and changed should NOT be used if
  * deleting symbols from or adding symbols to the scope. These arguments are
  * intended to improve performance when changing a single symbol's very often,
  * e.g., when the symbol's value is changed by a slider
- *
- * Comment about UNMET DEPENDENCIES:
- * We explicitly remove all unmet dependencies before trying to evaluate
- * anything because MathJS has trouble telling when FunctionAssignmentNodes
- * have unmet dependencies. In particular:
- *  - AssignmentNode:
- *    c = math.parse('c=a+b').eval({b:5}) // raises error, 'a is undefined'
- *  - FunctionAssignmentNode:
- *    f = math.parse('f(t)=t+a+b').eval({b:5}) // does not raise error
- *    f(1) // raises error
  *
  */
 export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE, changed = null) {
@@ -109,6 +117,28 @@ export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE, changed = n
 
 }
 
+/**
+ * Removes symbols with unmet dependencies
+ *
+ * Comment about unmet dependencies:
+ * We explicitly remove all unmet dependencies before trying to evaluate
+ * anything because MathJS has trouble telling when FunctionAssignmentNodes
+ * have unmet dependencies. In particular:
+ *  - AssignmentNode:
+ *    c = math.parse('c=a+b').eval({b:5}) // raises error, 'a is undefined'
+ *  - FunctionAssignmentNode:
+ *    f = math.parse('f(t)=t+a+b').eval({b:5}) // does not raise error
+ *    f(1) // raises error
+ * We'd like to catch the error in f when evaluating the scope, rather than
+ * waiting to evaluate the function f.
+ *
+ * @param  {Symbols} symbols
+ * @param  {UnmetDependencies} unmetDependencies
+ * @return {object} result
+ *    @property {Symbols} safeSymbols same as symbols, but with unmet
+ *      dependencies removed
+ *    @property {SymbolsErrors} dependencyErrors
+ */
 function removeUnmetDependencies(symbols, unmetDependencies) {
   // optimization: quick exit if no unmet dependencies
   if (Object.keys(unmetDependencies).length === 0) {
@@ -136,10 +166,9 @@ function removeUnmetDependencies(symbols, unmetDependencies) {
  * Determines a valid evaluation order for symbols. If onlyTheseAndChildren is
  * supplied, only returns those nodes and their children.
  *
- * @param  {object} symbols
- * @param  {string} symbols[symbolName] An assignment expression, e.g., a = b^2 or f(r, q) = r*sin(q)
- * @param  {Parser} parser
- * @param  {?array | Set} onlyTheseAndChildren
+ * @param  {Symbols} symbols
+ * @param  {ChildMap} childMap pre-calculated for symbols
+ * @param  {?array|Set} onlyTheseAndChildren
  *
  * @returns {array} of symbol names, a valid evaluation order for symbols
  */
@@ -169,13 +198,14 @@ export function getEvalOrder(symbols, childMap, onlyTheseAndChildren = null) {
 }
 
 /**
- * Generates an object mapping symbol names to child symbols
+ * Detect direct children of all nodes and detect nodes with unmet dependencies
  *
- * @param  {object} symbols
- * @param  {string} symbols[symbolName] An assignment expression, e.g., a = b^2 or f(r, q) = r*sin(q)
+ * @param  {Symbols} symbols
  * @param  {Parser} parser
  *
- * @returns {object} a mapping from symbol names to a set of direct children node names
+ * @returns {object} result
+ *    @property {ChildMap} childMap
+ *    @property {UnmetDependencies} unmetDependencies
  */
 export function getChildMap(symbols, parser) {
 
@@ -217,8 +247,8 @@ export function getChildMap(symbols, parser) {
 /**
  * get all descendants of a single node in a directed graph
  *
- * @param  {object} childMap
- * @param  {Set<string>} childMap[node] set of direct children nodenames
+ * @param  {ChildMap} childMap
+ * @returns {set} the given node and all of its descendents
  */
 export function getDescendantsOfNode(node, childMap) {
   const descendants = new Set( [node] )
@@ -234,6 +264,12 @@ export function getDescendantsOfNode(node, childMap) {
   return descendants
 }
 
+/**
+ * get all descendants of nodes in a directed graph
+ *
+ * @param  {set|array} nodes
+ * @returns {set} the given nodes and all of their descendents
+ */
 export function getDescendants(nodes, childMap) {
   const children = new Set()
   nodes.forEach(node => {
