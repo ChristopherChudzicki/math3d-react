@@ -321,22 +321,39 @@ describe('handling unmet dependencies', () => {
       expect(childMap).toEqual(expectedChildMap)
     } )
 
-    it('returns unmetDependencies as a set', () => {
+    it('returns object mapping symbols to their unmet dependency', () => {
       expect(unmetDependencies).toEqual( {
         y: 'x',
         z: 'x',
         f: 'w',
-        'g': 'w'
+        g: 'w'
       } )
     } )
   } )
 
   describe('how evalScope handles unmet dependencies', () => {
+    const parser = new Parser()
+    const { scope, errors } = evalScope(parser, symbols)
     it('evaluates as much of the scope as it can', () => {
-      expect(1).toBe(2) // finish this
+      const expectedScope = {
+        a: 2,
+        b: 3,
+        c: 5,
+        d: 28
+      }
+      expect(scope).toNearlyEqual(expectedScope)
     } )
 
-    it('stores errors for the unmet dependencies', () => {} )
+    it('stores errors for the unmet dependencies', () => {
+      expect(() => { throw errors.y } )
+        .toThrow('Eval Error: Depends on undefined symbol x')
+      expect(() => { throw errors.z } )
+        .toThrow('Eval Error: Depends on undefined symbol x')
+      expect(() => { throw errors.f } )
+        .toThrow('Eval Error: Depends on undefined symbol w')
+      expect(() => { throw errors.g } )
+        .toThrow('Eval Error: Depends on undefined symbol w')
+    } )
   } )
 
 } )

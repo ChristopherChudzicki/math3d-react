@@ -86,8 +86,11 @@ export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE, changed = n
     safeSymbols,
     dependencyErrors
   } = removeUnmetDependencies(symbols, unmetDependencies)
+  const safeChildMap = Object.keys(unmetDependencies).length === 0
+    ? childMap
+    : getChildMap(safeSymbols, parser).childMap
 
-  const evalOrder = getEvalOrder(safeSymbols, childMap, changed)
+  const evalOrder = getEvalOrder(safeSymbols, safeChildMap, changed)
   const initial = {
     scope: { ...oldScope }, // copy oldScope, not mutate
     errors: dependencyErrors,
@@ -107,7 +110,26 @@ export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE, changed = n
 }
 
 function removeUnmetDependencies(symbols, unmetDependencies) {
-  return { safeSymbols: symbols, dependencyErrors: {} }
+  // optimization: quick exit if no unmet dependencies
+  if (Object.keys(unmetDependencies).length === 0) {
+    return { safeSymbols: symbols, dependencyErrors: {} }
+  }
+
+  const omitThese = new Set(Object.keys(unmetDependencies))
+  const safeSymbols = Object.keys(symbols).reduce((acc, symbolName) => {
+    if (!omitThese.has(symbolName)) {
+      acc[symbolName] = symbols[symbolName]
+    }
+    return acc
+  }, {} )
+
+  const dependencyErrors = Object.keys(unmetDependencies).reduce(
+    (acc, symbolName) => {
+      acc[symbolName] = Error(`Eval Error: Depends on undefined symbol ${unmetDependencies[symbolName]}`)
+      return acc
+    }, {} )
+
+  return { safeSymbols, dependencyErrors }
 }
 
 /**
