@@ -108,7 +108,7 @@ describe('evalScope', () => {
     } )
 
     test("scope's symbol evaluations are correct", () => {
-      expect(updated).toEqual(expectedUpdated)
+      expect(scope).toNearlyEqual(expectedScope)
     } )
 
     test('updated symbols recorded accurately', () => {
@@ -124,14 +124,17 @@ describe('evalScope', () => {
   describe('storing errors', () => {
 
     const symbols = {
-      a: '[1, 2, 3]',
-      b: '2^a'
+      a: 'a=[1, 2, 3]',
+      b: 'b=2^a',
+      c: 'c=2+d',
+      d: 'd=2+w',
+      f: 'f(t)=t+d'
     }
 
     const parser = new Parser()
     const { scope, errors } = evalScope(parser, symbols)
 
-    test('Error is created and stored', () => {
+    test('Type Error is caught and stored', () => {
       expect(errors.b).toBeInstanceOf(Error)
       expect(() => { throw errors.b } )
         .toThrow('Unexpected type of argument')
@@ -156,6 +159,8 @@ describe('generating evaluation order', () => {
   *     f(x, y) = a*x^2 - b*y
   *     h(t) = t^2 -1
   *     p = c^2 + d^2
+  *     w = 100
+  *
   *
   * Graph:
   *
@@ -167,7 +172,9 @@ describe('generating evaluation order', () => {
   *         \                 /
   *         \-------->-------
   *
-   */
+  * w (isolated)
+  *
+  */
 
   const symbols = {
     a: 'a=\\frac{b}{2}-c',
@@ -175,10 +182,10 @@ describe('generating evaluation order', () => {
     f: 'f\\left(x,y\\right)=a\\cdot x^2-b\\cdot y',
     b: 'h\\left(4\\right)+c',
     h: 'h\\left(t\\right)=t^{2}-1',
-    c: '-1',
-    d: '1',
-    z: '100', // isolated node, no parents or children
-    p: 'c^2+d^2'
+    c: 'c=-1',
+    d: 'd=1',
+    w: 'w=100', // isolated node, no parents or children
+    p: 'p=c^2+d^2',
   }
 
   test('childMap is generated correctly', () => {
@@ -192,12 +199,13 @@ describe('generating evaluation order', () => {
       f: new Set(),
       h: new Set( ['b'] ),
       p: new Set(),
-      z: new Set()
+      w: new Set()
     }
 
-    const actualChildMap = getChildMap(symbols, parser)
+    const { childMap, unmetDependencies } = getChildMap(symbols, parser)
 
-    expect(actualChildMap).toEqual(expectedChildMap)
+    expect(childMap).toEqual(expectedChildMap)
+    expect(unmetDependencies).toEqual( {} )
 
   } )
 
@@ -224,9 +232,10 @@ describe('generating evaluation order', () => {
 
   test('total evaluation order is generated correctly', () => {
     const parser = new Parser()
-    const evalOrder = getEvalOrder(symbols, parser)
+    const { childMap } = getChildMap(symbols, parser)
+    const evalOrder = getEvalOrder(symbols, childMap)
     // This is a valid order. there are other valid orders, too
-    const expected = ['h', 'c', 'b', 'a', 'a2', 'f', 'd', 'p', 'z']
+    const expected = ['h', 'c', 'b', 'a', 'a2', 'f', 'd', 'p', 'w']
 
     expect(evalOrder).toEqual(expected)
   } )
@@ -234,7 +243,8 @@ describe('generating evaluation order', () => {
   test('Subset of evaluation order is generated correct', () => {
     const parser = new Parser()
     const onlyChildrenOf = ['b']
-    const evalOrder = getEvalOrder(symbols, parser, onlyChildrenOf)
+    const { childMap } = getChildMap(symbols, parser)
+    const evalOrder = getEvalOrder(symbols, childMap, onlyChildrenOf)
     // This is a valid order. there are other valid orders, too
     const expected = [ 'b', 'a', 'f', 'a2' ]
 
@@ -248,8 +258,85 @@ describe('generating evaluation order', () => {
       c: 'c=a+1'
     }
     const parser = new Parser()
+    const { childMap } = getChildMap(cyclicSymbols, parser)
 
-    expect(() => getEvalOrder(cyclicSymbols, parser)).toThrow('Cyclic dependency:')
+    expect(() => getEvalOrder(cyclicSymbols, childMap)).toThrow('Cyclic dependency:')
+  } )
+
+} )
+
+describe('handling unmet dependencies', () => {
+  /*
+  * a = 2
+  * b = 3
+  * c = a + b       5
+  * d = c^2 + b     28
+  * y = a + x
+  * z = y^2
+  * f(t) = t^2 + d * g(t)
+  * g(t) = t + w
+  * Missing:
+  * w, x
+  *
+  * Graph:
+  *
+  *      ?-- x -->
+  *               \
+  * a --->----->-- y -->-- z
+  *       \
+  * b -->--- c -->-- d ------->--- f
+  *       \-->--/               /
+  *                      g -->-/
+  *         ? -- w -->--/
+  *
+  */
+  const symbols = {
+    a: 'a=2',
+    b: 'b=3',
+    c: 'c=a+b',
+    d: 'd=c^2+b',
+    y: 'y=a+x',
+    z: 'z=y^2',
+    f: 'f(t)=t^2+d\\cdot g(t)',
+    g: 'g(t)=t+w'
+  }
+
+  describe('how getChildMap handles unmet dependencies', () => {
+    const parser = new Parser()
+    const { childMap, unmetDependencies } = getChildMap(symbols, parser)
+    it('includes unmet dependencies in the returned childMap', () => {
+      const expectedChildMap = {
+        x: new Set( ['y'] ),
+        y: new Set( ['z'] ),
+        z: new Set(),
+        a: new Set( ['c', 'y'] ),
+        b: new Set( ['c', 'd'] ),
+        c: new Set( ['d'] ),
+        d: new Set( ['f'] ),
+        w: new Set( ['g'] ),
+        g: new Set( ['f'] ),
+        f: new Set()
+      }
+
+      expect(childMap).toEqual(expectedChildMap)
+    } )
+
+    it('returns unmetDependencies as a set', () => {
+      expect(unmetDependencies).toEqual( {
+        y: 'x',
+        z: 'x',
+        f: 'w',
+        'g': 'w'
+      } )
+    } )
+  } )
+
+  describe('how evalScope handles unmet dependencies', () => {
+    it('evaluates as much of the scope as it can', () => {
+      expect(1).toBe(2) // finish this
+    } )
+
+    it('stores errors for the unmet dependencies', () => {} )
   } )
 
 } )

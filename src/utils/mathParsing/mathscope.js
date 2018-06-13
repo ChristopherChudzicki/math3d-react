@@ -66,19 +66,37 @@ const DEFAULT_SCOPE = {}
  * deleting symbols from or adding symbols to the scope. These arguments are
  * intended to improve performance when changing a single symbol's very often,
  * e.g., when the symbol's value is changed by a slider
+ *
+ * Comment about UNMET DEPENDENCIES:
+ * We explicitly remove all unmet dependencies before trying to evaluate
+ * anything because MathJS has trouble telling when FunctionAssignmentNodes
+ * have unmet dependencies. In particular:
+ *  - AssignmentNode:
+ *    c = math.parse('c=a+b').eval({b:5}) // raises error, 'a is undefined'
+ *  - FunctionAssignmentNode:
+ *    f = math.parse('f(t)=t+a+b').eval({b:5}) // does not raise error
+ *    f(1) // raises error
+ *
  */
 export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE, changed = null) {
   // Get the evaluation order and add symbols to scope
-  const evalOrder = getEvalOrder(symbols, parser, changed)
+  const { childMap, unmetDependencies } = getChildMap(symbols, parser)
+
+  const {
+    safeSymbols,
+    dependencyErrors
+  } = removeUnmetDependencies(symbols, unmetDependencies)
+
+  const evalOrder = getEvalOrder(safeSymbols, childMap, changed)
   const initial = {
     scope: { ...oldScope }, // copy oldScope, not mutate
-    errors: {},
+    errors: dependencyErrors,
     updated: new Set(evalOrder)
   }
 
   return evalOrder.reduce((acc, symbolName) => {
     try {
-      acc.scope[symbolName] = parser.parse(symbols[symbolName] ).eval(acc.scope)
+      acc.scope[symbolName] = parser.parse(safeSymbols[symbolName] ).eval(acc.scope)
     }
     catch (err) {
       acc.errors[symbolName] = err
@@ -86,6 +104,10 @@ export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE, changed = n
     return acc
   }, initial)
 
+}
+
+function removeUnmetDependencies(symbols, unmetDependencies) {
+  return { safeSymbols: symbols, dependencyErrors: {} }
 }
 
 /**
@@ -99,9 +121,8 @@ export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE, changed = n
  *
  * @returns {array} of symbol names, a valid evaluation order for symbols
  */
-export function getEvalOrder(symbols, parser, onlyTheseAndChildren = null) {
+export function getEvalOrder(symbols, childMap, onlyTheseAndChildren = null) {
   // construct dependency graph as array of nodes
-  const childMap = getChildMap(symbols, parser)
   const nodesToInclude = onlyTheseAndChildren
     ? [...getDescendants(onlyTheseAndChildren, childMap)]
     : Object.keys(childMap)
@@ -120,8 +141,9 @@ export function getEvalOrder(symbols, parser, onlyTheseAndChildren = null) {
   }, { edges: [], childless: [] } )
   const sorted = toposort(edges)
   const included = new Set(sorted)
+  const isolated = childless.filter(node => !included.has(node))
 
-  return [...sorted, ...childless.filter(node => !included.has(node))]
+  return [...sorted, ...isolated]
 }
 
 /**
@@ -140,14 +162,33 @@ export function getChildMap(symbols, parser) {
     return acc
   }, {} )
 
-  return Object.keys(symbols).reduce((childMap, symbolName) => {
+  // maps nodes to their direct unmet dependency
+  const unmetDirectDependencies = {}
+
+  const childMap = Object.keys(symbols).reduce((childMap, symbolName) => {
     const symbol = symbols[symbolName]
     const dependencies = parser.parse(symbol).dependencies
-    for (const dep of dependencies) {
+    dependencies.forEach(dep => {
+      if (childMap[dep] === undefined) {
+        childMap[dep] = new Set()
+        unmetDirectDependencies[symbolName] = dep
+      }
       childMap[dep].add(symbolName)
-    }
+    } )
     return childMap
   }, initial)
+
+  // for each node with a direct unmet dependency, mark all of its children
+  // as having the same unmet dependency
+  const unmetDependencies = Object.keys(unmetDirectDependencies).reduce(
+    (acc, node) => {
+      getDescendantsOfNode(node, childMap).forEach(
+        d => { acc[d] = unmetDirectDependencies[node] }
+      )
+      return acc
+    }, { } )
+
+  return { childMap, unmetDependencies }
 
 }
 
