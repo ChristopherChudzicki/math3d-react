@@ -3,11 +3,11 @@ import { connect } from 'react-redux'
 import { makeMapDispatchToProps } from '../actions'
 import { POINT } from './actions'
 
-const mapStateToProps = ( { mathGraphics }, ownProps) => ( {
+const mapStateToProps = ( { mathGraphics, errors }, ownProps) => ( {
   coords: mathGraphics[ownProps.id].coords,
   color: mathGraphics[ownProps.id].color,
   visible: mathGraphics[ownProps.id].visible,
-  errors: mathGraphics[ownProps.id].errors
+  errors: errors[ownProps.id]
 } )
 
 const mapDispatchToProps = makeMapDispatchToProps(POINT)

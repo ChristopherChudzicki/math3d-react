@@ -1,11 +1,14 @@
 import { combineReducers } from 'redux'
 import drawers from './containers/Drawer/reducer'
 import sortableTree from './containers/SortableTree/reducer'
-import folders from './containers/MathObjects/Folder/reducer'
-import mathGraphics from './containers/MathObjects/MathGraphics/reducer'
-import mathSymbols from './containers/MathObjects/MathSymbols/reducer'
 import sliderValues from './containers/MathObjects/MathSymbols/VariableSlider/reducer'
 import activeObject from './containers/MathObjects/services/activeObject/reducer'
+import {
+  folders,
+  mathGraphics,
+  mathSymbols,
+  errors
+} from './containers/MathObjects/reducer'
 
 export default combineReducers( {
   drawers,
@@ -13,6 +16,7 @@ export default combineReducers( {
   folders,
   mathGraphics,
   mathSymbols,
+  errors,
   sliderValues,
   activeObject
 } )

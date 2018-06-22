@@ -8,7 +8,9 @@ const defaultSettings = {
   type: POINT,
   coords: '\\left[0,0,0\\right]',
   description: 'Point',
-  errors: {}
+  errors: {},
+  color: 'red',
+  visible: true
 }
 
 export const createPoint = (id, parentFolderId, positionInFolder) => {
