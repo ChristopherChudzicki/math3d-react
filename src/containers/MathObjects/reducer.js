@@ -2,6 +2,7 @@ import update from 'immutability-helper'
 import {
   TOGGLE_PROPERTY,
   SET_PROPERTY,
+  UNSET_PROPERTY,
   CREATE_MATH_OBJECT,
   DELETE_MATH_OBJECT,
   ADD_ERROR,
@@ -47,6 +48,10 @@ export function createReducer(mathObjectNames) {
       case SET_PROPERTY:
         return update(state, {
           [payload.id]: { [payload.property]: { $set: payload.value } }
+        } )
+      case UNSET_PROPERTY:
+        return update(state, {
+          [payload.id]: { $unset: [payload.property] }
         } )
       case ADD_ERROR: {
         const { id, errorProp, errorMsg } = payload

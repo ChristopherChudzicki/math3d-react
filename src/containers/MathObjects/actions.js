@@ -1,5 +1,6 @@
 export const TOGGLE_PROPERTY = 'TOGGLE_PROPERTY'
 export const SET_PROPERTY = 'SET_PROPERTY'
+export const UNSET_PROPERTY = 'UNSET_PROPERTY'
 export const CREATE_MATH_OBJECT = 'CREATE_MATH_OBJECT'
 export const DELETE_MATH_OBJECT = 'DELETE_MATH_OBJECT'
 export const ADD_ERROR = 'ADD_ERROR'
@@ -14,6 +15,13 @@ export function toggleProperty(id, name, property) {
 }
 
 export function setProperty(id, name, property, value) {
+  if (value === undefined) {
+    return {
+      type: UNSET_PROPERTY,
+      name,
+      payload: { id, property }
+    }
+  }
   return {
     type: SET_PROPERTY,
     name,
