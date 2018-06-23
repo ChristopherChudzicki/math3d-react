@@ -83,7 +83,7 @@ export function makeMockStore() {
         type: VARIABLE,
         description: 'One more variable',
         name: 'b',
-        value: '[-2,1,4]'
+        value: '\\left[-2,1,4\\right]'
       },
       var3: {
         type: VARIABLE_SLIDER,
