@@ -42,9 +42,9 @@ export default class Variable extends PureComponent {
             style={{ flex: 0 }}
             field={'name'}
             latex={this.props.name}
-            onTextChange={this.props.setValidatedProperty}
+            onValidatedTextChange={this.props.setValidatedProperty}
             errorMsg={this.props.errors.name}
-            onErrorChange={this.props.setError}
+            onValidatorChange={this.props.setError}
             validators={Variable.nameValidators}
             validateAgainst={this.props.validateNameAgainst}
           />
@@ -54,8 +54,8 @@ export default class Variable extends PureComponent {
           <MathInput
             field='value'
             latex={this.props.value}
-            onTextChange={this.props.setValidatedProperty}
-            onErrorChange={this.props.setError}
+            onValidatedTextChange={this.props.setValidatedProperty}
+            onValidatorChange={this.props.setError}
             errorMsg={this.props.errors.value}
           />
         </MainRow>

@@ -51,10 +51,10 @@ export default class MathInput extends PureComponent {
     size: PropTypes.oneOf( ['large', 'small'] ).isRequired, // TODO: implement this
     validators: PropTypes.arrayOf(PropTypes.func).isRequired,
     validateAgainst: PropTypes.any,
-    // (latex) => ...
-    onTextChange: PropTypes.func.isRequired,
-    // (errorProp, errorMsg) => ...
-    onErrorChange: PropTypes.func.isRequired,
+    // (prop, latex, error) => ...
+    onValidatedTextChange: PropTypes.func.isRequired,
+    // (prop, error) => ...
+    onValidatorChange: PropTypes.func.isRequired,
     errorMsg: PropTypes.string,
     latex: PropTypes.string.isRequired,
     displayErrorDelay: PropTypes.number.isRequired // ms
@@ -67,12 +67,7 @@ export default class MathInput extends PureComponent {
     displayErrorDelay: 1500
   }
 
-  static getDerivedStateFromProps(props) {
-    return { hasError: Boolean(props.errorMsg) }
-  }
-
   state = {
-    hasError: false,
     isFocused: false,
     isPersistentError: false
   }
@@ -99,7 +94,8 @@ export default class MathInput extends PureComponent {
       errorType: 'PARSE_ERROR',
       errorMsg: this.detectErrors(latex)
     }
-    this.props.onTextChange(this.props.field, latex, error)
+    this.props.onValidatedTextChange(this.props.field, latex, error)
+    this.handleErrorPersistence(error.errorMsg)
   }
   onFocus() {
     this.setState( { isFocused: true } )
@@ -108,46 +104,42 @@ export default class MathInput extends PureComponent {
     this.setState( { isFocused: false } )
   }
 
-  async onErrorChange(errorProp, errorMsg) {
-    this.props.onErrorChange(errorProp, { errorType: 'PARSE_ERROR', errorMsg } )
+  async handleErrorPersistence(errorMsg) {
     if (!errorMsg) {
       this.setState( { isPersistentError: false } )
       this._errorId = null
       return
     }
-
+    if (this.state.isPersistentError) {
+      return
+    }
     // Wait and see if error persists
     const errorId = Symbol('Error Identifier')
     this._errorId = errorId
     await timeout(this.props.displayErrorDelay)
-    const sameError = (errorId === this._errorId) && errorMsg
-    if (sameError) {
+    const sameError = errorId === this._errorId
+    if (sameError && this._errorId) {
       this.setState( { isPersistentError: true } )
     }
 
   }
+  displayErrorNow(errorMsg) {
+    const isError = Boolean(errorMsg)
+    this._errorId = isError ? Symbol('Error Identifier') : null
+    this.setState( { isPersistentError: isError } )
+  }
 
   detectErrors(latex) {
-    const {
-      validators,
-      validateAgainst,
-      field: errorProp,
-      errorMsg
-    } = this.props
+    const { validators, validateAgainst } = this.props
     const {
       errorMsg: newErrorMsg
     } = MathInput.validate(validators, parser, latex, validateAgainst)
-    if (errorMsg !== newErrorMsg) {
-      this.onErrorChange(errorProp, newErrorMsg)
-    }
     return newErrorMsg
   }
 
   componentDidMount() {
-    const newErrorMsg = this.detectErrors(this.props.latex)
-    // If errors are present upon mounting, declare them persistent immediately
-    if (newErrorMsg) {
-      this.setState( { isPersistentError: true } )
+    if (this.props.errorMsg) {
+      this.displayErrorNow(this.props.errorMsg)
     }
     // force re-render after container has rendered
     this.forceUpdate()
@@ -157,17 +149,21 @@ export default class MathInput extends PureComponent {
     const {
       validators,
       validateAgainst,
-      latex
+      latex,
+      field
     } = this.props
 
-    const needsValidation = latex !== prevProps.latex || validators !== prevProps.validators ||
-     validateAgainst !== prevProps.validateAgainst
+    const validatorsChange = validators !== prevProps.validators ||
+      validateAgainst !== prevProps.validateAgainst
 
-    if (!needsValidation) {
-      return
+    if (validatorsChange) {
+      const error = {
+        errorType: 'PARSE_ERROR',
+        errorMsg: this.detectErrors(latex)
+      }
+      this.props.onValidatorChange(field, error)
+      this.displayErrorNow(error.errorMsg)
     }
-
-    this.detectErrors(latex)
 
   }
 
