@@ -19,8 +19,8 @@ export default class Variable extends PureComponent {
     id: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired, // latex
     name: PropTypes.string.isRequired, // latex
-    onEditProperty: PropTypes.func.isRequired,
-    onErrorChange: PropTypes.func.isRequired,
+    setValidatedProperty: PropTypes.func.isRequired,
+    setError: PropTypes.func.isRequired,
     errors: PropTypes.objectOf(PropTypes.string).isRequired,
     validateNameAgainst: PropTypes.any
   }
@@ -42,9 +42,9 @@ export default class Variable extends PureComponent {
             style={{ flex: 0 }}
             field={'name'}
             latex={this.props.name}
-            onTextChange={this.props.onEditProperty}
+            onTextChange={this.props.setValidatedProperty}
             errorMsg={this.props.errors.name}
-            onErrorChange={this.props.onErrorChange}
+            onErrorChange={this.props.setError}
             validators={Variable.nameValidators}
             validateAgainst={this.props.validateNameAgainst}
           />
@@ -54,8 +54,8 @@ export default class Variable extends PureComponent {
           <MathInput
             field='value'
             latex={this.props.value}
-            onTextChange={this.props.onEditProperty}
-            onErrorChange={this.props.onErrorChange}
+            onTextChange={this.props.setValidatedProperty}
+            onErrorChange={this.props.setError}
             errorMsg={this.props.errors.value}
           />
         </MainRow>

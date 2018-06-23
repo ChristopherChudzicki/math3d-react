@@ -7,7 +7,8 @@ import {
   folders,
   mathGraphics,
   mathSymbols,
-  errors
+  errors,
+  parseErrors
 } from './containers/MathObjects/reducer'
 
 export default combineReducers( {
@@ -17,6 +18,7 @@ export default combineReducers( {
   mathGraphics,
   mathSymbols,
   errors,
+  parseErrors,
   sliderValues,
   activeObject
 } )

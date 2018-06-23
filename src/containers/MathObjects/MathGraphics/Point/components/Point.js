@@ -20,11 +20,12 @@ export default class Point extends PureComponent {
     coords: PropTypes.string.isRequired, // latex
     color: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
-    onEditProperty: PropTypes.func.isRequired,
-    onToggleVisibility: PropTypes.func.isRequired,
-    onSetColor: PropTypes.func.isRequired,
-    onErrorChange: PropTypes.func.isRequired,
-    errors: PropTypes.objectOf(PropTypes.string).isRequired
+    errors: PropTypes.objectOf(PropTypes.string).isRequired,
+    setValidatedProperty: PropTypes.func.isRequired,
+    setProperty: PropTypes.func.isRequired,
+    toggleVisibility: PropTypes.func.isRequired,
+    setColor: PropTypes.func.isRequired,
+    setError: PropTypes.func.isRequired
   }
 
   render() {
@@ -36,8 +37,8 @@ export default class Point extends PureComponent {
           <StatusSymbol
             color={this.props.color}
             isFilled={this.props.visible}
-            onToggleVisibility={this.props.onToggleVisibility}
-            onPickColor={this.props.onSetColor}
+            onToggleVisibility={this.props.toggleVisibility}
+            onPickColor={this.props.setColor}
           />
         }
       >
@@ -46,8 +47,8 @@ export default class Point extends PureComponent {
             field='coords'
             errorMsg={this.props.errors.coords}
             latex={this.props.coords}
-            onTextChange={this.props.onEditProperty}
-            onErrorChange={this.props.onErrorChange}
+            onTextChange={this.props.setValidatedProperty}
+            onErrorChange={this.props.setError}
           />
           <Settings title='Point Settings'>
             <p>Hello</p>

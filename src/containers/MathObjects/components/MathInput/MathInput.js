@@ -17,6 +17,17 @@ const ErrorContainer = styled.div`
   width: 250px;
 `
 
+// TODO
+// Currently, onEdit triggers two error updates:
+// 1. when the edit occurs
+// 2. from onErrorChange.
+//
+// Remove props onErrorChange and onTextChange, switch to
+// onValidatedTextChange(prop, latex, error)
+// onValidatorChange(prop, error)
+//
+// will mess up my tests....
+
 export default class MathInput extends PureComponent {
 
   static validate(validators, parser, latex, validateAgainst) {
@@ -84,7 +95,11 @@ export default class MathInput extends PureComponent {
   }
   onEdit(mq) {
     const latex = mq.latex()
-    this.props.onTextChange(this.props.field, latex)
+    const error = {
+      errorType: 'PARSE_ERROR',
+      errorMsg: this.detectErrors(latex)
+    }
+    this.props.onTextChange(this.props.field, latex, error)
   }
   onFocus() {
     this.setState( { isFocused: true } )
@@ -93,57 +108,8 @@ export default class MathInput extends PureComponent {
     this.setState( { isFocused: false } )
   }
 
-  componentDidMount() {
-    const {
-      validators,
-      validateAgainst,
-      field: errorProp,
-      errorMsg,
-      latex
-    } = this.props
-    const {
-      errorMsg: newErrorMsg
-    } = MathInput.validate(validators, parser, latex, validateAgainst)
-    if (errorMsg !== newErrorMsg) {
-      this.onErrorChange(errorProp, newErrorMsg)
-    }
-    // If errors are present upon mounting, declare them persistent immediately
-    if (newErrorMsg) {
-      this.setState( { isPersistentError: true } )
-    }
-    // force re-render after container has rendered
-    this.forceUpdate()
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      validators,
-      validateAgainst,
-      errorMsg,
-      parser,
-      latex,
-      field: errorProp
-    } = this.props
-
-    const needsValidation = validateAgainst !== prevProps.validateAgainst ||
-      latex !== prevProps.latex ||
-      validators !== prevProps.validators
-
-    if (!needsValidation) {
-      return
-    }
-
-    const {
-      errorMsg: newErrorMsg
-    } = MathInput.validate(validators, parser, latex, validateAgainst)
-    if (errorMsg !== newErrorMsg) {
-      this.onErrorChange(errorProp, newErrorMsg)
-    }
-
-  }
-
   async onErrorChange(errorProp, errorMsg) {
-    this.props.onErrorChange(errorProp, errorMsg)
+    this.props.onErrorChange(errorProp, { errorType: 'PARSE_ERROR', errorMsg } )
     if (!errorMsg) {
       this.setState( { isPersistentError: false } )
       this._errorId = null
@@ -158,6 +124,50 @@ export default class MathInput extends PureComponent {
     if (sameError) {
       this.setState( { isPersistentError: true } )
     }
+
+  }
+
+  detectErrors(latex) {
+    const {
+      validators,
+      validateAgainst,
+      field: errorProp,
+      errorMsg
+    } = this.props
+    const {
+      errorMsg: newErrorMsg
+    } = MathInput.validate(validators, parser, latex, validateAgainst)
+    if (errorMsg !== newErrorMsg) {
+      this.onErrorChange(errorProp, newErrorMsg)
+    }
+    return newErrorMsg
+  }
+
+  componentDidMount() {
+    const newErrorMsg = this.detectErrors(this.props.latex)
+    // If errors are present upon mounting, declare them persistent immediately
+    if (newErrorMsg) {
+      this.setState( { isPersistentError: true } )
+    }
+    // force re-render after container has rendered
+    this.forceUpdate()
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      validators,
+      validateAgainst,
+      latex
+    } = this.props
+
+    const needsValidation = latex !== prevProps.latex || validators !== prevProps.validators ||
+     validateAgainst !== prevProps.validateAgainst
+
+    if (!needsValidation) {
+      return
+    }
+
+    this.detectErrors(latex)
 
   }
 

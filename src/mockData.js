@@ -41,6 +41,7 @@ function addFolder(store) {
 function addPoint(store, folderId) {
   const itemId = `item-${uniqueId()}`
   store.errors[itemId] = {}
+  store.parseErrors[itemId] = {}
   store.sortableTree[folderId].push(itemId)
   store.mathGraphics[itemId] = {
     type: POINT,
@@ -94,6 +95,12 @@ export function makeMockStore() {
       }
     },
     errors: {
+      var0: {},
+      var1: {},
+      var2: {},
+      var3: {}
+    },
+    parseErrors: {
       var0: {},
       var1: {},
       var2: {},

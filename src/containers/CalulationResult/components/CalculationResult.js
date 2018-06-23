@@ -2,16 +2,6 @@ import { Component } from 'react'
 import PropTypes from 'prop-types'
 import { ScopeEvaluator, Parser } from 'utils/mathParsing'
 
-// TODO: !!!Definitely do this.
-// With the current setup, each individual CalculationResult component will be
-// dispatching evaluation errors.
-//
-// Maybe it would be better to have two components:
-//
-// ScopeEvaluator: evaluates the scope and dispatches errors
-// ExpressionCalculator: takes a scope and evaluates expressions
-//
-// This seems like a good idea ...
 export default class CalculationResult extends Component {
 
   static propTypes = {
