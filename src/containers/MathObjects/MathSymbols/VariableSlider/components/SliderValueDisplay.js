@@ -12,7 +12,7 @@ SliderValueDisplay.propTypes = {
   valueText: PropTypes.string.isRequired,
   onValidatedTextChange: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
-  onValidatorChange: PropTypes.func.isRequired
+  onValidatorAndErrorChange: PropTypes.func.isRequired
 }
 
 export default function SliderValueDisplay(props) {
@@ -24,7 +24,7 @@ export default function SliderValueDisplay(props) {
         latex={props.name}
         onValidatedTextChange={props.onValidatedTextChange}
         errorMsg={props.errors.name}
-        onValidatorChange={props.onValidatorChange}
+        onValidatorAndErrorChange={props.onValidatorAndErrorChange}
         validators={props.nameValidators}
         validateAgainst={props.validateNameAgainst}
       />
@@ -37,7 +37,7 @@ export default function SliderValueDisplay(props) {
         latex={props.valueText}
         onValidatedTextChange={props.onValidatedTextChange}
         errorMsg={props.errors.value}
-        onValidatorChange={props.onValidatorChange}
+        onValidatorAndErrorChange={props.onValidatorAndErrorChange}
       />
     </Fragment>
   )

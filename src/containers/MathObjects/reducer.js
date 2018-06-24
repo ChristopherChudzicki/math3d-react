@@ -13,7 +13,6 @@ import {
   VARIABLE,
   VARIABLE_SLIDER,
   POINT,
-  ERROR,
   PARSE_ERROR
 } from './mathObjectTypes'
 
@@ -65,7 +64,6 @@ export function createReducer(mathObjectNames) {
 export const folders = createReducer(new Set( [FOLDER] ))
 export const mathSymbols = createReducer(new Set( [VARIABLE, VARIABLE_SLIDER] ))
 export const mathGraphics = createReducer(new Set( [POINT] ))
-export const errors = createReducer(new Set( [ERROR] ))
 
 export function createErrorReducer(errorTypes) {
   return (state = initialState, action) => {

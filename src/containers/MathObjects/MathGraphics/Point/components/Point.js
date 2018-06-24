@@ -48,7 +48,7 @@ export default class Point extends PureComponent {
             errorMsg={this.props.errors.coords}
             latex={this.props.coords}
             onValidatedTextChange={this.props.setValidatedProperty}
-            onValidatorChange={this.props.setError}
+            onValidatorAndErrorChange={this.props.setError}
           />
           <Settings title='Point Settings'>
             <p>Hello</p>

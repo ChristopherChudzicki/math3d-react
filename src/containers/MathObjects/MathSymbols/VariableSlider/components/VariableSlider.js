@@ -77,7 +77,7 @@ export default class VariableSlider extends PureComponent {
             valueText={valueText === null ? `${value}` : valueText}
             onValidatedTextChange={this.props.setValidatedProperty}
             errors={this.props.errors}
-            onValidatorChange={this.props.setError}
+            onValidatorAndErrorChange={this.props.setError}
           />
           <AnimationControls />
         </MainRow>
@@ -90,7 +90,7 @@ export default class VariableSlider extends PureComponent {
             minValue={-10}
             maxValue={10}
             errors={this.props.errors}
-            onValidatorChange={this.props.setError}
+            onValidatorAndErrorChange={this.props.setError}
             onSliderChange={this.onSliderChange}
           />
         </MainRow>

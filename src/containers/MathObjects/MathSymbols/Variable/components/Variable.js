@@ -31,6 +31,8 @@ export default class Variable extends PureComponent {
     isAssignment
   ]
 
+  static nameStyle = { flex: 0 }
+
   render() {
     return (
       <MathObject
@@ -39,12 +41,12 @@ export default class Variable extends PureComponent {
       >
         <MainRow>
           <MathInput
-            style={{ flex: 0 }}
+            style={Variable.nameStyle}
             field={'name'}
             latex={this.props.name}
             onValidatedTextChange={this.props.setValidatedProperty}
             errorMsg={this.props.errors.name}
-            onValidatorChange={this.props.setError}
+            onValidatorAndErrorChange={this.props.setError}
             validators={Variable.nameValidators}
             validateAgainst={this.props.validateNameAgainst}
           />
@@ -55,7 +57,7 @@ export default class Variable extends PureComponent {
             field='value'
             latex={this.props.value}
             onValidatedTextChange={this.props.setValidatedProperty}
-            onValidatorChange={this.props.setError}
+            onValidatorAndErrorChange={this.props.setError}
             errorMsg={this.props.errors.value}
           />
         </MainRow>

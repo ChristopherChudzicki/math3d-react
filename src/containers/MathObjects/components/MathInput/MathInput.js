@@ -17,29 +17,18 @@ const ErrorContainer = styled.div`
   width: 250px;
 `
 
-// TODO
-// Currently, onEdit triggers two error updates:
-// 1. when the edit occurs
-// 2. from onErrorChange.
-//
-// Remove props onErrorChange and onTextChange, switch to
-// onValidatedTextChange(prop, latex, error)
-// onValidatorChange(prop, error)
-//
-// will mess up my tests....
-
 export default class MathInput extends PureComponent {
 
   static validate(validators, parser, latex, validateAgainst) {
 
     for (const validator of validators) {
-      const { isValid, errorMsg } = validator(parser, latex, validateAgainst)
-      if (errorMsg) {
-        return { isValid, errorMsg }
+      const { isValid, error } = validator(parser, latex, validateAgainst)
+      if (error) {
+        return { isValid, error }
       }
     }
 
-    return { isValid: true }
+    return { isValid: true, error: { errorType: null, errorMsg: null } }
 
   }
 
@@ -54,7 +43,7 @@ export default class MathInput extends PureComponent {
     // (prop, latex, error) => ...
     onValidatedTextChange: PropTypes.func.isRequired,
     // (prop, error) => ...
-    onValidatorChange: PropTypes.func.isRequired,
+    onValidatorAndErrorChange: PropTypes.func.isRequired,
     errorMsg: PropTypes.string,
     latex: PropTypes.string.isRequired,
     displayErrorDelay: PropTypes.number.isRequired // ms
@@ -90,10 +79,8 @@ export default class MathInput extends PureComponent {
   }
   onEdit(mq) {
     const latex = mq.latex()
-    const error = {
-      errorType: 'PARSE_ERROR',
-      errorMsg: this.detectErrors(latex)
-    }
+    const error = this.detectErrors(latex)
+    console.log(error)
     this.props.onValidatedTextChange(this.props.field, latex, error)
     this.handleErrorPersistence(error.errorMsg)
   }
@@ -131,10 +118,8 @@ export default class MathInput extends PureComponent {
 
   detectErrors(latex) {
     const { validators, validateAgainst } = this.props
-    const {
-      errorMsg: newErrorMsg
-    } = MathInput.validate(validators, parser, latex, validateAgainst)
-    return newErrorMsg
+    const { error } = MathInput.validate(validators, parser, latex, validateAgainst)
+    return error
   }
 
   componentDidMount() {
@@ -145,7 +130,8 @@ export default class MathInput extends PureComponent {
     this.forceUpdate()
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
+
     const {
       validators,
       validateAgainst,
@@ -156,13 +142,15 @@ export default class MathInput extends PureComponent {
     const validatorsChange = validators !== prevProps.validators ||
       validateAgainst !== prevProps.validateAgainst
 
-    if (validatorsChange) {
-      const error = {
-        errorType: 'PARSE_ERROR',
-        errorMsg: this.detectErrors(latex)
-      }
-      this.props.onValidatorChange(field, error)
-      this.displayErrorNow(error.errorMsg)
+    if (!validatorsChange) {
+      return
+    }
+
+    const error = this.detectErrors(latex)
+    const changed = error.errorMsg !== this.props.errorMsg
+    if (changed) {
+      this.props.onValidatorAndErrorChange(field, error)
+      this.handleErrorPersistence(error.errorMsg)
     }
 
   }

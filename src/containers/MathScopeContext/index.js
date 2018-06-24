@@ -2,8 +2,9 @@ import { MathScopeProvider } from './components/MathScopeContext'
 import { connect } from 'react-redux'
 import { getSafeMathSymbols } from './selectors'
 
-const mapStateToProps = ( { mathSymbols, errors }, ownProps) => {
-  const safeMathSymbols = getSafeMathSymbols(mathSymbols, errors)
+const mapStateToProps = ( { mathSymbols, parseErrors }, ownProps) => {
+  const safeMathSymbols = getSafeMathSymbols(mathSymbols, parseErrors)
+  console.log(safeMathSymbols)
   return {
     evaluationResult: {
       scope: {},

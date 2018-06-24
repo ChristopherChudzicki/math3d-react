@@ -13,7 +13,7 @@ SliderWithLimits.propTypes = {
   minValue: PropTypes.number.isRequired,
   maxValue: PropTypes.number.isRequired,
   errors: PropTypes.object.isRequired,
-  onValidatorChange: PropTypes.func.isRequired,
+  onValidatorAndErrorChange: PropTypes.func.isRequired,
   onSliderChange: PropTypes.func.isRequired
 }
 
@@ -25,7 +25,7 @@ export default function SliderWithLimits(props) {
         style={{ flex: 0 }}
         latex={props.minText}
         onValidatedTextChange={props.onValidatedTextChange}
-        onValidatorChange={props.onValidatorChange}
+        onValidatorAndErrorChange={props.onValidatorAndErrorChange}
         errorMsg={props.errors.min}
       />
       <div style={ { flex: 1 } }>
@@ -43,7 +43,7 @@ export default function SliderWithLimits(props) {
         style={{ flex: 0 }}
         latex={props.maxText}
         onValidatedTextChange={props.onValidatedTextChange}
-        onValidatorChange={props.onValidatorChange}
+        onValidatorAndErrorChange={props.onValidatorAndErrorChange}
         errorMsg={props.errors.max}
       />
     </Fragment>
