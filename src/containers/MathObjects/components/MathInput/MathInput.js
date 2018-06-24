@@ -80,7 +80,6 @@ export default class MathInput extends PureComponent {
   onEdit(mq) {
     const latex = mq.latex()
     const error = this.detectErrors(latex)
-    console.log(error)
     this.props.onValidatedTextChange(this.props.field, latex, error)
     this.handleErrorPersistence(error.errorMsg)
   }
