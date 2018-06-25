@@ -124,7 +124,11 @@ export default class MathInput extends PureComponent {
   componentDidMount() {
     const { latex, field } = this.props
     const error = this.validateSelf(latex)
-    this.props.onValidatorAndErrorChange(field, error)
+    const changed = error.errorMsg !== this.props.errorMsg
+    if (changed) {
+      this.props.onValidatorAndErrorChange(field, error)
+      this.handleErrorPersistence(error.errorMsg)
+    }
     if (error.errorMsg) {
       this.displayErrorNow(error.errorMsg)
     }

@@ -60,8 +60,21 @@ describe('What MathInput renders', () => {
 // jest 23, which exposts mock.results
 
 describe("MathInout's validation process", () => {
-  it('should call validate and onValidatorAndErrorChange during mount', () => {
+  it('should call validate during mount', () => {
     shallowMathInput()
+    expect(validate).toHaveBeenCalledTimes(1)
+  } )
+
+  it('should NOT call onValidatorAndErrorChange during mount if error unchanged', () => {
+    shallowMathInput()
+    expect(validate).toHaveBeenCalledTimes(1)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(0)
+  } )
+
+  it('should call onValidatorAndErrorChange during mount if error', () => {
+    shallowMathInput( {
+      latex: 'E=mc^3' // invalid
+    } )
     expect(validate).toHaveBeenCalledTimes(1)
     expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
   } )
@@ -80,12 +93,12 @@ describe("MathInout's validation process", () => {
       errorMsg: 'Error0'
     } )
     expect(validate).toHaveBeenCalledTimes(1)
-    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(0)
     wrapper.setProps( {
       validators: [ () => ( { isValid: false, errorMsg: 'Error1' } ) ]
     } )
     expect(validate).toHaveBeenCalledTimes(2)
-    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(2)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
   } )
 
   it('should NOT call onValidatorAndErrorChange if validators property changes but not errorMsg', () => {
@@ -94,23 +107,23 @@ describe("MathInout's validation process", () => {
       errorMsg: 'Error0'
     } )
     expect(validate).toHaveBeenCalledTimes(1)
-    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(0)
     wrapper.setProps( {
       validators: [ () => ( { isValid: false, errorMsg: 'Error0' } ) ]
     } )
     expect(validate).toHaveBeenCalledTimes(2)
-    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(0)
   } )
 
   it('should not call onValidatorAndErrorChange if props validators stay same', () => {
     const wrapper = shallowMathInput()
     expect(validate).toHaveBeenCalledTimes(1)
-    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(0)
     // set some other prop, like 'errorMsg'
     // componentDidUpdate is still called, but needsValidation will be false
     wrapper.setProps( { errorMsg: 'Oh no!' } )
     expect(validate).toHaveBeenCalledTimes(1)
-    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(0)
   } )
 
   it('should call each validator funciton until one fails', () => {
