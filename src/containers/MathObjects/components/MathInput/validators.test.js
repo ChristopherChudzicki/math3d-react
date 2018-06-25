@@ -5,7 +5,6 @@ import {
   isNumeric
 } from './validators'
 import { Parser } from 'utils/mathParsing'
-import { PARSE_ERROR } from 'containers/MathObjects/mathObjectTypes'
 
 describe('isAssignmentRHS', () => {
   test('accepts valid right-hand-side of assignments', () => {
@@ -18,10 +17,7 @@ describe('isAssignmentRHS', () => {
     const parser = new Parser()
     const result = isAssignmentRHS(parser, 'f\\left(x\\right)+')
     expect(result).toEqual( {
-      error: {
-        errorMsg: 'Parse Error: Unexpected end of expression (char 6)',
-        errorType: PARSE_ERROR
-      },
+      errorMsg: 'Parse Error: Unexpected end of expression (char 6)',
       isValid: false
     } )
   } )
@@ -30,10 +26,7 @@ describe('isAssignmentRHS', () => {
     const parser = new Parser()
     const result = isAssignmentRHS(parser, 'f\\left(x\\right) = 5')
     expect(result).toEqual( {
-      error: {
-        errorMsg: 'Parse Error: Unexpected assignment',
-        errorType: PARSE_ERROR
-      },
+      errorMsg: 'Parse Error: Unexpected assignment',
       isValid: false
     } )
   } )
@@ -50,10 +43,7 @@ describe('isAssignmentLHS', () => {
     const parser = new Parser()
     expect(isAssignmentLHS(parser, 'f\\left(x')).toEqual( {
       isValid: false,
-      error: {
-        errorMsg: 'Parse Error: Parenthesis ) expected (char 6)',
-        errorType: PARSE_ERROR
-      }
+      errorMsg: 'Parse Error: Parenthesis ) expected (char 6)'
     } )
   } )
 
@@ -61,10 +51,7 @@ describe('isAssignmentLHS', () => {
     const parser = new Parser()
     expect(isAssignmentLHS(parser, 'a+b')).toEqual( {
       isValid: false,
-      error: {
-        errorMsg: 'Parse Error: Invalid left hand side of assignment operator = (char 4)',
-        errorType: PARSE_ERROR
-      }
+      errorMsg: 'Parse Error: Invalid left hand side of assignment operator = (char 4)'
     } )
   } )
 
@@ -73,10 +60,7 @@ describe('isAssignmentLHS', () => {
     const result = isAssignmentLHS(parser, 'a=')
     expect(result).toEqual( {
       isValid: false,
-      error: {
-        errorMsg: 'Parse Error: invalid symbol name.',
-        errorType: PARSE_ERROR
-      }
+      errorMsg: 'Parse Error: invalid symbol name.'
     } )
   } )
 
@@ -96,10 +80,7 @@ describe('isNameValid', () => {
     const result = isValidName(parser, 'g\\left(x,y\\right)', { usedNames } )
     expect(result).toEqual( {
       isValid: false,
-      error: {
-        errorType: PARSE_ERROR,
-        errorMsg: "Name Error: name 'g' is used more than once."
-      }
+      errorMsg: "Name Error: name 'g' is used more than once."
     } )
   } )
 } )
@@ -114,10 +95,7 @@ describe('isNumeric', () => {
     const parser = null
     expect(isNumeric(parser, '4.3.1')).toEqual( {
       isValid: false,
-      error: {
-        errorType: PARSE_ERROR,
-        errorMsg: 'Value Error: 4.3.1 is not a plain number'
-      }
+      errorMsg: 'Value Error: 4.3.1 is not a plain number'
     } )
   } )
 } )

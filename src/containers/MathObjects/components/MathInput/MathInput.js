@@ -6,6 +6,7 @@ import { isAssignmentRHS } from './validators'
 import styled from 'styled-components'
 import { timeout } from 'utils/functions'
 import { Tooltip } from 'antd'
+import { PARSE_ERROR } from 'containers/MathObjects/mathObjectTypes'
 
 const MathInputContainer = styled.div`
   flex:1;
@@ -22,13 +23,13 @@ export default class MathInput extends PureComponent {
   static validate(validators, parser, latex, validateAgainst) {
 
     for (const validator of validators) {
-      const { isValid, error } = validator(parser, latex, validateAgainst)
-      if (error) {
-        return { isValid, error }
+      const { isValid, errorMsg } = validator(parser, latex, validateAgainst)
+      if (!isValid) {
+        return { errorType: PARSE_ERROR, isValid, errorMsg }
       }
     }
 
-    return { isValid: true, error: { errorType: null, errorMsg: null } }
+    return { isValid: true, errorType: PARSE_ERROR }
 
   }
 
@@ -79,7 +80,7 @@ export default class MathInput extends PureComponent {
   }
   onEdit(mq) {
     const latex = mq.latex()
-    const error = this.detectErrors(latex)
+    const error = this.validateSelf(latex)
     this.props.onValidatedTextChange(this.props.field, latex, error)
     this.handleErrorPersistence(error.errorMsg)
   }
@@ -115,10 +116,9 @@ export default class MathInput extends PureComponent {
     this.setState( { isPersistentError: isError } )
   }
 
-  detectErrors(latex) {
-    const { validators, validateAgainst } = this.props
-    const { error } = MathInput.validate(validators, parser, latex, validateAgainst)
-    return error
+  validateSelf(latex) {
+    const { validators, validateAgainst, parser } = this.props
+    return MathInput.validate(validators, parser, latex, validateAgainst)
   }
 
   componentDidMount() {
@@ -129,7 +129,7 @@ export default class MathInput extends PureComponent {
     this.forceUpdate()
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
 
     const {
       validators,
@@ -145,7 +145,7 @@ export default class MathInput extends PureComponent {
       return
     }
 
-    const error = this.detectErrors(latex)
+    const error = this.validateSelf(latex)
     const changed = error.errorMsg !== this.props.errorMsg
     if (changed) {
       this.props.onValidatorAndErrorChange(field, error)

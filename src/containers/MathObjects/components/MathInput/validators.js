@@ -1,15 +1,10 @@
-import { PARSE_ERROR } from 'containers/MathObjects/mathObjectTypes'
-
 export function isAssignmentRHS(parser, latex) {
   try {
     const nodeType = parser.parse(latex).tree.type
     if (nodeType === 'AssignmentNode' || nodeType === 'FunctionAssignmentNode') {
       return {
         isValid: false,
-        error: {
-          errorType: PARSE_ERROR,
-          errorMsg: `Parse Error: Unexpected assignment`
-        }
+        errorMsg: `Parse Error: Unexpected assignment`
       }
     }
     return {
@@ -19,10 +14,7 @@ export function isAssignmentRHS(parser, latex) {
   catch (error) {
     return {
       isValid: false,
-      error: {
-        errorType: PARSE_ERROR,
-        errorMsg: `Parse Error: ${error.message}`
-      }
+      errorMsg: `Parse Error: ${error.message}`
     }
   }
 }
@@ -37,19 +29,13 @@ export function isAssignmentLHS(parser, latex) {
     }
     return {
       isValid: false,
-      error: {
-        errorType: PARSE_ERROR,
-        errorMsg: 'Parse Error: invalid symbol name.'
-      }
+      errorMsg: 'Parse Error: invalid symbol name.'
     }
   }
   catch (error) {
     return {
       isValid: false,
-      error: {
-        errorType: PARSE_ERROR,
-        errorMsg: `Parse Error: ${error.message}`
-      }
+      errorMsg: `Parse Error: ${error.message}`
     }
   }
 }
@@ -62,10 +48,7 @@ export function isValidName(parser, latex, { usedNames } ) {
   if (usedNames.has(name)) {
     return {
       isValid: false,
-      error: {
-        errorType: PARSE_ERROR,
-        errorMsg: `Name Error: name '${name}' is used more than once.`
-      }
+      errorMsg: `Name Error: name '${name}' is used more than once.`
     }
   }
 
@@ -91,10 +74,7 @@ export function isAssignment(parser, latexLHS, { latexRHS } ) {
   catch (error) {
     return {
       isValid: false,
-      error: {
-        errorType: PARSE_ERROR,
-        errorMsg: `Parse Error: ${error.message}`
-      }
+      errorMsg: `Parse Error: ${error.message}`
     }
   }
 }
@@ -103,10 +83,7 @@ export function isNumeric(parser, latex) {
   if (isNaN(latex)) {
     return {
       isValid: false,
-      error: {
-        errorType: PARSE_ERROR,
-        errorMsg: `Value Error: ${latex} is not a plain number`
-      }
+      errorMsg: `Value Error: ${latex} is not a plain number`
     }
   }
   return {
