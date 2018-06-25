@@ -1,3 +1,6 @@
+import { batchActions } from 'redux-batched-actions'
+import { setError } from 'services/errors'
+
 export const TOGGLE_PROPERTY = 'TOGGLE_PROPERTY'
 export const SET_PROPERTY = 'SET_PROPERTY'
 export const UNSET_PROPERTY = 'UNSET_PROPERTY'
@@ -15,13 +18,6 @@ export function toggleProperty(id, name, property) {
 }
 
 export function setProperty(id, name, property, value) {
-  if (value === undefined) {
-    return {
-      type: UNSET_PROPERTY,
-      name,
-      payload: { id, property }
-    }
-  }
   return {
     type: SET_PROPERTY,
     name,
@@ -30,18 +26,10 @@ export function setProperty(id, name, property, value) {
 }
 
 export function setPropertyAndError(id, name, property, value, error) {
-  return {
-    type: SET_PROPERTY_AND_ERROR,
-    name,
-    payload: { id, property, value, error }
-  }
-}
-
-export function setError(id, property, error) {
-  return {
-    type: SET_ERROR,
-    payload: { id, property, error }
-  }
+  return batchActions( [
+    setProperty(id, name, property, value),
+    setError(id, property, error)
+  ], 'SET_PROPERTY_AND_ERROR')
 }
 
 export function createMathObject(id, name, parentFolderId, positionInFolder, settings) {

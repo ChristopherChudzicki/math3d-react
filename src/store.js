@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import rootReducer from './reducer.js'
 import thunk from 'redux-thunk'
+import { enableBatching } from 'redux-batched-actions'
 
 import { makeMockStore } from './mockData'
 
@@ -26,7 +27,7 @@ const composedEnhancers = compose(
 )
 
 const store = createStore(
-  rootReducer,
+  enableBatching(rootReducer),
   initialState,
   composedEnhancers
 )

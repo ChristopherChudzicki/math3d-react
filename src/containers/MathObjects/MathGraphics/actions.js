@@ -1,9 +1,9 @@
 import {
   toggleProperty,
   setProperty,
-  setError,
   setPropertyAndError
 } from 'containers/MathObjects/actions'
+import { setError } from 'services/errors'
 
 export function makeMapDispatchToProps(type) {
   return (dispatch, ownProps) => {

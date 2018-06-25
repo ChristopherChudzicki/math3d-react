@@ -1,6 +1,7 @@
 import Variable from './components/Variable'
 import { connect } from 'react-redux'
-import { setPropertyAndError, setError } from 'containers/MathObjects/actions'
+import { setPropertyAndError } from 'containers/MathObjects/actions'
+import { setError } from 'services/errors'
 import { VARIABLE } from './actions'
 import { getValidateNameAgainst } from '../selectors'
 import { parser } from 'constants/parsing'

@@ -6,7 +6,7 @@ import { isAssignmentRHS } from './validators'
 import styled from 'styled-components'
 import { timeout } from 'utils/functions'
 import { Tooltip } from 'antd'
-import { PARSE_ERROR } from 'containers/MathObjects/mathObjectTypes'
+import { PARSE_ERROR } from 'services/errors'
 
 const MathInputContainer = styled.div`
   flex:1;

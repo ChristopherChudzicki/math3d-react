@@ -4,7 +4,6 @@ import {
   SET_PROPERTY,
   UNSET_PROPERTY,
   SET_PROPERTY_AND_ERROR,
-  SET_ERROR,
   CREATE_MATH_OBJECT,
   DELETE_MATH_OBJECT
 } from './actions'
@@ -12,8 +11,7 @@ import {
   FOLDER,
   VARIABLE,
   VARIABLE_SLIDER,
-  POINT,
-  PARSE_ERROR
+  POINT
 } from './mathObjectTypes'
 
 const initialState = {}
@@ -64,37 +62,3 @@ export function createReducer(mathObjectNames) {
 export const folders = createReducer(new Set( [FOLDER] ))
 export const mathSymbols = createReducer(new Set( [VARIABLE, VARIABLE_SLIDER] ))
 export const mathGraphics = createReducer(new Set( [POINT] ))
-
-export function createErrorReducer(errorTypes) {
-  return (state = initialState, action) => {
-
-    const { type, payload } = action
-
-    switch (type) {
-
-      case SET_PROPERTY_AND_ERROR: // falls through to SET_ERROR
-      case SET_ERROR: {
-        const { id, property } = payload
-        const { errorType, errorMsg } = payload.error
-        if (!errorTypes.has(errorType)) {
-          return state
-        }
-
-        return errorMsg
-          ? update(state, {
-            [id]: { [property]: { $set: errorMsg } }
-          } )
-          : update(state, {
-            [id]: { $unset: [property] }
-          } )
-      }
-
-      default:
-        return state
-
-    }
-
-  }
-}
-
-export const parseErrors = createErrorReducer(new Set( [PARSE_ERROR] ))

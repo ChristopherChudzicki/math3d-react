@@ -6,9 +6,12 @@ import activeObject from './containers/MathObjects/services/activeObject/reducer
 import {
   folders,
   mathGraphics,
-  mathSymbols,
-  parseErrors
+  mathSymbols
 } from './containers/MathObjects/reducer'
+
+import {
+  parseErrors
+} from './services/errors/reducer'
 
 export default combineReducers( {
   drawers,
