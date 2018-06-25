@@ -122,8 +122,11 @@ export default class MathInput extends PureComponent {
   }
 
   componentDidMount() {
-    if (this.props.errorMsg) {
-      this.displayErrorNow(this.props.errorMsg)
+    const { latex, field } = this.props
+    const error = this.validateSelf(latex)
+    this.props.onValidatorAndErrorChange(field, error)
+    if (error.errorMsg) {
+      this.displayErrorNow(error.errorMsg)
     }
     // force re-render after container has rendered
     this.forceUpdate()

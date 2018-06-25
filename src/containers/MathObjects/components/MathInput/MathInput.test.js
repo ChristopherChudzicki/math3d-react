@@ -5,22 +5,32 @@ import Adapter from 'enzyme-adapter-react-16'
 import { MathQuillLarge } from './MathQuillStyled'
 import { Tooltip } from 'antd'
 import { timeout } from 'utils/functions'
+import { PARSE_ERROR } from 'services/errors'
 
 Enzyme.configure( { adapter: new Adapter() } )
 
 const DISPLAY_ERROR_DELAY = 50
 const validate = jest.spyOn(MathInput, 'validate')
-const onErrorChange = jest.spyOn(MathInput.prototype, 'onErrorChange')
+// fake mathquill object
+function mq(latex) {
+  return { latex: () => latex }
+}
 
 beforeEach(() => {
   jest.clearAllMocks()
 } )
 
+const onValidatedTextChange = jest.fn()
+const onValidatorAndErrorChange = jest.fn()
+const field = 'TEST'
+
 const shallowMathInput = (props = {} ) => shallow(
   <MathInput
+    onValidatedTextChange={onValidatedTextChange}
+    onValidatorAndErrorChange={onValidatorAndErrorChange}
     onTextChange={() => null}
     onErrorChange={() => null}
-    field='TEST'
+    field={field}
     latex='E=mc^2'
     displayErrorDelay={DISPLAY_ERROR_DELAY}
     validators={[
@@ -45,33 +55,62 @@ describe('What MathInput renders', () => {
   } )
 } )
 
-describe("MathInout's validation function", () => {
-  it('should be called during mount', () => {
+// TODO: Everywhere below, check call arguments of onValidatedTextChange and
+// onValidatorAndErrorChange. This should be easy once react-scripts upgrades to
+// jest 23, which exposts mock.results
+
+describe("MathInout's validation process", () => {
+  it('should call validate and onValidatorAndErrorChange during mount', () => {
     shallowMathInput()
     expect(validate).toHaveBeenCalledTimes(1)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
   } )
 
-  it('should be called if latex property changes', () => {
+  it('should call onValidatedTextChange during onEdit', () => {
     const wrapper = shallowMathInput( { latex: '1+1' } )
     expect(validate).toHaveBeenCalledTimes(1)
-    wrapper.setProps( { latex: '1+2' } )
+    wrapper.instance().onEdit(mq('1+2'))
     expect(validate).toHaveBeenCalledTimes(2)
+    expect(onValidatedTextChange).toHaveBeenCalledTimes(1)
   } )
 
-  it('should be called if validators property changes', () => {
-    const wrapper = shallowMathInput()
+  it('should call onValidatorAndErrorChange if validators property AND errorMsg changes', () => {
+    const wrapper = shallowMathInput( {
+      validators: [ () => ( { isValid: false, errorMsg: 'Error0' } ) ],
+      errorMsg: 'Error0'
+    } )
     expect(validate).toHaveBeenCalledTimes(1)
-    wrapper.setProps( { validators: [] } )
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
+    wrapper.setProps( {
+      validators: [ () => ( { isValid: false, errorMsg: 'Error1' } ) ]
+    } )
     expect(validate).toHaveBeenCalledTimes(2)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(2)
   } )
 
-  it('should not be called if props latex and validators stay same', () => {
+  it('should NOT call onValidatorAndErrorChange if validators property changes but not errorMsg', () => {
+    const wrapper = shallowMathInput( {
+      validators: [ () => ( { isValid: false, errorMsg: 'Error0' } ) ],
+      errorMsg: 'Error0'
+    } )
+    expect(validate).toHaveBeenCalledTimes(1)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
+    wrapper.setProps( {
+      validators: [ () => ( { isValid: false, errorMsg: 'Error0' } ) ]
+    } )
+    expect(validate).toHaveBeenCalledTimes(2)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
+  } )
+
+  it('should not call onValidatorAndErrorChange if props validators stay same', () => {
     const wrapper = shallowMathInput()
     expect(validate).toHaveBeenCalledTimes(1)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
     // set some other prop, like 'errorMsg'
     // componentDidUpdate is still called, but needsValidation will be false
     wrapper.setProps( { errorMsg: 'Oh no!' } )
     expect(validate).toHaveBeenCalledTimes(1)
+    expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
   } )
 
   it('should call each validator funciton until one fails', () => {
@@ -121,67 +160,35 @@ describe("MathInput's basic focus and blur", () => {
 
 } )
 
-describe('MathInput.prototype.onErrorChange', () => {
-  it('is called if error message changes', () => {
-    const wrapper = shallowMathInput()
-    expect(wrapper.instance().props.errorMsg).toBe(undefined)
-    expect(onErrorChange).toHaveBeenCalledTimes(0)
-    wrapper.setProps( {
-      latex: 'E=mc^'
-    } )
-    expect(onErrorChange).toHaveBeenCalledTimes(1)
-  } )
-
-  it('is not called if error message does not change', () => {
-    const wrapper = shallowMathInput( {
-      latex: 'F=ma',
-      errorMsg: 'errorMsg!'
-    } )
-    // validate is called on mount, but errorMsg doesnt change
-    expect(validate).toHaveBeenCalledTimes(1)
-    expect(onErrorChange).toHaveBeenCalledTimes(0)
-    wrapper.setProps( {
-      latex: 'K=mv^2/2^'
-    } )
-    // validate is called again, since latex changed
-    // but errorMsg has not changed
-    expect(validate).toHaveBeenCalledTimes(2)
-    expect(onErrorChange).toHaveBeenCalledTimes(0)
-  } )
-} )
-
 describe('MathInput error persistence handling', () => {
   // isErrorPersistent flag is intended to avoid emphemeral errors that occur
   // while typing expressions
 
-  it('waits until new error stop happening before declaring error persistent', async() => {
+  it('waits until edits stop happening to display error IF originally valid', async() => {
     const wrapper = shallowMathInput()
-
-    wrapper.instance().onErrorChange('prop', 'errorMsg0')
     expect(wrapper.state('isPersistentError')).toBe(false)
+
+    wrapper.instance().handleErrorPersistence('Error')
     await timeout(0.9 * DISPLAY_ERROR_DELAY)
-
-    wrapper.instance().onErrorChange('prop', 'errorMsg1')
     expect(wrapper.state('isPersistentError')).toBe(false)
+
+    wrapper.instance().handleErrorPersistence('Error')
     await timeout(0.9 * DISPLAY_ERROR_DELAY)
-
-    wrapper.instance().onErrorChange('prop', 'errorMsg2')
     expect(wrapper.state('isPersistentError')).toBe(false)
-    await timeout(0.9 * DISPLAY_ERROR_DELAY)
 
-    wrapper.instance().onErrorChange('prop', 'errorMsg2')
-    expect(wrapper.state('isPersistentError')).toBe(false)
-    await timeout(1.1 * DISPLAY_ERROR_DELAY)
+    await timeout(0.2 * DISPLAY_ERROR_DELAY)
     expect(wrapper.state('isPersistentError')).toBe(true)
   } )
 
-  it('immediately marks isPersistentError: false when error is resolved', async() => {
+  it('immediately hides error when error stops happening', async() => {
     const wrapper = shallowMathInput()
-    wrapper.instance().onErrorChange('prop', 'errorMsg')
+    expect(wrapper.state('isPersistentError')).toBe(false)
+
+    wrapper.instance().handleErrorPersistence('Error')
     await timeout(1.1 * DISPLAY_ERROR_DELAY)
     expect(wrapper.state('isPersistentError')).toBe(true)
 
-    wrapper.instance().onErrorChange('prop', undefined)
+    wrapper.instance().handleErrorPersistence(undefined)
     expect(wrapper.state('isPersistentError')).toBe(false)
   } )
 
@@ -192,12 +199,11 @@ describe('MathInput error persistence handling', () => {
 
 } )
 
-test("MathInput's onEdit calls props.onTexTchange", () => {
-  const wrapper = shallowMathInput( {
-    onTextChange: jest.fn()
-  } )
+test("MathInput's onEdit calls props.onValidatedTextChange", () => {
+  const wrapper = shallowMathInput()
   const mq = { latex: () => 'testLatex' }
+  const error = { isValid: false, errorType: PARSE_ERROR, errorMsg: `errorMsg!` }
   wrapper.instance().onEdit(mq)
-  expect(wrapper.instance().props.onTextChange).toHaveBeenCalledTimes(1)
-  expect(wrapper.instance().props.onTextChange).toHaveBeenCalledWith('TEST', 'testLatex')
+  expect(wrapper.instance().props.onValidatedTextChange).toHaveBeenCalledTimes(1)
+  expect(wrapper.instance().props.onValidatedTextChange).toHaveBeenCalledWith('TEST', 'testLatex', error)
 } )
