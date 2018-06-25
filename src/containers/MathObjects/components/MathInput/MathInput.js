@@ -38,7 +38,6 @@ export default class MathInput extends PureComponent {
     className: PropTypes.string,
     field: PropTypes.string.isRequired,
     parser: PropTypes.object.isRequired,
-    size: PropTypes.oneOf( ['large', 'small'] ).isRequired, // TODO: implement this
     validators: PropTypes.arrayOf(PropTypes.func).isRequired,
     validateAgainst: PropTypes.any,
     // (prop, latex, error) => ...
@@ -52,7 +51,6 @@ export default class MathInput extends PureComponent {
 
   static defaultProps = {
     parser: parser,
-    size: 'large',
     validators: [isAssignmentRHS],
     displayErrorDelay: 1500
   }
