@@ -8,7 +8,7 @@ function getLeftAnimationStatus(state) {
 function getLeftOffset(state) {
   const width = 400
   const { isVisible } = state.drawers.main
-  return isVisible ? `${-width / 2}px` : 0
+  return isVisible ? `${-width / 2}px` : '0px'
 }
 
 const mapStateToProps = (state, ownProps) => ( {
