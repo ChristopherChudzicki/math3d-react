@@ -10,7 +10,9 @@ import {
 } from './containers/MathObjects/reducer'
 
 import {
-  parseErrors
+  parseErrors,
+  evalErrors,
+  renderErrors
 } from './services/errors/reducer'
 
 export default combineReducers( {
@@ -20,6 +22,8 @@ export default combineReducers( {
   mathGraphics,
   mathSymbols,
   parseErrors,
+  evalErrors,
+  renderErrors,
   sliderValues,
   activeObject
 } )

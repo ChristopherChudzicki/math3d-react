@@ -1,17 +1,17 @@
 import { MathScopeProvider } from './components/MathScopeContext'
 import { connect } from 'react-redux'
-import { getSafeMathSymbols } from './selectors'
+import { getParseableSymbols } from './selectors'
+import { setError } from 'services/errors'
 
-const mapStateToProps = ( { mathSymbols, parseErrors }, ownProps) => {
-  const safeMathSymbols = getSafeMathSymbols(mathSymbols, parseErrors)
-  console.log(safeMathSymbols)
+const mapStateToProps = ( { mathSymbols, sliderValues, parseErrors }, ownProps) => {
+  const { symbols, idsByName } = getParseableSymbols(mathSymbols, sliderValues, parseErrors)
+  const evaluationResult = ownProps.scopeEvaluator.evalScope(symbols)
   return {
-    evaluationResult: {
-      scope: {},
-      errors: {},
-      updated: new Set()
-    }
+    idsByName,
+    ...evaluationResult
   }
 }
 
-export default connect(mapStateToProps)(MathScopeProvider)
+const mapDispatchToProps = { setError }
+
+export default connect(mapStateToProps, mapDispatchToProps)(MathScopeProvider)

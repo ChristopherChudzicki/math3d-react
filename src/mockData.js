@@ -99,6 +99,12 @@ export function makeMockStore() {
       var2: {},
       var3: {}
     },
+    evalErrors: {
+      var0: {},
+      var1: {},
+      var2: {},
+      var3: {}
+    },
     sliderValues: {
       var3: 7.3
     }

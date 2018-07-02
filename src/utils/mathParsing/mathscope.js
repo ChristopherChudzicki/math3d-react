@@ -4,7 +4,31 @@ import {
   setMergeInto
 } from 'utils/sets'
 
-const DEFAULT_SCOPE = {}
+// our default initial scope; does NOT include things like sin, cos, pi, e
+// that mathjs is going to provide already
+const DEFAULT_SCOPE_EXTENSION = {}
+
+// Symbol names from MathJS that we want to allow.
+// Note: Does not include all of mathjs's defaults, because we don't want some
+// of them (for example, mathjs defines 's' as a Unit, which we have no interest in.)
+const MATHJS_ALLOWED_SYMBOLS_NAMES = [
+  'e',
+  'pi',
+  'cos',
+  'sin',
+  'tan',
+  'sec',
+  'csc',
+  'cot',
+  'log',
+  'ln',
+  'exp'
+]
+
+const DEFAULT_SYMBOL_NAMES = new Set( [
+  ...MATHJS_ALLOWED_SYMBOLS_NAMES,
+  ...Object.keys(DEFAULT_SCOPE_EXTENSION)
+] )
 
 /**
  * Functions for evaluating a serialized description of mathematical symbols.
@@ -75,7 +99,7 @@ const DEFAULT_SCOPE = {}
  * evaluates a serialized scope from scratch or updates an existing scope
  *
  * @param  {Parser} parser for evaluating mathematical expressions
- * @param  {Symbols} symbols
+ * @param  {Symbols} symbols, must be parseable!
  * @param  {?Scope} oldScope
  * @param {?array|set} changed which serialized symbol values have changed.
  *   Starting from oldScope, only update these symbols and their children
@@ -86,7 +110,7 @@ const DEFAULT_SCOPE = {}
  * e.g., when the symbol's value is changed by a slider
  *
  */
-export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE, changed = null) {
+export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE_EXTENSION, changed = null) {
   // Get the evaluation order and add symbols to scope
   const { childMap, unmetDependencies } = getChildMap(symbols, parser)
 
@@ -220,6 +244,12 @@ export function getChildMap(symbols, parser) {
   const childMap = Object.keys(symbols).reduce((childMap, symbolName) => {
     const symbol = symbols[symbolName]
     const dependencies = parser.parse(symbol).dependencies
+
+    // remove dependencies
+    dependencies.forEach(dep => {
+      DEFAULT_SYMBOL_NAMES.has(dep) && dependencies.delete(dep)
+    } )
+
     dependencies.forEach(dep => {
       if (childMap[dep] === undefined) {
         childMap[dep] = new Set()

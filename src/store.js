@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
   }
 
   const { whyDidYouUpdate } = require('why-did-you-update')
-  whyDidYouUpdate(React) // logs potentially unnecessary re-renders
+  // whyDidYouUpdate(React) // logs potentially unnecessary re-renders
 
 }
 
