@@ -185,7 +185,7 @@ describe('generating evaluation order', () => {
     c: 'c=-1',
     d: 'd=1',
     w: 'w=100', // isolated node, no parents or children
-    p: 'p=c^2+d^2',
+    p: 'p=c^2+d^2'
   }
 
   test('childMap is generated correctly', () => {
@@ -386,7 +386,7 @@ describe('class ScopeEvaluator', () => {
     w: -15
   }
 
-  test('initial evaluation is correct', () => {
+  it('correctly evaluates the initial scope', () => {
     const parser = new Parser()
     const scopeEvaluator = new ScopeEvaluator(parser)
 
@@ -394,7 +394,7 @@ describe('class ScopeEvaluator', () => {
     expect(scope).toNearlyEqual(expectedScope0)
   } )
 
-  test('provides cached result if symbols are identical', () => {
+  it('provides cached result if symbols are identical', () => {
     const parser = new Parser()
     const scopeEvaluator = new ScopeEvaluator(parser)
     const recalculateScope = jest.spyOn(scopeEvaluator, '_recalculateScope')
@@ -406,7 +406,7 @@ describe('class ScopeEvaluator', () => {
     expect(firstEval).toBe(secondEval)
   } )
 
-  test('when symbols are updated but not added/removed, scope is patched', () => {
+  it('patches the result when symbols are updated but not added/removed', () => {
     const parser = new Parser()
     const scopeEvaluator = new ScopeEvaluator(parser)
     const recalculateScope = jest.spyOn(scopeEvaluator, '_recalculateScope')
@@ -421,7 +421,39 @@ describe('class ScopeEvaluator', () => {
     expect(patchedScope).toNearlyEqual(expectedScope1)
   } )
 
-  test('adding and removing symbols', () => {
+  it('updates errors correctly when updating scope', () => {
+    const parser = new Parser()
+    const scopeEvaluator = new ScopeEvaluator(parser)
+
+    const symbols0 = {
+      v: 'v=y+1',
+      w: 'w=2',
+      x: 'x=2^[1,2,3]',
+      y: 'y=x^2',
+      z: 'z=[1, 1, 1]'
+    }
+
+    const symbols1 = {
+      v: 'v=y+1',
+      w: 'w=2',
+      x: 'x=2^[1,2,3]',
+      y: 'y=w^2',
+      z: 'z=[1, 1, 1]'
+    }
+
+    const result0 = scopeEvaluator.evalScope(symbols0)
+    const result1 = scopeEvaluator.evalScope(symbols1)
+
+    expect(result0.scope).toNearlyEqual( { w: 2, z: [1, 1, 1] } )
+    expect(Object.keys(result0.errors).sort()).toEqual( ['v', 'x', 'y'] )
+    expect(result0.updated).toEqual(new Set( ['v', 'w', 'x', 'y', 'z'] ))
+
+    expect(result1.scope).toNearlyEqual( { v: 5, w: 2, y: 4, z: [1, 1, 1] } )
+    expect(Object.keys(result1.errors).sort()).toEqual( ['x'] )
+    expect(result1.updated).toEqual(new Set( ['v', 'y'] ))
+  } )
+
+  it('recalculates scope when symbols are added/removed', () => {
     const parser = new Parser()
     const scopeEvaluator = new ScopeEvaluator(parser)
     const recalculateScope = jest.spyOn(scopeEvaluator, '_recalculateScope')
@@ -439,5 +471,7 @@ describe('class ScopeEvaluator', () => {
     expect(scopeEvaluator.evalScope(symbols).scope).toNearlyEqual(expectedScope)
 
   } )
+
+
 
 } )

@@ -347,7 +347,20 @@ export class ScopeEvaluator {
   }
 
   _patchScope(symbols, changed) {
-    return evalScope(this._parser, symbols, this._oldResult.scope, changed)
+    const newResult = evalScope(this._parser, symbols, this._oldResult.scope, changed)
+    const combinedErrors = Object.keys(this._oldResult.errors).filter(
+      symbolName => !newResult.scope[symbolName]
+    ).reduce((acc, symbolName) => {
+      acc[symbolName] = this._oldResult.errors[symbolName]
+      return acc
+    }, newResult.errors)
+
+    return {
+      scope: newResult.scope,
+      errors: combinedErrors,
+      updated: newResult.updated
+    }
+
   }
 
   _recalculateScope(symbols) {
