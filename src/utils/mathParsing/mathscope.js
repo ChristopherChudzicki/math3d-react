@@ -3,34 +3,11 @@ import diff from 'shallow-diff'
 import {
   setMergeInto
 } from 'utils/sets'
+import math from './customMathJs'
 
-// our default initial scope; does NOT include things like sin, cos, pi, e
-// that mathjs is going to provide already
-// TODO: Maybe use mathjs's import function to extend mathjs instead.
-// http://mathjs.org/docs/core/extension.html
 const DEFAULT_SCOPE_EXTENSION = {}
 
-// Symbol names from MathJS that we want to allow.
-// Note: Does not include all of mathjs's defaults, because we don't want some
-// of them (for example, mathjs defines 's' as a Unit, which we have no interest in.)
-const MATHJS_ALLOWED_SYMBOLS_NAMES = [
-  'e',
-  'pi',
-  'cos',
-  'sin',
-  'tan',
-  'sec',
-  'csc',
-  'cot',
-  'log',
-  'ln',
-  'exp'
-]
-
-const DEFAULT_SYMBOL_NAMES = new Set( [
-  ...MATHJS_ALLOWED_SYMBOLS_NAMES,
-  ...Object.keys(DEFAULT_SCOPE_EXTENSION)
-] )
+const DEFAULT_SYMBOL_NAMES = new Set(Object.keys(math))
 
 /**
  * Functions for evaluating a serialized description of mathematical symbols.
@@ -323,5 +300,3 @@ export class ScopeEvaluator {
   }
 
 }
-
-window.evalScope = evalScope
