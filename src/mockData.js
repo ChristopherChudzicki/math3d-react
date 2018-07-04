@@ -41,6 +41,7 @@ function addFolder(store) {
 function addPoint(store, folderId) {
   const itemId = `item-${uniqueId()}`
   store.parseErrors[itemId] = {}
+  store.evalErrors[itemId] = {}
   store.sortableTree[folderId].push(itemId)
   store.mathGraphics[itemId] = {
     type: POINT,

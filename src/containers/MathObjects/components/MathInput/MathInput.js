@@ -80,7 +80,7 @@ export default class MathInput extends PureComponent {
     const latex = mq.latex()
     const error = this.validateSelf(latex)
     this.props.onValidatedTextChange(this.props.field, latex, error)
-    this.handleErrorPersistence(error.errorMsg)
+    // this.handleErrorPersistence(error.errorMsg)
   }
   onFocus() {
     this.setState( { isFocused: true } )
@@ -140,21 +140,25 @@ export default class MathInput extends PureComponent {
       validators,
       validateAgainst,
       latex,
-      field
+      field,
+      errorMsg
     } = this.props
 
     const validatorsChange = validators !== prevProps.validators ||
       validateAgainst !== prevProps.validateAgainst
 
-    if (!validatorsChange) {
-      return
+    if (validatorsChange) {
+      const error = this.validateSelf(latex)
+      const changed = error.errorMsg !== this.props.errorMsg
+      if (changed) {
+        this.props.onValidatorAndErrorChange(field, error)
+        this.handleErrorPersistence(error.errorMsg)
+      }
     }
 
-    const error = this.validateSelf(latex)
-    const changed = error.errorMsg !== this.props.errorMsg
-    if (changed) {
-      this.props.onValidatorAndErrorChange(field, error)
-      this.handleErrorPersistence(error.errorMsg)
+    const errorMsgChanged = errorMsg !== prevProps.errorMsg
+    if (errorMsgChanged) {
+      this.handleErrorPersistence(errorMsg)
     }
 
   }

@@ -1,4 +1,4 @@
-import math from 'mathjs'
+import math from '../customMathJs'
 
 // TODO: Might be better to fork mathjs and add cross / dot to the operator list
 // https://github.com/josdejong/mathjs/issues/75

@@ -2,15 +2,17 @@ import Variable from './components/Variable'
 import { connect } from 'react-redux'
 import { setPropertyAndError } from 'containers/MathObjects/actions'
 import { setError } from 'services/errors'
+import { getErrors } from 'services/errors/selectors'
 import { VARIABLE } from './actions'
 import { getValidateNameAgainst } from '../selectors'
 import { parser } from 'constants/parsing'
 
-const mapStateToProps = ( { mathSymbols, parseErrors }, ownProps) => {
+const mapStateToProps = ( { mathSymbols, parseErrors, evalErrors }, ownProps) => {
+  const { id } = ownProps
   return {
-    name: mathSymbols[ownProps.id].name,
-    value: mathSymbols[ownProps.id].value,
-    errors: parseErrors[ownProps.id],
+    name: mathSymbols[id].name,
+    value: mathSymbols[id].value,
+    errors: getErrors(id, parseErrors, evalErrors),
     validateNameAgainst: getValidateNameAgainst(parser, mathSymbols, ownProps.id)
   }
 }

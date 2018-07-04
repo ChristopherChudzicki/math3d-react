@@ -7,7 +7,7 @@ import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 
 import MathScopeProvider from './containers/MathScopeContext'
-import { scopeEvaluator } from './constants/parsing'
+import { scopeEvaluator, parser } from './constants/parsing'
 
 import theme from './constants/theme'
 import { ThemeProvider } from 'styled-components'
@@ -16,7 +16,7 @@ const target = document.querySelector('#root')
 
 render(
   <Provider store={store}>
-    <MathScopeProvider scopeEvaluator={scopeEvaluator}>
+    <MathScopeProvider scopeEvaluator={scopeEvaluator} parser={parser}>
       <ThemeProvider theme={theme}>
         <App />
       </ThemeProvider>

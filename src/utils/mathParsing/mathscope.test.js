@@ -202,10 +202,9 @@ describe('generating evaluation order', () => {
       w: new Set()
     }
 
-    const { childMap, unmetDependencies } = getChildMap(symbols, parser)
+    const childMap = getChildMap(symbols, parser)
 
     expect(childMap).toEqual(expectedChildMap)
-    expect(unmetDependencies).toEqual( {} )
 
   } )
 
@@ -232,7 +231,7 @@ describe('generating evaluation order', () => {
 
   test('total evaluation order is generated correctly', () => {
     const parser = new Parser()
-    const { childMap } = getChildMap(symbols, parser)
+    const childMap = getChildMap(symbols, parser)
     const evalOrder = getEvalOrder(symbols, childMap)
     // This is a valid order. there are other valid orders, too
     const expected = ['h', 'c', 'b', 'a', 'a2', 'f', 'd', 'p', 'w']
@@ -243,7 +242,7 @@ describe('generating evaluation order', () => {
   test('Subset of evaluation order is generated correct', () => {
     const parser = new Parser()
     const onlyChildrenOf = ['b']
-    const { childMap } = getChildMap(symbols, parser)
+    const childMap = getChildMap(symbols, parser)
     const evalOrder = getEvalOrder(symbols, childMap, onlyChildrenOf)
     // This is a valid order. there are other valid orders, too
     const expected = [ 'b', 'a', 'f', 'a2' ]
@@ -258,7 +257,7 @@ describe('generating evaluation order', () => {
       c: 'c=a+1'
     }
     const parser = new Parser()
-    const { childMap } = getChildMap(cyclicSymbols, parser)
+    const childMap = getChildMap(cyclicSymbols, parser)
 
     expect(() => getEvalOrder(cyclicSymbols, childMap)).toThrow('Cyclic dependency:')
   } )
@@ -303,31 +302,20 @@ describe('handling unmet dependencies', () => {
 
   describe('how getChildMap handles unmet dependencies', () => {
     const parser = new Parser()
-    const { childMap, unmetDependencies } = getChildMap(symbols, parser)
+    const childMap = getChildMap(symbols, parser)
     it('includes unmet dependencies in the returned childMap', () => {
       const expectedChildMap = {
-        x: new Set( ['y'] ),
         y: new Set( ['z'] ),
         z: new Set(),
         a: new Set( ['c', 'y'] ),
         b: new Set( ['c', 'd'] ),
         c: new Set( ['d'] ),
         d: new Set( ['f'] ),
-        w: new Set( ['g'] ),
         g: new Set( ['f'] ),
         f: new Set()
       }
 
       expect(childMap).toEqual(expectedChildMap)
-    } )
-
-    it('returns object mapping symbols to their unmet dependency', () => {
-      expect(unmetDependencies).toEqual( {
-        y: 'x',
-        z: 'x',
-        f: 'w',
-        g: 'w'
-      } )
     } )
   } )
 
@@ -346,14 +334,28 @@ describe('handling unmet dependencies', () => {
 
     it('stores errors for the unmet dependencies', () => {
       expect(() => { throw errors.y } )
-        .toThrow('Eval Error: Depends on undefined symbol x')
+        .toThrow('Undefined symbol x')
       expect(() => { throw errors.z } )
-        .toThrow('Eval Error: Depends on undefined symbol x')
+        .toThrow('Undefined symbol y')
       expect(() => { throw errors.f } )
-        .toThrow('Eval Error: Depends on undefined symbol w')
+        .toThrow('Eval Error: Depends on undefined symbol g')
       expect(() => { throw errors.g } )
         .toThrow('Eval Error: Depends on undefined symbol w')
     } )
+  } )
+
+  it('hanldes unmet dependencies during scope patches', () => {
+    const parser = new Parser()
+    const symbols = { f: 'f()=x' }
+    const oldScope = { f: x => x }
+    const changed = new Set( ['f'] )
+    const { scope, errors, updated } = evalScope(parser, symbols, oldScope, changed)
+    expect(() => { throw errors.f } )
+      .toThrow('Eval Error: Depends on undefined symbol x')
+    // f was not updated
+    expect(scope).toEqual( {} )
+    expect(updated).toEqual(new Set( ['f'] ))
+
   } )
 
 } )
@@ -471,7 +473,4 @@ describe('class ScopeEvaluator', () => {
     expect(scopeEvaluator.evalScope(symbols).scope).toNearlyEqual(expectedScope)
 
   } )
-
-
-
 } )

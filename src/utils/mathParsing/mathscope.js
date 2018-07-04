@@ -6,6 +6,8 @@ import {
 
 // our default initial scope; does NOT include things like sin, cos, pi, e
 // that mathjs is going to provide already
+// TODO: Maybe use mathjs's import function to extend mathjs instead.
+// http://mathjs.org/docs/core/extension.html
 const DEFAULT_SCOPE_EXTENSION = {}
 
 // Symbol names from MathJS that we want to allow.
@@ -90,9 +92,6 @@ const DEFAULT_SYMBOL_NAMES = new Set( [
  * mapping from symbol name to direct children their direct children in the
  * dependency graph. Example:
  * { a: Set() { 'b', 'c' }  b: Set() { 'c' }, c: Set() {} }
- *
- * @typedef {Object.<string, string>} UnmetDependencies
- * object that maps node names to name of one of its unmet dependencies
  */
 
 /**
@@ -112,26 +111,18 @@ const DEFAULT_SYMBOL_NAMES = new Set( [
  */
 export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE_EXTENSION, changed = null) {
   // Get the evaluation order and add symbols to scope
-  const { childMap, unmetDependencies } = getChildMap(symbols, parser)
+  const childMap = getChildMap(symbols, parser)
 
-  const {
-    safeSymbols,
-    dependencyErrors
-  } = removeUnmetDependencies(symbols, unmetDependencies)
-  const safeChildMap = Object.keys(unmetDependencies).length === 0
-    ? childMap
-    : getChildMap(safeSymbols, parser).childMap
-
-  const evalOrder = getEvalOrder(safeSymbols, safeChildMap, changed)
+  const evalOrder = getEvalOrder(symbols, childMap, changed)
   const initial = {
     scope: { ...oldScope }, // copy oldScope, not mutate
-    errors: dependencyErrors,
+    errors: {},
     updated: new Set(evalOrder)
   }
 
-  return evalOrder.reduce((acc, symbolName) => {
+  const rawResult = evalOrder.reduce((acc, symbolName) => {
     try {
-      acc.scope[symbolName] = parser.parse(safeSymbols[symbolName] ).eval(acc.scope)
+      acc.scope[symbolName] = parser.parse(symbols[symbolName] ).eval(acc.scope)
     }
     catch (err) {
       acc.errors[symbolName] = err
@@ -139,51 +130,29 @@ export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE_EXTENSION, c
     return acc
   }, initial)
 
+  // rawResult.scope might include some functions that cannot actually be
+  // evaluated. For example,
+  // >>> evalScope(parser, { f: 'f()=x' } )
+  // adds a function f to scope that throws Undefined symbol upon evaluation.
+  return removeFunctionsWithMissingDeps(parser, symbols, evalOrder, rawResult)
+
 }
 
-/**
- * Removes symbols with unmet dependencies
- *
- * Comment about unmet dependencies:
- * We explicitly remove all unmet dependencies before trying to evaluate
- * anything because MathJS has trouble telling when FunctionAssignmentNodes
- * have unmet dependencies. In particular:
- *  - AssignmentNode:
- *    c = math.parse('c=a+b').eval({b:5}) // raises error, 'a is undefined'
- *  - FunctionAssignmentNode:
- *    f = math.parse('f(t)=t+a+b').eval({b:5}) // does not raise error
- *    f(1) // raises error
- * We'd like to catch the error in f when evaluating the scope, rather than
- * waiting to evaluate the function f.
- *
- * @param  {Symbols} symbols
- * @param  {UnmetDependencies} unmetDependencies
- * @return {object} result
- *    @property {Symbols} safeSymbols same as symbols, but with unmet
- *      dependencies removed
- *    @property {SymbolsErrors} dependencyErrors
- */
-function removeUnmetDependencies(symbols, unmetDependencies) {
-  // optimization: quick exit if no unmet dependencies
-  if (Object.keys(unmetDependencies).length === 0) {
-    return { safeSymbols: symbols, dependencyErrors: {} }
-  }
+function removeFunctionsWithMissingDeps(parser, symbols, evalOrder, rawResult) {
+  const functions = evalOrder.filter(symbolName => {
+    return typeof rawResult.scope[symbolName] === 'function'
+  } )
 
-  const omitThese = new Set(Object.keys(unmetDependencies))
-  const safeSymbols = Object.keys(symbols).reduce((acc, symbolName) => {
-    if (!omitThese.has(symbolName)) {
-      acc[symbolName] = symbols[symbolName]
+  return functions.reduce((acc, symbolName) => {
+    const directDependencies = parser.parse(symbols[symbolName] ).dependencies
+    const unmet = [...directDependencies].filter(dep => acc.scope[dep] === undefined)
+    if (unmet.length > 0) {
+      delete acc.scope[symbolName]
+      acc.errors[symbolName] = Error(`Eval Error: Depends on undefined symbol ${unmet}`)
+      // what to do with updated?
     }
     return acc
-  }, {} )
-
-  const dependencyErrors = Object.keys(unmetDependencies).reduce(
-    (acc, symbolName) => {
-      acc[symbolName] = Error(`Eval Error: Depends on undefined symbol ${unmetDependencies[symbolName]}`)
-      return acc
-    }, {} )
-
-  return { safeSymbols, dependencyErrors }
+  }, rawResult)
 }
 
 /**
@@ -227,9 +196,7 @@ export function getEvalOrder(symbols, childMap, onlyTheseAndChildren = null) {
  * @param  {Symbols} symbols
  * @param  {Parser} parser
  *
- * @returns {object} result
- *    @property {ChildMap} childMap
- *    @property {UnmetDependencies} unmetDependencies
+ * @returns {ChildMap}
  */
 export function getChildMap(symbols, parser) {
 
@@ -238,39 +205,22 @@ export function getChildMap(symbols, parser) {
     return acc
   }, {} )
 
-  // maps nodes to their direct unmet dependency
-  const unmetDirectDependencies = {}
-
   const childMap = Object.keys(symbols).reduce((childMap, symbolName) => {
     const symbol = symbols[symbolName]
     const dependencies = parser.parse(symbol).dependencies
 
-    // remove dependencies
+    // remove defaults from dependencies
     dependencies.forEach(dep => {
       DEFAULT_SYMBOL_NAMES.has(dep) && dependencies.delete(dep)
     } )
 
     dependencies.forEach(dep => {
-      if (childMap[dep] === undefined) {
-        childMap[dep] = new Set()
-        unmetDirectDependencies[symbolName] = dep
-      }
-      childMap[dep].add(symbolName)
+      childMap[dep] && childMap[dep].add(symbolName)
     } )
     return childMap
   }, initial)
 
-  // for each node with a direct unmet dependency, mark all of its children
-  // as having the same unmet dependency
-  const unmetDependencies = Object.keys(unmetDirectDependencies).reduce(
-    (acc, node) => {
-      getDescendantsOfNode(node, childMap).forEach(
-        d => { acc[d] = unmetDirectDependencies[node] }
-      )
-      return acc
-    }, { } )
-
-  return { childMap, unmetDependencies }
+  return childMap
 
 }
 
@@ -373,3 +323,5 @@ export class ScopeEvaluator {
   }
 
 }
+
+window.evalScope = evalScope

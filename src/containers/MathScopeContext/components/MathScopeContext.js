@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { ScopeEvaluator } from 'utils/mathParsing'
+import { ScopeEvaluator, Parser } from 'utils/mathParsing'
 import { EVAL_ERROR } from 'services/errors'
 
 const MathScopeContext = React.createContext()
@@ -8,6 +8,7 @@ const MathScopeContext = React.createContext()
 export class MathScopeProvider extends PureComponent {
 
   static propTypes = {
+    parser: PropTypes.instanceOf(Parser).isRequired,
     scopeEvaluator: PropTypes.instanceOf(ScopeEvaluator).isRequired,
     idsByName: PropTypes.objectOf(PropTypes.string).isRequired,
     scope: PropTypes.object.isRequired,
@@ -20,14 +21,26 @@ export class MathScopeProvider extends PureComponent {
     setError: PropTypes.func.isRequired
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { errors, idsByName, setError } = this.props
+    const { idsByName: prevIdsByName, errors: prevErrors } = prevProps
+
+    // dispatch new errors
     Object.keys(errors).map(name => {
       setError(idsByName[name], 'value', {
         errorType: EVAL_ERROR,
         errorMsg: errors[name].message
       } )
     } )
+    // delete old errors if no longer present
+    Object.keys(prevErrors).map(name => {
+      if (!errors[name] ) {
+        setError(prevIdsByName[name], 'value', {
+          errorType: EVAL_ERROR
+        } )
+      }
+    } )
+
   }
 
   render() {

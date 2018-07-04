@@ -55,12 +55,12 @@ describe('isAssignmentLHS', () => {
     } )
   } )
 
-  test('edge cases with ordering operators', () => {
+  test('edge cases with relational operators', () => {
     const parser = new Parser()
     const result = isAssignmentLHS(parser, 'a=')
     expect(result).toEqual( {
       isValid: false,
-      errorMsg: 'Parse Error: invalid symbol name.'
+      errorMsg: 'Parse Error: Function equal missing in provided namespace "math"'
     } )
   } )
 

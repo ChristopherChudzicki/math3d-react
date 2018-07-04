@@ -78,6 +78,9 @@ export function isNearlyEqual(a, b, config = {} ) {
     }
 
     case 'object': {
+      if (Object.keys(a).length !== Object.keys(b).length) {
+        return false
+      }
       const sameKeys = Object.keys(a).sort().every((key, index) => (
         key === Object.keys(b).sort()[index]
       ))
