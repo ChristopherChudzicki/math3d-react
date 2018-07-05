@@ -7,22 +7,22 @@ import {
 import { Parser } from 'utils/mathParsing'
 
 describe('isAssignmentRHS', () => {
-  test('accepts valid right-hand-side of assignments', () => {
+  it('accepts valid right-hand-side of assignments', () => {
     const parser = new Parser()
     const result = isAssignmentRHS(parser, 'f\\left(x\\right)+4a')
     expect(result).toEqual( { isValid: true } )
   } )
 
-  test('rejects expressions that mathJS cannot parse', () => {
+  it('rejects expressions that mathJS cannot parse', () => {
     const parser = new Parser()
     const result = isAssignmentRHS(parser, 'f\\left(x\\right)+')
     expect(result).toEqual( {
-      errorMsg: 'Parse Error: Unexpected end of expression (char 9)',
+      errorMsg: 'Parse Error: Unexpected end of expression',
       isValid: false
     } )
   } )
 
-  test('rejects assignment expressions', () => {
+  it('rejects assignment expressions', () => {
     const parser = new Parser()
     const result = isAssignmentRHS(parser, 'f\\left(x\\right) = 5')
     expect(result).toEqual( {
@@ -30,6 +30,22 @@ describe('isAssignmentRHS', () => {
       isValid: false
     } )
   } )
+
+  it('rejects empty and whitespace-only expressions', () => {
+    const parser = new Parser()
+    const result1 = isAssignmentRHS(parser, '')
+    expect(result1).toEqual( {
+      errorMsg: 'Parse Error: Unexpected end of expression',
+      isValid: false
+    } )
+
+    const result2 = isAssignmentRHS(parser, '    ')
+    expect(result2).toEqual( {
+      errorMsg: 'Parse Error: Unexpected end of expression',
+      isValid: false
+    } )
+  } )
+
 } )
 
 describe('isAssignmentLHS', () => {
@@ -43,7 +59,7 @@ describe('isAssignmentLHS', () => {
     const parser = new Parser()
     expect(isAssignmentLHS(parser, 'f\\left(x')).toEqual( {
       isValid: false,
-      errorMsg: 'Parse Error: Parenthesis ) expected (char 6)'
+      errorMsg: 'Parse Error: Parenthesis ) expected'
     } )
   } )
 
@@ -51,7 +67,7 @@ describe('isAssignmentLHS', () => {
     const parser = new Parser()
     expect(isAssignmentLHS(parser, 'a+b')).toEqual( {
       isValid: false,
-      errorMsg: 'Parse Error: Invalid left hand side of assignment operator = (char 4)'
+      errorMsg: 'Parse Error: Invalid left hand side of assignment operator ='
     } )
   } )
 

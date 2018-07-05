@@ -1,3 +1,5 @@
+const charRegexp = /\s\(char.*\)/g
+
 export function isAssignmentRHS(parser, latex) {
   // Try assigning this RHS to a variable.
   // For now, fake variable name '__' is hard-coded. Not ideal...
@@ -16,7 +18,7 @@ export function isAssignmentRHS(parser, latex) {
   catch (error) {
     return {
       isValid: false,
-      errorMsg: `Parse Error: ${error.message}`
+      errorMsg: `Parse Error: ${error.message.replace(charRegexp, '')}`
     }
   }
 }
@@ -37,7 +39,7 @@ export function isAssignmentLHS(parser, latex) {
   catch (error) {
     return {
       isValid: false,
-      errorMsg: `Parse Error: ${error.message}`
+      errorMsg: `Parse Error: ${error.message.replace(charRegexp, '')}`
     }
   }
 }
@@ -78,7 +80,7 @@ export function isAssignment(parser, latexLHS, { latexRHS } ) {
   catch (error) {
     return {
       isValid: false,
-      errorMsg: `Parse Error: ${error.message}`
+      errorMsg: `Parse Error: ${error.message.replace(charRegexp, '')}`
     }
   }
 }
