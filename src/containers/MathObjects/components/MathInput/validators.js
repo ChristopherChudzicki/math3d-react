@@ -1,14 +1,16 @@
 export function isAssignmentRHS(parser, latex) {
+  // Try assigning this RHS to a variable.
+  // For now, fake variable name '__' is hard-coded. Not ideal...
   try {
-    const nodeType = parser.parse(latex).tree.type
-    if (nodeType === 'AssignmentNode' || nodeType === 'FunctionAssignmentNode') {
-      return {
-        isValid: false,
-        errorMsg: `Parse Error: Unexpected assignment`
-      }
+    const tree = parser.parse(`__=${latex}`).tree
+    if (tree.type === 'AssignmentNode' || tree.type === 'FunctionAssignmentNode') {
+      return (tree.value.type === 'AssignmentNode' || tree.value.type === 'FunctionAssignmentNode')
+        ? { isValid: false, errorMsg: 'Parse Error: Unexpected assignment' }
+        : { isValid: true }
     }
     return {
-      isValid: true
+      isValid: false,
+      errorMsg: 'Parse Error: Invalid right-hand side.'
     }
   }
   catch (error) {
@@ -57,8 +59,10 @@ export function isValidName(parser, latex, { usedNames } ) {
   }
 }
 
-// This validates the overall assignment, but we associate it with LHS for
-// convenience
+// This validates the overall assignment. Just because we had to make a choice,
+// we associate it with the LHS, and pass RHS as a validatorArgument.
+// This catches cyclic assignment errors that would not otherwise be caught.
+// Note: Expects a validated LHS
 export function isAssignment(parser, latexLHS, { latexRHS } ) {
   const { isValid: validRHS } = isAssignmentRHS(parser, latexRHS)
   if (!validRHS) {

@@ -17,7 +17,7 @@ describe('isAssignmentRHS', () => {
     const parser = new Parser()
     const result = isAssignmentRHS(parser, 'f\\left(x\\right)+')
     expect(result).toEqual( {
-      errorMsg: 'Parse Error: Unexpected end of expression (char 6)',
+      errorMsg: 'Parse Error: Unexpected end of expression (char 9)',
       isValid: false
     } )
   } )

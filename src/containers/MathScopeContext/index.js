@@ -4,6 +4,7 @@ import { getParseableSymbols } from './selectors'
 import { setError } from 'services/errors'
 
 const mapStateToProps = ( { mathSymbols, sliderValues, parseErrors }, ownProps) => {
+  console.log(mathSymbols)
   const { symbols, idsByName } = getParseableSymbols(ownProps.parser, mathSymbols, sliderValues, parseErrors)
   const evaluationResult = ownProps.scopeEvaluator.evalScope(symbols)
   window.evaluationResult = evaluationResult

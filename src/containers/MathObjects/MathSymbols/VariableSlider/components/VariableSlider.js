@@ -5,7 +5,6 @@ import {
   MainRow
 } from 'containers/MathObjects/components'
 import {
-  isNumeric,
   isAssignmentLHS,
   isValidName
 } from 'containers/MathObjects/components/MathInput'
@@ -44,10 +43,6 @@ export default class VariableSlider extends PureComponent {
   static nameValidators = [
     isAssignmentLHS,
     isValidName
-  ]
-
-  static valueValidators = [
-    isNumeric
   ]
 
   constructor(props) {
