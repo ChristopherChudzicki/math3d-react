@@ -93,8 +93,7 @@ export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE_EXTENSION, c
   const evalOrder = getEvalOrder(symbols, childMap, changed)
   const initial = {
     scope: { ...oldScope }, // copy oldScope, not mutate
-    errors: {},
-    updated: new Set(evalOrder)
+    errors: {}
   }
 
   const rawResult = evalOrder.reduce((acc, symbolName) => {
@@ -243,8 +242,9 @@ export class ScopeEvaluator {
 
   _oldResult = {
     scope: {},
+    scopeDiff: {},
     errors: {},
-    updated: {}
+    errorsDiff: {}
   }
   _oldSymbols = {}
 
@@ -274,24 +274,35 @@ export class ScopeEvaluator {
   }
 
   _patchScope(symbols, changed) {
-    const newResult = evalScope(this._parser, symbols, this._oldResult.scope, changed)
+    const { scope, errors } = evalScope(this._parser, symbols, this._oldResult.scope, changed)
+
+    // errors only includes errors in changed symbols.
+    // Add back all the old errors, except the ones that are now in-scope or
+    // have a new error message.
     const combinedErrors = Object.keys(this._oldResult.errors).filter(
-      symbolName => !newResult.scope[symbolName]
+      symbolName => !scope[symbolName] && !errors[symbolName]
     ).reduce((acc, symbolName) => {
       acc[symbolName] = this._oldResult.errors[symbolName]
       return acc
-    }, newResult.errors)
+    }, errors)
 
     return {
-      scope: newResult.scope,
+      scope: scope,
       errors: combinedErrors,
-      updated: newResult.updated
+      scopeDiff: diff(this._oldResult.scope, scope),
+      errorsDiff: diff(this._oldResult.errors, combinedErrors)
     }
 
   }
 
   _recalculateScope(symbols) {
-    return evalScope(this._parser, symbols)
+    const { scope, errors } = evalScope(this._parser, symbols)
+    return {
+      scope,
+      errors,
+      scopeDiff: diff(this._oldResult.scope, scope),
+      errorsDiff: diff(this._oldResult.errors, errors)
+    }
   }
 
   _updateState(symbols, result) {

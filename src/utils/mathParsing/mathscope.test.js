@@ -9,6 +9,7 @@ import {
   from './mathscope'
 import { toNearlyEqual } from './matchers'
 import Parser from './Parser'
+import diff from 'shallow-diff'
 
 // For comparing approximate equality of arrays, functions, objects.
 // For numbers, this uses a default tolerance of 1e-6
@@ -41,17 +42,11 @@ describe('evalScope', () => {
       g: t => t ** 3 - 1
     }
 
-    const expectedUpdated = new Set(Object.keys(expectedScope))
-
     const parser = new Parser()
-    const { scope, updated, errors } = evalScope(parser, symbols)
+    const { scope, errors } = evalScope(parser, symbols)
 
     test("scope's symbol evaluations are correct", () => {
       expect(scope).toNearlyEqual(expectedScope)
-    } )
-
-    test('updated symbols recorded accurately', () => {
-      expect(updated).toEqual(expectedUpdated)
     } )
 
     test('No errors created', () => {
@@ -99,7 +94,6 @@ describe('evalScope', () => {
     const parser = new Parser()
     const {
       scope,
-      updated,
       errors
     } = evalScope(parser, newSymbols, oldScope, changed)
 
@@ -111,7 +105,13 @@ describe('evalScope', () => {
       expect(scope).toNearlyEqual(expectedScope)
     } )
 
+    test('Unchanged symbol values are strictly equal to old values', () => {
+      expect(scope.g).toBeInstanceOf(Function)
+      expect(scope.g).toBe(oldScope.g)
+    } )
+
     test('updated symbols recorded accurately', () => {
+      const updated = new Set(diff(scope, oldScope).updated)
       expect(updated).toEqual(expectedUpdated)
     } )
 
@@ -349,12 +349,11 @@ describe('handling unmet dependencies', () => {
     const symbols = { f: 'f()=x' }
     const oldScope = { f: x => x }
     const changed = new Set( ['f'] )
-    const { scope, errors, updated } = evalScope(parser, symbols, oldScope, changed)
+    const { scope, errors } = evalScope(parser, symbols, oldScope, changed)
     expect(() => { throw errors.f } )
       .toThrow('Eval Error: Depends on undefined symbol x')
     // f was not updated
     expect(scope).toEqual( {} )
-    expect(updated).toEqual(new Set( ['f'] ))
 
   } )
 
@@ -423,36 +422,77 @@ describe('class ScopeEvaluator', () => {
     expect(patchedScope).toNearlyEqual(expectedScope1)
   } )
 
-  it('updates errors correctly when updating scope', () => {
+  it('correctly records scope and errors diff', () => {
     const parser = new Parser()
     const scopeEvaluator = new ScopeEvaluator(parser)
 
     const symbols0 = {
-      v: 'v=y+1',
-      w: 'w=2',
-      x: 'x=2^[1,2,3]',
-      y: 'y=x^2',
-      z: 'z=[1, 1, 1]'
+      v: 'v=y+1',       // error (from 2nd ancestor)
+      w: 'w=2',         // ok
+      x: 'x=2^[1,2,3]', // error
+      y: 'y=x^2',       // error (from 1st ancestor)
+      z: 'z=[1, 1, 1]' // ok
     }
 
     const symbols1 = {
-      v: 'v=y+1',
-      w: 'w=2',
-      x: 'x=2^[1,2,3]',
-      y: 'y=w^2',
-      z: 'z=[1, 1, 1]'
+      v: 'v=y+t', // error: changed
+      w: 'w=2', // scope: unchanged
+      x: 'x=2^[1,2,3]', // error: unchanged
+      y: 'y=w^2', // scope: added, error: removed
+      z: 'z=[2, 1, 1]' // scope: unchanged
     }
 
-    const result0 = scopeEvaluator.evalScope(symbols0)
-    const result1 = scopeEvaluator.evalScope(symbols1)
+    function sortDiff(obj) {
+      for (const key of Object.keys(obj)) {
+        obj[key].sort()
+      }
+      return obj
+    }
 
-    expect(result0.scope).toNearlyEqual( { w: 2, z: [1, 1, 1] } )
-    expect(Object.keys(result0.errors).sort()).toEqual( ['v', 'x', 'y'] )
-    expect(result0.updated).toEqual(new Set( ['v', 'w', 'x', 'y', 'z'] ))
+    const {
+      scope: scope0,
+      scopeDiff: scopeDiff0,
+      errors: errors0,
+      errorsDiff: errorsDiff0
+    } = scopeEvaluator.evalScope(symbols0)
 
-    expect(result1.scope).toNearlyEqual( { v: 5, w: 2, y: 4, z: [1, 1, 1] } )
-    expect(Object.keys(result1.errors).sort()).toEqual( ['x'] )
-    expect(result1.updated).toEqual(new Set( ['v', 'y'] ))
+    expect(scope0).toNearlyEqual( { w: 2, z: [1, 1, 1] } )
+    expect(sortDiff(scopeDiff0)).toEqual( {
+      unchanged: [],
+      updated: [],
+      added: ['w', 'z'],
+      deleted: []
+    } )
+    expect(sortDiff(errorsDiff0)).toEqual( {
+      unchanged: [],
+      updated: [],
+      added: ['v', 'x', 'y'],
+      deleted: []
+    } )
+    expect(Object.keys(errors0).sort()).toEqual( ['v', 'x', 'y'] )
+
+    const {
+      scope: scope1,
+      scopeDiff: scopeDiff1,
+      errors: errors1,
+      errorsDiff: errorsDiff1
+    } = scopeEvaluator.evalScope(symbols1)
+
+    expect(scope1).toNearlyEqual( { w: 2, y: 4, z: [2, 1, 1] } )
+    expect(sortDiff(scopeDiff1)).toEqual( {
+      unchanged: ['w'],
+      updated: ['z'],
+      added: ['y'],
+      deleted: []
+    } )
+    expect(sortDiff(errorsDiff1)).toEqual( {
+      unchanged: ['x'],
+      updated: ['v'],
+      added: [],
+      deleted: ['y']
+    } )
+    expect(Object.keys(errors1).sort()).toEqual( ['v', 'x'] )
+
   } )
 
   it('recalculates scope when symbols are added/removed', () => {
