@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { Slider } from 'antd'
 import PropTypes from 'prop-types'
 import {

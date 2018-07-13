@@ -12,8 +12,9 @@ export class MathScopeProvider extends PureComponent {
     scopeEvaluator: PropTypes.instanceOf(ScopeEvaluator).isRequired,
     idsByName: PropTypes.objectOf(PropTypes.string).isRequired,
     scope: PropTypes.object.isRequired,
-    updated: PropTypes.instanceOf(Set).isRequired,
+    scopeDiff: PropTypes.object.isRequired,
     errors: PropTypes.object.isRequired,
+    errorsDiff: PropTypes.object.isRequired,
     children: PropTypes.oneOfType( [
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
@@ -22,32 +23,32 @@ export class MathScopeProvider extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { errors, idsByName, setError } = this.props
-    const { idsByName: prevIdsByName, errors: prevErrors } = prevProps
+    const { errors, idsByName, setError, errorsDiff } = this.props
 
-    // dispatch new errors
-    Object.keys(errors).map(name => {
+    const errorsToDispatch = [...errorsDiff.added, ...errorsDiff.updated]
+    errorsToDispatch.map(name => {
       setError(idsByName[name], 'value', {
         errorType: EVAL_ERROR,
         errorMsg: errors[name].message
       } )
     } )
+
     // delete old errors if no longer present
-    Object.keys(prevErrors).map(name => {
-      if (!errors[name] ) {
-        setError(prevIdsByName[name], 'value', {
-          errorType: EVAL_ERROR
-        } )
-      }
+    // Need to use previous idsByName prop in case the variable got deleted!
+    const prevIdsByName = prevProps.idsByName
+    errorsDiff.deleted.map(name => {
+      setError(prevIdsByName[name], 'value', {
+        errorType: EVAL_ERROR
+      } )
     } )
 
   }
 
   render() {
-    const { scope, updated } = this.props
+    const { scope, scopeDiff } = this.props
     return (
       <MathScopeContext.Provider
-        value={{ scope, updated }}
+        value={{ scope, scopeDiff }}
       >
         {this.props.children}
       </MathScopeContext.Provider>
