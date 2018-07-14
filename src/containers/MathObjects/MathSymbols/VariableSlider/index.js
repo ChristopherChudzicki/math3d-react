@@ -1,11 +1,13 @@
 import VariableSlider from './components/VariableSlider'
 import { connect } from 'react-redux'
-import { setError, setProperty } from 'containers/MathObjects/actions'
+import { setPropertyAndError } from 'containers/MathObjects/actions'
+import { setError } from 'services/errors'
+import { getErrors } from 'services/errors/selectors'
 import { VARIABLE_SLIDER, setSliderValue } from './actions'
 import { getValidateNameAgainst } from '../selectors'
 import { parser } from 'constants/parsing'
 
-const mapStateToProps = ( { mathSymbols, sliderValues }, ownProps) => {
+const mapStateToProps = ( { mathSymbols, sliderValues, parseErrors, evalErrors }, ownProps) => {
   const { id } = ownProps
   return {
     name: mathSymbols[id].name,
@@ -13,23 +15,24 @@ const mapStateToProps = ( { mathSymbols, sliderValues }, ownProps) => {
     max: mathSymbols[id].max,
     value: sliderValues[id], // number
     valueText: mathSymbols[id].value, // nullable string
-    errors: mathSymbols[id].errors,
+    errors: getErrors(id, parseErrors, evalErrors),
     validateNameAgainst: getValidateNameAgainst(parser, mathSymbols, id)
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ( {
-  onSliderChange: (value, valueText) => {
+  setSliderValue: (value, valueText) => {
     dispatch(setSliderValue(ownProps.id, value))
     if (valueText !== null) {
-      dispatch(setProperty(ownProps.id, VARIABLE_SLIDER, 'value', null))
+      const error = { type: 'PARSE_ERROR', errorMsg: null }
+      dispatch(setPropertyAndError(ownProps.id, VARIABLE_SLIDER, 'value', null, error))
     }
   },
-  onEditProperty: (property, value) => dispatch(
-    setProperty(ownProps.id, VARIABLE_SLIDER, property, value)
+  setValidatedProperty: (property, value, error) => dispatch(
+    setPropertyAndError(ownProps.id, VARIABLE_SLIDER, property, value, error)
   ),
-  onErrorChange: (errProp, errMsg) => dispatch(
-    setError(ownProps.id, VARIABLE_SLIDER, errProp, errMsg)
+  setError: (property, error) => dispatch(
+    setError(ownProps.id, property, error)
   )
 } )
 

@@ -3,8 +3,11 @@ import diff from 'shallow-diff'
 import {
   setMergeInto
 } from 'utils/sets'
+import math from './customMathJs'
 
-const DEFAULT_SCOPE = {}
+const DEFAULT_SCOPE_EXTENSION = {}
+
+const DEFAULT_SYMBOL_NAMES = new Set(Object.keys(math))
 
 /**
  * Functions for evaluating a serialized description of mathematical symbols.
@@ -50,33 +53,50 @@ const DEFAULT_SCOPE = {}
  */
 
 /**
+ * @typedef {Object.<string, string>} Symbols
+ * mapping from symbol names to symbol values. Symbol values *must* be
+ * parserable by a Parser class instance. Example:
+ * { a: 'a=5', f: 'f(t)=t^2 + a' }
+ *
+ * @typedef {Object.<string, number|function|array>} Scope
+ * mapping from symbol names to evaluated symbol values. Example:
+ * { a: 5, f: t => t**2 + 5 }
+ *
+ * @typedef {Object.<string, error>} SymbolsErrors
+ * mapping from symbol names to evaluation errors
+ *
+ * @typedef {Object.<string, set>} ChildMap
+ * mapping from symbol name to direct children their direct children in the
+ * dependency graph. Example:
+ * { a: Set() { 'b', 'c' }  b: Set() { 'c' }, c: Set() {} }
+ */
+
+/**
  * evaluates a serialized scope from scratch or updates an existing scope
  *
  * @param  {Parser} parser for evaluating mathematical expressions
- * @param  {object} symbols
- * @param  {string} symbols[symbolName] An assignment expression,e.g.,
- *         a = b^2 or f(r, q) = r*sin(q)
- * @param  {?object} oldScope
- * @param  {number | function} oldScope[symbolName] a partial initial scope,
- *         e.g., { a: 4, b: -2, f: x => x**2 }
- * @param {?array | set} changed which serialized symbol values have changed.
- *  Starting from oldScope, only update these symbols and their children
+ * @param  {Symbols} symbols, must be parseable!
+ * @param  {?Scope} oldScope
+ * @param {?array|set} changed which serialized symbol values have changed.
+ *   Starting from oldScope, only update these symbols and their children
  *
  * Note: The optional arguments oldScope and changed should NOT be used if
  * deleting symbols from or adding symbols to the scope. These arguments are
  * intended to improve performance when changing a single symbol's very often,
  * e.g., when the symbol's value is changed by a slider
+ *
  */
-export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE, changed = null) {
+export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE_EXTENSION, changed = null) {
   // Get the evaluation order and add symbols to scope
-  const evalOrder = getEvalOrder(symbols, parser, changed)
+  const childMap = getChildMap(symbols, parser)
+
+  const evalOrder = getEvalOrder(symbols, childMap, changed)
   const initial = {
     scope: { ...oldScope }, // copy oldScope, not mutate
-    errors: {},
-    updated: new Set(evalOrder)
+    errors: {}
   }
 
-  return evalOrder.reduce((acc, symbolName) => {
+  const rawResult = evalOrder.reduce((acc, symbolName) => {
     try {
       acc.scope[symbolName] = parser.parse(symbols[symbolName] ).eval(acc.scope)
     }
@@ -86,22 +106,43 @@ export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE, changed = n
     return acc
   }, initial)
 
+  // rawResult.scope might include some functions that cannot actually be
+  // evaluated. For example,
+  // >>> evalScope(parser, { f: 'f()=x' } )
+  // adds a function f to scope that throws Undefined symbol upon evaluation.
+  return removeFunctionsWithMissingDeps(parser, symbols, evalOrder, rawResult)
+
+}
+
+function removeFunctionsWithMissingDeps(parser, symbols, evalOrder, rawResult) {
+  const functions = evalOrder.filter(symbolName => {
+    return typeof rawResult.scope[symbolName] === 'function'
+  } )
+
+  return functions.reduce((acc, symbolName) => {
+    const directDependencies = parser.parse(symbols[symbolName] ).dependencies
+    const unmet = [...directDependencies].filter(dep => acc.scope[dep] === undefined)
+    if (unmet.length > 0) {
+      delete acc.scope[symbolName]
+      acc.errors[symbolName] = Error(`Eval Error: Depends on undefined symbol ${unmet}`)
+      // what to do with updated?
+    }
+    return acc
+  }, rawResult)
 }
 
 /**
  * Determines a valid evaluation order for symbols. If onlyTheseAndChildren is
  * supplied, only returns those nodes and their children.
  *
- * @param  {object} symbols
- * @param  {string} symbols[symbolName] An assignment expression, e.g., a = b^2 or f(r, q) = r*sin(q)
- * @param  {Parser} parser
- * @param  {?array | Set} onlyTheseAndChildren
+ * @param  {Symbols} symbols
+ * @param  {ChildMap} childMap pre-calculated for symbols
+ * @param  {?array|Set} onlyTheseAndChildren
  *
  * @returns {array} of symbol names, a valid evaluation order for symbols
  */
-export function getEvalOrder(symbols, parser, onlyTheseAndChildren = null) {
+export function getEvalOrder(symbols, childMap, onlyTheseAndChildren = null) {
   // construct dependency graph as array of nodes
-  const childMap = getChildMap(symbols, parser)
   const nodesToInclude = onlyTheseAndChildren
     ? [...getDescendants(onlyTheseAndChildren, childMap)]
     : Object.keys(childMap)
@@ -120,18 +161,18 @@ export function getEvalOrder(symbols, parser, onlyTheseAndChildren = null) {
   }, { edges: [], childless: [] } )
   const sorted = toposort(edges)
   const included = new Set(sorted)
+  const isolated = childless.filter(node => !included.has(node))
 
-  return [...sorted, ...childless.filter(node => !included.has(node))]
+  return [...sorted, ...isolated]
 }
 
 /**
- * Generates an object mapping symbol names to child symbols
+ * Detect direct children of all nodes and detect nodes with unmet dependencies
  *
- * @param  {object} symbols
- * @param  {string} symbols[symbolName] An assignment expression, e.g., a = b^2 or f(r, q) = r*sin(q)
+ * @param  {Symbols} symbols
  * @param  {Parser} parser
  *
- * @returns {object} a mapping from symbol names to a set of direct children node names
+ * @returns {ChildMap}
  */
 export function getChildMap(symbols, parser) {
 
@@ -140,22 +181,30 @@ export function getChildMap(symbols, parser) {
     return acc
   }, {} )
 
-  return Object.keys(symbols).reduce((childMap, symbolName) => {
+  const childMap = Object.keys(symbols).reduce((childMap, symbolName) => {
     const symbol = symbols[symbolName]
     const dependencies = parser.parse(symbol).dependencies
-    for (const dep of dependencies) {
-      childMap[dep].add(symbolName)
-    }
+
+    // remove defaults from dependencies
+    dependencies.forEach(dep => {
+      DEFAULT_SYMBOL_NAMES.has(dep) && dependencies.delete(dep)
+    } )
+
+    dependencies.forEach(dep => {
+      childMap[dep] && childMap[dep].add(symbolName)
+    } )
     return childMap
   }, initial)
+
+  return childMap
 
 }
 
 /**
  * get all descendants of a single node in a directed graph
  *
- * @param  {object} childMap
- * @param  {Set<string>} childMap[node] set of direct children nodenames
+ * @param  {ChildMap} childMap
+ * @returns {set} the given node and all of its descendents
  */
 export function getDescendantsOfNode(node, childMap) {
   const descendants = new Set( [node] )
@@ -171,6 +220,12 @@ export function getDescendantsOfNode(node, childMap) {
   return descendants
 }
 
+/**
+ * get all descendants of nodes in a directed graph
+ *
+ * @param  {set|array} nodes
+ * @returns {set} the given nodes and all of their descendents
+ */
 export function getDescendants(nodes, childMap) {
   const children = new Set()
   nodes.forEach(node => {
@@ -187,8 +242,9 @@ export class ScopeEvaluator {
 
   _oldResult = {
     scope: {},
+    scopeDiff: {},
     errors: {},
-    updated: {}
+    errorsDiff: {}
   }
   _oldSymbols = {}
 
@@ -218,11 +274,35 @@ export class ScopeEvaluator {
   }
 
   _patchScope(symbols, changed) {
-    return evalScope(this._parser, symbols, this._oldResult.scope, changed)
+    const { scope, errors } = evalScope(this._parser, symbols, this._oldResult.scope, changed)
+
+    // errors only includes errors in changed symbols.
+    // Add back all the old errors, except the ones that are now in-scope or
+    // have a new error message.
+    const combinedErrors = Object.keys(this._oldResult.errors).filter(
+      symbolName => !scope[symbolName] && !errors[symbolName]
+    ).reduce((acc, symbolName) => {
+      acc[symbolName] = this._oldResult.errors[symbolName]
+      return acc
+    }, errors)
+
+    return {
+      scope: scope,
+      errors: combinedErrors,
+      scopeDiff: diff(this._oldResult.scope, scope),
+      errorsDiff: diff(this._oldResult.errors, combinedErrors)
+    }
+
   }
 
   _recalculateScope(symbols) {
-    return evalScope(this._parser, symbols)
+    const { scope, errors } = evalScope(this._parser, symbols)
+    return {
+      scope,
+      errors,
+      scopeDiff: diff(this._oldResult.scope, scope),
+      errorsDiff: diff(this._oldResult.errors, errors)
+    }
   }
 
   _updateState(symbols, result) {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Icon } from 'antd'
@@ -29,21 +29,26 @@ const buttonIcons = {
   }
 }
 
-export default function DrawerToggleButton(props) {
-  const onClick = props.isDrawerOpen ? props.onClose : props.onOpen
-  const iconType = buttonIcons[props.slideTo][props.isDrawerOpen]
-  const classNames = props.onSide === 'right' ? 'onRight' : 'onLeft'
-  return (
-    <StyledButton onClick={onClick} className={classNames}>
-      <Icon type={iconType} />
-    </StyledButton>
-  )
-}
+export default class DrawerToggleButton extends PureComponent {
 
-DrawerToggleButton.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.func.isRequired,
-  isDrawerOpen: PropTypes.bool.isRequired,
-  slideTo: PropTypes.oneOf( ['left', 'right'] ),
-  onSide: PropTypes.oneOf( ['left', 'right'] )
+  static propTypes = {
+    onClose: PropTypes.func.isRequired,
+    onOpen: PropTypes.func.isRequired,
+    isDrawerOpen: PropTypes.bool.isRequired,
+    slideTo: PropTypes.oneOf( ['left', 'right'] ),
+    onSide: PropTypes.oneOf( ['left', 'right'] )
+  }
+
+  render() {
+    const props = this.props
+    const onClick = props.isDrawerOpen ? props.onClose : props.onOpen
+    const iconType = buttonIcons[props.slideTo][props.isDrawerOpen]
+    const classNames = props.onSide === 'right' ? 'onRight' : 'onLeft'
+    return (
+      <StyledButton onClick={onClick} className={classNames}>
+        <Icon type={iconType} />
+      </StyledButton>
+    )
+  }
+
 }

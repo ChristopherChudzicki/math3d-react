@@ -82,6 +82,19 @@ describe('isNearlyEqual', () => {
     expect(isNearlyEqual(a, b)).toBe(true)
   } )
 
+  test('object with different numbers of keys fail', () => {
+    const a = {
+      x: 4
+    }
+    const b = {
+      y: 3,
+      x: 4
+    }
+
+    expect(isNearlyEqual(a, b)).toBe(false)
+    expect(isNearlyEqual(b, a)).toBe(false)
+  } )
+
   test('order of keys in object does not matter', () => {
     const a = {
       x: 4,

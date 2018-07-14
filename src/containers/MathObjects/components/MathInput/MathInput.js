@@ -6,6 +6,7 @@ import { isAssignmentRHS } from './validators'
 import styled from 'styled-components'
 import { timeout } from 'utils/functions'
 import { Tooltip } from 'antd'
+import { PARSE_ERROR } from 'services/errors'
 
 const MathInputContainer = styled.div`
   flex:1;
@@ -23,12 +24,12 @@ export default class MathInput extends PureComponent {
 
     for (const validator of validators) {
       const { isValid, errorMsg } = validator(parser, latex, validateAgainst)
-      if (errorMsg) {
-        return { isValid, errorMsg }
+      if (!isValid) {
+        return { errorType: PARSE_ERROR, isValid, errorMsg }
       }
     }
 
-    return { isValid: true }
+    return { isValid: true, errorType: PARSE_ERROR }
 
   }
 
@@ -37,13 +38,12 @@ export default class MathInput extends PureComponent {
     className: PropTypes.string,
     field: PropTypes.string.isRequired,
     parser: PropTypes.object.isRequired,
-    size: PropTypes.oneOf( ['large', 'small'] ).isRequired, // TODO: implement this
     validators: PropTypes.arrayOf(PropTypes.func).isRequired,
     validateAgainst: PropTypes.any,
-    // (latex) => ...
-    onTextChange: PropTypes.func.isRequired,
-    // (errorProp, errorMsg) => ...
-    onErrorChange: PropTypes.func.isRequired,
+    // (prop, latex, error) => ...
+    onValidatedTextChange: PropTypes.func.isRequired,
+    // (prop, error) => ...
+    onValidatorAndErrorChange: PropTypes.func.isRequired,
     errorMsg: PropTypes.string,
     latex: PropTypes.string.isRequired,
     displayErrorDelay: PropTypes.number.isRequired // ms
@@ -51,17 +51,11 @@ export default class MathInput extends PureComponent {
 
   static defaultProps = {
     parser: parser,
-    size: 'large',
     validators: [isAssignmentRHS],
     displayErrorDelay: 1500
   }
 
-  static getDerivedStateFromProps(props) {
-    return { hasError: Boolean(props.errorMsg) }
-  }
-
   state = {
-    hasError: false,
     isFocused: false,
     isPersistentError: false
   }
@@ -84,7 +78,9 @@ export default class MathInput extends PureComponent {
   }
   onEdit(mq) {
     const latex = mq.latex()
-    this.props.onTextChange(this.props.field, latex)
+    const error = this.validateSelf(latex)
+    this.props.onValidatedTextChange(this.props.field, latex, error)
+    // this.handleErrorPersistence(error.errorMsg)
   }
   onFocus() {
     this.setState( { isFocused: true } )
@@ -93,70 +89,76 @@ export default class MathInput extends PureComponent {
     this.setState( { isFocused: false } )
   }
 
-  componentDidMount() {
-    const {
-      validators,
-      validateAgainst,
-      field: errorProp,
-      errorMsg,
-      latex
-    } = this.props
-    const {
-      errorMsg: newErrorMsg
-    } = MathInput.validate(validators, parser, latex, validateAgainst)
-    if (errorMsg !== newErrorMsg) {
-      this.onErrorChange(errorProp, newErrorMsg)
+  async handleErrorPersistence(errorMsg) {
+    if (!errorMsg) {
+      this.setState( { isPersistentError: false } )
+      this._errorId = null
+      return
     }
-    // If errors are present upon mounting, declare them persistent immediately
-    if (newErrorMsg) {
+    if (this.state.isPersistentError) {
+      return
+    }
+    // Wait and see if error persists
+    const errorId = Symbol('Error Identifier')
+    this._errorId = errorId
+    await timeout(this.props.displayErrorDelay)
+    const sameError = errorId === this._errorId
+    if (sameError && this._errorId) {
       this.setState( { isPersistentError: true } )
+    }
+
+  }
+  displayErrorNow(errorMsg) {
+    const isError = Boolean(errorMsg)
+    this._errorId = isError ? Symbol('Error Identifier') : null
+    this.setState( { isPersistentError: isError } )
+  }
+
+  validateSelf(latex) {
+    const { validators, validateAgainst, parser } = this.props
+    return MathInput.validate(validators, parser, latex, validateAgainst)
+  }
+
+  componentDidMount() {
+    const { latex, field } = this.props
+    const error = this.validateSelf(latex)
+    const changed = error.errorMsg !== this.props.errorMsg
+    if (changed) {
+      this.props.onValidatorAndErrorChange(field, error)
+      this.handleErrorPersistence(error.errorMsg)
+    }
+    if (error.errorMsg) {
+      this.displayErrorNow(error.errorMsg)
     }
     // force re-render after container has rendered
     this.forceUpdate()
   }
 
   componentDidUpdate(prevProps) {
+
     const {
       validators,
       validateAgainst,
-      errorMsg,
-      parser,
       latex,
-      field: errorProp
+      field,
+      errorMsg
     } = this.props
 
-    const needsValidation = validateAgainst !== prevProps.validateAgainst ||
-      latex !== prevProps.latex ||
-      validators !== prevProps.validators
+    const validatorsChange = validators !== prevProps.validators ||
+      validateAgainst !== prevProps.validateAgainst
 
-    if (!needsValidation) {
-      return
+    if (validatorsChange) {
+      const error = this.validateSelf(latex)
+      const changed = error.errorMsg !== this.props.errorMsg
+      if (changed) {
+        this.props.onValidatorAndErrorChange(field, error)
+        this.handleErrorPersistence(error.errorMsg)
+      }
     }
 
-    const {
-      errorMsg: newErrorMsg
-    } = MathInput.validate(validators, parser, latex, validateAgainst)
-    if (errorMsg !== newErrorMsg) {
-      this.onErrorChange(errorProp, newErrorMsg)
-    }
-
-  }
-
-  async onErrorChange(errorProp, errorMsg) {
-    this.props.onErrorChange(errorProp, errorMsg)
-    if (!errorMsg) {
-      this.setState( { isPersistentError: false } )
-      this._errorId = null
-      return
-    }
-
-    // Wait and see if error persists
-    const errorId = Symbol('Error Identifier')
-    this._errorId = errorId
-    await timeout(this.props.displayErrorDelay)
-    const sameError = (errorId === this._errorId) && errorMsg
-    if (sameError) {
-      this.setState( { isPersistentError: true } )
+    const errorMsgChanged = errorMsg !== prevProps.errorMsg
+    if (errorMsgChanged) {
+      this.handleErrorPersistence(errorMsg)
     }
 
   }

@@ -9,6 +9,7 @@ import {
   from './mathscope'
 import { toNearlyEqual } from './matchers'
 import Parser from './Parser'
+import diff from 'shallow-diff'
 
 // For comparing approximate equality of arrays, functions, objects.
 // For numbers, this uses a default tolerance of 1e-6
@@ -41,17 +42,11 @@ describe('evalScope', () => {
       g: t => t ** 3 - 1
     }
 
-    const expectedUpdated = new Set(Object.keys(expectedScope))
-
     const parser = new Parser()
-    const { scope, updated, errors } = evalScope(parser, symbols)
+    const { scope, errors } = evalScope(parser, symbols)
 
     test("scope's symbol evaluations are correct", () => {
       expect(scope).toNearlyEqual(expectedScope)
-    } )
-
-    test('updated symbols recorded accurately', () => {
-      expect(updated).toEqual(expectedUpdated)
     } )
 
     test('No errors created', () => {
@@ -99,7 +94,6 @@ describe('evalScope', () => {
     const parser = new Parser()
     const {
       scope,
-      updated,
       errors
     } = evalScope(parser, newSymbols, oldScope, changed)
 
@@ -108,10 +102,16 @@ describe('evalScope', () => {
     } )
 
     test("scope's symbol evaluations are correct", () => {
-      expect(updated).toEqual(expectedUpdated)
+      expect(scope).toNearlyEqual(expectedScope)
+    } )
+
+    test('Unchanged symbol values are strictly equal to old values', () => {
+      expect(scope.g).toBeInstanceOf(Function)
+      expect(scope.g).toBe(oldScope.g)
     } )
 
     test('updated symbols recorded accurately', () => {
+      const updated = new Set(diff(scope, oldScope).updated)
       expect(updated).toEqual(expectedUpdated)
     } )
 
@@ -124,14 +124,17 @@ describe('evalScope', () => {
   describe('storing errors', () => {
 
     const symbols = {
-      a: '[1, 2, 3]',
-      b: '2^a'
+      a: 'a=[1, 2, 3]',
+      b: 'b=2^a',
+      c: 'c=2+d',
+      d: 'd=2+w',
+      f: 'f(t)=t+d'
     }
 
     const parser = new Parser()
     const { scope, errors } = evalScope(parser, symbols)
 
-    test('Error is created and stored', () => {
+    test('Type Error is caught and stored', () => {
       expect(errors.b).toBeInstanceOf(Error)
       expect(() => { throw errors.b } )
         .toThrow('Unexpected type of argument')
@@ -156,6 +159,8 @@ describe('generating evaluation order', () => {
   *     f(x, y) = a*x^2 - b*y
   *     h(t) = t^2 -1
   *     p = c^2 + d^2
+  *     w = 100
+  *
   *
   * Graph:
   *
@@ -167,7 +172,9 @@ describe('generating evaluation order', () => {
   *         \                 /
   *         \-------->-------
   *
-   */
+  * w (isolated)
+  *
+  */
 
   const symbols = {
     a: 'a=\\frac{b}{2}-c',
@@ -175,10 +182,10 @@ describe('generating evaluation order', () => {
     f: 'f\\left(x,y\\right)=a\\cdot x^2-b\\cdot y',
     b: 'h\\left(4\\right)+c',
     h: 'h\\left(t\\right)=t^{2}-1',
-    c: '-1',
-    d: '1',
-    z: '100', // isolated node, no parents or children
-    p: 'c^2+d^2'
+    c: 'c=-1',
+    d: 'd=1',
+    w: 'w=100', // isolated node, no parents or children
+    p: 'p=c^2+d^2'
   }
 
   test('childMap is generated correctly', () => {
@@ -192,12 +199,12 @@ describe('generating evaluation order', () => {
       f: new Set(),
       h: new Set( ['b'] ),
       p: new Set(),
-      z: new Set()
+      w: new Set()
     }
 
-    const actualChildMap = getChildMap(symbols, parser)
+    const childMap = getChildMap(symbols, parser)
 
-    expect(actualChildMap).toEqual(expectedChildMap)
+    expect(childMap).toEqual(expectedChildMap)
 
   } )
 
@@ -224,9 +231,10 @@ describe('generating evaluation order', () => {
 
   test('total evaluation order is generated correctly', () => {
     const parser = new Parser()
-    const evalOrder = getEvalOrder(symbols, parser)
+    const childMap = getChildMap(symbols, parser)
+    const evalOrder = getEvalOrder(symbols, childMap)
     // This is a valid order. there are other valid orders, too
-    const expected = ['h', 'c', 'b', 'a', 'a2', 'f', 'd', 'p', 'z']
+    const expected = ['h', 'c', 'b', 'a', 'a2', 'f', 'd', 'p', 'w']
 
     expect(evalOrder).toEqual(expected)
   } )
@@ -234,7 +242,8 @@ describe('generating evaluation order', () => {
   test('Subset of evaluation order is generated correct', () => {
     const parser = new Parser()
     const onlyChildrenOf = ['b']
-    const evalOrder = getEvalOrder(symbols, parser, onlyChildrenOf)
+    const childMap = getChildMap(symbols, parser)
+    const evalOrder = getEvalOrder(symbols, childMap, onlyChildrenOf)
     // This is a valid order. there are other valid orders, too
     const expected = [ 'b', 'a', 'f', 'a2' ]
 
@@ -248,8 +257,104 @@ describe('generating evaluation order', () => {
       c: 'c=a+1'
     }
     const parser = new Parser()
+    const childMap = getChildMap(cyclicSymbols, parser)
 
-    expect(() => getEvalOrder(cyclicSymbols, parser)).toThrow('Cyclic dependency:')
+    expect(() => getEvalOrder(cyclicSymbols, childMap)).toThrow('Cyclic dependency:')
+  } )
+
+} )
+
+describe('handling unmet dependencies', () => {
+  /*
+  * a = 2
+  * b = 3
+  * c = a + b       5
+  * d = c^2 + b     28
+  * y = a + x
+  * z = y^2
+  * f(t) = t^2 + d * g(t)
+  * g(t) = t + w
+  * Missing:
+  * w, x
+  *
+  * Graph:
+  *
+  *      ?-- x -->
+  *               \
+  * a --->----->-- y -->-- z
+  *       \
+  * b -->--- c -->-- d ------->--- f
+  *       \-->--/               /
+  *                      g -->-/
+  *         ? -- w -->--/
+  *
+  */
+  const symbols = {
+    a: 'a=2',
+    b: 'b=3',
+    c: 'c=a+b',
+    d: 'd=c^2+b',
+    y: 'y=a+x',
+    z: 'z=y^2',
+    f: 'f(t)=t^2+d\\cdot g(t)',
+    g: 'g(t)=t+w'
+  }
+
+  describe('how getChildMap handles unmet dependencies', () => {
+    const parser = new Parser()
+    const childMap = getChildMap(symbols, parser)
+    it('includes unmet dependencies in the returned childMap', () => {
+      const expectedChildMap = {
+        y: new Set( ['z'] ),
+        z: new Set(),
+        a: new Set( ['c', 'y'] ),
+        b: new Set( ['c', 'd'] ),
+        c: new Set( ['d'] ),
+        d: new Set( ['f'] ),
+        g: new Set( ['f'] ),
+        f: new Set()
+      }
+
+      expect(childMap).toEqual(expectedChildMap)
+    } )
+  } )
+
+  describe('how evalScope handles unmet dependencies', () => {
+    const parser = new Parser()
+    const { scope, errors } = evalScope(parser, symbols)
+    it('evaluates as much of the scope as it can', () => {
+      const expectedScope = {
+        a: 2,
+        b: 3,
+        c: 5,
+        d: 28
+      }
+      expect(scope).toNearlyEqual(expectedScope)
+    } )
+
+    it('stores errors for the unmet dependencies', () => {
+      expect(() => { throw errors.y } )
+        .toThrow('Undefined symbol x')
+      expect(() => { throw errors.z } )
+        .toThrow('Undefined symbol y')
+      expect(() => { throw errors.f } )
+        .toThrow('Eval Error: Depends on undefined symbol g')
+      expect(() => { throw errors.g } )
+        .toThrow('Eval Error: Depends on undefined symbol w')
+    } )
+  } )
+
+  it('hanldes unmet dependencies during scope patches', () => {
+    const parser = new Parser()
+    const symbols = { f: 'f()=x' }
+    const oldScope = { f: x => x }
+    const changed = new Set( ['f'] )
+    const { scope, errors } = evalScope(parser, symbols, oldScope, changed)
+    expect(() => { throw errors.f } )
+      .toThrow('Eval Error: Depends on undefined symbol x')
+    // f was not updated
+    expect(scope).toEqual( {} )
+
   } )
 
 } )
@@ -282,7 +387,7 @@ describe('class ScopeEvaluator', () => {
     w: -15
   }
 
-  test('initial evaluation is correct', () => {
+  it('correctly evaluates the initial scope', () => {
     const parser = new Parser()
     const scopeEvaluator = new ScopeEvaluator(parser)
 
@@ -290,7 +395,7 @@ describe('class ScopeEvaluator', () => {
     expect(scope).toNearlyEqual(expectedScope0)
   } )
 
-  test('provides cached result if symbols are identical', () => {
+  it('provides cached result if symbols are identical', () => {
     const parser = new Parser()
     const scopeEvaluator = new ScopeEvaluator(parser)
     const recalculateScope = jest.spyOn(scopeEvaluator, '_recalculateScope')
@@ -302,7 +407,7 @@ describe('class ScopeEvaluator', () => {
     expect(firstEval).toBe(secondEval)
   } )
 
-  test('when symbols are updated but not added/removed, scope is patched', () => {
+  it('patches the result when symbols are updated but not added/removed', () => {
     const parser = new Parser()
     const scopeEvaluator = new ScopeEvaluator(parser)
     const recalculateScope = jest.spyOn(scopeEvaluator, '_recalculateScope')
@@ -317,7 +422,80 @@ describe('class ScopeEvaluator', () => {
     expect(patchedScope).toNearlyEqual(expectedScope1)
   } )
 
-  test('adding and removing symbols', () => {
+  it('correctly records scope and errors diff', () => {
+    const parser = new Parser()
+    const scopeEvaluator = new ScopeEvaluator(parser)
+
+    const symbols0 = {
+      v: 'v=y+1',       // error (from 2nd ancestor)
+      w: 'w=2',         // ok
+      x: 'x=2^[1,2,3]', // error
+      y: 'y=x^2',       // error (from 1st ancestor)
+      z: 'z=[1, 1, 1]' // ok
+    }
+
+    const symbols1 = {
+      v: 'v=y+t', // error: changed
+      w: 'w=2', // scope: unchanged
+      x: 'x=2^[1,2,3]', // error: unchanged
+      y: 'y=w^2', // scope: added, error: removed
+      z: 'z=[2, 1, 1]' // scope: unchanged
+    }
+
+    function sortDiff(obj) {
+      for (const key of Object.keys(obj)) {
+        obj[key].sort()
+      }
+      return obj
+    }
+
+    const {
+      scope: scope0,
+      scopeDiff: scopeDiff0,
+      errors: errors0,
+      errorsDiff: errorsDiff0
+    } = scopeEvaluator.evalScope(symbols0)
+
+    expect(scope0).toNearlyEqual( { w: 2, z: [1, 1, 1] } )
+    expect(sortDiff(scopeDiff0)).toEqual( {
+      unchanged: [],
+      updated: [],
+      added: ['w', 'z'],
+      deleted: []
+    } )
+    expect(sortDiff(errorsDiff0)).toEqual( {
+      unchanged: [],
+      updated: [],
+      added: ['v', 'x', 'y'],
+      deleted: []
+    } )
+    expect(Object.keys(errors0).sort()).toEqual( ['v', 'x', 'y'] )
+
+    const {
+      scope: scope1,
+      scopeDiff: scopeDiff1,
+      errors: errors1,
+      errorsDiff: errorsDiff1
+    } = scopeEvaluator.evalScope(symbols1)
+
+    expect(scope1).toNearlyEqual( { w: 2, y: 4, z: [2, 1, 1] } )
+    expect(sortDiff(scopeDiff1)).toEqual( {
+      unchanged: ['w'],
+      updated: ['z'],
+      added: ['y'],
+      deleted: []
+    } )
+    expect(sortDiff(errorsDiff1)).toEqual( {
+      unchanged: ['x'],
+      updated: ['v'],
+      added: [],
+      deleted: ['y']
+    } )
+    expect(Object.keys(errors1).sort()).toEqual( ['v', 'x'] )
+
+  } )
+
+  it('recalculates scope when symbols are added/removed', () => {
     const parser = new Parser()
     const scopeEvaluator = new ScopeEvaluator(parser)
     const recalculateScope = jest.spyOn(scopeEvaluator, '_recalculateScope')
@@ -335,5 +513,4 @@ describe('class ScopeEvaluator', () => {
     expect(scopeEvaluator.evalScope(symbols).scope).toNearlyEqual(expectedScope)
 
   } )
-
 } )

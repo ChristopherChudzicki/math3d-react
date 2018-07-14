@@ -40,14 +40,15 @@ function addFolder(store) {
 
 function addPoint(store, folderId) {
   const itemId = `item-${uniqueId()}`
+  store.parseErrors[itemId] = {}
+  store.evalErrors[itemId] = {}
   store.sortableTree[folderId].push(itemId)
   store.mathGraphics[itemId] = {
     type: POINT,
     description: 'Point',
     coords: '\\left[0,\\ 0,\\ 0\\right]',
     visible: true,
-    color: colors[getRandomInt(0, colors.length - 1)],
-    errors: {}
+    color: colors[getRandomInt(0, colors.length - 1)]
   }
 }
 
@@ -70,22 +71,19 @@ export function makeMockStore() {
         type: VARIABLE,
         description: 'A variable',
         name: 'f\\left(x\\right)',
-        value: 'e^x\\ +\\ \\frac{1}{2}',
-        errors: {}
+        value: 'e^x\\ +\\ \\frac{1}{2}'
       },
       var1: {
         type: VARIABLE,
         description: 'Another variable',
         name: 'a',
-        value: '2',
-        errors: {}
+        value: '2'
       },
       var2: {
         type: VARIABLE,
         description: 'One more variable',
         name: 'b',
-        value: '[-2,1,4]',
-        errors: {}
+        value: '\\left[-2,1,4\\right]'
       },
       var3: {
         type: VARIABLE_SLIDER,
@@ -93,9 +91,20 @@ export function makeMockStore() {
         name: 'T',
         value: null,
         min: '-\\pi',
-        max: '2\\pi',
-        errors: {}
+        max: '2\\pi'
       }
+    },
+    parseErrors: {
+      var0: {},
+      var1: {},
+      var2: {},
+      var3: {}
+    },
+    evalErrors: {
+      var0: {},
+      var1: {},
+      var2: {},
+      var3: {}
     },
     sliderValues: {
       var3: 7.3

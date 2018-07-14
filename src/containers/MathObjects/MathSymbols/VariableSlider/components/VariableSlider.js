@@ -5,7 +5,6 @@ import {
   MainRow
 } from 'containers/MathObjects/components'
 import {
-  isNumeric,
   isAssignmentLHS,
   isValidName
 } from 'containers/MathObjects/components/MathInput'
@@ -27,9 +26,9 @@ export default class VariableSlider extends PureComponent {
     min: PropTypes.string.isRequired, // latex
     max: PropTypes.string.isRequired, // latex
     name: PropTypes.string.isRequired, // latex
-    onEditProperty: PropTypes.func.isRequired,
-    onErrorChange: PropTypes.func.isRequired,
-    onSliderChange: PropTypes.func.isRequired,
+    setValidatedProperty: PropTypes.func.isRequired,
+    setError: PropTypes.func.isRequired,
+    setSliderValue: PropTypes.func.isRequired,
     errors: PropTypes.objectOf(PropTypes.string).isRequired,
     validateNameAgainst: PropTypes.any
   }
@@ -46,17 +45,13 @@ export default class VariableSlider extends PureComponent {
     isValidName
   ]
 
-  static valueValidators = [
-    isNumeric
-  ]
-
   constructor(props) {
     super(props)
     this.onSliderChange = this.onSliderChange.bind(this)
   }
 
   onSliderChange(value) {
-    this.props.onSliderChange(value, this.props.valueText)
+    this.props.setSliderValue(value, this.props.valueText)
   }
 
   render() {
@@ -75,9 +70,9 @@ export default class VariableSlider extends PureComponent {
             nameValidators={VariableSlider.nameValidators}
             validateNameAgainst={this.props.validateNameAgainst}
             valueText={valueText === null ? `${value}` : valueText}
-            onTextChange={this.props.onEditProperty}
+            onValidatedTextChange={this.props.setValidatedProperty}
             errors={this.props.errors}
-            onErrorChange={this.props.onErrorChange}
+            onValidatorAndErrorChange={this.props.setError}
           />
           <AnimationControls />
         </MainRow>
@@ -86,11 +81,11 @@ export default class VariableSlider extends PureComponent {
             value={this.props.value}
             minText={this.props.min}
             maxText={this.props.max}
-            onTextChange={this.props.onEditProperty}
+            onValidatedTextChange={this.props.setValidatedProperty}
             minValue={-10}
             maxValue={10}
             errors={this.props.errors}
-            onErrorChange={this.props.onErrorChange}
+            onValidatorAndErrorChange={this.props.setError}
             onSliderChange={this.onSliderChange}
           />
         </MainRow>

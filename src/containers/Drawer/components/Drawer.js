@@ -47,60 +47,70 @@ const DrawerContainer = styled.div`
  *    are applied in drawer's open state.
  *
  */
-export default function Drawer(props) {
-  const {
-    animationSpeed,
-    width,
-    children,
-    isOpen,
-    isAnimating,
-    onOpen,
-    onClose,
-    slideTo
-  } = props
+export default class Drawer extends React.PureComponent {
 
-  const className = classNames( {
-    opening: isOpen && isAnimating,
-    'closing-or-closed': !isOpen,
-    left: slideTo === 'left',
-    right: slideTo === 'right'
-  } )
+  static propTypes = {
+    id: PropTypes.string.isRequired,
+    width: PropTypes.string.isRequired,
+    isOpen: PropTypes.bool.isRequired,
+    isAnimating: PropTypes.bool.isRequired,
+    animationSpeed: PropTypes.string,
+    onOpen: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    slideTo: PropTypes.oneOf( ['left', 'right'] ).isRequired,
+    children: PropTypes.oneOfType( [
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node
+    ] ).isRequired
+  }
 
-  const buttonSide = slideTo === 'left' ? 'right' : 'left'
+  static defaultProps = {
+    width: '300px',
+    slideTo: 'left',
+    animationSpeed: '1000ms'
+  }
 
-  return (
-    <DrawerContainer
-      width={width}
-      className={className}
-      animationSpeed={animationSpeed}
-    >
-      {children}
-      <DrawerToggleButton
-        isDrawerOpen={isOpen}
-        onOpen={onOpen}
-        onClose={onClose}
-        onSide={buttonSide}
-        slideTo={slideTo}
-      />
-    </DrawerContainer>
-  )
-}
+  constructor(props) {
+    super(props)
+    this.onClose = this.props.onClose.bind(this, this.props.id, this.props.animationSpeed)
+    this.onOpen = this.props.onOpen.bind(this, this.props.id, this.props.animationSpeed)
+  }
 
-Drawer.propTypes = {
-  width: PropTypes.string.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  isAnimating: PropTypes.bool.isRequired,
-  animationSpeed: PropTypes.string,
-  onOpen: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  slideTo: PropTypes.oneOf( ['left', 'right'] ).isRequired,
-  children: PropTypes.oneOfType( [
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ] ).isRequired
-}
+  render() {
+    const {
+      animationSpeed,
+      width,
+      children,
+      isOpen,
+      isAnimating,
+      slideTo
+    } = this.props
 
-Drawer.defaultProps = {
-  width: '300px',
-  slideTo: 'left'
+    const className = classNames( {
+      opening: isOpen && isAnimating,
+      'closing-or-closed': !isOpen,
+      left: slideTo === 'left',
+      right: slideTo === 'right'
+    } )
+
+    const buttonSide = slideTo === 'left' ? 'right' : 'left'
+
+    return (
+      <DrawerContainer
+        width={width}
+        className={className}
+        animationSpeed={animationSpeed}
+      >
+        {children}
+        <DrawerToggleButton
+          isDrawerOpen={isOpen}
+          onOpen={this.onOpen}
+          onClose={this.onClose}
+          onSide={buttonSide}
+          slideTo={slideTo}
+        />
+      </DrawerContainer>
+    )
+  }
+
 }
