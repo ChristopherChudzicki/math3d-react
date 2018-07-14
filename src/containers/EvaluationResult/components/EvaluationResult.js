@@ -1,7 +1,12 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Parser } from 'utils/mathParsing'
-// Test
+
+// TODO:
+// - handle errors
+// - do not recalculate unless necessary
+// - tests
+
 export default class EvaluationResult extends Component {
 
   static propTypes = {
