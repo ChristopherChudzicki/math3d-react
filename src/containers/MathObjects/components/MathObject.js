@@ -83,7 +83,7 @@ export default class MathObject extends PureComponent {
   static propTypes = {
     // passed as ownProps
     id: PropTypes.string.isRequired,
-    type: PropTypes.oneOf(mathObjectTypes).isRequired,
+    type: PropTypes.string.isRequired,
     sidePanelContent: PropTypes.node,
     children: PropTypes.oneOfType( [
       PropTypes.arrayOf(PropTypes.node),
