@@ -33,7 +33,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "coverage": "react-scripts test --env=jsdom --coverage",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "flow": "flow"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-beta.41",
@@ -45,6 +46,8 @@
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
+    "flow": "^0.2.3",
+    "flow-bin": "^0.76.0",
     "jest-diff": "^23.0.0",
     "jest-get-type": "^22.4.3",
     "jest-matcher-deep-close-to": "^1.0.2",
