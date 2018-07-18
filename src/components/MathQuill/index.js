@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react'
 // mathquill.js requires window.jQuery; probably best to load from a CDN
 import 'mathquill/build/mathquill.js'
+// $FlowFixMe flow doesn't like css imports and I only have a few.
 import 'mathquill/build/mathquill.css'
 import classNames from 'classnames'
 
