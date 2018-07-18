@@ -1,4 +1,4 @@
-import math from '../customMathJs'
+import math from 'utils/mathjs'
 import reassignOperators from './reassignOperators'
 
 describe('reassignOperators', () => {

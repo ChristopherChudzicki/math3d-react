@@ -1,4 +1,5 @@
-import math from './customMathJs'
+/* @flow */
+import math from 'utils/mathjs'
 
 /**
  * Uses math.parse to parse a math expression into a tree. Holds the tree and

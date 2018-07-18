@@ -3,7 +3,7 @@ import diff from 'shallow-diff'
 import {
   setMergeInto
 } from 'utils/sets'
-import math from './customMathJs'
+import math from 'utils/mathjs'
 
 const DEFAULT_SCOPE_EXTENSION = {}
 
