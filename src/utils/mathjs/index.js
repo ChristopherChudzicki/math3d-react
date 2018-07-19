@@ -1,9 +1,6 @@
 // @flow
 import customMath from './custom'
-
-type Math = {
-  parse: Function
-}
+import type { Math } from './types'
 
 const math: Math = customMath
 
