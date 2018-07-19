@@ -70,5 +70,8 @@ export type Node =
   | FunctionNode<Node>
 
 export type Math = {
-  parse: string => Node
+  parse: string => Node,
+  type: {
+    DenseMatrix: Function
+  }
 }

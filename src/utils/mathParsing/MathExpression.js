@@ -97,15 +97,13 @@ export default class MathExpression {
   _getEval() {
     const compiled = this.tree.compile()
 
-    // If expression contains '[', assume that it is an array and will evaluate
-    // to a MathJS DenseMatrix. Covert it to a normal js array
-    // TODO: this is brittle. E.g., would try to covert [1, 2, 3] dot [2,0,1]
-    // to an array.
-    const toArray = this.string.includes('[')
-
-    return toArray
-      ? (scope:Scope):Array<Evaluated> => compiled.eval(scope).toArray()
-      : (scope:Scope):Evaluated => compiled.eval(scope)
+    return (scope: Scope): Evaluated => {
+      const raw = compiled.eval(scope)
+      if (raw instanceof math.type.DenseMatrix) {
+        return raw.toArray()
+      }
+      return raw
+    }
   }
 
 }
