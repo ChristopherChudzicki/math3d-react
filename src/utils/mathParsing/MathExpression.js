@@ -1,8 +1,8 @@
 // @flow
-import math from '../mathjs'
+import math from 'utils/mathjs'
 import type {
   Node
-} from '../mathjs/types'
+} from 'utils/mathjs/types'
 
 type ParseNode = any
 type PostProcessor = (ParseNode) => void
@@ -22,8 +22,8 @@ export default class MathExpression {
   string: string
   dependencies: Set<string> // direct dependencies!
   tree: Node
+  eval: ((scope:Scope) => Array<Evaluated>) | ((scope:Scope) => Evaluated)
   name = null
-  eval = null // compiled evaluation function, scope => value
 
   /**
   * @param {string} expression to be parsed
@@ -104,8 +104,8 @@ export default class MathExpression {
     const toArray = this.string.includes('[')
 
     return toArray
-      ? (scope:Scope): Array<Evaluated> => compiled.eval(scope).toArray()
-      : (scope:Scope): Evaluated => compiled.eval(scope)
+      ? (scope:Scope):Array<Evaluated> => compiled.eval(scope).toArray()
+      : (scope:Scope):Evaluated => compiled.eval(scope)
   }
 
 }
