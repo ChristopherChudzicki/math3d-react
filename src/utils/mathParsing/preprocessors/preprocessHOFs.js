@@ -1,3 +1,4 @@
+// @flow
 import { escapeRegExp, replaceAll, findClosingBrace } from '../../helpers'
 
 /**
@@ -21,37 +22,37 @@ import { escapeRegExp, replaceAll, findClosingBrace } from '../../helpers'
  *
  * @param  {array<string>} hofNames An array of higher-order function names
  */
-export default function preprocessHOFs(hofNames) {
-  return string => hofNames.reduce((acc, c) => convertSingleHOF(acc, c), string)
+export default function preprocessHOFs(hofNames: Array<string>) {
+  return (str: string) => hofNames.reduce((acc, c) => convertSingleHOF(acc, c), str)
 }
 
-export function convertSingleHOF(string, hofName) {
-  string = normalizeHOFExpression(string, hofName)
+export function convertSingleHOF(expr: string, hofName: string) {
+  expr = normalizeHOFExpression(expr, hofName)
 
-  const hofStart = string.indexOf(hofName)
+  const hofStart = expr.indexOf(hofName)
 
   if (hofStart < 0) {
-    return string
+    return expr
   }
 
   const funcStart = hofStart + hofName.length
-  const funcClose = findClosingBrace(string, funcStart)
+  const funcClose = findClosingBrace(expr, funcStart)
 
   // 'PLACEHOLDER' marks a hofName as finished. Brittle, I guess.
-  if (string[funcClose + 1] !== '(') {
-    string = string.slice(0, hofStart) + 'PLACEHOLDER' + string.slice(funcStart, string.length)
+  if (expr[funcClose + 1] !== '(') {
+    expr = expr.slice(0, hofStart) + 'PLACEHOLDER' + expr.slice(funcStart, expr.length)
   }
   else {
     const argStart = funcClose + 1
-    string = string.slice(0, hofStart) + 'PLACEHOLDER' + string.slice(funcStart, funcClose) + ',' + string.slice(argStart + 1, string.length)
+    expr = expr.slice(0, hofStart) + 'PLACEHOLDER' + expr.slice(funcStart, funcClose) + ',' + expr.slice(argStart + 1, expr.length)
   }
 
   // Test if any hofName remain
-  if (string.indexOf(hofName) < 0) {
-    return replaceAll(string, 'PLACEHOLDER', hofName)
+  if (expr.indexOf(hofName) < 0) {
+    return replaceAll(expr, 'PLACEHOLDER', hofName)
   }
   else {
-    return convertSingleHOF(string, hofName)
+    return convertSingleHOF(expr, hofName)
   }
 }
 
@@ -63,8 +64,8 @@ export function convertSingleHOF(string, hofName) {
  * Example:
  *  diff  (f)  (u, v) --> diff(f)(u, v)
  */
-export function normalizeHOFExpression(string, hofName) {
-  return string
+export function normalizeHOFExpression(expr: string, hofName: string) {
+  return expr
     .replace(new RegExp(`${escapeRegExp(hofName)}\\s+\\(`), `${hofName}(`)
     .replace(/\)\s+\(/g, ')(')
 }
