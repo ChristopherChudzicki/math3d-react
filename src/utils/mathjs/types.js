@@ -31,7 +31,7 @@ type GenericNode<node> = NodeBase<node> & {
   // | "FunctionNode"
   | "Node"
   | "ObjectNode"
-  | "OperatorNode"
+  // | "OperatorNode"
   | "ParenthesisNode"
   | "RangeNode"
   // | "SymbolNode"
@@ -62,12 +62,19 @@ type FunctionNode<node> = NodeBase<node> & {
   name: string
 }
 
+type OperatorNode<node> = NodeBase<node> & {
+  type: "OperatorNode",
+  fn: string,
+  op: string
+}
+
 export type Node =
   | GenericNode<Node>
   | AssignmentNode<Node>
   | FunctionAssignmentNode<Node>
   | SymbolNode<Node>
   | FunctionNode<Node>
+  | OperatorNode<Node>
 
 export type Math = {
   parse: string => Node,
