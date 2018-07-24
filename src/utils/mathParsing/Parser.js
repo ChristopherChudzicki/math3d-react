@@ -1,4 +1,3 @@
-//
 import MathExpression from './MathExpression'
 import { preprocessHOFs, preprocessMathQuill } from './preprocessors'
 import { reassignOperators } from './postprocessors'
