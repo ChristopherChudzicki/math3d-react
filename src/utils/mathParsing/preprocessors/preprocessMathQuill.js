@@ -1,3 +1,4 @@
+// @flow
 import { replaceAll, findClosingBrace } from '../../helpers'
 
 /**
@@ -13,7 +14,7 @@ import { replaceAll, findClosingBrace } from '../../helpers'
  * @param  {string} fromMQ a MathQuill-generated LaTeX expression
  * @return {string} the input expression with LaTeX commands converted to mathjs
  */
-export default function mathquillToMathJS(fromMQ) {
+export default function mathquillToMathJS(fromMQ: string) {
   const replacements = [
     { tex: '\\operatorname{diff}', mathjs: 'diff' },
     { tex: '\\operatorname{unitT}', mathjs: 'unitT' },
@@ -39,18 +40,18 @@ export default function mathquillToMathJS(fromMQ) {
  * Recursively replaces LaTeX fractions with normal divison
  *   - example: \frac{a}{1 + \frac{b}{c}} --> {a}/{1 + {b}/{c}}
  */
-export function fracToDivision(string) {
+export function fracToDivision(expr: string) {
   const frac = '\\frac'
-  const fracStart = string.indexOf(frac)
+  const fracStart = expr.indexOf(frac)
   const numStart = fracStart + frac.length
 
-  if (fracStart < 0) { return string }
+  if (fracStart < 0) { return expr }
 
-  const divIdx = findClosingBrace(string, numStart)
+  const divIdx = findClosingBrace(expr, numStart)
   // Remove frac, and add "/"
-  const newString = string.slice(0, fracStart) +
-    string.slice(numStart, divIdx + 1) + '/' +
-    string.slice(divIdx + 1)
+  const newExpr = expr.slice(0, fracStart) +
+    expr.slice(numStart, divIdx + 1) + '/' +
+    expr.slice(divIdx + 1)
 
-  return fracToDivision(newString)
+  return fracToDivision(newExpr)
 }

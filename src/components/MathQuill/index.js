@@ -1,52 +1,62 @@
+/* @flow */
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 // mathquill.js requires window.jQuery; probably best to load from a CDN
 import 'mathquill/build/mathquill.js'
+// $FlowFixMe flow doesn't like css imports and I only have a few.
 import 'mathquill/build/mathquill.css'
 import classNames from 'classnames'
 
 const MQ = window.MathQuill.getInterface(2)
 
-export default class MathQuill extends PureComponent {
+type MQMathField = {
+  latex: Function
+}
+
+type MathQuillProps = {
+  latex: string,
+  style?: Object,
+  className?: string,
+  // MQ Config:
+  spaceBehavesLikeTab?: boolean,
+  leftRightIntoCmdGoes?: string,
+  restrictMismatchedBrackets?: boolean,
+  sumStartsWithNEquals?: boolean,
+  supSubsRequireOperand?: boolean,
+  charsThatBreakOutOfSupSub?: string,
+  autoSubscriptNumerals?: boolean,
+  autoCommands?: string,
+  autoOperatorNames?: string,
+  substituteTextarea?: Function,
+  // MathQuill Config Event Handlers
+  // MathQuill actually names them handler.edit, handler.enter, etc
+  onEnter?: Function,
+  onEdit?: Function,
+  onMoveOutOf?: Function,
+  onDeleteOutOf?: Function,
+  onUpOutOf?: Function,
+  onSelectOutOf?: Function,
+  onDownOutOf?: Function,
+  // Extra React Event Handlers
+  onFocus?: Function,
+  onBlur?: Function,
+}
+
+type MathQuillState = {
+  isFocused: boolean
+}
+
+export default class MathQuill extends PureComponent
+  <MathQuillProps, MathQuillState> {
+
+  mathField: MQMathField
+  span: ?HTMLSpanElement
+  preventOnEdit: bool
 
   state = {
     isFocused: false
   }
 
-  // For configuration details, see http://docs.mathquill.com/en/latest/Config/#setting-configuration
-  // Outer Span CSS Info:
-  //   default classes: .mq-editable-field.mq-math-mode
-  //   when focused: .mq-focused
-
-  static propTypes = {
-    latex: PropTypes.string,
-    style: PropTypes.object,
-    className: PropTypes.string,
-    // Configuration options
-    spaceBehavesLikeTab: PropTypes.bool,
-    leftRightIntoCmdGoes: PropTypes.string,
-    restrictMismatchedBrackets: PropTypes.bool,
-    sumStartsWithNEquals: PropTypes.bool,
-    supSubsRequireOperand: PropTypes.bool,
-    charsThatBreakOutOfSupSub: PropTypes.string,
-    autoSubscriptNumerals: PropTypes.bool,
-    autoCommands: PropTypes.string,
-    autoOperatorNames: PropTypes.string,
-    substituteTextarea: PropTypes.func,
-    // MathQuill Config Event Handlers
-    onEnter: PropTypes.func,
-    onEdit: PropTypes.func,
-    onMoveOutOf: PropTypes.func,
-    onDeleteOutOf: PropTypes.func,
-    onUpOutOf: PropTypes.func,
-    onSelectOutOf: PropTypes.func,
-    onDownOutOf: PropTypes.func,
-    // Extra React Event Handlers
-    onFocus: PropTypes.func,
-    onBlur: PropTypes.func
-  }
-
-  static configKeys = new Set( [
+  static configKeys = [
     'spaceBehavesLikeTab',
     'leftRightIntoCmdGoes',
     'restrictMismatchedBrackets',
@@ -57,7 +67,7 @@ export default class MathQuill extends PureComponent {
     'autoCommands',
     'autoOperatorNames',
     'substituteTextarea'
-  ] )
+  ]
 
   static handlerKeys = {
     onEnter: 'enter',
@@ -69,21 +79,21 @@ export default class MathQuill extends PureComponent {
     onDownOutOf: 'downOutOf'
   }
 
-  getConfig(props) {
-    const config = Object.keys(props)
-      .filter(prop => MathQuill.configKeys.has(prop))
+  getConfig(props: MathQuillProps) {
+
+    const config = MathQuill.configKeys
+      .filter(prop => props[prop] )
       .reduce((theConfig, prop) => {
         theConfig[prop] = props[prop]
         return theConfig
       }, {} )
 
-    config.handlers = {
-      edit: this.onEdit
-    }
+    config.handlers = { }
+    config.handlers.edit = this.onEdit
 
     // Add remaining handlers and return
-    return Object.keys(props)
-      .filter(prop => MathQuill.handlerKeys[prop] )
+    return Object.keys(MathQuill.handlerKeys)
+      .filter(prop => props[prop] )
       .reduce((theConfig, prop) => {
         const handlerKey = MathQuill.handlerKeys[prop]
         theConfig.handlers[handlerKey] = props[prop]
@@ -93,11 +103,11 @@ export default class MathQuill extends PureComponent {
 
   componentDidMount() {
     const config = this.getConfig(this.props)
-    this.mathField = MQ.MathField(this._span, config)
+    this.mathField = MQ.MathField(this.span, config)
     this.setLatex(this.props.latex)
   }
 
-  setLatex(latex) {
+  setLatex(latex: string) {
     if (latex === this.mathField.latex()) {
       return
     }
@@ -111,7 +121,7 @@ export default class MathQuill extends PureComponent {
     this.setLatex(this.props.latex)
   }
 
-  onEdit = (mathField) => {
+  onEdit = (mathField: MQMathField) => {
     const handler = this.props.onEdit
 
     if (handler && !this.preventOnEdit) {
@@ -136,7 +146,7 @@ export default class MathQuill extends PureComponent {
   render() {
     // Setting classes through react overrides the custom mathquill classes
     // unless we also set the mq classes through react.
-    const mqClasses = classNames( {
+    const mqClasses = classNames(this.props.className, {
       'mq-editable-field': true,
       'mq-math-mode': true,
       'mq-focused': this.state.isFocused
@@ -146,29 +156,31 @@ export default class MathQuill extends PureComponent {
         onFocus={this.onFocus}
         onBlur={this.onBlur}
         style={this.props.style}
-        className={mqClasses + ' ' + this.props.className}
-        ref={ ref => { this._span = ref } }>
+        className={mqClasses}
+        ref={ ref => { this.span = ref } }>
       </span>
     )
   }
 
 }
 
-export class StaticMath extends PureComponent {
+type StaticMathProps = {
+  latex?: string,
+  style?: Object,
+  className?: string,
+};
 
-  // For configuration details, see http://docs.mathquill.com/en/latest/Config/#setting-configuration
-  // Outer Span CSS Info:
-  //   default classes: .mq-editable-field.mq-math-mode
-  //   when focused: .mq-focused
+type MQStaticMath = {
+  latex: Function
+}
 
-  static propTypes = {
-    latex: PropTypes.string,
-    style: PropTypes.object,
-    className: PropTypes.string
-  }
+export class StaticMath extends PureComponent<StaticMathProps> {
+
+  staticMath: MQStaticMath
+  span: ?HTMLSpanElement
 
   componentDidMount() {
-    this.staticMath = MQ.StaticMath(this._span)
+    this.staticMath = MQ.StaticMath(this.span)
   }
 
   componentDidUpdate() {
@@ -178,12 +190,14 @@ export class StaticMath extends PureComponent {
   }
 
   render() {
-    const mqClasses = 'mq-math-mode'
+    const mqClasses = classNames(this.props.className, {
+      'mq-math-mode': true
+    } )
     return (
       <span
         style={this.props.style}
-        className={mqClasses + ' ' + this.props.className}
-        ref={ ref => { this._span = ref } }>
+        className={mqClasses}
+        ref={ ref => { this.span = ref } }>
         {this.props.latex}
       </span>
     )

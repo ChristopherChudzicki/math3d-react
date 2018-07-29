@@ -1,13 +1,4 @@
-import toposort from 'toposort'
-import diff from 'shallow-diff'
-import {
-  setMergeInto
-} from 'utils/sets'
-import math from './customMathJs'
-
-const DEFAULT_SCOPE_EXTENSION = {}
-
-const DEFAULT_SYMBOL_NAMES = new Set(Object.keys(math))
+// @flow
 
 /**
  * Functions for evaluating a serialized description of mathematical symbols.
@@ -52,24 +43,29 @@ const DEFAULT_SYMBOL_NAMES = new Set(Object.keys(math))
  *  caching for faster re-computation.
  */
 
-/**
- * @typedef {Object.<string, string>} Symbols
- * mapping from symbol names to symbol values. Symbol values *must* be
- * parserable by a Parser class instance. Example:
- * { a: 'a=5', f: 'f(t)=t^2 + a' }
- *
- * @typedef {Object.<string, number|function|array>} Scope
- * mapping from symbol names to evaluated symbol values. Example:
- * { a: 5, f: t => t**2 + 5 }
- *
- * @typedef {Object.<string, error>} SymbolsErrors
- * mapping from symbol names to evaluation errors
- *
- * @typedef {Object.<string, set>} ChildMap
- * mapping from symbol name to direct children their direct children in the
- * dependency graph. Example:
- * { a: Set() { 'b', 'c' }  b: Set() { 'c' }, c: Set() {} }
- */
+import toposort from 'toposort'
+import diff from 'shallow-diff'
+import {
+  setMergeInto
+} from 'utils/sets'
+import math from 'utils/mathjs'
+import type Parser from './Parser'
+import type { Evaluated } from './MathExpression'
+
+const DEFAULT_SYMBOL_NAMES = new Set(Object.keys(math))
+
+type Symbols = {
+  [symbolName: string]: string
+}
+type Scope = {
+  [symbolName: string]: Evaluated
+}
+type ScopeErrors = {
+  [symbolName: string]: Error
+}
+type ChildMap = {
+  [nodeName: string]: Set<string>
+}
 
 /**
  * evaluates a serialized scope from scratch or updates an existing scope
@@ -86,7 +82,12 @@ const DEFAULT_SYMBOL_NAMES = new Set(Object.keys(math))
  * e.g., when the symbol's value is changed by a slider
  *
  */
-export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE_EXTENSION, changed = null) {
+export function evalScope(
+  parser: Parser,
+  symbols: Symbols,
+  oldScope: Scope = {},
+  changed: ?(Set<string> | Array<string>) = null
+): {scope: Scope, errors: ScopeErrors} {
   // Get the evaluation order and add symbols to scope
   const childMap = getChildMap(symbols, parser)
 
@@ -114,7 +115,12 @@ export function evalScope(parser, symbols, oldScope = DEFAULT_SCOPE_EXTENSION, c
 
 }
 
-function removeFunctionsWithMissingDeps(parser, symbols, evalOrder, rawResult) {
+function removeFunctionsWithMissingDeps(
+  parser: Parser,
+  symbols: Symbols,
+  evalOrder: Array<string>,
+  rawResult: {errors: ScopeErrors, scope: Scope}
+) {
   const functions = evalOrder.filter(symbolName => {
     return typeof rawResult.scope[symbolName] === 'function'
   } )
@@ -124,7 +130,8 @@ function removeFunctionsWithMissingDeps(parser, symbols, evalOrder, rawResult) {
     const unmet = [...directDependencies].filter(dep => acc.scope[dep] === undefined)
     if (unmet.length > 0) {
       delete acc.scope[symbolName]
-      acc.errors[symbolName] = Error(`Eval Error: Depends on undefined symbol ${unmet}`)
+      const names = unmet.join(', ')
+      acc.errors[symbolName] = Error(`Eval Error: Depends on undefined symbol(s) ${names}`)
       // what to do with updated?
     }
     return acc
@@ -141,7 +148,11 @@ function removeFunctionsWithMissingDeps(parser, symbols, evalOrder, rawResult) {
  *
  * @returns {array} of symbol names, a valid evaluation order for symbols
  */
-export function getEvalOrder(symbols, childMap, onlyTheseAndChildren = null) {
+export function getEvalOrder(
+  symbols: Symbols,
+  childMap: ChildMap,
+  onlyTheseAndChildren: ?(Set<string> | Array<string>) = null
+): Array<string> {
   // construct dependency graph as array of nodes
   const nodesToInclude = onlyTheseAndChildren
     ? [...getDescendants(onlyTheseAndChildren, childMap)]
@@ -174,7 +185,7 @@ export function getEvalOrder(symbols, childMap, onlyTheseAndChildren = null) {
  *
  * @returns {ChildMap}
  */
-export function getChildMap(symbols, parser) {
+export function getChildMap(symbols: Symbols, parser: Parser): ChildMap {
 
   const initial = Object.keys(symbols).reduce((acc, symbolName) => {
     acc[symbolName] = new Set()
@@ -206,8 +217,8 @@ export function getChildMap(symbols, parser) {
  * @param  {ChildMap} childMap
  * @returns {set} the given node and all of its descendents
  */
-export function getDescendantsOfNode(node, childMap) {
-  const descendants = new Set( [node] )
+export function getDescendantsOfNode(node: string, childMap: ChildMap) {
+  const descendants: Set<string> = new Set( [node] )
 
   if (childMap[node].size === 0) {
     return descendants
@@ -226,29 +237,57 @@ export function getDescendantsOfNode(node, childMap) {
  * @param  {set|array} nodes
  * @returns {set} the given nodes and all of their descendents
  */
-export function getDescendants(nodes, childMap) {
-  const children = new Set()
+export function getDescendants(
+  nodes: Set<string> | Array<string>,
+  childMap: ChildMap
+) {
+  const children: Set<string> = new Set()
   nodes.forEach(node => {
     setMergeInto(children, getDescendantsOfNode(node, childMap))
   } )
   return children
 }
 
+type Diff = {
+  unchanged: Array<string>,
+  updated: Array<string>,
+  deleted: Array<string>,
+  added: Array<string>
+}
+
+type Result = {
+  scope: Scope,
+  scopeDiff: Diff,
+  errors: ScopeErrors,
+  errorsDiff: Diff
+}
+
 export class ScopeEvaluator {
 
-  constructor(parser) {
+  _parser: Parser
+  _oldResult: Result = {
+    scope: {},
+    scopeDiff: {
+      unchanged: [],
+      updated: [],
+      added: [],
+      deleted: []
+    },
+    errors: {},
+    errorsDiff: {
+      unchanged: [],
+      updated: [],
+      added: [],
+      deleted: []
+    }
+  }
+  _oldSymbols: Symbols = {}
+
+  constructor(parser: Parser) {
     this._parser = parser
   }
 
-  _oldResult = {
-    scope: {},
-    scopeDiff: {},
-    errors: {},
-    errorsDiff: {}
-  }
-  _oldSymbols = {}
-
-  evalScope(symbols) {
+  evalScope(symbols: Symbols) {
 
     if (symbols === this._oldSymbols) {
       return this._oldResult
@@ -265,7 +304,7 @@ export class ScopeEvaluator {
 
   }
 
-  static _detectChanges(newSymbols, oldSymbols) {
+  static _detectChanges(newSymbols: Symbols, oldSymbols: Symbols) {
     const { added, deleted, updated } = diff(newSymbols, oldSymbols)
     return {
       updatesOnly: added.length === 0 && deleted.length === 0,
@@ -273,7 +312,7 @@ export class ScopeEvaluator {
     }
   }
 
-  _patchScope(symbols, changed) {
+  _patchScope(symbols: Symbols, changed: Array<string>) {
     const { scope, errors } = evalScope(this._parser, symbols, this._oldResult.scope, changed)
 
     // errors only includes errors in changed symbols.
@@ -295,7 +334,7 @@ export class ScopeEvaluator {
 
   }
 
-  _recalculateScope(symbols) {
+  _recalculateScope(symbols: Symbols) {
     const { scope, errors } = evalScope(this._parser, symbols)
     return {
       scope,
@@ -305,7 +344,7 @@ export class ScopeEvaluator {
     }
   }
 
-  _updateState(symbols, result) {
+  _updateState(symbols: Symbols, result: Result) {
     this._oldSymbols = symbols
     this._oldResult = result
   }

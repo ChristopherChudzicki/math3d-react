@@ -1,11 +1,26 @@
+// @flow
 import MathExpression from './MathExpression'
 import { preprocessHOFs, preprocessMathQuill } from './preprocessors'
 import { reassignOperators } from './postprocessors'
 import { setMergeInto } from 'utils/sets'
+import type {
+  PreProcessor,
+  PostProcessor
+} from './MathExpression'
+
+type ParserCache = {
+  [string]: {
+    parsed: MathExpression,
+    error: null
+  } | {
+    parsed: null,
+    error: Error
+  }
+}
 
 export default class Parser {
 
-  _cache = {}
+  _cache: ParserCache = {}
   _preprocessors = []
   _postprocessors = []
 
@@ -18,34 +33,34 @@ export default class Parser {
   ]
 
   constructor(
-    preprocessors = Parser._defaultPreprocessors,
-    postprocessors = Parser._defaultPostprocessors
+    preprocessors: Array<PreProcessor> = Parser._defaultPreprocessors,
+    postprocessors: Array<PostProcessor> = Parser._defaultPostprocessors
   ) {
     this._preprocessors = preprocessors
     this._postprocessors = postprocessors
   }
 
-  parse(string) {
-    if (this._cache[string] === undefined) {
-      this.addToCache(string)
+  parse(expresssion: string) {
+    if (this._cache[expresssion] === undefined) {
+      this.addToCache(expresssion)
     }
-    const { parsed, error } = this._cache[string]
+    const { parsed, error } = this._cache[expresssion]
 
-    if (error) {
-      throw error
+    if (parsed) {
+      return parsed
     }
-    return parsed
+    throw error
   }
 
-  addToCache(string) {
+  addToCache(expresssion: string) {
     try {
-      this._cache[string] = {
-        parsed: new MathExpression(string, this._preprocessors, this._postprocessors),
+      this._cache[expresssion] = {
+        parsed: new MathExpression(expresssion, this._preprocessors, this._postprocessors),
         error: null
       }
     }
     catch (err) {
-      this._cache[string] = {
+      this._cache[expresssion] = {
         parsed: null,
         error: err
       }
@@ -61,7 +76,10 @@ export default class Parser {
  * @param  {string[]} expressions array of mathematical expression strings
  * @return {set} set of used symbols
  */
-export function getUsedSymbols(parser, expressions) {
+export function getUsedSymbols(
+  parser: Parser,
+  expressions: Array<string>
+): Set<string> {
   return expressions.reduce((usedSymbols, expression) => {
     return setMergeInto(usedSymbols, parser.parse(expression).dependencies)
   }, new Set())

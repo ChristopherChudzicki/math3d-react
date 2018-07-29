@@ -7,10 +7,12 @@
     "classnames": "^2.2.5",
     "color": "^3.0.0",
     "css-time": "^0.1.12",
+    "flow": "^0.2.3",
+    "flow-bin": "^0.76.0",
     "immutability-helper": "^2.6.6",
     "lodash": "^4.17.4",
     "mathjs": "^3.18.1",
-    "mathquill": "^0.10.1-a",
+    "mathquill": "^0.10.1",
     "re-reselect": "^2.1.0",
     "react": "^16.2.0",
     "react-beautiful-dnd": "^5.0.0",
@@ -33,7 +35,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "coverage": "react-scripts test --env=jsdom --coverage",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "flow": "flow"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-beta.41",

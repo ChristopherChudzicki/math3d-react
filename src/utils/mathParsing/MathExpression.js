@@ -1,4 +1,13 @@
-import math from './customMathJs'
+// @flow
+import math from 'utils/mathjs'
+import type { Node } from 'utils/mathjs/types'
+
+export type PostProcessor = (Node) => void
+export type PreProcessor = (expression: string) => string
+export type Evaluated = number | Array<Evaluated> | (...Array<Evaluated>) => Evaluated
+export type Scope = {
+  [symbol_name: string]: Evaluated
+}
 
 /**
  * Uses math.parse to parse a math expression into a tree. Holds the tree and
@@ -6,19 +15,23 @@ import math from './customMathJs'
  */
 export default class MathExpression {
 
+  string: string
+  dependencies: Set<string> // direct dependencies!
+  tree: Node
+  eval: ((scope:Scope) => Array<Evaluated>) | ((scope:Scope) => Evaluated)
   name = null
-  string = null // original expression
-  tree = null // mathjs parse tree
-  eval = null // compiled evaluation function, scope => value
-  dependencies = null // variables and functions required for evaluation
 
   /**
   * @param {string} expression to be parsed
   * @param {array<function>} preprocessors array of functions mapping strings to strings. These functions are applied to expression before being parsed by mathjs.
-  * @param {array<function>} postprocessors array of functions mapping strings to strings. These functions are applied to expression before being parsed by mathjs.
+  * @param {array<function>} postprocessors array of functions called on the part tree's nodes. These functions are applied to expression before being parsed by mathjs.
   *  - preprocessors is an array of function mapping strings to strings.
   */
-  constructor(expression, preprocessors = [], postprocessors = [] ) {
+  constructor(
+    expression: string,
+    preprocessors: Array<PreProcessor> = [],
+    postprocessors: Array<PostProcessor> = []
+  ) {
     this.string = expression
     this.tree = math.parse(this._preprocess(preprocessors))
     this.name = this.tree.name ? this.tree.name : null
@@ -28,33 +41,39 @@ export default class MathExpression {
     this.dependencies = this._getDependencies()
   }
 
-  _preprocess(preprocessors) {
+  _preprocess(preprocessors: Array<PreProcessor>) {
     return preprocessors.reduce((acc, f) => f(acc), this.string)
   }
 
-  _postprocess(postprocessors) {
+  _postprocess(postprocessors: Array<PostProcessor>) {
     postprocessors.map(f => {
       this.tree.traverse(node => f(node))
     } )
   }
 
+  static _getRHS(node: Node) {
+    if (node.type === 'AssignmentNode') {
+      return node.value
+    }
+    if (node.type === 'FunctionAssignmentNode') {
+      return node.expr
+    }
+    return node
+  }
+
   _getDependencies() {
-    const dependencies = new Set()
+    const dependencies: Set<string> = new Set()
     const isAssignmentNode = (this.tree.type === 'AssignmentNode')
     const isFunctionAssignmentNode = (this.tree.type === 'FunctionAssignmentNode')
 
     // In case of assignment, use right-hand-side as tree
-    const rhs = isAssignmentNode
-      ? this.tree.value
-      : isFunctionAssignmentNode
-        ? this.tree.expr
-        : this.tree
+    const rhs = MathExpression._getRHS(this.tree)
 
     const params = (this.tree.type === 'FunctionAssignmentNode')
       ? this.tree.params
       : []
 
-    rhs.traverse(node => {
+    rhs.traverse((node: Node) => {
       if (node.type === 'SymbolNode' || node.type === 'FunctionNode') {
         if (!params.includes(node.name)) {
           dependencies.add(node.name)
@@ -62,12 +81,11 @@ export default class MathExpression {
       }
 
       if (isAssignmentNode || isFunctionAssignmentNode) {
+        // $FlowFixMe need to delete this anyway
         if ( [...dependencies, ...params].includes(this.tree.name)) {
           throw Error('Cyclic Assignment Error')
         }
       }
-
-      return dependencies
     } )
 
     return dependencies
@@ -76,15 +94,13 @@ export default class MathExpression {
   _getEval() {
     const compiled = this.tree.compile()
 
-    // If expression contains '[', assume that it is an array and will evaluate
-    // to a MathJS DenseMatrix. Covert it to a normal js array
-    // TODO: this is brittle. E.g., would try to covert [1, 2, 3] dot [2,0,1]
-    // to an array.
-    const toArray = this.string.includes('[')
-
-    return toArray
-      ? scope => compiled.eval(scope).toArray()
-      : scope => compiled.eval(scope)
+    return (scope: Scope): Evaluated => {
+      const raw = compiled.eval(scope)
+      if (raw instanceof math.type.DenseMatrix) {
+        return raw.toArray()
+      }
+      return raw
+    }
   }
 
 }

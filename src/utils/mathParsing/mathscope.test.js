@@ -338,9 +338,9 @@ describe('handling unmet dependencies', () => {
       expect(() => { throw errors.z } )
         .toThrow('Undefined symbol y')
       expect(() => { throw errors.f } )
-        .toThrow('Eval Error: Depends on undefined symbol g')
+        .toThrow('Eval Error: Depends on undefined symbol(s) g')
       expect(() => { throw errors.g } )
-        .toThrow('Eval Error: Depends on undefined symbol w')
+        .toThrow('Eval Error: Depends on undefined symbol(s) w')
     } )
   } )
 
@@ -351,7 +351,7 @@ describe('handling unmet dependencies', () => {
     const changed = new Set( ['f'] )
     const { scope, errors } = evalScope(parser, symbols, oldScope, changed)
     expect(() => { throw errors.f } )
-      .toThrow('Eval Error: Depends on undefined symbol x')
+      .toThrow('Eval Error: Depends on undefined symbol(s) x')
     // f was not updated
     expect(scope).toEqual( {} )
 
@@ -427,19 +427,19 @@ describe('class ScopeEvaluator', () => {
     const scopeEvaluator = new ScopeEvaluator(parser)
 
     const symbols0 = {
-      v: 'v=y+1',       // error (from 2nd ancestor)
-      w: 'w=2',         // ok
-      x: 'x=2^[1,2,3]', // error
-      y: 'y=x^2',       // error (from 1st ancestor)
-      z: 'z=[1, 1, 1]' // ok
+      v: 'v=y+1',         // error (from 2nd ancestor)
+      w: 'w=2',           // ok
+      x: 'x=2^[1,2,3]',   // error
+      y: 'y=x^2',         // error (from 1st ancestor)
+      z: 'z=[1, 1, 1]'    // ok
     }
 
     const symbols1 = {
-      v: 'v=y+t', // error: changed
-      w: 'w=2', // scope: unchanged
-      x: 'x=2^[1,2,3]', // error: unchanged
-      y: 'y=w^2', // scope: added, error: removed
-      z: 'z=[2, 1, 1]' // scope: unchanged
+      v: 'v=y+t',        // error: changed
+      w: 'w=2',          // scope: unchanged
+      x: 'x=2^[1,2,3]',  // error: unchanged
+      y: 'y=w^2',        // scope: added, error: removed
+      z: 'z=[2, 1, 1]'   // scope: unchanged
     }
 
     function sortDiff(obj) {

@@ -1,0 +1,13 @@
+[ignore]
+.*/node_modules
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+module.name_mapper='^utils/\([-a-zA-Z0-9$_/]+\)$' -> '<PROJECT_ROOT>/src/utils/\1'
+
+[strict]

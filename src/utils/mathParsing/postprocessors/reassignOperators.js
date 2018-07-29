@@ -1,23 +1,22 @@
-import math from '../customMathJs'
-
-// TODO: Might be better to fork mathjs and add cross / dot to the operator list
-// https://github.com/josdejong/mathjs/issues/75
+// @flow
+import math from 'utils/mathjs'
+import type { Node } from 'utils/mathjs/types'
 
 /**
  * Returns a node hander to be used as a mathjs's ExpressionTree.traverse callback
  *
  * @param  {Object} operatorFnMap maps old operator function names to new operator function names
  */
-export default function reassignOperators(operatorFnMap) {
+export default function reassignOperators(operatorFnMap: {[string]: string} ) {
   for (let key of Object.keys(operatorFnMap)) {
     const fnName = operatorFnMap[key]
-    if (math[fnName] === undefined) {
+    if (!math.hasOwnProperty(fnName)) {
       throw Error(`math['${fnName}'] does not exist. (ExpressionTree Operators can only be reassigned to functions within the math (mathjs) namespace.)`)
     }
   }
 
-  return node => {
-    if (node.type === 'OperatorNode' && operatorFnMap[node.op] !== undefined) {
+  return (node: Node) => {
+    if (node.type === 'OperatorNode' && operatorFnMap.hasOwnProperty(node.op)) {
       node.fn = operatorFnMap[node.op]
     }
   }
