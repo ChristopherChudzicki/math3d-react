@@ -2,6 +2,8 @@ function notEmpty(obj) {
   return Object.keys(obj).length > 0
 }
 
+const empty = {}
+
 export function getErrors(id, ...errorsArray) {
   // Loop over the errors in order we care about
   for (const errors of errorsArray) {
@@ -10,6 +12,7 @@ export function getErrors(id, ...errorsArray) {
     }
   }
 
-  return {}
+  // return a constant empty, so equal by reference
+  return empty
 
 }
