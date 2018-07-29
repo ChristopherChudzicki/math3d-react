@@ -5,7 +5,7 @@ import Adapter from 'enzyme-adapter-react-16'
 import { MathQuillLarge } from './MathQuillStyled'
 import { Tooltip } from 'antd'
 import { timeout } from 'utils/functions'
-import { PARSE_ERROR } from 'services/errors'
+import { ParseErrorData } from 'services/errors'
 
 Enzyme.configure( { adapter: new Adapter() } )
 
@@ -35,8 +35,8 @@ const shallowMathInput = (props = {} ) => shallow(
     displayErrorDelay={DISPLAY_ERROR_DELAY}
     validators={[
       (parser, latex) => latex === 'E=mc^2'
-        ? { isValid: true }
-        : { isValid: false, errorMsg: `errorMsg!` }
+        ? new ParseErrorData(null)
+        : new ParseErrorData('errorMsg!')
     ]}
     {...props}
   />
@@ -89,13 +89,13 @@ describe("MathInout's validation process", () => {
 
   it('should call onValidatorAndErrorChange if validators property AND errorMsg changes', () => {
     const wrapper = shallowMathInput( {
-      validators: [ () => ( { isValid: false, errorMsg: 'Error0' } ) ],
+      validators: [ () => new ParseErrorData('Error0') ],
       errorMsg: 'Error0'
     } )
     expect(validate).toHaveBeenCalledTimes(1)
     expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(0)
     wrapper.setProps( {
-      validators: [ () => ( { isValid: false, errorMsg: 'Error1' } ) ]
+      validators: [ () => new ParseErrorData('Error1') ]
     } )
     expect(validate).toHaveBeenCalledTimes(2)
     expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(1)
@@ -103,13 +103,13 @@ describe("MathInout's validation process", () => {
 
   it('should NOT call onValidatorAndErrorChange if validators property changes but not errorMsg', () => {
     const wrapper = shallowMathInput( {
-      validators: [ () => ( { isValid: false, errorMsg: 'Error0' } ) ],
+      validators: [ () => new ParseErrorData('Error0') ],
       errorMsg: 'Error0'
     } )
     expect(validate).toHaveBeenCalledTimes(1)
     expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(0)
     wrapper.setProps( {
-      validators: [ () => ( { isValid: false, errorMsg: 'Error0' } ) ]
+      validators: [ () => new ParseErrorData('Error0') ]
     } )
     expect(validate).toHaveBeenCalledTimes(2)
     expect(onValidatorAndErrorChange).toHaveBeenCalledTimes(0)
@@ -128,9 +128,9 @@ describe("MathInout's validation process", () => {
 
   it('should call each validator funciton until one fails', () => {
     const validators = [
-      jest.fn(() => ( { isValid: true } )),
-      jest.fn(() => ( { isValid: false, errorMsg: 'error!' } )),
-      jest.fn(() => ( { isValid: true } ))
+      jest.fn(() => new ParseErrorData(null)),
+      jest.fn(() => new ParseErrorData('error!')),
+      jest.fn(() => new ParseErrorData(null))
     ]
     shallowMathInput( { validators } )
     expect(validate).toHaveBeenCalledTimes(1)
@@ -215,7 +215,7 @@ describe('MathInput error persistence handling', () => {
 test("MathInput's onEdit calls props.onValidatedTextChange", () => {
   const wrapper = shallowMathInput()
   const mq = { latex: () => 'testLatex' }
-  const error = { isValid: false, errorType: PARSE_ERROR, errorMsg: `errorMsg!` }
+  const error = new ParseErrorData('errorMsg!')
   wrapper.instance().onEdit(mq)
   expect(wrapper.instance().props.onValidatedTextChange).toHaveBeenCalledTimes(1)
   expect(wrapper.instance().props.onValidatedTextChange).toHaveBeenCalledWith('TEST', 'testLatex', error)

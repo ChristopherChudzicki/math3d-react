@@ -91,13 +91,13 @@ export default class MathObject extends PureComponent {
     ] ).isRequired,
     // passed by mapStateToProps / mapDispatchToProps
     isActive: PropTypes.bool.isRequired,
-    setActiveObject: PropTypes.func.isRequired,
     description: PropTypes.string.isRequired,
-    onEditDescription: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
     parentId: PropTypes.string.isRequired,
     positionInParent: PropTypes.number.isRequired,
-    isDeleteable: PropTypes.bool.isRequired
+    isDeleteable: PropTypes.bool.isRequired,
+    setActiveObject: PropTypes.func.isRequired,
+    setProperty: PropTypes.func.isRequired,
+    deleteMathObject: PropTypes.func.isRequired
   }
 
   static defaultProps = {
@@ -109,11 +109,27 @@ export default class MathObject extends PureComponent {
     isDeleting: false
   }
 
+  constructor(props) {
+    super(props)
+    this.setProperty = this.setProperty.bind(this)
+    this.onEditDescription = this.onEditDescription.bind(this)
+  }
+
+  setProperty(property, value) {
+    const { id, type } = this.props
+    this.props.setProperty(id, type, property, value)
+  }
+
+  onEditDescription(value) {
+    this.setProperty('description', value)
+  }
+
   onDelete = () => {
+    const { id, type, parentId, positionInParent } = this.props
     this.props.setActiveObject(null)
     this.setState( { isDeleting: true } )
     setTimeout(
-      () => this.props.onDelete(this.props.parentId, this.props.positionInParent),
+      () => this.props.deleteMathObject(id, type, parentId, positionInParent),
       theme.transitionDurationMS
     )
 
@@ -129,7 +145,6 @@ export default class MathObject extends PureComponent {
       isActive,
       sidePanelContent,
       description,
-      onEditDescription,
       type,
       children,
       isDeleteable
@@ -154,7 +169,7 @@ export default class MathObject extends PureComponent {
             <HeaderContainer>
               <EditableDescription
                 value={description}
-                onChange={onEditDescription}
+                onChange={this.onEditDescription}
                 isFolder={isFolder}
               />
               <DeleteButton onClick={this.onDelete} disabled={!isDeleteable} />

@@ -1,5 +1,9 @@
 import update from 'immutability-helper'
-import { PARSE_ERROR, EVAL_ERROR, RENDER_ERROR } from './index'
+import {
+  PARSE_ERROR,
+  EVAL_ERROR,
+  RENDER_ERROR
+} from './ErrorData'
 import { SET_ERROR, UNSET_ERROR } from './actions'
 import {
   CREATE_MATH_OBJECT,
@@ -17,7 +21,7 @@ export function createErrorReducer(errorTypes) {
 
       case SET_ERROR: {
         const { id, property } = payload
-        const { errorType, errorMsg } = payload.error
+        const { type: errorType, errorMsg } = payload.errorData
 
         return errorTypes.has(errorType)
           ? update(state, {
@@ -28,7 +32,7 @@ export function createErrorReducer(errorTypes) {
 
       case UNSET_ERROR: {
         const { id, property } = payload
-        const { errorType } = payload.error
+        const { type: errorType } = payload.errorData
         return errorTypes.has(errorType)
           ? update(state, {
             [id]: { $unset: [property] }

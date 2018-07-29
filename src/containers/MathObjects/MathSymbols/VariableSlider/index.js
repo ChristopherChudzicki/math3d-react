@@ -20,19 +20,21 @@ const mapStateToProps = ( { mathSymbols, sliderValues, parseErrors, evalErrors }
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => ( {
-  setSliderValue: (value, valueText) => {
-    dispatch(setSliderValue(ownProps.id, value))
+const mapDispatchToProps = dispatch => ( {
+  setSliderValue: (id, type, valueText, value) => {
+    // set the slider value
+    dispatch(setSliderValue(id, value))
+    // reset valueText and clear parse errors if necessary
     if (valueText !== null) {
       const error = { type: 'PARSE_ERROR', errorMsg: null }
-      dispatch(setPropertyAndError(ownProps.id, VARIABLE_SLIDER, 'value', null, error))
+      dispatch(setPropertyAndError(id, type, 'value', null, error))
     }
   },
-  setValidatedProperty: (property, value, error) => dispatch(
-    setPropertyAndError(ownProps.id, VARIABLE_SLIDER, property, value, error)
+  setPropertyAndError: (id, type, property, value, error) => dispatch(
+    setPropertyAndError(id, type, property, value, error)
   ),
-  setError: (property, error) => dispatch(
-    setError(ownProps.id, property, error)
+  setError: (id, property, error) => dispatch(
+    setError(id, property, error)
   )
 } )
 

@@ -2,7 +2,6 @@ import {
   createMathObject
 } from 'containers/MathObjects/actions'
 export const POINT = 'POINT'
-export const coords = 'coords'
 
 const defaultSettings = {
   type: POINT,

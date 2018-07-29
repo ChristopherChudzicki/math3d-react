@@ -11,8 +11,8 @@ const mapStateToProps = (state, ownProps) => ( {
   isActive: state.activeObject === ownProps.id
 } )
 
-const mapDispatchToProps = (dispatch, ownProps) => ( {
-  onToggleContentCollapsed: () => dispatch(toggleContentCollapsed(ownProps.id))
-} )
+const mapDispatchToProps = {
+  onToggleContentCollapsed: toggleContentCollapsed
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Folder)
