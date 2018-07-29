@@ -14,7 +14,12 @@
  */
 
 declare module 'shallow-diff' {
-  declare module.exports: any;
+  declare module.exports: (base: {}, compared: {} ) => {
+    unchanged: Array<string>,
+    updated: Array<string>,
+    deleted: Array<string>,
+    added: Array<string>
+  };
 }
 
 /**

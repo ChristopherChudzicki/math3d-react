@@ -14,7 +14,7 @@
  */
 
 declare module 'toposort' {
-  declare module.exports: any;
+  declare module.exports: (Array<[string, string]>) => Array<string>
 }
 
 /**
