@@ -65,7 +65,8 @@ type FunctionNode<node> = NodeBase<node> & {
 type OperatorNode<node> = NodeBase<node> & {
   type: "OperatorNode",
   fn: string,
-  op: string
+  op: string,
+  name: void
 }
 
 export type Node =

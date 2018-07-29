@@ -27,7 +27,7 @@ export function intersect<A>(a: Set<A>, b: Set<A>): Set<A> {
  * @param {set} target target set, mutated and returned
  * @param {set} source whose elements are merged into target
  */
-export function setMergeInto<A, B>(target: Set<A|B>, source: Set<B>) {
+export function setMergeInto<A, B>(target: Set<A|B>, source: Set<B>): Set<A|B> {
   for (const item of source) {
     target.add(item)
   }

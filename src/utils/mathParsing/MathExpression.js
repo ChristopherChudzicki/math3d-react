@@ -1,15 +1,11 @@
 // @flow
 import math from 'utils/mathjs'
-import type {
-  Node
-} from 'utils/mathjs/types'
+import type { Node } from 'utils/mathjs/types'
 
-type ParseNode = any
-type PostProcessor = (ParseNode) => void
-type PreProcessor = (expression: string) => string
-
-type Evaluated = number | Array<Evaluated> | (...Array<Evaluated>) => Evaluated
-type Scope = {
+export type PostProcessor = (Node) => void
+export type PreProcessor = (expression: string) => string
+export type Evaluated = number | Array<Evaluated> | (...Array<Evaluated>) => Evaluated
+export type Scope = {
   [symbol_name: string]: Evaluated
 }
 
@@ -85,6 +81,7 @@ export default class MathExpression {
       }
 
       if (isAssignmentNode || isFunctionAssignmentNode) {
+        // $FlowFixMe need to delete this anyway
         if ( [...dependencies, ...params].includes(this.tree.name)) {
           throw Error('Cyclic Assignment Error')
         }
