@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import SortableList from 'components/SortableList'
 import { Point, Variable, VariableSlider } from 'containers/MathObjects'
 import CollapsedIndicator from './CollapsedIndicator'
@@ -8,58 +8,66 @@ import MathObject from 'containers/MathObjects/MathObject'
 import { FOLDER, POINT, VARIABLE, VARIABLE_SLIDER } from 'containers/MathObjects/mathObjectTypes'
 import theme from 'constants/theme'
 
-Folder.propTypes = {
-  // Provided by ownProps
-  id: PropTypes.string.isRequired,
-  animationSpeed: PropTypes.number.isRequired, // has default
-  // Provided by mapStateToProps / mapDispatchToProps
-  isCollapsed: PropTypes.bool.isRequired,
-  onToggleContentCollapsed: PropTypes.func.isRequired,
-  items: PropTypes.arrayOf(PropTypes.object).isRequired,
-  isActive: PropTypes.bool.isRequired
-}
+export default class Folder extends PureComponent {
 
-Folder.defaultProps = {
-  animationSpeed: 200
-}
+  static propTypes = {
+    // Provided by ownProps
+    id: PropTypes.string.isRequired,
+    animationSpeed: PropTypes.number.isRequired, // has default
+    // Provided by mapStateToProps / mapDispatchToProps
+    isCollapsed: PropTypes.bool.isRequired,
+    onToggleContentCollapsed: PropTypes.func.isRequired,
+    items: PropTypes.arrayOf(PropTypes.object).isRequired,
+    isActive: PropTypes.bool.isRequired
+  }
 
-export default function Folder(props) {
+  static defaultProps = {
+    animationSpeed: 200
+  }
 
-  const listClassName = props.isCollapsed ? 'collapsed' : ''
+  constructor(props) {
+    super(props)
+    this.onToggleContentCollapsed = this.props.onToggleContentCollapsed.bind(this, this.props.id)
+  }
 
-  return (
-    <MathObject
-      id={props.id}
-      type={FOLDER}
-      isFolder={true}
-      sidePanelContent={
-        <CollapsedIndicator
-          isCollapsed={props.isCollapsed}
-          onToggleContentCollapsed={props.onToggleContentCollapsed}
-          animationSpeed={props.animationSpeed}
-          lightenOnHover={props.isActive}
-          backgroundColor={props.isActive ? theme.primary[1] : 'white'}
-        />
-      }
-    >
-      <Collapsible
-        open={!props.isCollapsed}
-        transitionTime={props.animationSpeed}
-        overflowWhenOpen='visible'
+  render() {
+    const props = this.props
+    const listClassName = props.isCollapsed ? 'collapsed' : ''
+    return (
+      <MathObject
+        id={props.id}
+        type={FOLDER}
+        isFolder={true}
+        sidePanelContent={
+          <CollapsedIndicator
+            isCollapsed={props.isCollapsed}
+            onToggleContentCollapsed={this.onToggleContentCollapsed}
+            animationSpeed={props.animationSpeed}
+            lightenOnHover={props.isActive}
+            backgroundColor={props.isActive ? theme.primary[1] : 'white'}
+          />
+        }
       >
-        <SortableList
-          className={listClassName}
-          droppableType='FOLDER_ITEM'
-          draggableType='FOLDER_ITEM'
-          // this prevents dropping into collapsed folders
-          isDropDisabled={props.isCollapsed}
-          droppableId={props.id}
-          items={props.items}
-          renderItem={renderItem}
-        />
-      </Collapsible>
-    </MathObject>
-  )
+        <Collapsible
+          open={!props.isCollapsed}
+          transitionTime={props.animationSpeed}
+          overflowWhenOpen='visible'
+        >
+          <SortableList
+            className={listClassName}
+            droppableType='FOLDER_ITEM'
+            draggableType='FOLDER_ITEM'
+            // this prevents dropping into collapsed folders
+            isDropDisabled={props.isCollapsed}
+            droppableId={props.id}
+            items={props.items}
+            renderItem={renderItem}
+          />
+        </Collapsible>
+      </MathObject>
+    )
+  }
+
 }
 
 function renderItem( { id, type } ) {

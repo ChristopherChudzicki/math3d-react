@@ -109,9 +109,19 @@ export default class MathObject extends PureComponent {
     isDeleting: false
   }
 
+  constructor(props) {
+    super(props)
+    this.setProperty = this.setProperty.bind(this)
+    this.onEditDescription = this.onEditDescription.bind(this)
+  }
+
   setProperty(property, value) {
     const { id, type } = this.props
     this.props.setProperty(id, type, property, value)
+  }
+
+  onEditDescription(value) {
+    this.setProperty('description', value)
   }
 
   onDelete = () => {
@@ -159,7 +169,7 @@ export default class MathObject extends PureComponent {
             <HeaderContainer>
               <EditableDescription
                 value={description}
-                onChange={value => this.setProperty('description', value)}
+                onChange={this.onEditDescription}
                 isFolder={isFolder}
               />
               <DeleteButton onClick={this.onDelete} disabled={!isDeleteable} />
