@@ -1,5 +1,11 @@
-export const PARSE_ERROR = 'PARSE_ERROR'
-export const EVAL_ERROR = 'EVAL_ERROR'
-export const RENDER_ERROR = 'RENDER_ERROR'
+// @flow
+export {
+  PARSE_ERROR,
+  EVAL_ERROR,
+  RENDER_ERROR,
+  ParseErrorData,
+  EvalErrorData,
+  RenderErrorData
+} from './ErrorData'
 
 export { setError } from './actions'

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { ScopeEvaluator, Parser } from 'utils/mathParsing'
-import { EVAL_ERROR } from 'services/errors'
+import { EvalErrorData } from 'services/errors'
 
 const MathScopeContext = React.createContext()
 
@@ -27,19 +27,16 @@ export class MathScopeProvider extends PureComponent {
 
     const errorsToDispatch = [...errorsDiff.added, ...errorsDiff.updated]
     errorsToDispatch.map(name => {
-      setError(idsByName[name], 'value', {
-        errorType: EVAL_ERROR,
-        errorMsg: errors[name].message
-      } )
+      const errorData = new EvalErrorData(errors[name].message)
+      setError(idsByName[name], 'value', errorData)
     } )
 
     // delete old errors if no longer present
     // Need to use previous idsByName prop in case the variable got deleted!
     const prevIdsByName = prevProps.idsByName
     errorsDiff.deleted.map(name => {
-      setError(prevIdsByName[name], 'value', {
-        errorType: EVAL_ERROR
-      } )
+      const errorData = new EvalErrorData(null)
+      setError(prevIdsByName[name], 'value', errorData)
     } )
 
   }
