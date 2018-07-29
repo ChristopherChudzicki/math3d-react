@@ -128,7 +128,9 @@ describe('evalScope', () => {
       b: 'b=2^a',
       c: 'c=2+d',
       d: 'd=2+w',
-      f: 'f(t)=t+d'
+      f: 'f(t)=t+d',
+      // x: 'x=y+1',
+      // y: 'y=x+1'
     }
 
     const parser = new Parser()
@@ -142,6 +144,10 @@ describe('evalScope', () => {
 
     test('Unrelated symbols are evaluated correctly', () => {
       expect(scope.a).toEqual( [1, 2, 3] )
+    } )
+
+    test('Cyclic assignment errors are caught', () => {
+
     } )
 
   } )
@@ -232,22 +238,24 @@ describe('generating evaluation order', () => {
   test('total evaluation order is generated correctly', () => {
     const parser = new Parser()
     const childMap = getChildMap(symbols, parser)
-    const evalOrder = getEvalOrder(symbols, childMap)
+    const { evalOrder, cyclicErrors } = getEvalOrder(symbols, childMap)
     // This is a valid order. there are other valid orders, too
     const expected = ['h', 'c', 'b', 'a', 'a2', 'f', 'd', 'p', 'w']
 
     expect(evalOrder).toEqual(expected)
+    expect(cyclicErrors).toEqual( [] )
   } )
 
   test('Subset of evaluation order is generated correct', () => {
     const parser = new Parser()
     const onlyChildrenOf = ['b']
     const childMap = getChildMap(symbols, parser)
-    const evalOrder = getEvalOrder(symbols, childMap, onlyChildrenOf)
+    const { evalOrder, cyclicErrors } = getEvalOrder(symbols, childMap, onlyChildrenOf)
     // This is a valid order. there are other valid orders, too
     const expected = [ 'b', 'a', 'f', 'a2' ]
 
     expect(evalOrder).toEqual(expected)
+    expect(cyclicErrors).toEqual( [] )
   } )
 
   test('cyclic dependencies raises error', () => {

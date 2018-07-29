@@ -91,7 +91,7 @@ export function evalScope(
   // Get the evaluation order and add symbols to scope
   const childMap = getChildMap(symbols, parser)
 
-  const evalOrder = getEvalOrder(symbols, childMap, changed)
+  const { evalOrder, cyclicErrors } = getEvalOrder(symbols, childMap, changed)
   const initial = {
     scope: { ...oldScope }, // copy oldScope, not mutate
     errors: {}
@@ -152,29 +152,61 @@ export function getEvalOrder(
   symbols: Symbols,
   childMap: ChildMap,
   onlyTheseAndChildren: ?(Set<string> | Array<string>) = null
-): Array<string> {
+): {
+  evalOrder: Array<string>,
+  cyclicErrors: Array<Error>
+} {
   // construct dependency graph as array of nodes
   const nodesToInclude = onlyTheseAndChildren
     ? [...getDescendants(onlyTheseAndChildren, childMap)]
     : Object.keys(childMap)
 
-  // Sort the non-isolated nodes
-  // Alert! Isolated nodes---nodes without parents or children---are missed.
-  // We'll add them in a moment
+  let sorted, isolated, edges
+  try {
+    ( { edges, isolated } = getSubgraphEdges(childMap, nodesToInclude))
+    sorted = toposort(edges)
+  }
+  catch (error) {
+    if (error.message.startsWith('Cyclic dependency')) {
+      ( { edges, isolated } = getSubgraphEdges(childMap, nodesToInclude))
+      sorted = toposort(edges)
+    }
+    else {
+      throw error
+    }
+  }
+
+  const evalOrder = [...sorted, ...isolated]
+  const cyclicErrors = []
+
+  return { evalOrder, cyclicErrors }
+}
+
+// Gets edges and isolated nodes
+export function getSubgraphEdges(
+  childMap: ChildMap,
+  nodesToInclude: Array<string>
+): {
+  edges: Array<[string, string]>,
+  isolated: Array<string>
+} {
+  // This set will hold nodes who have parents
+  const haveParents: Set<string> = new Set()
   const { edges, childless } = nodesToInclude.reduce((acc, node) => {
     if (childMap[node].size === 0) {
       acc.childless.push(node)
     }
     for (const child of childMap[node] ) {
       acc.edges.push( [node, child] )
+      haveParents.add(child)
     }
     return acc
   }, { edges: [], childless: [] } )
-  const sorted = toposort(edges)
-  const included = new Set(sorted)
-  const isolated = childless.filter(node => !included.has(node))
 
-  return [...sorted, ...isolated]
+  // Isolated nodes are childless AND parentless
+  const isolated = childless.filter(node => !haveParents.has(node))
+
+  return { edges, isolated }
 }
 
 /**

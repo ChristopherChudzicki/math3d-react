@@ -81,7 +81,6 @@ export default class MathExpression {
       }
 
       if (isAssignmentNode || isFunctionAssignmentNode) {
-        // $FlowFixMe need to delete this anyway
         if ( [...dependencies, ...params].includes(this.tree.name)) {
           throw Error('Cyclic Assignment Error')
         }
