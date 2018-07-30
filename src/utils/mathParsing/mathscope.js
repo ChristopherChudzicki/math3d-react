@@ -44,6 +44,7 @@
  */
 
 import toposort from 'toposort'
+import Graph from 'tarjan-graph'
 import diff from 'shallow-diff'
 import {
   setMergeInto
@@ -91,10 +92,17 @@ export function evalScope(
   // Get the evaluation order and add symbols to scope
   const childMap = getChildMap(symbols, parser)
 
-  const evalOrder = getEvalOrder(symbols, childMap, changed)
+  const { evalOrder, cycles } = getEvalOrder(symbols, childMap, changed)
+  const errors: { [string]: Error } = Object.keys(cycles)
+    .reduce((acc, node) => {
+      const deps = cycles[node].join(', ')
+      acc[node] = Error(`Symbol ${node} has cyclic dependencies: ${deps}`)
+      return acc
+    }, {} )
+
   const initial = {
     scope: { ...oldScope }, // copy oldScope, not mutate
-    errors: {}
+    errors: errors
   }
 
   const rawResult = evalOrder.reduce((acc, symbolName) => {
@@ -152,29 +160,103 @@ export function getEvalOrder(
   symbols: Symbols,
   childMap: ChildMap,
   onlyTheseAndChildren: ?(Set<string> | Array<string>) = null
-): Array<string> {
+): {
+  evalOrder: Array<string>,
+  cycles: { [nodeName: string]: Array<string> }
+} {
   // construct dependency graph as array of nodes
   const nodesToInclude = onlyTheseAndChildren
     ? [...getDescendants(onlyTheseAndChildren, childMap)]
     : Object.keys(childMap)
 
-  // Sort the non-isolated nodes
-  // Alert! Isolated nodes---nodes without parents or children---are missed.
-  // We'll add them in a moment
+  let sorted, isolated, edges, cycles, withoutCycles
+  try {
+    ( { edges, isolated } = getSubgraphEdges(childMap, nodesToInclude))
+    sorted = toposort(edges)
+    cycles = {}
+  }
+  catch (error) {
+    if (error.message.startsWith('Cyclic dependency')) {
+      ( { withoutCycles, cycles } = removeCycles(childMap));
+      ( { edges, isolated } = getSubgraphEdges(withoutCycles,
+        nodesToInclude.filter(node => !cycles.hasOwnProperty(node))
+      ))
+      sorted = toposort(edges)
+    }
+    else {
+      throw error
+    }
+  }
+
+  const evalOrder = [...sorted, ...isolated]
+
+  return { evalOrder, cycles }
+}
+
+// Gets edges and isolated nodes
+export function getSubgraphEdges(
+  childMap: ChildMap,
+  nodesToInclude: Array<string>
+): {
+  edges: Array<[string, string]>,
+  isolated: Array<string>
+} {
+  // This set will hold nodes who have parents
+  const haveParents: Set<string> = new Set()
   const { edges, childless } = nodesToInclude.reduce((acc, node) => {
     if (childMap[node].size === 0) {
       acc.childless.push(node)
     }
     for (const child of childMap[node] ) {
       acc.edges.push( [node, child] )
+      haveParents.add(child)
     }
     return acc
   }, { edges: [], childless: [] } )
-  const sorted = toposort(edges)
-  const included = new Set(sorted)
-  const isolated = childless.filter(node => !included.has(node))
 
-  return [...sorted, ...isolated]
+  // Isolated nodes are childless AND parentless
+  const isolated = childless.filter(node => !haveParents.has(node))
+
+  return { edges, isolated }
+}
+
+export function removeCycles(childMap: ChildMap): {
+  withoutCycles: ChildMap,
+  cycles: {[string]: Array<string>}
+} {
+  const graph = new Graph()
+  for (const key of Object.keys(childMap)) {
+    graph.add(key, [...childMap[key]] )
+  }
+  // graph.getCycles does not include any strongly-connected components of
+  // length 1, even cycles of length 1
+  const connected = graph.getStronglyConnectedComponents().filter(scc => {
+    return scc.length > 1 || scc[0].successors.includes(scc[0] )
+  } )
+
+  // For each node involved in cycle, record which other nodes are involved in
+  // the same cycle
+  const cycles: {[string]: Array<string>} = {}
+  connected.forEach(scc => {
+    const nodeNames = scc.map(vertex => vertex.name)
+    nodeNames.sort()
+    scc.forEach(vertex => {
+      cycles[vertex.name] = nodeNames
+    } )
+  } )
+
+  const cyclicNodes = new Set(Object.keys(cycles))
+  const withoutCycles = Object.keys(childMap).reduce((acc, node) => {
+    if (cyclicNodes.has(node)) {
+      return acc
+    }
+    // get children not involved in cycles
+    const children = [...childMap[node]].filter(x => !cyclicNodes.has(x))
+    acc[node] = new Set(children)
+    return acc
+  }, {} )
+
+  return { withoutCycles, cycles }
 }
 
 /**
@@ -198,7 +280,8 @@ export function getChildMap(symbols: Symbols, parser: Parser): ChildMap {
 
     // remove defaults from dependencies
     dependencies.forEach(dep => {
-      DEFAULT_SYMBOL_NAMES.has(dep) && dependencies.delete(dep)
+      const skip = DEFAULT_SYMBOL_NAMES.has(dep) && !symbols[dep]
+      skip && dependencies.delete(dep)
     } )
 
     dependencies.forEach(dep => {

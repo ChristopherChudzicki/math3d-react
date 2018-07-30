@@ -7,8 +7,6 @@
     "classnames": "^2.2.5",
     "color": "^3.0.0",
     "css-time": "^0.1.12",
-    "flow": "^0.2.3",
-    "flow-bin": "^0.76.0",
     "immutability-helper": "^2.6.6",
     "lodash": "^4.17.4",
     "mathjs": "^3.18.1",
@@ -28,6 +26,7 @@
     "redux-thunk": "^2.2.0",
     "shallow-diff": "0.0.5",
     "styled-components": "^3.1.6",
+    "tarjan-graph": "^1.0.1",
     "toposort": "^1.0.6"
   },
   "scripts": {
@@ -48,6 +47,8 @@
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
+    "flow": "^0.2.3",
+    "flow-bin": "^0.76.0",
     "jest-diff": "^23.0.0",
     "jest-get-type": "^22.4.3",
     "jest-matcher-deep-close-to": "^1.0.2",
