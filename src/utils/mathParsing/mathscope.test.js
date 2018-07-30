@@ -2,6 +2,7 @@ import {
   evalScope,
   getEvalOrder,
   getChildMap,
+  removeCycles,
   getDescendantsOfNode,
   getDescendants,
   ScopeEvaluator
@@ -154,6 +155,56 @@ describe('evalScope', () => {
 
 } )
 
+describe('removeCycles', () => {
+  /*
+   *
+   * a -->--\             /-->-- f
+   *         \-->-- c -->
+   * b -->--/             \-->-- g
+   *        \--> d -->---/
+   *           /   \
+   *        down   up
+   *           \-e-/
+   *
+   * x -->-- y
+   *  |--<--/
+   *
+   * s ----/
+   *  \-<-/
+   *
+   * t
+   */
+  const childMap = {
+    a: new Set( ['c'] ),
+    b: new Set( ['c', 'd'] ),
+    c: new Set( ['f', 'g'] ),
+    d: new Set( ['e', 'g'] ),
+    e: new Set( ['d'] ),
+    x: new Set( ['y'] ),
+    y: new Set( ['x'] ),
+    s: new Set( ['s'] ),
+    t: new Set( [] )
+  }
+
+  it('removes cycles', () => {
+    const { withoutCycles, cycles } = removeCycles(childMap)
+    expect(withoutCycles).toEqual( {
+      a: new Set( ['c'] ),
+      b: new Set( ['c'] ),
+      c: new Set( ['f', 'g'] ),
+      t: new Set( [] )
+    } )
+    expect(cycles).toEqual( {
+      d: ['d', 'e'],
+      e: ['d', 'e'],
+      x: ['x', 'y'],
+      y: ['x', 'y'],
+      s: ['s']
+    } )
+  } )
+
+} )
+
 describe('generating evaluation order', () => {
 
   /*
@@ -238,24 +289,24 @@ describe('generating evaluation order', () => {
   test('total evaluation order is generated correctly', () => {
     const parser = new Parser()
     const childMap = getChildMap(symbols, parser)
-    const { evalOrder, cyclicErrors } = getEvalOrder(symbols, childMap)
+    const { evalOrder, cycles } = getEvalOrder(symbols, childMap)
     // This is a valid order. there are other valid orders, too
     const expected = ['h', 'c', 'b', 'a', 'a2', 'f', 'd', 'p', 'w']
 
     expect(evalOrder).toEqual(expected)
-    expect(cyclicErrors).toEqual( [] )
+    expect(cycles).toEqual( {} )
   } )
 
   test('Subset of evaluation order is generated correct', () => {
     const parser = new Parser()
     const onlyChildrenOf = ['b']
     const childMap = getChildMap(symbols, parser)
-    const { evalOrder, cyclicErrors } = getEvalOrder(symbols, childMap, onlyChildrenOf)
+    const { evalOrder, cycles } = getEvalOrder(symbols, childMap, onlyChildrenOf)
     // This is a valid order. there are other valid orders, too
     const expected = [ 'b', 'a', 'f', 'a2' ]
 
     expect(evalOrder).toEqual(expected)
-    expect(cyclicErrors).toEqual( [] )
+    expect(cycles).toEqual( {} )
   } )
 
   test('cyclic dependencies raises error', () => {
@@ -266,8 +317,13 @@ describe('generating evaluation order', () => {
     }
     const parser = new Parser()
     const childMap = getChildMap(cyclicSymbols, parser)
+    const { cycles } = getEvalOrder(cyclicSymbols, childMap)
 
-    expect(() => getEvalOrder(cyclicSymbols, childMap)).toThrow('Cyclic dependency:')
+    expect(cycles).toEqual( {
+      a: ['a', 'b', 'c'],
+      b: ['a', 'b', 'c'],
+      c: ['a', 'b', 'c']
+    } )
   } )
 
 } )

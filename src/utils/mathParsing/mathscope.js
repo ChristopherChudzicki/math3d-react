@@ -44,6 +44,7 @@
  */
 
 import toposort from 'toposort'
+import Graph from 'tarjan-graph'
 import diff from 'shallow-diff'
 import {
   setMergeInto
@@ -154,21 +155,25 @@ export function getEvalOrder(
   onlyTheseAndChildren: ?(Set<string> | Array<string>) = null
 ): {
   evalOrder: Array<string>,
-  cyclicErrors: Array<Error>
+  cycles: { [nodeName: string]: Array<string> }
 } {
   // construct dependency graph as array of nodes
   const nodesToInclude = onlyTheseAndChildren
     ? [...getDescendants(onlyTheseAndChildren, childMap)]
     : Object.keys(childMap)
 
-  let sorted, isolated, edges
+  let sorted, isolated, edges, cycles, withoutCycles
   try {
     ( { edges, isolated } = getSubgraphEdges(childMap, nodesToInclude))
     sorted = toposort(edges)
+    cycles = {}
   }
   catch (error) {
     if (error.message.startsWith('Cyclic dependency')) {
-      ( { edges, isolated } = getSubgraphEdges(childMap, nodesToInclude))
+      ( { withoutCycles, cycles } = removeCycles(childMap));
+      ( { edges, isolated } = getSubgraphEdges(withoutCycles,
+        nodesToInclude.filter(node => !cycles.hasOwnProperty(node))
+      ))
       sorted = toposort(edges)
     }
     else {
@@ -177,9 +182,8 @@ export function getEvalOrder(
   }
 
   const evalOrder = [...sorted, ...isolated]
-  const cyclicErrors = []
 
-  return { evalOrder, cyclicErrors }
+  return { evalOrder, cycles }
 }
 
 // Gets edges and isolated nodes
@@ -207,6 +211,45 @@ export function getSubgraphEdges(
   const isolated = childless.filter(node => !haveParents.has(node))
 
   return { edges, isolated }
+}
+
+export function removeCycles(childMap: ChildMap): {
+  withoutCycles: ChildMap,
+  cycles: {[string]: Array<string>}
+} {
+  const graph = new Graph()
+  for (const key of Object.keys(childMap)) {
+    graph.add(key, [...childMap[key]] )
+  }
+  // graph.getCycles does not include any strongly-connected components of
+  // length 1, even cycles of length 1
+  const connected = graph.getStronglyConnectedComponents().filter(scc => {
+    return scc.length > 1 || scc[0].successors.includes(scc[0] )
+  } )
+
+  // For each node involved in cycle, record which other nodes are involved in
+  // the same cycle
+  const cycles: {[string]: Array<string>} = {}
+  connected.forEach(scc => {
+    const nodeNames = scc.map(vertex => vertex.name)
+    nodeNames.sort()
+    scc.forEach(vertex => {
+      cycles[vertex.name] = nodeNames
+    } )
+  } )
+
+  const cyclicNodes = new Set(Object.keys(cycles))
+  const withoutCycles = Object.keys(childMap).reduce((acc, node) => {
+    if (cyclicNodes.has(node)) {
+      return acc
+    }
+    // get children not involved in cycles
+    const children = [...childMap[node]].filter(x => !cyclicNodes.has(x))
+    acc[node] = new Set(children)
+    return acc
+  }, {} )
+
+  return { withoutCycles, cycles }
 }
 
 /**
