@@ -130,12 +130,23 @@ describe('evalScope', () => {
       c: 'c=2+d',
       d: 'd=2+w',
       f: 'f(t)=t+d',
-      // x: 'x=y+1',
-      // y: 'y=x+1'
+      x: 'x=y+1',
+      y: 'y=x+1',
+      z: 'z=x+a'
     }
 
     const parser = new Parser()
     const { scope, errors } = evalScope(parser, symbols)
+
+    test('Unrelated symbols are evaluated correctly', () => {
+      expect(scope.a).toEqual( [1, 2, 3] )
+    } )
+
+    test('Expected errors are caught', () => {
+      expect(new Set(Object.keys(errors))).toEqual(new Set(
+        ['b', 'c', 'd', 'f', 'x', 'y', 'z']
+      ))
+    } )
 
     test('Type Error is caught and stored', () => {
       expect(errors.b).toBeInstanceOf(Error)
@@ -143,64 +154,20 @@ describe('evalScope', () => {
         .toThrow('Unexpected type of argument')
     } )
 
-    test('Unrelated symbols are evaluated correctly', () => {
-      expect(scope.a).toEqual( [1, 2, 3] )
-    } )
-
     test('Cyclic assignment errors are caught', () => {
+      expect(errors.x).toBeInstanceOf(Error)
+      expect(() => { throw errors.x } )
+        .toThrow('Symbol x has cyclic dependencies: x, y')
 
+      expect(errors.y).toBeInstanceOf(Error)
+      expect(() => { throw errors.y } )
+        .toThrow('Symbol y has cyclic dependencies: x, y')
+
+      expect(errors.z).toBeInstanceOf(Error)
+      expect(() => { throw errors.z } )
+        .toThrow('Undefined symbol x')
     } )
 
-  } )
-
-} )
-
-describe('removeCycles', () => {
-  /*
-   *
-   * a -->--\             /-->-- f
-   *         \-->-- c -->
-   * b -->--/             \-->-- g
-   *        \--> d -->---/
-   *           /   \
-   *        down   up
-   *           \-e-/
-   *
-   * x -->-- y
-   *  |--<--/
-   *
-   * s ----/
-   *  \-<-/
-   *
-   * t
-   */
-  const childMap = {
-    a: new Set( ['c'] ),
-    b: new Set( ['c', 'd'] ),
-    c: new Set( ['f', 'g'] ),
-    d: new Set( ['e', 'g'] ),
-    e: new Set( ['d'] ),
-    x: new Set( ['y'] ),
-    y: new Set( ['x'] ),
-    s: new Set( ['s'] ),
-    t: new Set( [] )
-  }
-
-  it('removes cycles', () => {
-    const { withoutCycles, cycles } = removeCycles(childMap)
-    expect(withoutCycles).toEqual( {
-      a: new Set( ['c'] ),
-      b: new Set( ['c'] ),
-      c: new Set( ['f', 'g'] ),
-      t: new Set( [] )
-    } )
-    expect(cycles).toEqual( {
-      d: ['d', 'e'],
-      e: ['d', 'e'],
-      x: ['x', 'y'],
-      y: ['x', 'y'],
-      s: ['s']
-    } )
   } )
 
 } )
@@ -323,6 +290,104 @@ describe('generating evaluation order', () => {
       a: ['a', 'b', 'c'],
       b: ['a', 'b', 'c'],
       c: ['a', 'b', 'c']
+    } )
+  } )
+
+} )
+
+describe('removeCycles', () => {
+  /*
+   *
+   * a -->--\             /-->-- f
+   *         \-->-- c -->
+   * b -->--/             \-->-- g
+   *        \--> d -->---/
+   *           /   \
+   *        down   up
+   *           \-e-/
+   *
+   * x -->-- y
+   *  |--<--/
+   *
+   * s ----/
+   *  \-<-/
+   *
+   * t
+   *
+   */
+
+  const childMap = {
+    a: new Set( ['c'] ),
+    b: new Set( ['c', 'd'] ),
+    c: new Set( ['f', 'g'] ),
+    d: new Set( ['e', 'g'] ),
+    e: new Set( ['d'] ),
+    x: new Set( ['y'] ),
+    y: new Set( ['x'] ),
+    s: new Set( ['s'] ),
+    t: new Set( [] )
+  }
+
+  it('removes cycles', () => {
+    const { withoutCycles, cycles } = removeCycles(childMap)
+    expect(withoutCycles).toEqual( {
+      a: new Set( ['c'] ),
+      b: new Set( ['c'] ),
+      c: new Set( ['f', 'g'] ),
+      t: new Set( [] )
+    } )
+    expect(cycles).toEqual( {
+      d: ['d', 'e'],
+      e: ['d', 'e'],
+      x: ['x', 'y'],
+      y: ['x', 'y'],
+      s: ['s']
+    } )
+  } )
+
+} )
+
+describe('getEvalOrder with cycles', () => {
+  /*
+   *
+   * a -->--\             /-->-- f
+   *         \-->-- c -->
+   * b -->--/             \-->-- g
+   *        \--> d -->---/
+   *           /   \
+   *        down   up
+   *           \-e-/
+   *
+   * x -->-- y
+   *  |--<--/
+   *
+   * t
+   *
+   */
+
+  const symbols = {
+    a: 'a=1',
+    b: 'b=1',
+    c: 'c=a+b',
+    d: 'd=b+e',
+    e: 'e=d',
+    f: 'f=c',
+    g: 'g=c+d',
+    x: 'x=y',
+    y: 'y=x',
+    t: 't=5'
+  }
+
+  it('generates evalOrder and cycles', () => {
+    const parser = new Parser()
+    const childMap = getChildMap(symbols, parser)
+    const { evalOrder, cycles } = getEvalOrder(symbols, childMap)
+    expect(evalOrder).toEqual( ['a', 'b', 'c', 'f', 'g', 't'] )
+    expect(cycles).toEqual( {
+      d: ['d', 'e'],
+      e: ['d', 'e'],
+      x: ['x', 'y'],
+      y: ['x', 'y']
     } )
   } )
 

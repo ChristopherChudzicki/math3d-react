@@ -92,10 +92,17 @@ export function evalScope(
   // Get the evaluation order and add symbols to scope
   const childMap = getChildMap(symbols, parser)
 
-  const { evalOrder, cyclicErrors } = getEvalOrder(symbols, childMap, changed)
+  const { evalOrder, cycles } = getEvalOrder(symbols, childMap, changed)
+  const errors: { [string]: Error } = Object.keys(cycles)
+    .reduce((acc, node) => {
+      const deps = cycles[node].join(', ')
+      acc[node] = Error(`Symbol ${node} has cyclic dependencies: ${deps}`)
+      return acc
+    }, {} )
+
   const initial = {
     scope: { ...oldScope }, // copy oldScope, not mutate
-    errors: {}
+    errors: errors
   }
 
   const rawResult = evalOrder.reduce((acc, symbolName) => {
@@ -273,7 +280,8 @@ export function getChildMap(symbols: Symbols, parser: Parser): ChildMap {
 
     // remove defaults from dependencies
     dependencies.forEach(dep => {
-      DEFAULT_SYMBOL_NAMES.has(dep) && dependencies.delete(dep)
+      const skip = DEFAULT_SYMBOL_NAMES.has(dep) && !symbols[dep]
+      skip && dependencies.delete(dep)
     } )
 
     dependencies.forEach(dep => {
