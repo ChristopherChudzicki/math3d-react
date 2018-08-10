@@ -1,33 +1,31 @@
-import { Component } from 'react'
-import PropTypes from 'prop-types'
+// @flow
+import * as React from 'react'
 import { Parser } from 'utils/mathParsing'
+import type { Scope } from 'utils/mathParsing/MathExpression'
+import type { ErrorData } from 'services/errors/ErrorData'
 
 // TODO:
 // - handle errors
 // - do not recalculate unless necessary
 // - tests
 
-export default class EvaluationResult extends Component {
+type Props = {
+  parser: Parser,
+  scope: Scope,
+  toEvaluate: { [symbolName: string]: string },
+  onEvalError: (id: string, property: string, errorData: ErrorData) => any,
+  children: (Scope) => React.Node
+}
 
-  static propTypes = {
-    parser: PropTypes.instanceOf(Parser).isRequired,
-    scope: PropTypes.object.isRequired,
-    toEvaluate: PropTypes.objectOf(PropTypes.string).isRequired,
-    onEvalError: PropTypes.func.isRequired,
-    children: PropTypes.func.isRequired
-  }
+export default class EvaluationResult extends React.Component<Props> {
 
-  constructor(props) {
-    super(props)
-    this.result = this.evaluate()
-  }
-
-  evaluate() {
+  evaluate(): Scope {
     const {
       parser,
       scope,
       toEvaluate
     } = this.props
+
     return Object.keys(toEvaluate).reduce(
       (result, key) => {
         result[key] = parser.parse(toEvaluate[key] ).eval(scope)
@@ -36,7 +34,7 @@ export default class EvaluationResult extends Component {
   }
 
   render() {
-    const result = this.evaluate(this.props.toEvaluate)
+    const result = this.evaluate()
     return this.props.children(result)
   }
 
