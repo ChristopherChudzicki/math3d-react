@@ -19,7 +19,6 @@ export default class MathBoxScene extends PureComponent {
   evalData(id, data, scope) {
     const { setError, evalErrors } = this.props
 
-    // TODO: get the toEval array from mathobject type
     const computedProps = MathObjects[data.type].computedProps
     const evaluated = computedProps.reduce((acc, prop) => {
       try {
