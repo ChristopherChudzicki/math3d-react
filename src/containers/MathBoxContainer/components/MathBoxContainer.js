@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
-import MathBox from 'components/MathBox/MathBox'
 
 const MathBoxOuterDiv = styled.div`
   width: 100%;
@@ -24,7 +23,10 @@ export default class MathBoxContainer extends PureComponent {
   static propTypes = {
     leftOffset: PropTypes.string.isRequired,
     mathboxElement: PropTypes.instanceOf(Element),
-    children: validateChildren
+    children: PropTypes.oneOfType( [
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node
+    ] )
   }
 
   assignRef = ref => {
@@ -47,15 +49,4 @@ export default class MathBoxContainer extends PureComponent {
     )
   }
 
-}
-
-function validateChildren(props, propName, componentName) {
-  const children = props[propName]
-  if (React.Children.count(children) !== 1) {
-    return Error(`${componentName} must have ${MathBox.name} as its unique child.`)
-  }
-  if (children.type === MathBox) {
-    return null
-  }
-  return Error(`${componentName} must have ${MathBox.name} as its child.`)
 }
