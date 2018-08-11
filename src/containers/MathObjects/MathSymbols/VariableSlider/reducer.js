@@ -1,6 +1,5 @@
-import update from 'immutability-helper'
 import { CREATE_MATH_OBJECT } from 'containers/MathObjects/actions'
-import { SET_SLIDER_VALUE } from './actions'
+import { SET_SLIDER_VALUE, defaultValue } from './actions'
 const initialState = {}
 
 export default function sliderValues(state = initialState, action) {
@@ -11,6 +10,11 @@ export default function sliderValues(state = initialState, action) {
     case SET_SLIDER_VALUE: {
       const { id, value } = payload
       return { ...state, [id]: value }
+    }
+
+    case CREATE_MATH_OBJECT: {
+      const { id } = payload
+      return { ...state, [id]: defaultValue }
     }
 
     default:

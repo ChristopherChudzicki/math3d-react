@@ -4,10 +4,13 @@ import {
 export const VARIABLE_SLIDER = 'VARIABLE_SLIDER'
 export const SET_SLIDER_VALUE = 'SET_SLIDER_VALUE'
 
+export const defaultValue = 0 // slider value
 const defaultSettings = {
   type: VARIABLE_SLIDER,
   name: 'T',
-  value: 0,
+  value: null, // used as valueText ... consider renaming this key
+  min: '-5',
+  max: '5',
   description: 'Variable Slider',
   errors: {}
 }
