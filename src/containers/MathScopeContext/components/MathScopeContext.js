@@ -26,7 +26,7 @@ export class MathScopeProvider extends PureComponent {
     const { errors, idsByName, setError, errorsDiff } = this.props
 
     const errorsToDispatch = [...errorsDiff.added, ...errorsDiff.updated]
-    errorsToDispatch.map(name => {
+    errorsToDispatch.forEach(name => {
       const errorData = new EvalErrorData(errors[name].message)
       setError(idsByName[name], 'value', errorData)
     } )
@@ -34,7 +34,7 @@ export class MathScopeProvider extends PureComponent {
     // delete old errors if no longer present
     // Need to use previous idsByName prop in case the variable got deleted!
     const prevIdsByName = prevProps.idsByName
-    errorsDiff.deleted.map(name => {
+    errorsDiff.deleted.forEach(name => {
       const errorData = new EvalErrorData(null)
       setError(prevIdsByName[name], 'value', errorData)
     } )

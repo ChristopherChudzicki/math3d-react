@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react' // used by why-did-you-update
 import { createStore, applyMiddleware, compose } from 'redux'
 import rootReducer from './reducer.js'
 import thunk from 'redux-thunk'
@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'development') {
     enhancers.push(devToolsExtension())
   }
 
-  const { whyDidYouUpdate } = require('why-did-you-update')
+  // const { whyDidYouUpdate } = require('why-did-you-update')
   // whyDidYouUpdate(React) // logs potentially unnecessary re-renders
 
 }
