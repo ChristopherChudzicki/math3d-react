@@ -27,6 +27,10 @@ export default class Point extends PureComponent {
     setProperty: PropTypes.func.isRequired
   }
 
+  static computedProps = [
+    'coords'
+  ]
+
   constructor(props) {
     super(props)
     const { id } = this.props

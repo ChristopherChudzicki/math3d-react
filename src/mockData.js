@@ -52,7 +52,8 @@ function addPoint(store, folderId) {
     description: 'Point',
     coords: `\\left[${randomInt()},\\ ${randomInt()},\\ ${randomInt()}\\right]`,
     visible: true,
-    color: colors[getRandomInt(0, colors.length - 1)]
+    color: colors[getRandomInt(0, colors.length - 1)],
+    size: randomInt(12, 48)
   }
 }
 

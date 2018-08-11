@@ -7,8 +7,8 @@ const defaultSettings = {
   type: POINT,
   coords: '\\left[0,0,0\\right]',
   description: 'Point',
-  errors: {},
   color: 'red',
+  size: 16,
   visible: true
 }
 

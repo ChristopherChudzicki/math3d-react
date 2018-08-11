@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react'
-import MathBox, { Point, Grid, Cartesian } from 'components/MathBox/MathBox'
+import MathBox, { Grid, Cartesian } from 'components/MathBox'
 import { MathScopeConsumer } from 'containers/MathScopeContext'
+import { mapTypeToGraphic } from 'containers/MathObjects/mathObjectTypes'
+import MathObjects from 'containers/MathObjects'
 import PropTypes from 'prop-types'
 import { parser } from 'constants/parsing'
 import { EvalErrorData } from 'services/errors'
-
-// TODO: This is a connected component. Should we move it into containers?
 
 export default class MathBoxScene extends PureComponent {
 
@@ -20,8 +20,8 @@ export default class MathBoxScene extends PureComponent {
     const { setError, evalErrors } = this.props
 
     // TODO: get the toEval array from mathobject type
-    const toEval = ['coords']
-    const evaluated = toEval.reduce((acc, prop) => {
+    const computedProps = MathObjects[data.type].computedProps
+    const evaluated = computedProps.reduce((acc, prop) => {
       try {
         const parsed = parser.parse(data[prop] )
         try {
@@ -74,12 +74,6 @@ export default class MathBoxScene extends PureComponent {
 // TODO: this causes some unnecessary re-renders when tryEval returns an array
 // that is double= but not triple=
 function renderGraphic(id, data) {
-  return (
-    <Point
-      key={id}
-      coords={data.coords}
-      size={20}
-      color={data.color}
-    />
-  )
+  const Graphic = mapTypeToGraphic[data.type]
+  return <Graphic key={id} {...data}/>
 }

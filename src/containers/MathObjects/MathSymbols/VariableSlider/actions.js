@@ -11,8 +11,7 @@ const defaultSettings = {
   value: null, // used as valueText ... consider renaming this key
   min: '-5',
   max: '5',
-  description: 'Variable Slider',
-  errors: {}
+  description: 'Variable Slider'
 }
 
 export const createVariableSlider = (id, parentFolderId, positionInFolder) => {
