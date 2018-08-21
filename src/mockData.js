@@ -38,6 +38,10 @@ function addFolder(store) {
   return id
 }
 
+function randomInt(a=-5, b=5) {
+  return a + Math.floor(Math.random() * (b - a))
+}
+
 function addPoint(store, folderId) {
   const itemId = `item-${uniqueId()}`
   store.parseErrors[itemId] = {}
@@ -46,9 +50,10 @@ function addPoint(store, folderId) {
   store.mathGraphics[itemId] = {
     type: POINT,
     description: 'Point',
-    coords: '\\left[0,\\ 0,\\ 0\\right]',
+    coords: `\\left[${randomInt()},\\ ${randomInt()},\\ ${randomInt()}\\right]`,
     visible: true,
-    color: colors[getRandomInt(0, colors.length - 1)]
+    color: colors[getRandomInt(0, colors.length - 1)],
+    size: randomInt(12, 48)
   }
 }
 

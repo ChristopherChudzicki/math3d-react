@@ -46,7 +46,7 @@ export default class MathExpression {
   }
 
   _postprocess(postprocessors: Array<PostProcessor>) {
-    postprocessors.map(f => {
+    postprocessors.forEach(f => {
       this.tree.traverse(node => f(node))
     } )
   }

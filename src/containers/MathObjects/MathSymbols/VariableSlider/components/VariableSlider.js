@@ -48,11 +48,17 @@ export default class VariableSlider extends PureComponent {
   constructor(props) {
     super(props)
 
-    const { id, valueText } = this.props
+    const { id } = this.props
     const type = VARIABLE_SLIDER
-    this.onSliderChange = this.props.setSliderValue.bind(this, id, type, valueText)
+    this.onSliderChange = this.onSliderChange.bind(this)
     this.setPropertyAndError = this.props.setPropertyAndError.bind(this, id, type)
     this.setError = this.props.setError.bind(this, id)
+  }
+
+  onSliderChange(value) {
+    const type = VARIABLE_SLIDER
+    const { id, valueText } = this.props
+    this.props.setSliderValue(id, type, valueText, value)
   }
 
   render() {

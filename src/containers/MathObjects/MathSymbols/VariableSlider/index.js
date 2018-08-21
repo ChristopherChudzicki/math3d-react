@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { setPropertyAndError } from 'containers/MathObjects/actions'
 import { setError } from 'services/errors'
 import { getErrors } from 'services/errors/selectors'
-import { VARIABLE_SLIDER, setSliderValue } from './actions'
+import { setSliderValue } from './actions'
 import { getValidateNameAgainst } from '../selectors'
 import { parser } from 'constants/parsing'
 

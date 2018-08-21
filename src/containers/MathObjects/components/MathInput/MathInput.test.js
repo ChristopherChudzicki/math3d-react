@@ -182,14 +182,14 @@ describe('MathInput error persistence handling', () => {
     expect(wrapper.state('isPersistentError')).toBe(false)
 
     wrapper.instance().handleErrorPersistence('Error')
-    await timeout(0.9 * DISPLAY_ERROR_DELAY)
+    await timeout(0.5 * DISPLAY_ERROR_DELAY)
     expect(wrapper.state('isPersistentError')).toBe(false)
 
     wrapper.instance().handleErrorPersistence('Error')
-    await timeout(0.9 * DISPLAY_ERROR_DELAY)
+    await timeout(0.5 * DISPLAY_ERROR_DELAY)
     expect(wrapper.state('isPersistentError')).toBe(false)
 
-    await timeout(0.2 * DISPLAY_ERROR_DELAY)
+    await timeout(0.75 * DISPLAY_ERROR_DELAY)
     expect(wrapper.state('isPersistentError')).toBe(true)
   } )
 

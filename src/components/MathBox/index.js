@@ -23,6 +23,7 @@ export default class MathBox extends PureComponent {
 
 }
 
+// TODO: use shallow-diff instead ...
 function diff(o1, o2) {
   return Object.keys(o1).reduce((theDiff, key) => {
     if (o1[key] === o2[key] ) return theDiff
@@ -124,7 +125,9 @@ export class Point extends MathBoxComponent {
 
   mathboxUpdate = () => {
     const array = this.mathboxNode.select('array')
+    const point = this.mathboxNode.select('point')
     array.set('data', [this.props.coords] )
+    point.set('color', this.props.color)
   }
 
 }

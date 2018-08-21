@@ -51,15 +51,12 @@ import {
 } from 'utils/sets'
 import math from 'utils/mathjs'
 import type Parser from './Parser'
-import type { Evaluated } from './MathExpression'
+import type { Scope } from './MathExpression'
 
 const DEFAULT_SYMBOL_NAMES = new Set(Object.keys(math))
 
 type Symbols = {
   [symbolName: string]: string
-}
-type Scope = {
-  [symbolName: string]: Evaluated
 }
 type ScopeErrors = {
   [symbolName: string]: Error

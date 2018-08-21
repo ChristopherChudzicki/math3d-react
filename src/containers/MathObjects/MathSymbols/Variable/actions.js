@@ -7,8 +7,7 @@ const defaultSettings = {
   type: VARIABLE,
   name: 'f(x)',
   value: 'e^x',
-  description: 'Variable',
-  errors: {}
+  description: 'Variable'
 }
 
 export const createVariable = (id, parentFolderId, positionInFolder) => {

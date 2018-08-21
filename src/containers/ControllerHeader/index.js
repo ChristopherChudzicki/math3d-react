@@ -14,13 +14,6 @@ const mapStateToProps = ( { activeObject, sortableTree } ) => {
   const treeRoot = sortableTree.root
   const activeFolder = getActiveFolder(sortableTree, activeObject)
 
-  // TODO Move this to selector and write tests for it. Cases:
-  // 1. activeObject is null
-  // 2. activeObject is a folder
-  // 3. activeObject is an item in a folder
-  //
-  // need correct itemInsertion / folderInsertion behavior in each case.
-  //
   // If no active folder, insert new items into last folder
   const targetFolder = activeFolder || treeRoot[treeRoot.length - 1]
   const newFolderIndex = treeRoot.indexOf(targetFolder) + 1
