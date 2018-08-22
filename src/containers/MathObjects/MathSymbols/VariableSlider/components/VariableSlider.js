@@ -4,10 +4,6 @@ import MathObject from 'containers/MathObjects/MathObject'
 import {
   MainRow
 } from 'containers/MathObjects/components'
-import {
-  isAssignmentLHS,
-  isValidName
-} from 'containers/MathObjects/components/MathInput'
 import { VARIABLE_SLIDER } from 'containers/MathObjects/mathObjectTypes'
 import SliderValueDisplay from './SliderValueDisplay'
 import SliderWithLimits from './SliderWithLimits'
@@ -32,11 +28,6 @@ export default class VariableSlider extends PureComponent {
     baseAnimationDuration: 4,
     animationMultiplier: 1
   }
-
-  static nameValidators = [
-    isAssignmentLHS,
-    isValidName
-  ]
 
   constructor(props) {
     super(props)
