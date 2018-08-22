@@ -1,13 +1,9 @@
 import {
   toggleProperty,
-  setProperty,
-  setPropertyAndError
+  setProperty
 } from 'containers/MathObjects/actions'
-import { setError } from 'services/errors'
 
 export const mapDispatchToProps = {
   toggleProperty,
-  setPropertyAndError,
-  setError,
   setProperty
 }

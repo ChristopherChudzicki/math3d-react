@@ -1,43 +1,32 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import {
-  MathInput,
+  MathInputLHS,
+  MathInputRHS,
   StaticMathLarge
-} from 'containers/MathObjects/components'
+} from 'containers/MathObjects/containers/MathInput'
 
 SliderValueDisplay.propTypes = {
-  name: PropTypes.string.isRequired,
-  nameValidators: PropTypes.arrayOf(PropTypes.func).isRequired,
-  validateNameAgainst: PropTypes.any,
-  valueText: PropTypes.string.isRequired,
-  onValidatedTextChange: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
-  onValidatorAndErrorChange: PropTypes.func.isRequired
+  parentId: PropTypes.string.isRequired,
+  valueText: PropTypes.string.isRequired
 }
+
+const valueStyle = { flex: 0 }
 
 export default function SliderValueDisplay(props) {
   return (
     <Fragment>
-      <MathInput
-        style={{ flex: 0 }}
-        field={'name'}
-        latex={props.name}
-        onValidatedTextChange={props.onValidatedTextChange}
-        errorMsg={props.errors.name}
-        onValidatorAndErrorChange={props.onValidatorAndErrorChange}
-        validators={props.nameValidators}
-        validateAgainst={props.validateNameAgainst}
+      <MathInputLHS
+        parentId={props.parentId}
       />
       <StaticMathLarge
         latex='='
       />
-      <MathInput
-        style={{ flex: 0 }}
-        field={'value'}
+      <MathInputRHS
+        field='value'
+        style={valueStyle}
+        parentId={props.parentId}
         latex={props.valueText}
-        onValidatedTextChange={props.onValidatedTextChange}
-        errorMsg={props.errors.value}
-        onValidatorAndErrorChange={props.onValidatorAndErrorChange}
       />
     </Fragment>
   )
