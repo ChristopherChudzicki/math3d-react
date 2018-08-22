@@ -1,5 +1,14 @@
 import createCachedSelector from 're-reselect'
 
+export function getMathObjectProp(objectsArray, id, propName) {
+  for (const obj of objectsArray) {
+    if (obj[id] ) {
+      return obj[id][propName]
+    }
+  }
+  throw Error(`id ${id} not found in ${objectsArray}`)
+}
+
 /**
  * Given an object mapping id to name, get set of all names except name
  * corresponding to omittedId

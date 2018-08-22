@@ -4,9 +4,9 @@ import MathObject from 'containers/MathObjects/MathObject'
 import {
   Settings,
   StatusSymbol,
-  MainRow,
-  MathInput
+  MainRow
 } from 'containers/MathObjects/components'
+import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
 import { POINT } from 'containers/MathObjects/mathObjectTypes'
 
 export default class Point extends PureComponent {
@@ -21,9 +21,7 @@ export default class Point extends PureComponent {
     color: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
     errors: PropTypes.objectOf(PropTypes.string).isRequired,
-    setPropertyAndError: PropTypes.func.isRequired,
     toggleProperty: PropTypes.func.isRequired,
-    setError: PropTypes.func.isRequired,
     setProperty: PropTypes.func.isRequired
   }
 
@@ -37,8 +35,6 @@ export default class Point extends PureComponent {
     const type = POINT
     this.toggleProperty = this.props.toggleProperty.bind(this, id, type)
     this.setProperty = this.props.setProperty.bind(this, id, type)
-    this.setPropertyAndError = this.props.setPropertyAndError.bind(this, id, type)
-    this.setError = this.props.setError.bind(this, id)
   }
 
   render() {
@@ -56,12 +52,9 @@ export default class Point extends PureComponent {
         }
       >
         <MainRow>
-          <MathInput
+          <MathInputRHS
             field='coords'
-            errorMsg={this.props.errors.coords}
-            latex={this.props.coords}
-            onValidatedTextChange={this.setPropertyAndError}
-            onValidatorAndErrorChange={this.setError}
+            parentId={this.props.id}
           />
           <Settings title='Point Settings'>
             <p>Hello</p>
