@@ -8,8 +8,12 @@ const defaultSettings = {
   coords: '\\left[0,0,0\\right]',
   description: 'Point',
   color: 'red',
-  size: 16,
-  visible: true
+  size: '16',
+  visible: true,
+  opacity: 1,
+  zBias: 'null',
+  label: null,
+  labelVisible: false
 }
 
 export const createPoint = (id, parentFolderId, positionInFolder) => {

@@ -1,6 +1,6 @@
 // @flow
-import connect from 'react-redux'
-import Settings from './components/SettingsContainer'
+import { connect } from 'react-redux'
+import Settings from './components/Settings'
 import {
   toggleProperty,
   setProperty
