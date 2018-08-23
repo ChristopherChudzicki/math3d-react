@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react'
-import MathObject from 'containers/MathObjects/MathObject'
+import MathObjectUI from 'containers/MathObjects/MathObjectUI'
 import { StatusSymbol } from 'containers/MathObjects/components'
 import typeof {
   toggleProperty,
@@ -17,7 +17,7 @@ type Props = {
   children: React.Node
 }
 
-export default class MathGraphic extends React.PureComponent<Props> {
+export default class MathGraphicUI extends React.PureComponent<Props> {
 
   constructor(props: Props) {
     super(props)
@@ -39,7 +39,7 @@ export default class MathGraphic extends React.PureComponent<Props> {
 
   render() {
     return (
-      <MathObject
+      <MathObjectUI
         id={this.props.id}
         type={this.props.type}
         sidePanelContent={
@@ -52,7 +52,7 @@ export default class MathGraphic extends React.PureComponent<Props> {
         }
       >
         {this.props.children}
-      </MathObject>
+      </MathObjectUI>
     )
   }
 

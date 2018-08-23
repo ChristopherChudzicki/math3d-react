@@ -62,7 +62,7 @@ function addPoint(store, folderId) {
     visible: true,
     color: colors[getRandomInt(0, colors.length - 1)],
     size: `${randomInt(12, 48)}`,
-    opacity: randomReal().toFixed(2),
+    opacity: randomReal(0.25, 1).toFixed(2),
     zBias: 'null',
     label: null,
     labelVisible: false
@@ -81,7 +81,7 @@ function addLine(store, folderId) {
     visible: true,
     color: colors[getRandomInt(0, colors.length - 1)],
     size: `${randomInt(8, 24)}`,
-    opacity: randomReal().toFixed(2),
+    opacity: randomReal(0.25, 1).toFixed(2),
     zBias: 'null',
     zIndex: 'null',
     label: null,

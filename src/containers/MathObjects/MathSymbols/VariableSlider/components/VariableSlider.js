@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import MathObject from 'containers/MathObjects/MathObject'
+import MathObjectUI from 'containers/MathObjects/MathObjectUI'
 import {
   MainRow
 } from 'containers/MathObjects/components'
@@ -47,7 +47,7 @@ export default class VariableSlider extends PureComponent {
       valueText
     } = this.props
     return (
-      <MathObject
+      <MathObjectUI
         id={id}
         type={VARIABLE_SLIDER}
       >
@@ -67,7 +67,7 @@ export default class VariableSlider extends PureComponent {
             onSliderChange={this.onSliderChange}
           />
         </MainRow>
-      </MathObject>
+      </MathObjectUI>
     )
   }
 

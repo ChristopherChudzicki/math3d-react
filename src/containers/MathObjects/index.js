@@ -1,13 +1,13 @@
-import Point from './MathGraphics/Point'
-import Line from './MathGraphics/Line'
+import { PointUI } from './MathGraphics/Point'
+import { LineUI } from './MathGraphics/Line'
 import Variable from './MathSymbols/Variable'
 import VariableSlider from './MathSymbols/VariableSlider'
 import Folder from './Folder'
 import { POINT, LINE, VARIABLE, VARIABLE_SLIDER, FOLDER } from './mathObjectTypes'
 
 export default {
-  [POINT]: Point,
-  [LINE]: Line,
+  [POINT]: PointUI,
+  [LINE]: LineUI,
   [VARIABLE]: Variable,
   [VARIABLE_SLIDER]: VariableSlider,
   [FOLDER]: Folder

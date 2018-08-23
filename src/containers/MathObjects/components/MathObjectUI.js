@@ -78,7 +78,7 @@ const HeaderContainer = styled.div`
   position:relative;
 `
 
-export default class MathObject extends PureComponent {
+export default class MathObjectUI extends PureComponent {
 
   static propTypes = {
     // passed as ownProps

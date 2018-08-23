@@ -1,4 +1,4 @@
-import MathGraphic from './components/MathGraphic'
+import MathGraphicUI from './components/MathGraphicUI'
 import { connect } from 'react-redux'
 import {
   toggleProperty,
@@ -18,4 +18,4 @@ const mapDispatchToProps = {
   setProperty
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MathGraphic)
+export default connect(mapStateToProps, mapDispatchToProps)(MathGraphicUI)

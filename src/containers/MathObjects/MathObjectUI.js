@@ -1,4 +1,4 @@
-import MathObject from './components/MathObject'
+import MathObjectUI from './components/MathObjectUI'
 import { connect } from 'react-redux'
 import { setActiveObject } from './services/activeObject/actions'
 import { getParent } from './selectors'
@@ -32,4 +32,4 @@ const mapDispatchToProps = {
   setProperty
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MathObject)
+export default connect(mapStateToProps, mapDispatchToProps)(MathObjectUI)

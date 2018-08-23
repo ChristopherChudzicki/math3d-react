@@ -4,7 +4,7 @@ import MathObjects from 'containers/MathObjects'
 import CollapsedIndicator from './CollapsedIndicator'
 import Collapsible from 'react-collapsible'
 import PropTypes from 'prop-types'
-import MathObject from 'containers/MathObjects/MathObject'
+import MathObjectUI from 'containers/MathObjects/MathObjectUI'
 import { FOLDER } from 'containers/MathObjects/mathObjectTypes'
 import theme from 'constants/theme'
 
@@ -34,7 +34,7 @@ export default class Folder extends PureComponent {
     const props = this.props
     const listClassName = props.isCollapsed ? 'collapsed' : ''
     return (
-      <MathObject
+      <MathObjectUI
         id={props.id}
         type={FOLDER}
         isFolder={true}
@@ -64,7 +64,7 @@ export default class Folder extends PureComponent {
             renderItem={renderItem}
           />
         </Collapsible>
-      </MathObject>
+      </MathObjectUI>
     )
   }
 
