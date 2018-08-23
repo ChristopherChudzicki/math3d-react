@@ -2,6 +2,7 @@ import { uniqueId } from 'lodash'
 import { initialState as drawerInitialState } from './containers/Drawer/reducer'
 import {
   POINT,
+  LINE,
   FOLDER,
   VARIABLE,
   VARIABLE_SLIDER
@@ -45,6 +46,10 @@ function randomReal(a=0, b=1) {
   return a + Math.random() * (b - a)
 }
 
+function texTriple(a=-5, b=5) {
+  return `\\left[${randomInt(a, b)},\\ ${randomInt(a, b)},\\ ${randomInt(a, b)}\\right]`
+}
+
 function addPoint(store, folderId) {
   const itemId = `item-${uniqueId()}`
   store.parseErrors[itemId] = {}
@@ -53,7 +58,7 @@ function addPoint(store, folderId) {
   store.mathGraphics[itemId] = {
     type: POINT,
     description: 'Point',
-    coords: `\\left[${randomInt()},\\ ${randomInt()},\\ ${randomInt()}\\right]`,
+    coords: texTriple(),
     visible: true,
     color: colors[getRandomInt(0, colors.length - 1)],
     size: `${randomInt(12, 48)}`,
@@ -61,6 +66,29 @@ function addPoint(store, folderId) {
     zBias: 'null',
     label: null,
     labelVisible: false
+  }
+}
+
+function addLine(store, folderId) {
+  const itemId = `item-${uniqueId()}`
+  store.parseErrors[itemId] = {}
+  store.evalErrors[itemId] = {}
+  store.sortableTree[folderId].push(itemId)
+  store.mathGraphics[itemId] = {
+    type: LINE,
+    description: 'Line',
+    coords: `\\left[${texTriple()},\\ ${texTriple()}\\right]`,
+    visible: true,
+    color: colors[getRandomInt(0, colors.length - 1)],
+    size: `${randomInt(8, 24)}`,
+    opacity: randomReal().toFixed(2),
+    zBias: 'null',
+    zIndex: 'null',
+    label: null,
+    labelVisible: false,
+    width: '4',
+    start: false,
+    end: false
   }
 }
 
@@ -122,6 +150,9 @@ export function makeMockStore() {
       var3: 7.3
     }
   }
+
+  const folderId = addFolder(store)
+  addLine(store, folderId)
 
   for (let j = 0; j < 5; j++) {
     const folderId = addFolder(store)

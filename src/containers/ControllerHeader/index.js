@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { getActiveFolder } from './selectors'
 import {
   createPoint,
+  createLine,
   createVariable,
   createFolder,
   createVariableSlider
@@ -31,6 +32,7 @@ const mapStateToProps = ( { activeObject, sortableTree } ) => {
 
 const mapDispatchToProps = ( {
   createPoint,
+  createLine,
   createFolder,
   createVariable,
   createVariableSlider,

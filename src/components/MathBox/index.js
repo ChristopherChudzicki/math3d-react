@@ -134,3 +134,39 @@ export class Point extends MathBoxComponent {
   }
 
 }
+
+export class Line extends MathBoxComponent {
+
+  mathboxRender = (parent) => {
+    const node = parent.group()
+    node.array( {
+      data: this.props.coords,
+      items: 1,
+      channels: 3
+    } )
+      .line( {
+        color: this.props.color,
+        width: this.props.width,
+        start: this.props.start,
+        end: this.props.end,
+        size: this.props.size,
+        zIndex: this.props.zIndex,
+        zBias: this.props.zBias
+      } )
+
+    return node
+  }
+
+  mathboxUpdate = () => {
+    const array = this.mathboxNode.select('array')
+    const line = this.mathboxNode.select('line')
+    array.set('data', [this.props.coords] )
+    line.set('color', this.props.color)
+    line.set('size', this.props.size)
+    line.set('opacity', this.props.opacity)
+    line.set('width', this.props.width)
+    line.set('start', this.props.start)
+    line.set('end', this.props.end)
+  }
+
+}

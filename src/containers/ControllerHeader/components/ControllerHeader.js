@@ -64,6 +64,7 @@ export default class ControllerHeader extends PureComponent {
     return (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key='createPoint'>Point</Menu.Item>
+        <Menu.Item key="createLine">Line</Menu.Item>
         <Menu.Item key="createFolder">Folder</Menu.Item>
         <Menu.Item key="createVariable">Variable</Menu.Item>
         <Menu.Item key="createVariableSlider">Slider</Menu.Item>
