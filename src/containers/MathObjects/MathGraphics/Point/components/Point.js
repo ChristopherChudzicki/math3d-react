@@ -2,11 +2,34 @@ import React, { PureComponent } from 'react'
 import MathGraphic from 'containers/MathObjects/MathGraphics/MathGraphic'
 import PropTypes from 'prop-types'
 import {
-  Settings,
   MainRow
 } from 'containers/MathObjects/components'
+import Settings from 'containers/MathObjects/containers/Settings'
 import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
 import { POINT } from 'containers/MathObjects/mathObjectTypes'
+
+const settingsList = [
+  {
+    property: 'label',
+    inputType: 'text'
+  },
+  {
+    property: 'labelVisible',
+    inputType: 'boolean'
+  },
+  {
+    property: 'size',
+    inputType: 'math'
+  },
+  {
+    property: 'opacity',
+    inputType: 'math'
+  },
+  {
+    property: 'zBias',
+    inputType: 'math'
+  }
+]
 
 export default class Point extends PureComponent {
 
@@ -20,7 +43,9 @@ export default class Point extends PureComponent {
   }
 
   static computedProps = [
-    'coords'
+    'coords',
+    'size',
+    'opacity'
   ]
 
   render() {
@@ -34,11 +59,11 @@ export default class Point extends PureComponent {
             field='coords'
             parentId={this.props.id}
           />
-          <Settings title='Point Settings'>
-            <p>Hello</p>
-            <p>World</p>
-            <div style={ { height: '20px', width: '300px', backgroundColor: 'blue' } }/>
-          </Settings>
+          <Settings
+            title='Point Settings'
+            parentId={this.props.id}
+            settingsList={settingsList}
+          />
         </MainRow>
       </MathGraphic>
     )

@@ -41,6 +41,9 @@ function addFolder(store) {
 function randomInt(a=-5, b=5) {
   return a + Math.floor(Math.random() * (b - a))
 }
+function randomReal(a=0, b=1) {
+  return a + Math.random() * (b - a)
+}
 
 function addPoint(store, folderId) {
   const itemId = `item-${uniqueId()}`
@@ -53,7 +56,11 @@ function addPoint(store, folderId) {
     coords: `\\left[${randomInt()},\\ ${randomInt()},\\ ${randomInt()}\\right]`,
     visible: true,
     color: colors[getRandomInt(0, colors.length - 1)],
-    size: randomInt(12, 48)
+    size: `${randomInt(12, 48)}`,
+    opacity: randomReal().toFixed(2),
+    zBias: 'null',
+    label: null,
+    labelVisible: false
   }
 }
 

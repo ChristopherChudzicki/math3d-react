@@ -117,7 +117,8 @@ export class Point extends MathBoxComponent {
     } )
       .point( {
         size: this.props.size,
-        color: this.props.color
+        color: this.props.color,
+        opacity: this.props.opacity
       } )
 
     return node
@@ -128,6 +129,8 @@ export class Point extends MathBoxComponent {
     const point = this.mathboxNode.select('point')
     array.set('data', [this.props.coords] )
     point.set('color', this.props.color)
+    point.set('size', this.props.size)
+    point.set('opacity', this.props.opacity)
   }
 
 }

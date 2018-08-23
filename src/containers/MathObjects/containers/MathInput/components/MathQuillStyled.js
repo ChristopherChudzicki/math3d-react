@@ -33,10 +33,10 @@ export const MathQuillLarge = styled(MathQuill)`
   &.mq-editable-field.mq-math-mode {
     flex:1;
     max-width: 100%;
-    font-size:125%;
+    font-size: ${props => props.size === 'small' ? '100%' : '125%'};
     font-weight:bolder;
     ${borderStyling};
-    ${props => props.hasError && errorStyling}
+    ${props => props.hasError && errorStyling};
     ${alignmentStyling};
   }
 `
@@ -44,7 +44,7 @@ export const MathQuillLarge = styled(MathQuill)`
 export const StaticMathLarge = styled(StaticMath)`
   &.mq-math-mode {
     max-width: calc(100% - 30px);
-    font-size:125%;
+    font-size: ${props => props.size === 'small' ? '100%' : '125%'};
     font-weight:bolder;
     ${alignmentStyling};
   }
