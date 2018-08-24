@@ -7,9 +7,9 @@ import { Input, Switch } from 'antd'
 type InputType = 'text' | 'boolean' | 'math'
 
 export type FormRow = {
-  property: string,
   inputType: InputType,
-  label: ?string
+  property: string,
+  label: string
 }
 
 // TODO: don't use any
@@ -43,13 +43,12 @@ export default class SettingsContent extends React.PureComponent<Props> {
     this.renderInput = this.renderInput.bind(this)
   }
 
-  renderRow(rowData: FormRow) {
-    const { property, inputType, label } = rowData
-    const rowLabel = label || property
+  renderRow(formRow: FormRow) {
+    const { property, label, inputType } = formRow
 
     return (
       <React.Fragment key={property}>
-        <Label>{rowLabel}</Label>
+        <Label>{label}</Label>
         {this.renderInput(property, inputType)}
       </React.Fragment>
     )

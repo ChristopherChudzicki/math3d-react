@@ -64,6 +64,7 @@ function addPoint(store, folderId) {
     size: `${randomInt(12, 48)}`,
     opacity: randomReal(0.25, 1).toFixed(2),
     zBias: 'null',
+    zIndex: 'null',
     label: null,
     labelVisible: false
   }

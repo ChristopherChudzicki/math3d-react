@@ -1,11 +1,15 @@
 // @flow
 import * as React from 'react'
 import MathObjectUI from 'containers/MathObjects/MathObjectUI'
-import { StatusSymbol } from 'containers/MathObjects/components'
+import { StatusSymbol, MainRow } from 'containers/MathObjects/components'
+import Settings from 'containers/MathObjects/containers/Settings'
 import typeof {
   toggleProperty,
-  setProperty
+  setProperty,
 } from 'containers/MathObjects/actions'
+import { capitalize } from 'utils/helpers'
+import type { MetaData } from '../types'
+import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
 
 type Props = {
   id: string,
@@ -14,7 +18,20 @@ type Props = {
   visible: bool,
   toggleProperty: toggleProperty,
   setProperty: setProperty,
-  children: React.Node
+  children: React.Node,
+  metadata: MetaData,
+  settingsTitle?: string,
+  mainField: string
+}
+
+function getSettingsFormSpec(metadata: MetaData) {
+  return Object.keys(metadata)
+    .filter(property => !metadata[property].isPrimary)
+    .sort()
+    .map(property => {
+      const { inputType, label = property } = metadata[property]
+      return { property, inputType, label }
+    } )
 }
 
 export default class MathGraphicUI extends React.PureComponent<Props> {
@@ -38,6 +55,9 @@ export default class MathGraphicUI extends React.PureComponent<Props> {
   }
 
   render() {
+    const settingsTitle = this.props.settingsTitle === undefined
+      ? `${capitalize(this.props.type)} Settings`
+      : this.props.settingsTitle
     return (
       <MathObjectUI
         id={this.props.id}
@@ -51,6 +71,17 @@ export default class MathGraphicUI extends React.PureComponent<Props> {
           />
         }
       >
+        <MainRow>
+          <MathInputRHS
+            field={this.props.mainField}
+            parentId={this.props.id}
+          />
+          <Settings
+            title={settingsTitle}
+            parentId={this.props.id}
+            settingsList={getSettingsFormSpec(this.props.metadata)}
+          />
+        </MainRow>
         {this.props.children}
       </MathObjectUI>
     )

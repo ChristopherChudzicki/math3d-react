@@ -1,4 +1,9 @@
 // @flow
+
+export function capitalize(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
+}
+
 export function escapeRegExp(str: string) {
   // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
   // $& means the whole matched string
