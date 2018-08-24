@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react'
 import SortableList from 'components/SortableList'
-import MathObjects from 'containers/MathObjects'
+import MathGraphics from 'containers/MathObjects/MathGraphics'
+import MathSymbols from 'containers/MathObjects/MathSymbols'
 import CollapsedIndicator from './CollapsedIndicator'
 import Collapsible from 'react-collapsible'
 import PropTypes from 'prop-types'
 import MathObjectUI from 'containers/MathObjects/MathObjectUI'
-import { FOLDER } from 'containers/MathObjects/mathObjectTypes'
 import theme from 'constants/theme'
+import { FOLDER } from '../metadata'
 
 export default class Folder extends PureComponent {
 
@@ -70,7 +71,8 @@ export default class Folder extends PureComponent {
 
 }
 
+const FolderContents = { ...MathSymbols, ...MathGraphics }
 function renderItem( { id, type } ) {
-  const SpecificMathObject = MathObjects[type]
+  const SpecificMathObject = FolderContents[type].uiComponent
   return <SpecificMathObject id={id }/>
 }

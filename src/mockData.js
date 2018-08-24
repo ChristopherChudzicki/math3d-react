@@ -1,12 +1,11 @@
 import { uniqueId } from 'lodash'
 import { initialState as drawerInitialState } from './containers/Drawer/reducer'
-import {
-  POINT,
-  LINE,
-  FOLDER,
-  VARIABLE,
-  VARIABLE_SLIDER
-} from 'containers/MathObjects/mathObjectTypes'
+
+const POINT = 'POINT'
+const LINE = 'LINE'
+const FOLDER = 'FOLDER'
+const VARIABLE = 'VARIABLE'
+const VARIABLE_SLIDER = 'VARIABLE_SLIDER'
 
 function getRandomInt(a, b) {
   const range = b - a + 1

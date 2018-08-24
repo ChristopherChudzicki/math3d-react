@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import MathBox, { Grid, Cartesian } from 'components/MathBox'
 import { MathScopeConsumer } from 'containers/MathScopeContext'
-import { mapTypeToGraphic } from 'containers/MathObjects/mathObjectTypes'
 import MathObjects from 'containers/MathObjects'
 import PropTypes from 'prop-types'
 import { parser } from 'constants/parsing'
@@ -73,6 +72,6 @@ export default class MathBoxScene extends PureComponent {
 // TODO: this causes some unnecessary re-renders when tryEval returns an array
 // that is double= but not triple=
 function renderGraphic(id, data) {
-  const Graphic = mapTypeToGraphic[data.type]
+  const Graphic = MathObjects[data.type].mathboxComponent
   return <Graphic key={id} {...data}/>
 }

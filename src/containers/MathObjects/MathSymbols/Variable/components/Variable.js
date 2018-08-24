@@ -7,7 +7,7 @@ import {
   MathInputRHS,
   StaticMathLarge
 } from 'containers/MathObjects/containers/MathInput'
-import { VARIABLE } from 'containers/MathObjects/mathObjectTypes'
+import { VARIABLE } from '../metadata'
 
 export default class Variable extends PureComponent {
 

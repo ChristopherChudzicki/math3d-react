@@ -1,10 +1,10 @@
-import { VARIABLE_SLIDER } from 'containers/MathObjects/mathObjectTypes'
+import VariableSlider from 'containers/MathObjects/MathSymbols/VariableSlider'
 
 export function getParseableSymbols(parser, mathSymbols, sliderValues, parseErrors) {
   const parseableSymbolIds = Object.keys(mathSymbols).filter(id => Object.keys(parseErrors[id] ).length === 0)
   return parseableSymbolIds.reduce((acc, id) => {
     const { name: lhs, value, type } = mathSymbols[id]
-    const expr = (value === null && type === VARIABLE_SLIDER)
+    const expr = (value === null && type === VariableSlider.type)
       ? `${lhs}=${sliderValues[id]}`
       : `${lhs}=${value}`
 

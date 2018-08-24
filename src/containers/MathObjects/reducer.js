@@ -7,13 +7,9 @@ import {
   CREATE_MATH_OBJECT,
   DELETE_MATH_OBJECT
 } from './actions'
-import {
-  FOLDER,
-  VARIABLE,
-  VARIABLE_SLIDER,
-  POINT,
-  LINE
-} from './mathObjectTypes'
+import Folder from './Folder'
+import MathSymbols from './MathSymbols'
+import MathGraphics from './MathGraphics'
 
 const initialState = {}
 
@@ -60,6 +56,6 @@ export function createReducer(mathObjectNames) {
   }
 }
 
-export const folders = createReducer(new Set( [FOLDER] ))
-export const mathSymbols = createReducer(new Set( [VARIABLE, VARIABLE_SLIDER] ))
-export const mathGraphics = createReducer(new Set( [POINT, LINE] ))
+export const folders = createReducer(new Set( [Folder.type] ))
+export const mathSymbols = createReducer(new Set(Object.keys(MathSymbols)))
+export const mathGraphics = createReducer(new Set(Object.keys(MathGraphics)))

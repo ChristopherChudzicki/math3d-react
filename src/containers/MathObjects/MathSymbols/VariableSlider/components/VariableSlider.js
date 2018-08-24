@@ -4,7 +4,7 @@ import MathObjectUI from 'containers/MathObjects/MathObjectUI'
 import {
   MainRow
 } from 'containers/MathObjects/components'
-import { VARIABLE_SLIDER } from 'containers/MathObjects/mathObjectTypes'
+import { VARIABLE_SLIDER } from '../metadata'
 import SliderValueDisplay from './SliderValueDisplay'
 import SliderWithLimits from './SliderWithLimits'
 import AnimationControls from './AnimationControls'

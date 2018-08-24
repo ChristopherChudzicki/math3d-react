@@ -1,16 +1,14 @@
-import { PointUI } from './MathGraphics/Point'
-import { LineUI } from './MathGraphics/Line'
-import Variable from './MathSymbols/Variable'
-import VariableSlider from './MathSymbols/VariableSlider'
+// @flow
 import Folder from './Folder'
-import { POINT, LINE, VARIABLE, VARIABLE_SLIDER, FOLDER } from './mathObjectTypes'
+import MathGraphics from './MathGraphics'
+import MathSymbols from './MathSymbols'
+
+export { Folder, MathGraphics, MathSymbols }
 
 export default {
-  [POINT]: PointUI,
-  [LINE]: LineUI,
-  [VARIABLE]: Variable,
-  [VARIABLE_SLIDER]: VariableSlider,
-  [FOLDER]: Folder
+  [Folder.type]: Folder,
+  ...MathSymbols,
+  ...MathGraphics
 }
 
 export { createPoint } from './MathGraphics/Point/actions'

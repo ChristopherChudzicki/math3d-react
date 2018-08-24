@@ -1,14 +1,7 @@
 import {
   createMathObject
 } from 'containers/MathObjects/actions'
-export const VARIABLE = 'VARIABLE'
-
-const defaultSettings = {
-  type: VARIABLE,
-  name: 'f(x)',
-  value: 'e^x',
-  description: 'Variable'
-}
+import { VARIABLE, defaultSettings } from './metadata'
 
 export const createVariable = (id, parentFolderId, positionInFolder) => {
   return createMathObject(id, VARIABLE, parentFolderId, positionInFolder, defaultSettings)

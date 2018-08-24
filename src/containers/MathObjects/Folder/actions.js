@@ -3,12 +3,7 @@ import {
   setProperty,
   createMathObject
 } from 'containers/MathObjects/actions'
-export const FOLDER = 'FOLDER'
-
-const defaultSettings = {
-  isCollapsed: false,
-  description: 'Folder'
-}
+import { FOLDER, defaultSettings } from './metadata'
 
 export const setContentCollapsed = (id, value) => {
   return setProperty(id, FOLDER, 'isCollapsed', value)

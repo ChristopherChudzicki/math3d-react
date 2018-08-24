@@ -1,5 +1,6 @@
 import { CREATE_MATH_OBJECT } from 'containers/MathObjects/actions'
-import { SET_SLIDER_VALUE, defaultValue } from './actions'
+import { SET_SLIDER_VALUE } from './actions'
+import { defaultValue } from './metadata'
 const initialState = {}
 
 export default function sliderValues(state = initialState, action) {
