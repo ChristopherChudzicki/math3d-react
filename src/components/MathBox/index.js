@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import diff from 'shallow-diff'
 
 // TODO: Reorganize this
 
@@ -23,24 +24,22 @@ export default class MathBox extends PureComponent {
 
 }
 
-// TODO: use shallow-diff instead ...
-function diff(o1, o2) {
-  return Object.keys(o1).reduce((theDiff, key) => {
-    if (o1[key] === o2[key] ) return theDiff
-    theDiff[key] = o1[key]
-    return theDiff
-  }, {} )
-}
-
 class MathBoxComponent extends React.Component {
 
   oldProps = {}
-  diffProps = {}
+  oldProps = {}
+  diffProps = {
+    added: [],
+    deleted: [],
+    unchanged: [],
+    updated: []
+  }
 
-  shouldComponentUpdate = (nextProps, nextState) => {
+  shouldComponentUpdate = (nextProps) => {
     this.oldProps = this.props
     this.diffProps = diff(nextProps, this.props)
-    return Object.getOwnPropertyNames(this.diffProps).length !== 0
+    const { added, deleted, updated } = this.diffProps
+    return updated.length !== 0 || added.length !== 0 || deleted.length !== 0
   }
 
   componentDidMount = () => {
