@@ -2,7 +2,6 @@
 import { connect } from 'react-redux'
 import Settings from './components/Settings'
 import {
-  toggleProperty,
   setProperty
 } from 'containers/MathObjects/actions'
 
@@ -13,8 +12,7 @@ const mapStateToProps = ( { mathGraphics, mathSymbols }, ownProps) => {
 }
 
 const mapDispatchToProps = {
-  setProperty,
-  toggleProperty
+  setProperty
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)

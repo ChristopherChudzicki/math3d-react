@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import MathObject from 'containers/MathObjects/MathObject'
+import MathObjectUI from 'containers/MathObjects/MathObjectUI'
 import { MainRow } from 'containers/MathObjects/components'
 import {
   MathInputLHS,
   MathInputRHS,
   StaticMathLarge
 } from 'containers/MathObjects/containers/MathInput'
-import { VARIABLE } from 'containers/MathObjects/mathObjectTypes'
+import { VARIABLE } from '../metadata'
 
 export default class Variable extends PureComponent {
 
@@ -17,7 +17,7 @@ export default class Variable extends PureComponent {
 
   render() {
     return (
-      <MathObject
+      <MathObjectUI
         id={this.props.id}
         type={VARIABLE}
       >
@@ -33,7 +33,7 @@ export default class Variable extends PureComponent {
             parentId={this.props.id}
           />
         </MainRow>
-      </MathObject>
+      </MathObjectUI>
     )
   }
 

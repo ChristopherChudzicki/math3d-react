@@ -1,21 +1,42 @@
-import MathGraphic from './components/MathGraphic'
-import { connect } from 'react-redux'
-import {
-  toggleProperty,
-  setProperty
-} from 'containers/MathObjects/actions'
+// @flow
+import type { MetaData } from './types'
+import { capitalize } from 'utils/helpers'
+import type { MathObjectWrapper, Settings } from '../MathObject'
 
-const mapStateToProps = ( { mathGraphics, parseErrors, evalErrors }, ownProps) => {
-  const { id } = ownProps
-  return {
-    color: mathGraphics[id].color,
-    visible: mathGraphics[id].visible
+/**
+ * Contains metadata about MathGraphic and coerces it into a form consumable
+ * by other sources
+ */
+export default class MathGraphic implements MathObjectWrapper {
+
+  type: string
+  defaultSettings: Settings
+  uiComponent: Function
+  mathboxComponent: Function
+  computedProps: Array<string>
+  reducer = 'mathGraphics'
+
+  constructor( { type, description, metadata, uiComponent, mathboxComponent }: {
+    type: string,
+    description?: string,
+    metadata: MetaData,
+    uiComponent: Function,
+    mathboxComponent: Function
+  } ) {
+    this.type = type
+    this.uiComponent = uiComponent
+    this.mathboxComponent = mathboxComponent
+    this.defaultSettings = MathGraphic.getDefaultSettings(type, metadata, description)
+    this.computedProps = Object.keys(metadata)
+      .filter(key => metadata[key].inputType === 'math')
   }
-}
 
-const mapDispatchToProps = {
-  toggleProperty,
-  setProperty
-}
+  static getDefaultSettings(type: string, metadata: MetaData, description: ?string) {
+    const initial = { type, description: description || capitalize(type) }
+    return Object.keys(metadata).reduce((acc, property) => {
+      acc[property] = metadata[property].defaultValue
+      return acc
+    }, initial)
+  }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MathGraphic)
+}

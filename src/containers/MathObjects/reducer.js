@@ -7,12 +7,11 @@ import {
   CREATE_MATH_OBJECT,
   DELETE_MATH_OBJECT
 } from './actions'
-import {
-  FOLDER,
-  VARIABLE,
-  VARIABLE_SLIDER,
-  POINT
-} from './mathObjectTypes'
+import MathObjects, {
+  Folder,
+  MathSymbols,
+  MathGraphics
+} from './index'
 
 const initialState = {}
 
@@ -31,10 +30,12 @@ export function createReducer(mathObjectNames) {
 
     switch (type) {
 
-      case CREATE_MATH_OBJECT:
+      case CREATE_MATH_OBJECT: {
+        const settings = { ...MathObjects[name].defaultSettings, ...payload.settings }
         return update(state, {
-          $merge: { [payload.id]: { ...payload.settings } }
+          $merge: { [payload.id]: settings }
         } )
+      }
       case DELETE_MATH_OBJECT:
         return update(state, {
           $unset: [ payload.id ]
@@ -59,6 +60,6 @@ export function createReducer(mathObjectNames) {
   }
 }
 
-export const folders = createReducer(new Set( [FOLDER] ))
-export const mathSymbols = createReducer(new Set( [VARIABLE, VARIABLE_SLIDER] ))
-export const mathGraphics = createReducer(new Set( [POINT] ))
+export const folders = createReducer(new Set( [Folder.type] ))
+export const mathSymbols = createReducer(new Set(Object.keys(MathSymbols)))
+export const mathGraphics = createReducer(new Set(Object.keys(MathGraphics)))

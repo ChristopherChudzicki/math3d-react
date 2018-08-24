@@ -23,7 +23,7 @@ export class ErrorData {
 
 export class ParseErrorData extends ErrorData {
 
-  constructor(errorMsg: string) {
+  constructor(errorMsg: ?string) {
     super(PARSE_ERROR, errorMsg)
   }
 
@@ -31,7 +31,7 @@ export class ParseErrorData extends ErrorData {
 
 export class EvalErrorData extends ErrorData {
 
-  constructor(errorMsg: string) {
+  constructor(errorMsg: ?string) {
     super(EVAL_ERROR, errorMsg)
   }
 

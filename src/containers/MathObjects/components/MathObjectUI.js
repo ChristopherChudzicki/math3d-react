@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import EditableDescription from './EditableDescription'
 import DeleteButton from './DeleteButton'
-import { mathObjectTypes, FOLDER } from 'containers/MathObjects/mathObjectTypes'
 import { theme } from 'constants/theme'
 
 const OuterContainer = styled.span`
@@ -78,12 +77,16 @@ const HeaderContainer = styled.div`
   position:relative;
 `
 
-export default class MathObject extends PureComponent {
+export default class MathObjectUI extends PureComponent {
 
   static propTypes = {
     // passed as ownProps
     id: PropTypes.string.isRequired,
-    type: PropTypes.oneOf(mathObjectTypes).isRequired,
+    // TODO: is type necessary?
+    // Lots of things use the type value in redux store.
+    // Not sure anything actually uses the type prop
+    type: PropTypes.string.isRequired,
+    isFolder: PropTypes.bool.isRequired,
     sidePanelContent: PropTypes.node,
     children: PropTypes.oneOfType( [
       PropTypes.arrayOf(PropTypes.node),
@@ -101,6 +104,7 @@ export default class MathObject extends PureComponent {
   }
 
   static defaultProps = {
+    isFolder: false,
     showAncestry: true,
     sidePanelContent: null
   }
@@ -145,11 +149,10 @@ export default class MathObject extends PureComponent {
       isActive,
       sidePanelContent,
       description,
-      type,
       children,
-      isDeleteable
+      isDeleteable,
+      isFolder
     } = this.props
-    const isFolder = type === FOLDER
 
     return (
       <Fragment>

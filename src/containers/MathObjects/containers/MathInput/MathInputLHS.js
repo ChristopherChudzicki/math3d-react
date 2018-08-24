@@ -1,3 +1,5 @@
+// @flow
+import type { ErrorData } from 'services/errors'
 import React, { PureComponent } from 'react'
 import MathInput from './components/MathInput'
 import { connect } from 'react-redux'
@@ -11,22 +13,20 @@ import {
 import { setError } from 'services/errors'
 import { getErrors } from 'services/errors/selectors'
 import { getValidateNameAgainst, getMathObjectProp } from './selectors'
-import PropTypes from 'prop-types'
 
 /**
  * @module MathInputLHS defines a connected version of MathInput for left-hand-
  * side expressions.
  */
 
-class MathInputLHS extends PureComponent {
+export type Props = {
+  parentId: string,
+  type: string,
+  onValidatedTextChange: typeof setPropertyAndError,
+  onValidatorAndErrorChange: typeof setError
+}
 
-  static propTypes = {
-    // id of parent MathObject
-    'parentId': PropTypes.string.isRequired,
-    'type': PropTypes.string.isRequired,
-    'onValidatedTextChange': PropTypes.func.isRequired,
-    'onValidatorAndErrorChange': PropTypes.func.isRequired
-  }
+class MathInputLHS extends PureComponent<Props> {
 
   static style = { flex: 0 }
 
@@ -38,7 +38,9 @@ class MathInputLHS extends PureComponent {
 
   constructor(props) {
     super(props)
+    // $FlowFixMe
     this.onValidatedTextChange = this.onValidatedTextChange.bind(this)
+    // $FlowFixMe
     this.onValidatorAndErrorChange = this.onValidatorAndErrorChange.bind(this)
   }
 
@@ -48,8 +50,8 @@ class MathInputLHS extends PureComponent {
   }
 
   onValidatorAndErrorChange(prop, error) {
-    const { parentId, type } = this.props
-    this.props.onValidatorAndErrorChange(parentId, type, prop, error)
+    const { parentId } = this.props
+    this.props.onValidatorAndErrorChange(parentId, prop, error)
   }
 
   render() {

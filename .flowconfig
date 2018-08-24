@@ -11,5 +11,7 @@
 module.name_mapper='^utils/\([-a-zA-Z0-9$_/]+\)$' -> '<PROJECT_ROOT>/src/utils/\1'
 module.name_mapper='^services/\([-a-zA-Z0-9$_/]+\)$' -> '<PROJECT_ROOT>/src/services/\1'
 module.name_mapper='^containers/\([-a-zA-Z0-9$_/]+\)$' -> '<PROJECT_ROOT>/src/containers/\1'
+module.name_mapper='^components/\([-a-zA-Z0-9$_/]+\)$' -> '<PROJECT_ROOT>/src/components/\1'
+module.name_mapper='^constants/\([-a-zA-Z0-9$_/]+\)$' -> '<PROJECT_ROOT>/src/constants/\1'
 
 [strict]

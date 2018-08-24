@@ -34,7 +34,13 @@ export function setPropertyAndError(id: string, name: string, property: string, 
   ], 'SET_PROPERTY_AND_ERROR')
 }
 
-export function createMathObject(id: string, name: string, parentFolderId: string, positionInFolder: number, settings: any) {
+export function createMathObject(
+  id: string,
+  name: string,
+  parentFolderId: string,
+  positionInFolder: number,
+  settings: ?Object = {}
+) {
   return {
     type: CREATE_MATH_OBJECT,
     name,
