@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import MathBox, { Grid, Cartesian } from 'components/MathBox'
+import { MathBox, Grid, Cartesian } from 'components/MathBox'
 import { MathScopeConsumer } from 'containers/MathScopeContext'
 import MathObjects from 'containers/MathObjects'
 import PropTypes from 'prop-types'
@@ -40,7 +40,6 @@ export default class MathBoxScene extends PureComponent {
       }
 
     }, { ...data } )
-
     return evaluated
   }
 
