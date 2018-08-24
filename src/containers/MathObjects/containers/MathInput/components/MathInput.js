@@ -152,6 +152,9 @@ export default class MathInput extends PureComponent {
       const errorData = this.validateSelf(latex)
       const changed = errorData.errorMsg !== this.props.errorMsg
       if (changed) {
+        console.log(`${latex}=${validateAgainst.latexRHS}`)
+        console.log(validateAgainst.usedNames)
+        console.log(errorData)
         this.props.onValidatorAndErrorChange(field, errorData)
         this.handleErrorPersistence(errorData.errorMsg)
       }

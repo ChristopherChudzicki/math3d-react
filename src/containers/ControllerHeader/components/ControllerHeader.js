@@ -60,7 +60,6 @@ export default class ControllerHeader extends PureComponent<Props> {
       ? this.props.newFolderIndex
       : this.props.newItemIndex
 
-    console.log(key)
     this.props.createMathObject(id, key, parentFolderId, positionInFolder)
 
     if (key !== FOLDER) {
