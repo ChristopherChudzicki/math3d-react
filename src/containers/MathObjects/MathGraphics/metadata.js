@@ -11,8 +11,8 @@ function genDescription(defaultDescription: string) {
 
 const universal: MetaData = {
   color: {
-    inputType: 'boolean',
-    defaultValue: true,
+    inputType: 'text',
+    defaultValue: '#3090FF',
     isPrimary: true
   },
   visible: {

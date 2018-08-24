@@ -1,7 +1,7 @@
 // @flow
 import type { MetaData } from './types'
 import { capitalize } from 'utils/helpers'
-import type { MathObjectWrapper } from '../MathObject'
+import type { MathObjectWrapper, Settings } from '../MathObject'
 
 /**
  * Contains metadata about MathGraphic and coerces it into a form consumable
@@ -10,7 +10,7 @@ import type { MathObjectWrapper } from '../MathObject'
 export default class MathGraphic implements MathObjectWrapper {
 
   type: string
-  defaultSettings: { [property: string]: any }
+  defaultSettings: Settings
   uiComponent: Function
   mathboxComponent: Function
   computedProps: Array<string>
@@ -34,7 +34,7 @@ export default class MathGraphic implements MathObjectWrapper {
   static getDefaultSettings(type: string, metadata: MetaData, description: ?string) {
     const initial = { type, description: description || capitalize(type) }
     return Object.keys(metadata).reduce((acc, property) => {
-      acc[property] = metadata[property]
+      acc[property] = metadata[property].defaultValue
       return acc
     }, initial)
   }

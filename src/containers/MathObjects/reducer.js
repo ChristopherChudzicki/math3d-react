@@ -7,9 +7,11 @@ import {
   CREATE_MATH_OBJECT,
   DELETE_MATH_OBJECT
 } from './actions'
-import Folder from './Folder'
-import MathSymbols from './MathSymbols'
-import MathGraphics from './MathGraphics'
+import MathObjects, {
+  Folder,
+  MathSymbols,
+  MathGraphics
+} from './index'
 
 const initialState = {}
 
@@ -28,10 +30,12 @@ export function createReducer(mathObjectNames) {
 
     switch (type) {
 
-      case CREATE_MATH_OBJECT:
+      case CREATE_MATH_OBJECT: {
+        const settings = { ...MathObjects[name].defaultSettings, ...payload.settings }
         return update(state, {
-          $merge: { [payload.id]: { ...payload.settings } }
+          $merge: { [payload.id]: settings }
         } )
+      }
       case DELETE_MATH_OBJECT:
         return update(state, {
           $unset: [ payload.id ]

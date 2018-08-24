@@ -1,8 +1,12 @@
+// @flow
 import React, { PureComponent } from 'react'
 import styled from 'styled-components'
 import { Menu, Dropdown, Button, Icon } from 'antd'
-import PropTypes from 'prop-types'
 import { uniqueId } from 'lodash'
+import typeof {
+  createMathObject as CreateMathObject
+} from 'containers/MathObjects/actions'
+import { FOLDER } from 'containers/MathObjects/Folder/metadata'
 
 const ControllerHeaderContainer = styled.div`
   box-sizing:border-box;
@@ -25,34 +29,41 @@ const GradientDiv = styled.div`
     );
 `
 
-export default class ControllerHeader extends PureComponent {
+type MenuItem = {
+  type: string,
+  description: string
+}
 
-  static propTypes = {
-    height: PropTypes.string.isRequired,
-    targetFolder: PropTypes.string.isRequired,
-    newFolderIndex: PropTypes.number.isRequired,
-    newItemIndex: PropTypes.number.isRequired,
-    setActiveObject: PropTypes.func.isRequired,
-    setContentCollapsed: PropTypes.func.isRequired,
-    createPoint: PropTypes.func.isRequired,
-    createFolder: PropTypes.func.isRequired,
-    createVariable: PropTypes.func.isRequired,
-    createVariableSlider: PropTypes.func.isRequired
-  }
+type Props = {
+  height: string,
+  targetFolder: string,
+  newFolderIndex: number,
+  newItemIndex: number,
+  setActiveObject: (string) => void,
+  setContentCollapsed: (string, bool) => void,
+  menuItems: Array<MenuItem>,
+  createMathObject: CreateMathObject
+}
+
+export default class ControllerHeader extends PureComponent<Props> {
 
   static defaultProps = {
     height: '50px'
   }
 
-  handleMenuClick = ( { key } ) => {
+  handleMenuClick = ( { key } : { key: string } ) => {
     const id = uniqueId()
+    const parentFolderId = key === FOLDER
+      ? 'root'
+      : this.props.targetFolder
+    const positionInFolder = key === FOLDER
+      ? this.props.newFolderIndex
+      : this.props.newItemIndex
 
-    if (key === 'createFolder') {
-      this.props.createFolder(id, this.props.newFolderIndex)
-    }
-    else {
-      const createMathObject = this.props[key]
-      createMathObject(id, this.props.targetFolder, this.props.newItemIndex)
+    console.log(key)
+    this.props.createMathObject(id, key, parentFolderId, positionInFolder)
+
+    if (key !== FOLDER) {
       this.props.setContentCollapsed(this.props.targetFolder, false)
     }
 
@@ -60,14 +71,14 @@ export default class ControllerHeader extends PureComponent {
 
   }
 
+  renderMenuItem = ( { type, description } : MenuItem) => {
+    return <Menu.Item key={type}>{description}</Menu.Item>
+  }
+
   renderMenu = () => {
     return (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key='createPoint'>Point</Menu.Item>
-        <Menu.Item key="createLine">Line</Menu.Item>
-        <Menu.Item key="createFolder">Folder</Menu.Item>
-        <Menu.Item key="createVariable">Variable</Menu.Item>
-        <Menu.Item key="createVariableSlider">Slider</Menu.Item>
+        {this.props.menuItems.map(this.renderMenuItem)}
       </Menu>
     )
   }

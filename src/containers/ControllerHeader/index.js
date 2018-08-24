@@ -1,13 +1,8 @@
+// @flow
 import ControllerHeader from './components/ControllerHeader'
 import { connect } from 'react-redux'
 import { getActiveFolder } from './selectors'
-import {
-  createPoint,
-  createLine,
-  createVariable,
-  createFolder,
-  createVariableSlider
-} from 'containers/MathObjects'
+import { createMathObject } from 'containers/MathObjects/actions'
 import { setActiveObject } from 'containers/MathObjects/services/activeObject/actions'
 import { setContentCollapsed } from 'containers/MathObjects/Folder/actions'
 
@@ -31,11 +26,7 @@ const mapStateToProps = ( { activeObject, sortableTree } ) => {
 }
 
 const mapDispatchToProps = ( {
-  createPoint,
-  createLine,
-  createFolder,
-  createVariable,
-  createVariableSlider,
+  createMathObject,
   setActiveObject,
   setContentCollapsed
 } )

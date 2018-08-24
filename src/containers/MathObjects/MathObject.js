@@ -1,6 +1,6 @@
 // @flow
 
-type Settings = { [property: string]: any }
+export type Settings = { [property: string]: any, description: string }
 
 /**
  * @module MathObject
