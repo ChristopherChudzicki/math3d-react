@@ -3,6 +3,8 @@
 // These types are for a subset of MathJS that math3d uses
 // Not complete! At all!
 
+type Numeric = number | Array<Numeric>
+
 // Parse tree types
 // guided by http://mathjs.org/docs/expressions/expression_trees.html
 // There are more methods/properties, but these are the ones we use.
@@ -81,5 +83,6 @@ export type Math = {
   parse: string => Node,
   type: {
     DenseMatrix: Function
-  }
+  },
+  add: (Numeric, Numeric) => Numeric
 }
