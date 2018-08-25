@@ -1,17 +1,37 @@
+// @flow
 import diff from 'shallow-diff'
-import React, { Component } from 'react'
+import * as React from 'react'
 
-// NOTE: MathBoxComponent is abstract class, the following MUST be implemented:
-// handlers
-// renderNodeNames
-// dataNodeNames
-// mathboxRender
+type MathBoxNode = any
 
-// TODO: Document this ... maybe flow?
+type HandlerNodes = {
+  renderNodes: MathBoxNode,
+  dataNodes: MathBoxNode,
+  mathbox: MathBoxNode
+}
 
-class MathBoxComponent extends Component {
+type Handler = (nodes: HandlerNodes, value: any) => void
 
-  oldProps = {}
+type Props = {
+  [string]: any,
+  children?: React.Node,
+  mathbox?: MathBoxNode, // supplied by parent during render
+  mathboxParent?: MathBoxNode, // supplied by parent during render
+}
+
+interface MathBoxComponent {
+  mathboxRender: (MathBoxNode) => MathBoxNode,
+  dataNodeNames: ?Array<string>,
+  renderNodeNames: ?Array<string>,
+  handlers: {
+    [nodeName: string]: Handler
+  }
+}
+
+class AbstractMBC extends React.Component<Props> {
+
+  mathbox: MathBoxNode // root node
+  mathboxNode: MathBoxNode // node for this component
   oldProps = {}
   diffProps = {
     added: [],
@@ -20,7 +40,7 @@ class MathBoxComponent extends Component {
     updated: []
   }
 
-  shouldComponentUpdate = (nextProps) => {
+  shouldComponentUpdate = (nextProps: Props) => {
     this.oldProps = this.props
     this.diffProps = diff(this.props, nextProps)
     const { added, deleted, updated } = this.diffProps
@@ -28,7 +48,15 @@ class MathBoxComponent extends Component {
   }
 
   componentDidMount = () => {
-    this.mathboxNode = this.mathboxRender(this.props.mathboxParent)
+    if (this.props.mathboxParent) {
+      // $FlowFixMe: this.mathboxRender is abstract
+      this.mathboxNode = this.mathboxRender(this.props.mathboxParent)
+      this.mathbox = this.props.mathbox
+    }
+    else {
+      throw ReferenceError(`${this.constructor.name} called without a 'mathboxParent' property.`)
+    }
+
     this.forceUpdate()
     // render method only updates updated props, need to update all on mount
     this.updateHandledProps(this.props)
@@ -44,7 +72,10 @@ class MathBoxComponent extends Component {
     }
     return React.Children.map(
       this.props.children,
-      child => React.cloneElement(child, { mathboxParent: this.mathboxNode } )
+      child => React.cloneElement(child, {
+        mathboxParent: this.mathboxNode,
+        mathbox: this.mathbox
+      } )
     )
   }
 
@@ -56,12 +87,22 @@ class MathBoxComponent extends Component {
     return null
   }
 
-  updateHandledProps(props) {
+  getNodes(nodeNames: ?Array<string>) {
+    return nodeNames
+      ? this.mathboxNode.select(nodeNames.join(', '))
+      : undefined
+  }
+
+  updateHandledProps(props: Props) {
     const nodes = {
-      dataNodes: this.dataNodeNames && this.mathboxNode.select(this.dataNodeNames),
-      renderNodes: this.renderNodeNames && this.mathboxNode.select(this.renderNodeNames)
+      // $FlowFixMe: this.dataNodeNames is abstract
+      dataNodes: this.getNodes(this.dataNodeNames),
+      // $FlowFixMe: this.renderNodeNames is abstract
+      renderNodes: this.getNodes(this.renderNodeNames),
+      mathbox: this.mathbox
     }
     Object.keys(props).forEach(prop => {
+      // $FlowFixMe: this.handlers is abstract
       const handler = this.handlers[prop]
       if (handler) {
         const value = props[prop]
@@ -102,9 +143,9 @@ const lineLikeHandlers = {
   end: makeSetProperty('end')
 }
 
-export class Cartesian extends MathBoxComponent {
+export class Cartesian extends AbstractMBC implements MathBoxComponent {
 
-  dataNodeNames = 'cartesian'
+  dataNodeNames = ['cartesian']
   renderNodeNames = null
   handlers = {}
 
@@ -118,10 +159,10 @@ export class Cartesian extends MathBoxComponent {
 
 }
 
-export class Grid extends MathBoxComponent {
+export class Grid extends AbstractMBC implements MathBoxComponent {
 
   dataNodeNames = null
-  renderNodeNames = 'grid'
+  renderNodeNames = ['grid']
   handlers = {
     ...universalHandlers
   }
@@ -139,21 +180,21 @@ export class Grid extends MathBoxComponent {
 
 }
 
-export class Point extends MathBoxComponent {
+export class Point extends AbstractMBC implements MathBoxComponent {
 
-  dataNodeNames = 'array'
-  renderNodeNames = 'point'
+  dataNodeNames = ['array']
+  renderNodeNames = ['point']
   handlers = {
     ...universalHandlers,
     size: makeSetProperty('size'),
     coords: this.handleCoords
   }
 
-  handleCoords( { dataNodes, renderNodes }, value) {
+  handleCoords(nodes: HandlerNodes, value: any) {
     const data = (value instanceof Array) && (value[0] instanceof Number)
       ? [value]
       : value
-    dataNodes.set('data', data)
+    nodes.dataNodes.set('data', data)
   }
 
   mathboxRender = (parent) => {
@@ -166,18 +207,18 @@ export class Point extends MathBoxComponent {
 
 }
 
-export class Line extends MathBoxComponent {
+export class Line extends AbstractMBC implements MathBoxComponent {
 
-  dataNodeNames = 'array'
-  renderNodeNames = 'line'
+  dataNodeNames = ['array']
+  renderNodeNames = ['line']
   handlers = {
     ...universalHandlers,
     ...lineLikeHandlers,
     coords: this.handleCoords
   }
 
-  handleCoords( { dataNodes, renderNodes }, value) {
-    dataNodes.set('data', value)
+  handleCoords(nodes: HandlerNodes, value: any) {
+    nodes.dataNodes.set('data', value)
   }
 
   mathboxRender = (parent) => {

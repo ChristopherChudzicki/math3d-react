@@ -17,7 +17,10 @@ export class MathBox extends PureComponent {
     }
     return React.Children.map(
       this.props.children,
-      child => React.cloneElement(child, { mathboxParent: this.mathboxNode } )
+      child => React.cloneElement(child, {
+        mathboxParent: this.mathboxNode,
+        mathbox: this.mathboxNode
+      } )
     )
   }
 
