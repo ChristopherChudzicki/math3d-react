@@ -3,15 +3,28 @@ import typeof { Component, PureComponent } from 'react'
 import type { Node } from 'react'
 
 export type InputType = 'math' | 'boolean' | 'text'
+type InputTypeData =
+  | {
+      inputType: 'math',
+      defaultValue: string,
+      generateRandomValue?: () => string
+    }
+  | {
+      inputType: 'boolean',
+      defaultValue: bool,
+      generateRandomValue?: () => bool
+    }
+  | {
+      inputType: 'text',
+      defaultValue: string,
+      generateRandomValue?: () => string
+    }
 
 export type MetaData = {
-  [property: string]: {|
-    inputType: InputType,
+  [property: string]: InputTypeData & {
     label?: string,
     isPrimary?: boolean,
-    defaultValue: any,
-    generateRandomValue?: () => any
-  |}
+  }
 }
 
 type FunctionalComponent = ( { [prop: string]: any } ) => Node

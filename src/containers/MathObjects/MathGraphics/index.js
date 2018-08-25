@@ -2,6 +2,7 @@
 import type MathGraphic from './MathGraphic'
 import Point from './Point'
 import Line from './Line'
+import Vector from './Vector'
 
 function makeExports(mathGraphics: Array<MathGraphic>) {
   return mathGraphics.reduce((acc, obj) => {
@@ -12,5 +13,6 @@ function makeExports(mathGraphics: Array<MathGraphic>) {
 
 export default makeExports( [
   Point,
-  Line
+  Line,
+  Vector
 ] )

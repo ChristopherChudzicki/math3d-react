@@ -22,22 +22,22 @@ const universal: MetaData = {
   },
   opacity: {
     inputType: 'math',
-    defaultValue: 1
+    defaultValue: '1'
   },
   zIndex: {
     inputType: 'math',
-    defaultValue: null
+    defaultValue: '0'
   },
   zBias: {
     inputType: 'math',
-    defaultValue: null
+    defaultValue: '0'
   }
 }
 
 const labeled: MetaData = {
   label: {
     inputType: 'text',
-    defaultValue: null
+    defaultValue: ''
   },
   labelVisible: {
     inputType: 'boolean',
@@ -45,14 +45,33 @@ const labeled: MetaData = {
   }
 }
 
+const pointSpecific: MetaData = {
+  description: genDescription('Point'),
+  coords: {
+    inputType: 'math',
+    defaultValue: '\\left[0,0,0\\right]',
+    isPrimary: true
+  },
+  size: {
+    inputType: 'math',
+    defaultValue: '16'
+  }
+}
+
+export const pointMeta: MetaData = {
+  ...universal,
+  ...labeled,
+  ...pointSpecific
+}
+
 const lineLike: MetaData = {
   size: {
     inputType: 'math',
-    defaultValue: 16
+    defaultValue: '16'
   },
   width: {
     inputType: 'math',
-    defaultValue: 4
+    defaultValue: '4'
   },
   start: {
     inputType: 'boolean',
@@ -80,21 +99,25 @@ export const lineMeta: MetaData = {
   ...lineSpecific
 }
 
-const pointSpecific: MetaData = {
-  description: genDescription('Point'),
-  coords: {
+const vectorSpecific: MetaData = {
+  components: {
     inputType: 'math',
-    defaultValue: '\\left[0,0,0\\right]',
+    defaultValue: '\\left[3,2,1\\right]',
     isPrimary: true
   },
-  size: {
+  tail: {
     inputType: 'math',
-    defaultValue: 16
+    defaultValue: '\\left[0,0,0\\right]'
+  },
+  end: {
+    inputType: 'boolean',
+    defaultValue: true
   }
 }
 
-export const pointMeta: MetaData = {
+export const vectorMeta: MetaData = {
   ...universal,
   ...labeled,
-  ...pointSpecific
+  ...lineLike,
+  ...vectorSpecific
 }

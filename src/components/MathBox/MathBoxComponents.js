@@ -1,6 +1,7 @@
 // @flow
 import diff from 'shallow-diff'
 import * as React from 'react'
+import math from 'utils/mathjs'
 
 type MathBoxNode = any
 
@@ -10,13 +11,17 @@ type HandlerNodes = {
   mathbox: MathBoxNode
 }
 
-type Handler = (nodes: HandlerNodes, value: any) => void
+type Handler = (nodes: HandlerNodes, handledProps: any) => void
 
-type Props = {
+type HandledProps = {
   [string]: any,
+}
+
+type Props = HandledProps & {
   children?: React.Node,
   mathbox?: MathBoxNode, // supplied by parent during render
   mathboxParent?: MathBoxNode, // supplied by parent during render
+  handleError: (Error) => void
 }
 
 interface MathBoxComponent {
@@ -38,6 +43,10 @@ class AbstractMBC extends React.Component<Props> {
     deleted: [],
     unchanged: [],
     updated: []
+  }
+
+  static defaultProps = {
+    handleError: console.warn
   }
 
   shouldComponentUpdate = (nextProps: Props) => {
@@ -93,7 +102,16 @@ class AbstractMBC extends React.Component<Props> {
       : undefined
   }
 
-  updateHandledProps(props: Props) {
+  getHandledProps() {
+    // $FlowFixMe: this.handlers is abstract
+    return Object.keys(this.handlers)
+      .reduce((acc, propName) => {
+        acc[propName] = this.props[propName]
+        return acc
+      }, {} )
+  }
+
+  updateHandledProps(propsToUpdate: HandledProps) {
     const nodes = {
       // $FlowFixMe: this.dataNodeNames is abstract
       dataNodes: this.getNodes(this.dataNodeNames),
@@ -101,14 +119,19 @@ class AbstractMBC extends React.Component<Props> {
       renderNodes: this.getNodes(this.renderNodeNames),
       mathbox: this.mathbox
     }
-    Object.keys(props).forEach(prop => {
+    const handledProps = this.getHandledProps()
+    Object.keys(propsToUpdate).forEach(prop => {
       // $FlowFixMe: this.handlers is abstract
       const handler = this.handlers[prop]
       if (handler) {
-        const value = props[prop]
-        handler(nodes, value)
+        try {
+          handler(nodes, handledProps)
+        }
+        catch (error) {
+          this.props.handleError(error)
+        }
       }
-    } )
+    }, this)
   }
 
   mathboxUpdate() {
@@ -125,7 +148,7 @@ class AbstractMBC extends React.Component<Props> {
 }
 
 function makeSetProperty(propName) {
-  return ( { renderNodes }, value) => renderNodes.set(propName, value)
+  return ( { renderNodes }, handledProps) => renderNodes.set(propName, handledProps[propName] )
 }
 
 const universalHandlers = {
@@ -190,10 +213,11 @@ export class Point extends AbstractMBC implements MathBoxComponent {
     coords: this.handleCoords
   }
 
-  handleCoords(nodes: HandlerNodes, value: any) {
-    const data = (value instanceof Array) && (value[0] instanceof Number)
-      ? [value]
-      : value
+  handleCoords(nodes: HandlerNodes, handledProps: any) {
+    const coords = handledProps.coords
+    const data = (coords instanceof Array) && (coords[0] instanceof Number)
+      ? [coords]
+      : coords
     nodes.dataNodes.set('data', data)
   }
 
@@ -217,8 +241,35 @@ export class Line extends AbstractMBC implements MathBoxComponent {
     coords: this.handleCoords
   }
 
-  handleCoords(nodes: HandlerNodes, value: any) {
-    nodes.dataNodes.set('data', value)
+  handleCoords(nodes: HandlerNodes, handledProps: any) {
+    nodes.dataNodes.set('data', handledProps.coords)
+  }
+
+  mathboxRender = (parent) => {
+    const node = parent.group()
+    node.array( { items: 1, channels: 3 } )
+      .line()
+
+    return node
+  }
+
+}
+
+export class Vector extends AbstractMBC implements MathBoxComponent {
+
+  dataNodeNames = ['array']
+  renderNodeNames = ['line']
+  handlers = {
+    ...universalHandlers,
+    ...lineLikeHandlers,
+    components: this.handleTailAndComponents,
+    tail: this.handleTailAndComponents
+  }
+
+  handleTailAndComponents(nodes: HandlerNodes, handledProps: any) {
+    const { tail, components } = handledProps
+    const head = math.add(tail, components)
+    nodes.dataNodes.set('data', [tail, head] )
   }
 
   mathboxRender = (parent) => {
