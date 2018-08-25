@@ -12,10 +12,15 @@ const ControllerHeaderContainer = styled.div`
   box-sizing:border-box;
   padding: 8px;
   height: ${props => props.height};
+  display: flex;
+  align-items:center;
+  justify-content:center;
 `
 const NewObjectButton = styled(Button)`
   font-weight: bold;
   &.ant-btn, &.ant-btn:hover, &.ant-btn:focus {
+    padding-left: 30px;
+    padding-right: 30px;
     background-color:rgba(0,0,0,0);
   }
 `
