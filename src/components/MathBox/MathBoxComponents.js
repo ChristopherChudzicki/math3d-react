@@ -94,6 +94,7 @@ class AbstractMBC extends React.Component<Props> {
   }
 
   render() {
+    console.log(this.diffProps.updated)
     if (this.mathboxNode) {
       return this.renderChildren()
     }
@@ -163,6 +164,7 @@ class AbstractMBC extends React.Component<Props> {
       return acc
     }, {} )
     this.updateHandledProps(differing)
+    // console.log(differing)
   }
 
 }

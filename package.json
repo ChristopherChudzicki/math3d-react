@@ -11,6 +11,7 @@
     "lodash": "^4.17.4",
     "mathjs": "^3.18.1",
     "mathquill": "^0.10.1",
+    "memoize-one": "^4.0.0",
     "re-reselect": "^2.1.0",
     "react": "^16.2.0",
     "react-beautiful-dnd": "^5.0.0",

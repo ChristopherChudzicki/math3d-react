@@ -1,6 +1,7 @@
 // @flow
 import math from 'utils/mathjs'
 import type { Node } from 'utils/mathjs/types'
+import memoizeOne from 'memoize-one'
 
 export type PostProcessor = (Node) => void
 export type PreProcessor = (expression: string) => string
@@ -37,7 +38,7 @@ export default class MathExpression {
     this.name = this.tree.name ? this.tree.name : null
     this._postprocess(postprocessors)
 
-    this.eval = this._getEval()
+    this.eval = memoizeOne(this._getEval())
     this.dependencies = this._getDependencies()
   }
 
