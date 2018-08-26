@@ -5,9 +5,10 @@ import { setError } from 'services/errors'
 export { MathScopeConsumer } from './components/MathScopeContext'
 
 // TODO: This updates when it does not need to because of parseErrors
-const mapStateToProps = ( { mathSymbols, sliderValues, parseErrors }, ownProps) => {
-  const { symbols, idsByName } = getParseableSymbols(ownProps.parser, mathSymbols, sliderValues, parseErrors)
+const mapStateToProps = ( { mathSymbols, sliderValues }, ownProps) => {
+  const { symbols, idsByName } = getParseableSymbols(ownProps.parser, mathSymbols, sliderValues)
   const evaluationResult = ownProps.scopeEvaluator.evalScope(symbols)
+  window.evaluationResult = evaluationResult
   return {
     idsByName,
     ...evaluationResult
