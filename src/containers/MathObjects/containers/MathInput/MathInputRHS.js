@@ -4,7 +4,7 @@ import MathInput from './components/MathInput'
 import { connect } from 'react-redux'
 import { setPropertyAndError } from 'containers/MathObjects/actions'
 import { setError } from 'services/errors'
-import { getErrors } from 'services/errors/selectors'
+import { getErrorMsg } from 'services/errors/selectors'
 import { getMathObjectProp } from './selectors'
 import type { Props } from './MathInputLHS'
 
@@ -56,13 +56,13 @@ class MathInputRHS extends PureComponent<Props> {
 
 const mapStateToProps = ( { mathGraphics, mathSymbols, parseErrors, evalErrors, renderErrors }, ownProps) => {
   const { parentId, field } = ownProps
-  const errors = getErrors(parentId, parseErrors, evalErrors, renderErrors)
+  const errorMsg = getErrorMsg(parentId, field, parseErrors, evalErrors, renderErrors)
   return {
     type: getMathObjectProp( [mathGraphics, mathSymbols], parentId, 'type'),
     latex: ownProps.latex
       ? ownProps.latex
       : getMathObjectProp( [mathGraphics, mathSymbols], parentId, field),
-    errorMsg: errors[field]
+    errorMsg: getErrorMsg(parentId, field, parseErrors, evalErrors, renderErrors)
   }
 }
 

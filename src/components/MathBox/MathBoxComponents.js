@@ -2,6 +2,7 @@
 import diff from 'shallow-diff'
 import * as React from 'react'
 import math from 'utils/mathjs'
+import { validateVector, isVector } from './validators'
 
 type MathBoxNode = any
 
@@ -26,7 +27,7 @@ type Props = HandledProps & {
   children?: React.Node,
   mathbox?: MathBoxNode, // supplied by parent during render
   mathboxParent?: MathBoxNode, // supplied by parent during render
-  handleErrors: (ErrorMap) => void
+  handleErrors: (errors: ErrorMap, props: Props, updatedProps: HandledProps) => void
 }
 
 interface MathBoxComponent {
@@ -140,7 +141,7 @@ class AbstractMBC extends React.Component<Props> {
       }
     } )
 
-    this.props.handleErrors(errors, this.props)
+    this.props.handleErrors(errors, this.props, propsToUpdate)
 
   }
 
@@ -232,10 +233,10 @@ export class Point extends AbstractMBC implements MathBoxComponent {
   handlers = {
     ...universalHandlers,
     size: makeSetProperty('size'),
-    coords: this.handleCoords
+    coords: Point.handleCoords
   }
 
-  handleCoords(nodes: HandlerNodes, handledProps: any) {
+  static handleCoords(nodes: HandlerNodes, handledProps: any) {
     const coords = handledProps.coords
     const data = (coords instanceof Array) && (coords[0] instanceof Number)
       ? [coords]
@@ -260,10 +261,10 @@ export class Line extends AbstractMBC implements MathBoxComponent {
   handlers = {
     ...universalHandlers,
     ...lineLikeHandlers,
-    coords: this.handleCoords
+    coords: Line.handleCoords
   }
 
-  handleCoords(nodes: HandlerNodes, handledProps: any) {
+  static handleCoords(nodes: HandlerNodes, handledProps: any) {
     nodes.dataNodes.set('data', handledProps.coords)
   }
 
@@ -284,11 +285,27 @@ export class Vector extends AbstractMBC implements MathBoxComponent {
   handlers = {
     ...universalHandlers,
     ...lineLikeHandlers,
-    components: this.handleTailAndComponents,
-    tail: this.handleTailAndComponents
+    components: Vector.handleComponents,
+    tail: Vector.handleTail
   }
 
-  handleTailAndComponents(nodes: HandlerNodes, handledProps: any) {
+  static handleTail(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { tail, components } = handledProps
+    validateVector(tail, 3)
+    if (isVector(components, 3)) {
+      Vector.updateData(nodes, handledProps)
+    }
+  }
+
+  static handleComponents(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { tail, components } = handledProps
+    validateVector(components, 3)
+    if (isVector(tail, 3)) {
+      Vector.updateData(nodes, handledProps)
+    }
+  }
+
+  static updateData(nodes: HandlerNodes, handledProps: HandledProps) {
     const { tail, components } = handledProps
     const head = math.add(tail, components)
     nodes.dataNodes.set('data', [tail, head] )

@@ -49,7 +49,7 @@ export default class MathBoxScene extends PureComponent {
     return evaluated
   }
 
-  handleRenderErrors(errors, graphicProps) {
+  handleRenderErrors(errors, graphicProps, updatedProps) {
     const id = graphicProps.id
     const setError = this.props.setError
     // dispatch errors
@@ -61,8 +61,9 @@ export default class MathBoxScene extends PureComponent {
     // clear old errors if no longer present
     const oldErrors = this.props.renderErrors
     Object.keys(oldErrors[id] )
-      .filter(prop => !errors[prop] )
-      .forEach(prop => {
+      .filter(prop => updatedProps[prop] ) // make sure the prop was updated
+      .filter(prop => !errors[prop] ) // make sure updated prop does not have error
+      .forEach(prop => { // clear the error
         setError(id, prop, new RenderErrorData())
       } )
   }
