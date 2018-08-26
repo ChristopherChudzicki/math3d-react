@@ -4,7 +4,7 @@ import { MathScopeConsumer } from 'containers/MathScopeContext'
 import MathObjects from 'containers/MathObjects'
 import PropTypes from 'prop-types'
 import { parser } from 'constants/parsing'
-import { EvalErrorData } from 'services/errors'
+import { EvalErrorData, RenderErrorData } from 'services/errors'
 
 export default class MathBoxScene extends PureComponent {
 
@@ -12,7 +12,13 @@ export default class MathBoxScene extends PureComponent {
     order: PropTypes.array.isRequired,
     mathGraphics: PropTypes.object.isRequired,
     evalErrors: PropTypes.object.isRequired,
+    renderErrors: PropTypes.object.isRequired,
     setError: PropTypes.func.isRequired
+  }
+
+  constructor(props) {
+    super(props)
+    this.handleRenderErrors = this.handleRenderErrors.bind(this)
   }
 
   evalData(id, data, scope) {
@@ -43,6 +49,39 @@ export default class MathBoxScene extends PureComponent {
     return evaluated
   }
 
+  handleRenderErrors(errors, graphicProps, updatedProps) {
+    const id = graphicProps.id
+    const setError = this.props.setError
+    // dispatch errors
+    Object.keys(errors)
+      .forEach(prop => {
+        const errorData = new RenderErrorData(errors[prop].message)
+        setError(id, prop, errorData)
+      } )
+    // clear old errors if no longer present
+    const oldErrors = this.props.renderErrors
+    Object.keys(oldErrors[id] )
+      .filter(prop => updatedProps[prop] ) // make sure the prop was updated
+      .filter(prop => !errors[prop] ) // make sure updated prop does not have error
+      .forEach(prop => { // clear the error
+        setError(id, prop, new RenderErrorData())
+      } )
+  }
+
+  // TODO: this causes some unnecessary re-renders when tryEval returns an array
+  // that is double= but not triple=
+  renderGraphic(id, data) {
+    const Graphic = MathObjects[data.type].mathboxComponent
+    return (
+      <Graphic
+        id={id}
+        key={id}
+        {...data}
+        handleErrors={this.handleRenderErrors}
+      />
+    )
+  }
+
   render() {
     const { mathGraphics, setError } = this.props
     return (
@@ -55,7 +94,7 @@ export default class MathBoxScene extends PureComponent {
                 <Grid axes='yz' />
                 {this.props.order.map(id => {
                   const data = this.evalData(id, mathGraphics[id], scope, setError)
-                  return renderGraphic(id, data)
+                  return this.renderGraphic(id, data)
                 } )
                 }
               </Cartesian>
@@ -66,11 +105,4 @@ export default class MathBoxScene extends PureComponent {
     )
   }
 
-}
-
-// TODO: this causes some unnecessary re-renders when tryEval returns an array
-// that is double= but not triple=
-function renderGraphic(id, data) {
-  const Graphic = MathObjects[data.type].mathboxComponent
-  return <Graphic key={id} {...data}/>
 }

@@ -1,5 +1,4 @@
 // @flow
-import type { ErrorData } from 'services/errors'
 import React, { PureComponent } from 'react'
 import MathInput from './components/MathInput'
 import { connect } from 'react-redux'
@@ -11,7 +10,7 @@ import {
   isValidName
 } from './components/validators'
 import { setError } from 'services/errors'
-import { getErrors } from 'services/errors/selectors'
+import { getErrorMsg } from 'services/errors/selectors'
 import { getValidateNameAgainst, getMathObjectProp } from './selectors'
 
 /**
@@ -78,15 +77,14 @@ class MathInputLHS extends PureComponent<Props> {
 
 }
 
-const mapStateToProps = ( { mathSymbols, parseErrors, evalErrors }, ownProps) => {
+const mapStateToProps = ( { mathSymbols, parseErrors, evalErrors, renderErrors }, ownProps) => {
   const { parentId } = ownProps
-  const errors = getErrors(parentId, parseErrors, evalErrors)
   return {
     type: getMathObjectProp( [mathSymbols], parentId, 'type'),
     latex: ownProps.latex
       ? ownProps.latex
       : mathSymbols[parentId].name,
-    errorMsg: errors.name,
+    errorMsg: getErrorMsg(parentId, 'name', parseErrors, evalErrors, renderErrors),
     validateAgainst: getValidateNameAgainst(parser, mathSymbols, parentId)
   }
 }

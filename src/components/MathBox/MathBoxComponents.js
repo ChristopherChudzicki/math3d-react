@@ -2,6 +2,7 @@
 import diff from 'shallow-diff'
 import * as React from 'react'
 import math from 'utils/mathjs'
+import { validateVector, isVector } from './validators'
 
 type MathBoxNode = any
 
@@ -17,11 +18,16 @@ type HandledProps = {
   [string]: any,
 }
 
+type ErrorMap = {
+  [string]: Error
+}
+
 type Props = HandledProps & {
+  id: string,
   children?: React.Node,
   mathbox?: MathBoxNode, // supplied by parent during render
   mathboxParent?: MathBoxNode, // supplied by parent during render
-  handleError: (Error) => void
+  handleErrors: (errors: ErrorMap, props: Props, updatedProps: HandledProps) => void
 }
 
 interface MathBoxComponent {
@@ -46,7 +52,7 @@ class AbstractMBC extends React.Component<Props> {
   }
 
   static defaultProps = {
-    handleError: console.warn
+    handleErrors: AbstractMBC.defaultHandleErrors
   }
 
   shouldComponentUpdate = (nextProps: Props) => {
@@ -89,8 +95,8 @@ class AbstractMBC extends React.Component<Props> {
   }
 
   render() {
+    console.log(this.diffProps.updated)
     if (this.mathboxNode) {
-      this.mathboxUpdate()
       return this.renderChildren()
     }
     return null
@@ -120,6 +126,8 @@ class AbstractMBC extends React.Component<Props> {
       mathbox: this.mathbox
     }
     const handledProps = this.getHandledProps()
+
+    const errors = {}
     Object.keys(propsToUpdate).forEach(prop => {
       // $FlowFixMe: this.handlers is abstract
       const handler = this.handlers[prop]
@@ -128,13 +136,27 @@ class AbstractMBC extends React.Component<Props> {
           handler(nodes, handledProps)
         }
         catch (error) {
-          this.props.handleError(error)
+          errors[prop] = error
         }
       }
-    }, this)
+    } )
+
+    this.props.handleErrors(errors, this.props, propsToUpdate)
+
   }
 
-  mathboxUpdate() {
+  static defaultHandleErrors(errors: ErrorMap) {
+    if (Object.keys(errors).length === 0) {
+      return
+    }
+    console.group('Errors caught while trying to re-render:')
+    Object.keys(errors).forEach(propName => {
+      console.warn(errors[propName] )
+    } )
+    console.groupEnd()
+  }
+
+  componentDidUpdate() {
     const differing = [
       ...this.diffProps.updated,
       ...this.diffProps.added
@@ -143,6 +165,7 @@ class AbstractMBC extends React.Component<Props> {
       return acc
     }, {} )
     this.updateHandledProps(differing)
+    // console.log(differing)
   }
 
 }
@@ -210,10 +233,10 @@ export class Point extends AbstractMBC implements MathBoxComponent {
   handlers = {
     ...universalHandlers,
     size: makeSetProperty('size'),
-    coords: this.handleCoords
+    coords: Point.handleCoords
   }
 
-  handleCoords(nodes: HandlerNodes, handledProps: any) {
+  static handleCoords(nodes: HandlerNodes, handledProps: any) {
     const coords = handledProps.coords
     const data = (coords instanceof Array) && (coords[0] instanceof Number)
       ? [coords]
@@ -238,10 +261,10 @@ export class Line extends AbstractMBC implements MathBoxComponent {
   handlers = {
     ...universalHandlers,
     ...lineLikeHandlers,
-    coords: this.handleCoords
+    coords: Line.handleCoords
   }
 
-  handleCoords(nodes: HandlerNodes, handledProps: any) {
+  static handleCoords(nodes: HandlerNodes, handledProps: any) {
     nodes.dataNodes.set('data', handledProps.coords)
   }
 
@@ -262,11 +285,27 @@ export class Vector extends AbstractMBC implements MathBoxComponent {
   handlers = {
     ...universalHandlers,
     ...lineLikeHandlers,
-    components: this.handleTailAndComponents,
-    tail: this.handleTailAndComponents
+    components: Vector.handleComponents,
+    tail: Vector.handleTail
   }
 
-  handleTailAndComponents(nodes: HandlerNodes, handledProps: any) {
+  static handleTail(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { tail, components } = handledProps
+    validateVector(tail, 3)
+    if (isVector(components, 3)) {
+      Vector.updateData(nodes, handledProps)
+    }
+  }
+
+  static handleComponents(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { tail, components } = handledProps
+    validateVector(components, 3)
+    if (isVector(tail, 3)) {
+      Vector.updateData(nodes, handledProps)
+    }
+  }
+
+  static updateData(nodes: HandlerNodes, handledProps: HandledProps) {
     const { tail, components } = handledProps
     const head = math.add(tail, components)
     nodes.dataNodes.set('data', [tail, head] )

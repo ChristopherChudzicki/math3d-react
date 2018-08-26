@@ -53,6 +53,7 @@ function addPoint(store, folderId) {
   const itemId = `item-${uniqueId()}`
   store.parseErrors[itemId] = {}
   store.evalErrors[itemId] = {}
+  store.renderErrors[itemId] = {}
   store.sortableTree[folderId].push(itemId)
   store.mathGraphics[itemId] = {
     type: POINT,
@@ -73,6 +74,7 @@ function addLine(store, folderId) {
   const itemId = `item-${uniqueId()}`
   store.parseErrors[itemId] = {}
   store.evalErrors[itemId] = {}
+  store.renderErrors[itemId] = {}
   store.sortableTree[folderId].push(itemId)
   store.mathGraphics[itemId] = {
     type: LINE,
@@ -141,6 +143,12 @@ export function makeMockStore() {
       var3: {}
     },
     evalErrors: {
+      var0: {},
+      var1: {},
+      var2: {},
+      var3: {}
+    },
+    renderErrors: {
       var0: {},
       var1: {},
       var2: {},
