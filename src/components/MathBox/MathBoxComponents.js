@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react'
 import math from 'utils/mathjs'
-import { isEqualNumerically, validateVector, isVector } from './helpers'
+import { isEqualNumerically, validateNumeric, validateVector, isVector } from './helpers'
 import diffWithSets from 'utils/shallowDiffWithSets'
 
 type MathBoxNode = any
@@ -176,7 +176,6 @@ class AbstractMBC extends React.Component<Props> {
       return acc
     }, {} )
     this.updateHandledProps(differing)
-    // console.log(differing)
   }
 
 }
@@ -219,12 +218,64 @@ export class Cartesian extends AbstractMBC implements MathBoxComponent {
 export class Axis extends AbstractMBC implements MathBoxComponent {
 
   dataNodeNames = null
-  renderNodeNames = null
+  renderNodeNames = ['axis']
   handlers = {
-    ...universalHandlers
+    ...universalHandlers,
+    min: Axis.handleMin,
+    axis: Axis.handleAxis
+  }
+
+  static handleAxis(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { axis } = handledProps
+    nodes.renderNodes.set('axis', axis)
+  }
+
+  static handleMin(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { min, axis } = handledProps
+    validateNumeric(min)
+    const cartesian = Axis.getCartesian(nodes.renderNodes)
+    Axis.setAxisEnd(cartesian, axis, min, 0)
+  }
+
+  static handleMax(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { max, axis } = handledProps
+    validateNumeric(max)
+    const cartesian = Axis.getCartesian(nodes.renderNodes)
+    Axis.setAxisEnd(cartesian, axis, max, 1)
+  }
+
+  static copyCartesianRange(cartesian: MathBoxNode) {
+    const range = cartesian.props.range // this is a THREE.vec4 object
+    return [
+      [range[0].x, range[0].y],
+      [range[1].x, range[1].y],
+      [range[2].x, range[2].y]
+    ]
+  }
+
+  static axisMap = { 'x': 0, 'y': 1, 'z': 2 }
+  static setAxisEnd(cartesian: MathBoxNode, axis: 'x' | 'y' | 'z', value: number, endIndex: 0 | 1) {
+    const cartesianRange = Axis.copyCartesianRange(cartesian)
+    const axisIndex = Axis.axisMap[axis]
+    cartesianRange[axisIndex][endIndex] = value
+    cartesian.set('range', cartesianRange)
+  }
+
+  static getCartesian(axisNode: MathBoxNode) {
+    let currentNode = axisNode[0]
+    while (currentNode.type !== 'cartesian') {
+      currentNode = currentNode.parent
+      if (currentNode.type === 'root') {
+        throw Error("Node type 'axis' should have 'cartesian' as an ancestor.")
+      }
+    }
+    return currentNode
   }
 
   mathboxRender = (parent) => {
+    const node = parent.group()
+    node.axis()
+    return node
   }
 
 }
