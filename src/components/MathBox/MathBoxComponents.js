@@ -222,6 +222,7 @@ export class Axis extends AbstractMBC implements MathBoxComponent {
   handlers = {
     ...universalHandlers,
     min: Axis.handleMin,
+    max: Axis.handleMax,
     axis: Axis.handleAxis
   }
 
