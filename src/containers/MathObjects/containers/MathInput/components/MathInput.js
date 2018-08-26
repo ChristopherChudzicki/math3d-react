@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import { parser } from 'constants/parsing'
 import PropTypes from 'prop-types'
-import { MathQuillLarge } from './MathQuillStyled'
+import { MathQuillStyled } from './MathQuillStyled'
 import { isAssignmentRHS } from './validators'
 import styled from 'styled-components'
 import { timeout } from 'utils/functions'
@@ -184,7 +184,7 @@ export default class MathInput extends PureComponent {
           placement='topLeft'
           onVisibleChange={this.handleVisibleChange}
         />
-        <MathQuillLarge
+        <MathQuillStyled
           onFocus={this.onFocus}
           onBlur={this.onBlur}
           style={this.props.style}

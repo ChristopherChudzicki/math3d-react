@@ -29,7 +29,7 @@ const alignmentStyling = css`
   padding:2px;
 `
 
-export const MathQuillLarge = styled(MathQuill)`
+export const MathQuillStyled = styled(MathQuill)`
   &.mq-editable-field.mq-math-mode {
     flex:1;
     max-width: 100%;
@@ -41,7 +41,7 @@ export const MathQuillLarge = styled(MathQuill)`
   }
 `
 
-export const StaticMathLarge = styled(StaticMath)`
+export const StaticMathStyled = styled(StaticMath)`
   &.mq-math-mode {
     max-width: calc(100% - 30px);
     font-size: ${props => props.size === 'small' ? '100%' : '125%'};

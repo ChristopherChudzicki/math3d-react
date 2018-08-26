@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {
   MathInputLHS,
   MathInputRHS,
-  StaticMathLarge
+  StaticMathStyled
 } from 'containers/MathObjects/containers/MathInput'
 
 SliderValueDisplay.propTypes = {
@@ -19,7 +19,7 @@ export default function SliderValueDisplay(props) {
       <MathInputLHS
         parentId={props.parentId}
       />
-      <StaticMathLarge
+      <StaticMathStyled
         latex='='
       />
       <MathInputRHS

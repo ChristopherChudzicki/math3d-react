@@ -2,7 +2,7 @@ import React from 'react'
 import MathInput from './MathInput'
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import { MathQuillLarge } from './MathQuillStyled'
+import { MathQuillStyled } from './MathQuillStyled'
 import { Tooltip } from 'antd'
 import { timeout } from 'utils/functions'
 import { ParseErrorData } from 'services/errors'
@@ -44,9 +44,9 @@ const shallowMathInput = (props = {} ) => shallow(
 
 describe('What MathInput renders', () => {
 
-  it('should render one <MathQuillLarge /> component', () => {
+  it('should render one <MathQuillStyled /> component', () => {
     const wrapper = shallowMathInput()
-    expect(wrapper.find(MathQuillLarge)).toHaveLength(1)
+    expect(wrapper.find(MathQuillStyled)).toHaveLength(1)
   } )
 
   it('should render one <Tooltip /> component', () => {
@@ -156,7 +156,7 @@ describe("MathInput's basic focus and blur", () => {
   it('should pass onFocus to MathQuill', () => {
     const wrapper = shallowMathInput()
     expect(
-      wrapper.find(MathQuillLarge).props().onFocus
+      wrapper.find(MathQuillStyled).props().onFocus
     ).toBe(
       wrapper.instance().onFocus
     )
@@ -165,7 +165,7 @@ describe("MathInput's basic focus and blur", () => {
   it('should pass onBlur to MathQuill', () => {
     const wrapper = shallowMathInput()
     expect(
-      wrapper.find(MathQuillLarge).props().onBlur
+      wrapper.find(MathQuillStyled).props().onBlur
     ).toBe(
       wrapper.instance().onBlur
     )

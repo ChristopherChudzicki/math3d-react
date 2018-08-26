@@ -90,7 +90,7 @@ export default class MathBoxScene extends PureComponent {
           return (
             <MathBox mathbox={window.mathbox}>
               <Cartesian>
-                <Grid axes='xy' />
+                {/* <Grid axes='xy' /> */}
                 <Grid axes='yz' />
                 {this.props.order.map(id => {
                   const data = this.evalData(id, mathGraphics[id], scope)

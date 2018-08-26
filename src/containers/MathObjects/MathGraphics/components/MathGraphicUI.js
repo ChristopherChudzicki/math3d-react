@@ -5,7 +5,7 @@ import { StatusSymbol, MainRow } from 'containers/MathObjects/components'
 import Settings from 'containers/MathObjects/containers/Settings'
 import typeof {
   toggleProperty,
-  setProperty,
+  setProperty
 } from 'containers/MathObjects/actions'
 import { capitalize } from 'utils/helpers'
 import type { MetaData } from '../types'
@@ -21,7 +21,7 @@ type Props = {
   children: React.Node,
   metadata: MetaData,
   settingsTitle?: string,
-  mainField: string
+  mainField?: string
 }
 
 function getSettingsFormSpec(metadata: MetaData) {
@@ -72,17 +72,23 @@ export default class MathGraphicUI extends React.PureComponent<Props> {
         }
       >
         <MainRow>
-          <MathInputRHS
-            field={this.props.mainField}
-            parentId={this.props.id}
-          />
+          {
+            this.props.mainField
+              ? (
+                <MathInputRHS
+                  field={this.props.mainField}
+                  parentId={this.props.id}
+                />
+              )
+              : this.props.children
+          }
           <Settings
             title={settingsTitle}
             parentId={this.props.id}
             settingsList={getSettingsFormSpec(this.props.metadata)}
           />
         </MainRow>
-        {this.props.children}
+        {this.props.mainField && this.props.children}
       </MathObjectUI>
     )
   }
