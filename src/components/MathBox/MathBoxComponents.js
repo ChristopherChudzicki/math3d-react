@@ -107,7 +107,6 @@ class AbstractMBC extends React.Component<Props> {
   }
 
   render() {
-    console.log(this.diffProps.updated)
     if (this.mathboxNode) {
       return this.renderChildren()
     }
