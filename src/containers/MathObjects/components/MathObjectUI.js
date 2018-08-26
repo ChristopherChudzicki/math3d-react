@@ -22,7 +22,10 @@ const OuterContainer = styled.span`
   ${props => props.isDeleting && css`
     transform: scale(0);
     transform-origin: top left;
-  `}
+  `};
+  ${props => !props.isActive && css`
+    overflow-x: hidden;
+  `};
   /*
   Note:
   - above, margin-bottom: -1px prevents double-thick borders between (Folders
@@ -68,7 +71,7 @@ const MainContainer = styled.div`
   flex-direction:column;
   width: calc(100% - ${SIDEPANEL_WIDTH});
   padding-top: 8px;
-  padding-bottom: ${props => props.isFolder ? '4px' : '8px'};
+  padding-bottom: 8px;
   padding-left: 6px;
   padding-right: 6px;
 `

@@ -10,6 +10,7 @@ import typeof {
 import { capitalize } from 'utils/helpers'
 import type { MetaData } from '../types'
 import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
+import styled from 'styled-components'
 
 type Props = {
   id: string,
@@ -21,7 +22,8 @@ type Props = {
   children: React.Node,
   metadata: MetaData,
   settingsTitle?: string,
-  mainField?: string
+  mainField?: string,
+  isActive: bool
 }
 
 function getSettingsFormSpec(metadata: MetaData) {
@@ -33,6 +35,13 @@ function getSettingsFormSpec(metadata: MetaData) {
       return { property, inputType, label }
     } )
 }
+
+const LeftOfSettings = styled(MainRow)`
+  /* guarantee that settings has room to display */
+  max-width: calc(100% - 30px);
+  overflow-x: ${props => props.showOverflow ? 'visible' : 'hidden'};
+  flex: 1;
+`
 
 export default class MathGraphicUI extends React.PureComponent<Props> {
 
@@ -72,16 +81,18 @@ export default class MathGraphicUI extends React.PureComponent<Props> {
         }
       >
         <MainRow>
-          {
-            this.props.mainField
-              ? (
-                <MathInputRHS
-                  field={this.props.mainField}
-                  parentId={this.props.id}
-                />
-              )
-              : this.props.children
-          }
+          <LeftOfSettings showOverflow={this.props.isActive}>
+            {
+              this.props.mainField
+                ? (
+                  <MathInputRHS
+                    field={this.props.mainField}
+                    parentId={this.props.id}
+                  />
+                )
+                : this.props.children
+            }
+          </LeftOfSettings>
           <Settings
             title={settingsTitle}
             parentId={this.props.id}
