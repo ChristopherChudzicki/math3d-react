@@ -1,8 +1,8 @@
 // @flow
-import diff from 'shallow-diff'
 import * as React from 'react'
 import math from 'utils/mathjs'
-import { validateVector, isVector } from './validators'
+import { isEqualNumerically, validateVector, isVector } from './helpers'
+import diffWithSets from 'utils/shallowDiffWithSets'
 
 type MathBoxNode = any
 
@@ -44,11 +44,16 @@ class AbstractMBC extends React.Component<Props> {
   mathbox: MathBoxNode // root node
   mathboxNode: MathBoxNode // node for this component
   oldProps = {}
-  diffProps = {
-    added: [],
-    deleted: [],
-    unchanged: [],
-    updated: []
+  diffProps : {
+    added: Set<string>,
+    deleted: Set<string>,
+    unchanged: Set<string>,
+    updated: Set<string>
+  } = {
+    added: new Set(),
+    deleted: new Set(),
+    unchanged: new Set(),
+    updated: new Set()
   }
 
   static defaultProps = {
@@ -57,9 +62,16 @@ class AbstractMBC extends React.Component<Props> {
 
   shouldComponentUpdate = (nextProps: Props) => {
     this.oldProps = this.props
-    this.diffProps = diff(this.props, nextProps)
-    const { added, deleted, updated } = this.diffProps
-    return updated.length !== 0 || added.length !== 0 || deleted.length !== 0
+    this.diffProps = diffWithSets(this.props, nextProps)
+    const { added, deleted, updated, unchanged } = this.diffProps
+    for (const prop of updated) {
+      if (isEqualNumerically(this.oldProps[prop], nextProps[prop] )) {
+        updated.delete(prop)
+        unchanged.add(prop)
+      }
+    }
+
+    return updated.size !== 0 || added.size !== 0 || deleted.size !== 0
   }
 
   componentDidMount = () => {

@@ -1,4 +1,15 @@
 // @flow
+export function isEqualNumerically(obj1: mixed, obj2: mixed): bool {
+  if (obj1 === obj2) { return true }
+  if (!(obj1 instanceof Array && obj2 instanceof Array)) { return false }
+  if (obj1.length !== obj2.length) { return false }
+
+  // Both objects are arrays of the same length
+  return (obj1: any).every((element, index) => {
+    return isEqualNumerically(element, (obj2: any)[index] )
+  } )
+
+}
 
 export function isNumeric(value: mixed) {
   return typeof value === 'number'
