@@ -83,7 +83,7 @@ export default class MathBoxScene extends PureComponent {
   }
 
   render() {
-    const { mathGraphics, setError } = this.props
+    const { mathGraphics } = this.props
     return (
       <MathScopeConsumer>
         {( { scope, scopeDiff } ) => {
@@ -93,7 +93,7 @@ export default class MathBoxScene extends PureComponent {
                 <Grid axes='xy' />
                 <Grid axes='yz' />
                 {this.props.order.map(id => {
-                  const data = this.evalData(id, mathGraphics[id], scope, setError)
+                  const data = this.evalData(id, mathGraphics[id], scope)
                   return this.renderGraphic(id, data)
                 } )
                 }
