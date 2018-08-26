@@ -8,7 +8,6 @@ export { MathScopeConsumer } from './components/MathScopeContext'
 const mapStateToProps = ( { mathSymbols, sliderValues }, ownProps) => {
   const { symbols, idsByName } = getParseableSymbols(ownProps.parser, mathSymbols, sliderValues)
   const evaluationResult = ownProps.scopeEvaluator.evalScope(symbols)
-  window.evaluationResult = evaluationResult
   return {
     idsByName,
     ...evaluationResult
