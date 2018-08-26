@@ -78,9 +78,9 @@ class MathInputLHS extends PureComponent<Props> {
 
 }
 
-const mapStateToProps = ( { mathSymbols, parseErrors, evalErrors }, ownProps) => {
+const mapStateToProps = ( { mathSymbols, parseErrors, evalErrors, renderErrors }, ownProps) => {
   const { parentId } = ownProps
-  const errors = getErrors(parentId, parseErrors, evalErrors)
+  const errors = getErrors(parentId, parseErrors, evalErrors, renderErrors)
   return {
     type: getMathObjectProp( [mathSymbols], parentId, 'type'),
     latex: ownProps.latex

@@ -17,11 +17,16 @@ type HandledProps = {
   [string]: any,
 }
 
+type ErrorMap = {
+  [string]: Error
+}
+
 type Props = HandledProps & {
+  id: string,
   children?: React.Node,
   mathbox?: MathBoxNode, // supplied by parent during render
   mathboxParent?: MathBoxNode, // supplied by parent during render
-  handleError: (Error) => void
+  handleErrors: (ErrorMap) => void
 }
 
 interface MathBoxComponent {
@@ -46,7 +51,7 @@ class AbstractMBC extends React.Component<Props> {
   }
 
   static defaultProps = {
-    handleError: console.warn
+    handleErrors: AbstractMBC.defaultHandleErrors
   }
 
   shouldComponentUpdate = (nextProps: Props) => {
@@ -90,7 +95,6 @@ class AbstractMBC extends React.Component<Props> {
 
   render() {
     if (this.mathboxNode) {
-      this.mathboxUpdate()
       return this.renderChildren()
     }
     return null
@@ -120,6 +124,8 @@ class AbstractMBC extends React.Component<Props> {
       mathbox: this.mathbox
     }
     const handledProps = this.getHandledProps()
+
+    const errors = {}
     Object.keys(propsToUpdate).forEach(prop => {
       // $FlowFixMe: this.handlers is abstract
       const handler = this.handlers[prop]
@@ -128,13 +134,27 @@ class AbstractMBC extends React.Component<Props> {
           handler(nodes, handledProps)
         }
         catch (error) {
-          this.props.handleError(error)
+          errors[prop] = error
         }
       }
-    }, this)
+    } )
+
+    this.props.handleErrors(errors, this.props)
+
   }
 
-  mathboxUpdate() {
+  static defaultHandleErrors(errors: ErrorMap) {
+    if (Object.keys(errors).length === 0) {
+      return
+    }
+    console.group('Errors caught while trying to re-render:')
+    Object.keys(errors).forEach(propName => {
+      console.warn(errors[propName] )
+    } )
+    console.groupEnd()
+  }
+
+  componentDidUpdate() {
     const differing = [
       ...this.diffProps.updated,
       ...this.diffProps.added
