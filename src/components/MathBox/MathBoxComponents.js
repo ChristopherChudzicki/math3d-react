@@ -216,6 +216,19 @@ export class Cartesian extends AbstractMBC implements MathBoxComponent {
 
 }
 
+export class Axis extends AbstractMBC implements MathBoxComponent {
+
+  dataNodeNames = null
+  renderNodeNames = null
+  handlers = {
+    ...universalHandlers
+  }
+
+  mathboxRender = (parent) => {
+  }
+
+}
+
 export class Grid extends AbstractMBC implements MathBoxComponent {
 
   dataNodeNames = null

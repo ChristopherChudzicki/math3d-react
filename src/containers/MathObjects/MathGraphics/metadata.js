@@ -45,6 +45,32 @@ const labeled: MetaData = {
   }
 }
 
+// ---------- Point ---------- //
+const axisSpecific: MetaData = {
+  min: {
+    inputType: 'math',
+    defaultValue: '-5',
+    isPrimary: true
+  },
+  max: {
+    inputType: 'math',
+    defaultValue: '+5',
+    isPrimary: true
+  },
+  axis: {
+    inputType: 'text',
+    defaultValue: 'x',
+    isPrimary: true
+  }
+}
+
+export const axisMeta: MetaData = {
+  ...universal,
+  ...labeled,
+  ...axisSpecific
+}
+
+// ---------- Point ---------- //
 const pointSpecific: MetaData = {
   description: genDescription('Point'),
   coords: {
@@ -64,6 +90,7 @@ export const pointMeta: MetaData = {
   ...pointSpecific
 }
 
+// ---------- Line ---------- //
 const lineLike: MetaData = {
   size: {
     inputType: 'math',
@@ -99,6 +126,7 @@ export const lineMeta: MetaData = {
   ...lineSpecific
 }
 
+// ---------- Vector ---------- //
 const vectorSpecific: MetaData = {
   components: {
     inputType: 'math',

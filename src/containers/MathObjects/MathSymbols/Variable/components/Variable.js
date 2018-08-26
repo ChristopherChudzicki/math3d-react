@@ -5,7 +5,7 @@ import { MainRow } from 'containers/MathObjects/components'
 import {
   MathInputLHS,
   MathInputRHS,
-  StaticMathLarge
+  StaticMathStyled
 } from 'containers/MathObjects/containers/MathInput'
 import { VARIABLE } from '../metadata'
 
@@ -25,7 +25,7 @@ export default class Variable extends PureComponent {
           <MathInputLHS
             parentId={this.props.id}
           />
-          <StaticMathLarge
+          <StaticMathStyled
             latex='='
           />
           <MathInputRHS
