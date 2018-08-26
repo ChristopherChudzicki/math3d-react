@@ -56,7 +56,6 @@ class MathInputRHS extends PureComponent<Props> {
 
 const mapStateToProps = ( { mathGraphics, mathSymbols, parseErrors, evalErrors, renderErrors }, ownProps) => {
   const { parentId, field } = ownProps
-  const errorMsg = getErrorMsg(parentId, field, parseErrors, evalErrors, renderErrors)
   return {
     type: getMathObjectProp( [mathGraphics, mathSymbols], parentId, 'type'),
     latex: ownProps.latex
