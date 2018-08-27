@@ -6,13 +6,22 @@ import { enableBatching } from 'redux-batched-actions'
 
 import { makeMockStore } from './mockData'
 
-// const initialState = {}
-const initialState = makeMockStore()
+const initialState = {
+  sortableTree: {
+    root: ['axes'],
+    axes: []
+  },
+  folders: {
+    'axes': {
+      description: 'Axes and Grids',
+      isCollapsed: false
+    }
+  }
+}
+// const initialState = makeMockStore()
 
 const enhancers = []
-const middleware = [
-  thunk
-]
+const middleware = [thunk]
 
 if (process.env.NODE_ENV === 'development') {
   const devToolsExtension = window.devToolsExtension
@@ -37,4 +46,5 @@ const store = createStore(
   composedEnhancers
 )
 
+window.store = store
 export default store

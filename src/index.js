@@ -12,6 +12,9 @@ import { scopeEvaluator, parser } from './constants/parsing'
 import theme from './constants/theme'
 import { ThemeProvider } from 'styled-components'
 
+// run all the code in mockState
+import './mockState'
+
 const target = document.querySelector('#root')
 
 render(

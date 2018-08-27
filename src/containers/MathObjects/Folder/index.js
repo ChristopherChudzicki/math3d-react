@@ -21,3 +21,4 @@ export default new MathFolder( {
   defaultSettings: defaultSettings,
   uiComponent: connect(mapStateToProps, mapDispatchToProps)(Folder)
 } )
+export { FOLDER }

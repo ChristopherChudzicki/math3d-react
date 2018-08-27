@@ -18,3 +18,8 @@ export default makeExports( [
   Line,
   Vector
 ] )
+
+export { AXIS } from './Axis'
+export { POINT } from './Point'
+export { LINE } from './Line'
+export { VECTOR } from './Vector'
