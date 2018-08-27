@@ -1,26 +1,37 @@
+// @flow
+import type { Scope } from 'utils/mathParsing/MathExpression'
+import typeof { setError as SetError } from 'services/errors'
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import MathObjectUI from 'containers/MathObjects/MathObjectUI'
 import {
   MainRow
 } from 'containers/MathObjects/components'
 import { VARIABLE_SLIDER } from '../metadata'
 import SliderValueDisplay from './SliderValueDisplay'
-import SliderWithLimits from './SliderWithLimits'
+import EvaluatedSlider from './EvaluatedSlider'
 import AnimationControls from './AnimationControls'
+import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
+import { MathScopeConsumer } from 'containers/MathScopeContext'
+import { parser } from 'constants/parsing'
 
-export default class VariableSlider extends PureComponent {
+const limitStyle = { flex: 0 }
 
-  static propTypes = {
-    id: PropTypes.string.isRequired,
-    isAnimating: PropTypes.bool.isRequired,
-    fps: PropTypes.number.isRequired,
-    baseAnimationDuration: PropTypes.number.isRequired,
-    animationMultiplier: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-    valueText: PropTypes.string, // latex
-    setSliderValue: PropTypes.func.isRequired
-  }
+type Props = {
+  id: string,
+  isAnimating: bool,
+  fps: number,
+  baseAnimationDuration: number,
+  animationMultiplier: number,
+  value: number,
+  manualValue?: string, // entered in MathQuill by user
+  min: string,
+  max: string,
+  setSliderValue: (id: string, value: number, previousValueIsManual: bool) => void,
+  evalErrors: {},
+  setError: SetError
+}
+
+export default class VariableSlider extends PureComponent<Props> {
 
   static defaultProps = {
     isAnimating: false,
@@ -29,23 +40,27 @@ export default class VariableSlider extends PureComponent {
     animationMultiplier: 1
   }
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
+    // $FlowFixMe
     this.onSliderChange = this.onSliderChange.bind(this)
+    // $FlowFixMe
+    this.renderSlider = this.renderSlider.bind(this)
   }
 
-  onSliderChange(value) {
-    const type = VARIABLE_SLIDER
-    const { id, valueText } = this.props
-    this.props.setSliderValue(id, type, valueText, value)
+  onSliderChange(value: number) {
+    const { id, manualValue } = this.props
+    const previousValueIsManual = manualValue === null
+    this.props.setSliderValue(id, value, previousValueIsManual)
   }
 
   render() {
     const {
       id,
       value,
-      valueText
+      manualValue
     } = this.props
+    const valueText = manualValue || value.toFixed(2)
     return (
       <MathObjectUI
         id={id}
@@ -54,20 +69,44 @@ export default class VariableSlider extends PureComponent {
         <MainRow>
           <SliderValueDisplay
             parentId={id}
-            valueText={valueText === null ? `${value}` : valueText}
+            valueText={valueText}
           />
           <AnimationControls />
         </MainRow>
         <MainRow>
-          <SliderWithLimits
+          <MathInputRHS
             parentId={id}
-            value={this.props.value}
-            minValue={-10}
-            maxValue={10}
-            onSliderChange={this.onSliderChange}
+            style={limitStyle}
+            field='min'
+          />
+          <MathScopeConsumer>
+            {this.renderSlider}
+          </MathScopeConsumer>
+          <MathInputRHS
+            parentId={id}
+            style={limitStyle}
+            field='max'
           />
         </MainRow>
       </MathObjectUI>
+    )
+  }
+
+  renderSlider( { scope }: { scope: Scope } ) {
+    const { manualValue, value } = this.props
+    const valueText = manualValue || value.toFixed(2)
+    return (
+      <EvaluatedSlider
+        parentId={this.props.id}
+        value={valueText}
+        min={this.props.min}
+        max={this.props.max}
+        onSliderChange={this.onSliderChange}
+        scope={scope}
+        parser={parser}
+        evalErrors={this.props.evalErrors}
+        setError={this.props.setError}
+      />
     )
   }
 
