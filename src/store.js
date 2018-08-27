@@ -4,8 +4,6 @@ import rootReducer from './reducer.js'
 import thunk from 'redux-thunk'
 import { enableBatching } from 'redux-batched-actions'
 
-import { makeMockStore } from './mockData'
-
 const initialState = {
   sortableTree: {
     root: ['axes'],
@@ -18,7 +16,6 @@ const initialState = {
     }
   }
 }
-// const initialState = makeMockStore()
 
 const enhancers = []
 const middleware = [thunk]
