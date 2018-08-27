@@ -50,7 +50,7 @@ export default class VariableSlider extends PureComponent<Props> {
 
   onSliderChange(value: number) {
     const { id, manualValue } = this.props
-    const previousValueIsManual = manualValue === null
+    const previousValueIsManual = manualValue !== null
     this.props.setSliderValue(id, value, previousValueIsManual)
   }
 
