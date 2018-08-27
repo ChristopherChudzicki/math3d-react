@@ -24,7 +24,7 @@ const OuterContainer = styled.span`
     transform-origin: top left;
   `};
   ${props => !props.isActive && css`
-    overflow-x: hidden;
+    overflow: hidden;
   `};
   /*
   Note:
