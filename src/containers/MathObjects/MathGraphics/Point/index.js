@@ -5,7 +5,7 @@ import MathGraphic from '../MathGraphic'
 import MathGraphicUI from 'containers/MathObjects/MathGraphics/MathGraphicUI'
 import { pointMeta } from '../metadata'
 
-const POINT = 'POINT'
+export const POINT = 'POINT'
 
 type Props = {
   id: string

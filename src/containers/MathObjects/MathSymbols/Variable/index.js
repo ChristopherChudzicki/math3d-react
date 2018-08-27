@@ -8,3 +8,5 @@ export default new MathSymbol( {
   defaultSettings: defaultSettings,
   uiComponent: Variable
 } )
+
+export { VARIABLE }

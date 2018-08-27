@@ -34,3 +34,5 @@ export default new MathSymbol( {
   defaultSettings: defaultSettings,
   uiComponent: connect(mapStateToProps, mapDispatchToProps)(VariableSlider)
 } )
+
+export { VARIABLE_SLIDER }
