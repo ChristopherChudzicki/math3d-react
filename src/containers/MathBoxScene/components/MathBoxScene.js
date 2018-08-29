@@ -1,12 +1,75 @@
+// @flow
+import type {
+  HandledProps as GraphicHandledProps,
+  Props as GraphicProps
+} from 'components/MathBox/MathBoxComponents'
+import type { Scope, Parser, Symbols } from 'utils/mathParsing'
 import React, { PureComponent } from 'react'
 import { MathBox, Grid, Cartesian } from 'components/MathBox'
 import { MathScopeConsumer } from 'containers/MathScopeContext'
-import MathObjects from 'containers/MathObjects'
+import { MathGraphics } from 'containers/MathObjects'
 import PropTypes from 'prop-types'
 import { parser } from 'constants/parsing'
-import { EvalErrorData, RenderErrorData } from 'services/errors'
+import { EvalErrorData, RenderErrorData, setError } from 'services/errors'
+type SetError = typeof setError
 
-export default class MathBoxScene extends PureComponent {
+// TODO extract and test this
+export function evalData(parser: Parser, data: Symbols, scope: Scope) {
+  const initial = { evalErrors: {}, evaluated: {}, parseErrors: {} }
+  return Object.keys(data).reduce((acc, prop) => {
+    try {
+      const parsed = parser.parse(data[prop] )
+      try {
+        acc.evaluated[prop] = parsed.eval(scope)
+        return acc
+      }
+      catch (evalError) {
+        acc.evalErrors[prop] = evalError
+        return acc
+      }
+    }
+    catch (parseError) {
+      acc.parseErrors[prop] = parseError
+      return acc
+    }
+  }, initial)
+}
+
+export function handleEvalErrors(
+  id: string,
+  newErrors: { [propName: string]: Error },
+  existingErrors: { [propName: string]: string },
+  setError: SetError
+) {
+  // Remove old errors
+  Object.keys(existingErrors).forEach((prop) => {
+    if (newErrors[prop]===undefined) {
+      setError(id, prop, new EvalErrorData(null))
+    }
+  } )
+  // Add new Errors
+  Object.keys(newErrors).forEach((prop) => {
+    const { message } = newErrors[prop]
+    setError(id, prop, new EvalErrorData(message))
+  } )
+}
+
+export function filterObject(superObject: Object, keys: Array<string>) {
+  return keys.reduce((acc, key) => {
+    acc[key] = superObject[key]
+    return acc
+  }, {} )
+}
+
+type ErrorState = { [id: string]: { [propName: string]: string } }
+type Props = {
+  order: Array<string>,
+  mathGraphics: { [id: string]: Object },
+  evalErrors: ErrorState,
+  renderErrors: ErrorState,
+  setError: SetError
+}
+export default class MathBoxScene extends PureComponent<Props> {
 
   static propTypes = {
     order: PropTypes.array.isRequired,
@@ -16,40 +79,13 @@ export default class MathBoxScene extends PureComponent {
     setError: PropTypes.func.isRequired
   }
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
+    // $FlowFixMe
     this.handleRenderErrors = this.handleRenderErrors.bind(this)
   }
 
-  evalData(id, data, scope) {
-    const { setError, evalErrors } = this.props
-
-    const computedProps = MathObjects[data.type].computedProps
-    const evaluated = computedProps.reduce((acc, prop) => {
-      try {
-        const parsed = parser.parse(data[prop] )
-        try {
-          acc[prop] = parsed.eval(scope)
-          // clear any old evaluation errors
-          evalErrors[id][prop] && setError(id, prop, new EvalErrorData(null))
-          return acc
-        }
-        catch (evalError) {
-          setError(id, prop, new EvalErrorData(evalError.message))
-          delete acc[prop]
-          return acc
-        }
-      }
-      catch (parseError) {
-        delete acc[prop]
-        return acc
-      }
-
-    }, { ...data } )
-    return evaluated
-  }
-
-  handleRenderErrors(errors, graphicProps, updatedProps) {
+  handleRenderErrors(errors: ErrorState, graphicProps: GraphicProps, updatedProps: GraphicHandledProps) {
     const id = graphicProps.id
     const setError = this.props.setError
     // dispatch errors
@@ -70,8 +106,8 @@ export default class MathBoxScene extends PureComponent {
 
   // TODO: this causes some unnecessary re-renders when tryEval returns an array
   // that is double= but not triple=
-  renderGraphic(id, data) {
-    const Graphic = MathObjects[data.type].mathboxComponent
+  renderGraphic(id: string, data: Object) {
+    const Graphic = MathGraphics[data.type].mathboxComponent
     return (
       <Graphic
         id={id}
@@ -83,18 +119,26 @@ export default class MathBoxScene extends PureComponent {
   }
 
   render() {
-    const { mathGraphics } = this.props
+    const { mathGraphics, evalErrors, setError } = this.props
     return (
       <MathScopeConsumer>
         {( { scope, scopeDiff } ) => {
           return (
             <MathBox mathbox={window.mathbox}>
-              <Cartesian>
+              <Cartesian id='rootCartesian'>
                 {/* <Grid axes='xy' /> */}
-                <Grid axes='yz' />
+                <Grid axes='yz' id='yz' />
                 {this.props.order.map(id => {
-                  const data = this.evalData(id, mathGraphics[id], scope)
-                  return this.renderGraphic(id, data)
+                  const settings = mathGraphics[id]
+                  const existingErrors = evalErrors[id]
+                  const computedProps = MathGraphics[settings.type].computedProps
+                  const toEvaluate = filterObject(settings, computedProps)
+                  const {
+                    evaluated,
+                    evalErrors: newErrors
+                  } = evalData(parser, toEvaluate, scope)
+                  handleEvalErrors(id, newErrors, existingErrors, setError)
+                  return this.renderGraphic(id, { ...settings, ...evaluated } )
                 } )
                 }
               </Cartesian>
