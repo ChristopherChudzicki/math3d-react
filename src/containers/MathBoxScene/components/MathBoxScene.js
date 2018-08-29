@@ -63,7 +63,7 @@ export function handleEvalErrors(
   id: string,
   newErrors: { [propName: string]: Error },
   existingErrors: { [propName: string]: string },
-  setError: typeof SetError
+  setError: SetError
 ) {
   // Remove old errors
   Object.keys(existingErrors).forEach((prop) => {
@@ -105,7 +105,7 @@ type Props = {
   mathGraphics: { [id: string]: Object },
   evalErrors: ErrorState,
   renderErrors: ErrorState,
-  setError: typeof setError
+  setError: SetError
 }
 export default class MathBoxScene extends PureComponent<Props> {
 >>>>>>> refactor evalData
