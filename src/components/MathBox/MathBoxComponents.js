@@ -14,7 +14,7 @@ type HandlerNodes = {
 
 type Handler = (nodes: HandlerNodes, handledProps: any) => void
 
-type HandledProps = {
+export type HandledProps = {
   [string]: any,
 }
 
@@ -22,7 +22,7 @@ type ErrorMap = {
   [string]: Error
 }
 
-type Props = HandledProps & {
+export type Props = HandledProps & {
   id: string,
   children?: React.Node,
   mathbox?: MathBoxNode, // supplied by parent during render

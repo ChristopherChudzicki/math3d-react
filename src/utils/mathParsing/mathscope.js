@@ -55,7 +55,7 @@ import type { Scope } from './MathExpression'
 
 const DEFAULT_SYMBOL_NAMES = new Set(Object.keys(math))
 
-type Symbols = {
+export type Symbols = {
   [symbolName: string]: string
 }
 type ScopeErrors = {
