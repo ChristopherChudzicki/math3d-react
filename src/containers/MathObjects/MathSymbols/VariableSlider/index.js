@@ -10,14 +10,13 @@ import { defaultSettings, VARIABLE_SLIDER } from './metadata'
 
 const mapStateToProps = ( { mathSymbols, sliderValues, evalErrors }, ownProps) => {
   const { id } = ownProps
-  const filteredEvalErrors = { [id]: evalErrors[id] }
   return {
     name: mathSymbols[id].name,
     value: sliderValues[id], // number
     manualValue: mathSymbols[id].value, // nullable string
     min: mathSymbols[id].min,
     max: mathSymbols[id].max,
-    evalErrors: filteredEvalErrors
+    ownEvalErrors: evalErrors[id]
   }
 }
 

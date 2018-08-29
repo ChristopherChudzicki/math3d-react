@@ -2,7 +2,10 @@
 import React, { PureComponent } from 'react'
 import { Slider } from 'antd'
 import type { Scope, Parser } from 'utils/mathParsing'
-import { evalData } from 'containers/MathBoxScene/components/MathBoxScene'
+import {
+  evalData,
+  handleEvalErrors
+} from 'containers/MathBoxScene/components/MathBoxScene'
 import typeof { setError as SetError } from 'services/errors'
 
 type Props = {
@@ -13,7 +16,7 @@ type Props = {
   onSliderChange: (value: number) => void,
   scope: Scope,
   parser: Parser,
-  evalErrors: {},
+  ownEvalErrors: { [prop: string]: string },
   setError: SetError
 }
 
@@ -35,11 +38,15 @@ export default class EvaluatedSlider extends PureComponent<Props, State> {
   static computedProps = ['min', 'max', 'value']
 
   static getDerivedStateFromProps(props: Props) {
-    const { parentId, scope, evalErrors, setError, min, max, value } = props
+    const { parser, parentId, scope, ownEvalErrors, setError, min, max, value } = props
     const needsEval = { min, max, value }
-    const data = evalData(parentId, needsEval, EvaluatedSlider.computedProps, scope, evalErrors, setError)
+    const {
+      evalErrors: newErrors,
+      evaluated
+    } = evalData(parser, needsEval, scope)
+    handleEvalErrors(parentId, newErrors, ownEvalErrors, setError)
     // TODO: This needs validation to prevent non-scalar values
-    return data
+    return { props, ...evaluated }
   }
 
   render() {

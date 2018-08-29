@@ -27,7 +27,7 @@ type Props = {
   min: string,
   max: string,
   setSliderValue: (id: string, value: number, previousValueIsManual: bool) => void,
-  evalErrors: {},
+  ownEvalErrors: {},
   setError: SetError
 }
 
@@ -104,7 +104,7 @@ export default class VariableSlider extends PureComponent<Props> {
         onSliderChange={this.onSliderChange}
         scope={scope}
         parser={parser}
-        evalErrors={this.props.evalErrors}
+        ownEvalErrors={this.props.ownEvalErrors}
         setError={this.props.setError}
       />
     )

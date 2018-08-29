@@ -32,6 +32,7 @@ export function evalData(parser: Parser, data: Symbols, scope: Scope) {
       acc.parseErrors[prop] = parseError
       return acc
     }
+<<<<<<< HEAD
   }, initial)
 }
 
@@ -53,6 +54,30 @@ export function handleEvalErrors(
     setError(id, prop, new EvalErrorData(message))
   } )
 }
+||||||| merged common ancestors
+=======
+  }, initial)
+}
+
+export function handleEvalErrors(
+  id: string,
+  newErrors: { [propName: string]: Error },
+  existingErrors: { [propName: string]: string },
+  setError: typeof SetError
+) {
+  // Remove old errors
+  Object.keys(existingErrors).forEach((prop) => {
+    if (newErrors[prop]===undefined) {
+      setError(id, prop, new EvalErrorData(null))
+    }
+  } )
+  // Add new Errors
+  Object.keys(newErrors).forEach((prop) => {
+    const { message } = newErrors[prop]
+    setError(id, prop, new EvalErrorData(message))
+  } )
+}
+>>>>>>> refactor evalData
 
 export function filterObject(superObject: Object, keys: Array<string>) {
   return keys.reduce((acc, key) => {
@@ -61,6 +86,7 @@ export function filterObject(superObject: Object, keys: Array<string>) {
   }, {} )
 }
 
+<<<<<<< HEAD
 type ErrorState = { [id: string]: { [propName: string]: string } }
 type Props = {
   order: Array<string>,
@@ -70,6 +96,19 @@ type Props = {
   setError: SetError
 }
 export default class MathBoxScene extends PureComponent<Props> {
+||||||| merged common ancestors
+export default class MathBoxScene extends PureComponent {
+=======
+type ErrorState = { [id: string]: { [propName: string]: string } }
+type Props = {
+  order: Array<string>,
+  mathGraphics: { [id: string]: Object },
+  evalErrors: ErrorState,
+  renderErrors: ErrorState,
+  setError: typeof setError
+}
+export default class MathBoxScene extends PureComponent<Props> {
+>>>>>>> refactor evalData
 
   static propTypes = {
     order: PropTypes.array.isRequired,
