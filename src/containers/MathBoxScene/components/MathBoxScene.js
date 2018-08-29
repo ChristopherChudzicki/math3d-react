@@ -3,90 +3,20 @@ import type {
   HandledProps as GraphicHandledProps,
   Props as GraphicProps
 } from 'components/MathBox/MathBoxComponents'
-import type { Scope, Parser, Symbols } from 'utils/mathParsing'
 import React, { PureComponent } from 'react'
 import { MathBox, Grid, Cartesian } from 'components/MathBox'
 import { MathScopeConsumer } from 'containers/MathScopeContext'
 import { MathGraphics } from 'containers/MathObjects'
 import PropTypes from 'prop-types'
 import { parser } from 'constants/parsing'
-import { EvalErrorData, RenderErrorData, setError } from 'services/errors'
+import { RenderErrorData, setError } from 'services/errors'
+import {
+  evalData,
+  handleEvalErrors,
+  filterObject
+} from 'services/evalData'
 type SetError = typeof setError
 
-// TODO extract and test this
-export function evalData(parser: Parser, data: Symbols, scope: Scope) {
-  const initial = { evalErrors: {}, evaluated: {}, parseErrors: {} }
-  return Object.keys(data).reduce((acc, prop) => {
-    try {
-      const parsed = parser.parse(data[prop] )
-      try {
-        acc.evaluated[prop] = parsed.eval(scope)
-        return acc
-      }
-      catch (evalError) {
-        acc.evalErrors[prop] = evalError
-        return acc
-      }
-    }
-    catch (parseError) {
-      acc.parseErrors[prop] = parseError
-      return acc
-    }
-<<<<<<< HEAD
-  }, initial)
-}
-
-export function handleEvalErrors(
-  id: string,
-  newErrors: { [propName: string]: Error },
-  existingErrors: { [propName: string]: string },
-  setError: SetError
-) {
-  // Remove old errors
-  Object.keys(existingErrors).forEach((prop) => {
-    if (newErrors[prop]===undefined) {
-      setError(id, prop, new EvalErrorData(null))
-    }
-  } )
-  // Add new Errors
-  Object.keys(newErrors).forEach((prop) => {
-    const { message } = newErrors[prop]
-    setError(id, prop, new EvalErrorData(message))
-  } )
-}
-||||||| merged common ancestors
-=======
-  }, initial)
-}
-
-export function handleEvalErrors(
-  id: string,
-  newErrors: { [propName: string]: Error },
-  existingErrors: { [propName: string]: string },
-  setError: SetError
-) {
-  // Remove old errors
-  Object.keys(existingErrors).forEach((prop) => {
-    if (newErrors[prop]===undefined) {
-      setError(id, prop, new EvalErrorData(null))
-    }
-  } )
-  // Add new Errors
-  Object.keys(newErrors).forEach((prop) => {
-    const { message } = newErrors[prop]
-    setError(id, prop, new EvalErrorData(message))
-  } )
-}
->>>>>>> refactor evalData
-
-export function filterObject(superObject: Object, keys: Array<string>) {
-  return keys.reduce((acc, key) => {
-    acc[key] = superObject[key]
-    return acc
-  }, {} )
-}
-
-<<<<<<< HEAD
 type ErrorState = { [id: string]: { [propName: string]: string } }
 type Props = {
   order: Array<string>,
@@ -96,19 +26,6 @@ type Props = {
   setError: SetError
 }
 export default class MathBoxScene extends PureComponent<Props> {
-||||||| merged common ancestors
-export default class MathBoxScene extends PureComponent {
-=======
-type ErrorState = { [id: string]: { [propName: string]: string } }
-type Props = {
-  order: Array<string>,
-  mathGraphics: { [id: string]: Object },
-  evalErrors: ErrorState,
-  renderErrors: ErrorState,
-  setError: SetError
-}
-export default class MathBoxScene extends PureComponent<Props> {
->>>>>>> refactor evalData
 
   static propTypes = {
     order: PropTypes.array.isRequired,

@@ -5,7 +5,7 @@ import type { Scope, Parser } from 'utils/mathParsing'
 import {
   evalData,
   handleEvalErrors
-} from 'containers/MathBoxScene/components/MathBoxScene'
+} from 'services/evalData'
 import typeof { setError as SetError } from 'services/errors'
 
 type Props = {
