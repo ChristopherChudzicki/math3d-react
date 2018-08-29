@@ -39,7 +39,7 @@ export class EvalErrorData extends ErrorData {
 
 export class RenderErrorData extends ErrorData {
 
-  constructor(errorMsg: string) {
+  constructor(errorMsg: ?string) {
     super(RENDER_ERROR, errorMsg)
   }
 
