@@ -3,8 +3,12 @@ import { EvalErrorData, setError } from 'services/errors'
 import type { Scope, Parser, Symbols } from 'utils/mathParsing'
 type SetError = typeof setError
 
-// TODO extract and test this
-export function evalData(parser: Parser, data: Symbols, scope: Scope) {
+// TODO test this
+export function evalData(
+  parser: Parser,
+  data: Symbols,
+  scope: Scope
+) {
   const initial = { evalErrors: {}, evaluated: {}, parseErrors: {} }
   return Object.keys(data).reduce((acc, prop) => {
     try {

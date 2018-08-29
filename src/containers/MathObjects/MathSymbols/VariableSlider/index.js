@@ -21,7 +21,7 @@ const mapStateToProps = ( { mathSymbols, sliderValues, evalErrors }, ownProps) =
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<*>) => ( {
-  setError,
+  setError: (id, property, errorData) => dispatch(setError(id, property, errorData)),
   setSliderValue: (id, value, previousValueIsManual) => {
     // set the slider value
     dispatch(setSliderValue(id, value))

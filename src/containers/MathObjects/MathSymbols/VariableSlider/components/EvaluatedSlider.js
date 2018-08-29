@@ -26,6 +26,11 @@ type State = {
   value: number
 }
 
+type NewErrors = {
+  min?: Error,
+  max?: Error,
+  value?: Error
+}
 export default class EvaluatedSlider extends PureComponent<Props, State> {
 
   // Stores the last valid evaluation result
@@ -37,28 +42,50 @@ export default class EvaluatedSlider extends PureComponent<Props, State> {
 
   static computedProps = ['min', 'max', 'value']
 
-  static getDerivedStateFromProps(props: Props) {
+  static getDerivedStateFromProps(props: Props, state: State) {
     const { parser, parentId, scope, ownEvalErrors, setError, min, max, value } = props
     const needsEval = { min, max, value }
-    const {
-      evalErrors: newErrors,
-      evaluated
-    } = evalData(parser, needsEval, scope)
+    const result = evalData(parser, needsEval, scope)
+    const { evaluated } = result
+    const newErrors: NewErrors = result.evalErrors
+    Object.keys(evaluated).forEach(prop => {
+      if (typeof evaluated[prop] !== 'number') {
+        delete evaluated[prop]
+        newErrors[prop] = TypeError(`'${prop}' must be a number.`)
+      }
+    } )
+
+    // Validate some stuff
+    const newState = { ...state, ...evaluated }
+    if (newState.min > newState.max) {
+      newErrors.min = newErrors.min || TypeError(`Range Error: 'min' (${newState.min}) cannot be greater than  'max' (${newState.max})`)
+      newErrors.max = newErrors.max || TypeError(`Range Error: 'max' (${newState.max}) cannot be less than 'min' (${newState.min})`)
+      delete newState.min
+      delete newState.max
+    }
+    else if (newState.min === newState.max) {
+      newErrors.min = newErrors.min || TypeError(`Range Error: 'min' (${newState.min}) cannot equal 'max' (${newState.max})`)
+      newErrors.max = newErrors.max || TypeError(`Range Error: 'max' (${newState.max}) cannot equal 'min' (${newState.min})`)
+      delete newState.min
+      delete newState.max
+    }
+
     handleEvalErrors(parentId, newErrors, ownEvalErrors, setError)
-    // TODO: This needs validation to prevent non-scalar values
-    return { props, ...evaluated }
+    return newState
   }
 
   render() {
     const { min, max, value } = this.state
+    const step = (max - min)/100
     return (
       <div style={ { flex: 1 } }>
         <Slider
+          // if min>max, onChange can enter an infinite loop
           min={min}
           max={max}
           tipFormatter={null}
           value={value}
-          step={0.01}
+          step={step}
           onChange={this.props.onSliderChange}
         />
       </div>
