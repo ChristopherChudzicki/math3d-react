@@ -81,6 +81,7 @@ export default class EvaluatedSlider extends PureComponent<Props, State> {
   }
 
   incrementByFraction(fraction: number) {
+    console.log(fraction)
     const { min, max, value } = this.state
     const amount = value + (max - min) * fraction
     if (amount < max) {

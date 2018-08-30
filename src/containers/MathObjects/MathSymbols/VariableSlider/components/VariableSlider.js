@@ -25,7 +25,7 @@ type Props = {
   isAnimating: bool,
   fps: number,
   baseAnimationDuration: number,
-  animationMultiplier: number,
+  speedMultiplier: number,
   value: number,
   manualValue?: string, // entered in MathQuill by user
   min: string,
@@ -43,7 +43,7 @@ export default class VariableSlider extends PureComponent<Props> {
     isAnimating: false,
     fps: 30,
     baseAnimationDuration: 4,
-    animationMultiplier: 1
+    speedMultiplier: 1
   }
 
   constructor(props: Props) {
@@ -57,7 +57,6 @@ export default class VariableSlider extends PureComponent<Props> {
   }
 
   setProperty(property: string, value: any) {
-    console.log("Hi")
     this.props.setProperty(this.props.id, VARIABLE_SLIDER, property, value)
   }
 
@@ -93,7 +92,7 @@ export default class VariableSlider extends PureComponent<Props> {
             <AnimationControls
               setProperty={this.setProperty}
               isAnimating={this.props.isAnimating}
-              animationMultiplier={this.props.animationMultiplier}
+              speedMultiplier={this.props.speedMultiplier}
               incrementByFraction={this._evaluatedSlider.incrementByFraction}
             />
           }

@@ -19,7 +19,7 @@ const mapStateToProps = ( { mathSymbols, sliderValues, evalErrors }, ownProps) =
     max: mathSymbol.max,
     ownEvalErrors: evalErrors[id],
     isAnimating: mathSymbol.isAnimating,
-    animationMultiplier: mathSymbol.animationMultiplier
+    speedMultiplier: mathSymbol.speedMultiplier
   }
 }
 

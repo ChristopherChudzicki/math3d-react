@@ -8,5 +8,5 @@ export const defaultSettings = {
   max: '5',
   description: 'Variable Slider',
   isAnimating: false,
-  animationMultiplier: 1
+  speedMultiplier: 1
 }
