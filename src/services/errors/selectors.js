@@ -7,6 +7,6 @@ export function getErrorMsg(id, prop, ...errorsArray) {
   }
 
   // return a constant empty, so equal by reference
-  return null
+  return undefined
 
 }
