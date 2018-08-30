@@ -3,24 +3,28 @@ import type { Dispatch } from 'redux'
 import { MathSymbol } from 'containers/MathObjects/MathObject'
 import VariableSlider from './components/VariableSlider'
 import { connect } from 'react-redux'
-import { setPropertyAndError } from 'containers/MathObjects/actions'
+import { setPropertyAndError, setProperty } from 'containers/MathObjects/actions'
 import { setSliderValue } from './actions'
 import { ParseErrorData, setError } from 'services/errors'
 import { defaultSettings, VARIABLE_SLIDER } from './metadata'
 
 const mapStateToProps = ( { mathSymbols, sliderValues, evalErrors }, ownProps) => {
   const { id } = ownProps
+  const mathSymbol = mathSymbols[id]
   return {
-    name: mathSymbols[id].name,
+    name: mathSymbol.name,
     value: sliderValues[id], // number
-    manualValue: mathSymbols[id].value, // nullable string
-    min: mathSymbols[id].min,
-    max: mathSymbols[id].max,
-    ownEvalErrors: evalErrors[id]
+    manualValue: mathSymbol.value, // nullable string
+    min: mathSymbol.min,
+    max: mathSymbol.max,
+    ownEvalErrors: evalErrors[id],
+    isAnimating: mathSymbol.isAnimating,
+    animationMultiplier: mathSymbol.animationMultiplier
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<*>) => ( {
+  setProperty: (id, type, property, value) => dispatch(setProperty(id, type, property, value)),
   setError: (id, property, errorData) => dispatch(setError(id, property, errorData)),
   setSliderValue: (id, value, previousValueIsManual) => {
     // set the slider value

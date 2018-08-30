@@ -74,6 +74,23 @@ export default class EvaluatedSlider extends PureComponent<Props, State> {
     return newState
   }
 
+  constructor(props: Props) {
+    super(props)
+    // $FlowFixMe
+    this.incrementByFraction = this.incrementByFraction.bind(this)
+  }
+
+  incrementByFraction(fraction: number) {
+    const { min, max, value } = this.state
+    const amount = value + (max - min) * fraction
+    if (amount < max) {
+      this.props.onSliderChange(amount)
+    }
+    else {
+      this.props.onSliderChange(min)
+    }
+  }
+
   render() {
     const { min, max, value } = this.state
     const step = (max - min)/100

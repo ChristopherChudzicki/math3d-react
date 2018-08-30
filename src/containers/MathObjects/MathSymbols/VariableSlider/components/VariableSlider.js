@@ -13,10 +13,14 @@ import AnimationControls from './AnimationControls'
 import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
 import { MathScopeConsumer } from 'containers/MathScopeContext'
 import { parser } from 'constants/parsing'
+import typeof {
+  setProperty as SetProperty
+} from 'containers/MathObjects/actions'
 
 const limitStyle = { flex: 0 }
 
 type Props = {
+  setProperty: SetProperty,
   id: string,
   isAnimating: bool,
   fps: number,
@@ -33,6 +37,8 @@ type Props = {
 
 export default class VariableSlider extends PureComponent<Props> {
 
+  _evaluatedSlider: ?EvaluatedSlider
+
   static defaultProps = {
     isAnimating: false,
     fps: 30,
@@ -43,15 +49,27 @@ export default class VariableSlider extends PureComponent<Props> {
   constructor(props: Props) {
     super(props)
     // $FlowFixMe
+    this.setProperty = this.setProperty.bind(this)
+    // $FlowFixMe
     this.onSliderChange = this.onSliderChange.bind(this)
     // $FlowFixMe
     this.renderSlider = this.renderSlider.bind(this)
+  }
+
+  setProperty(property: string, value: any) {
+    console.log("Hi")
+    this.props.setProperty(this.props.id, VARIABLE_SLIDER, property, value)
   }
 
   onSliderChange(value: number) {
     const { id, manualValue } = this.props
     const previousValueIsManual = manualValue !== null
     this.props.setSliderValue(id, value, previousValueIsManual)
+  }
+
+  componentDidMount() {
+    // Force re-render once this._evaluatedSlider has been assigned
+    this.forceUpdate()
   }
 
   render() {
@@ -71,7 +89,14 @@ export default class VariableSlider extends PureComponent<Props> {
             parentId={id}
             valueText={valueText}
           />
-          <AnimationControls />
+          {this._evaluatedSlider &&
+            <AnimationControls
+              setProperty={this.setProperty}
+              isAnimating={this.props.isAnimating}
+              animationMultiplier={this.props.animationMultiplier}
+              incrementByFraction={this._evaluatedSlider.incrementByFraction}
+            />
+          }
         </MainRow>
         <MainRow>
           <MathInputRHS
@@ -97,6 +122,7 @@ export default class VariableSlider extends PureComponent<Props> {
     const valueText = manualValue || value.toFixed(2)
     return (
       <EvaluatedSlider
+        ref={ref => { this._evaluatedSlider = ref }}
         parentId={this.props.id}
         value={valueText}
         min={this.props.min}

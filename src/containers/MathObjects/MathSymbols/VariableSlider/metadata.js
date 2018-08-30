@@ -6,5 +6,7 @@ export const defaultSettings = {
   value: null, // used as valueText ... consider renaming this key
   min: '-5',
   max: '5',
-  description: 'Variable Slider'
+  description: 'Variable Slider',
+  isAnimating: false,
+  animationMultiplier: 1
 }
