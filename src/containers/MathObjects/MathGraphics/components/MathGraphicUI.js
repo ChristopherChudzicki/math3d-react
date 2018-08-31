@@ -23,6 +23,7 @@ type Props = {
   metadata: MetaData,
   settingsTitle?: string,
   mainField?: string,
+  mainPrefix?: string,
   isActive: bool
 }
 
@@ -87,6 +88,7 @@ export default class MathGraphicUI extends React.PureComponent<Props> {
                 ? (
                   <MathInputRHS
                     field={this.props.mainField}
+                    prefix={this.props.mainPrefix}
                     parentId={this.props.id}
                   />
                 )
