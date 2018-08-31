@@ -4,6 +4,8 @@ import { Line as LineGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from 'containers/MathObjects/MathGraphics/MathGraphicUI'
 import { lineMeta } from '../metadata'
+import { MainRow } from 'containers/MathObjects/components'
+import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
 
 export const LINE = 'LINE'
 
@@ -13,22 +15,17 @@ type Props = {
 
 export class LineUI extends PureComponent<Props> {
 
-  static computedProps = [
-    'coords',
-    'size',
-    'opacity',
-    'width',
-    'zBias',
-    'zIndex'
-  ]
-
   render() {
     return (
       <MathGraphicUI
         type={LINE}
         id={this.props.id}
         mainField={'coords'}
-        metadata={lineMeta}/>
+        metadata={lineMeta}>
+        <MainRow>
+          <MathInputRHS parentId={this.props.id} field='coords'/>
+        </MainRow>
+      </MathGraphicUI>
     )
   }
 

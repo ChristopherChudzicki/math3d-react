@@ -20,5 +20,6 @@ export {
   AXIS,
   POINT,
   LINE,
-  VECTOR
+  VECTOR,
+  PARAMETRIC_CURVE
 } from './MathGraphics'

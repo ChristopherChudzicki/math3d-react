@@ -10,7 +10,8 @@ import {
   AXIS,
   POINT,
   LINE,
-  VECTOR
+  VECTOR,
+  PARAMETRIC_CURVE
 } from 'containers/MathObjects'
 
 // Make Some Folders
@@ -153,6 +154,10 @@ const varsList = [
 ]
 
 const settingsList = [
+  {
+    type: PARAMETRIC_CURVE,
+    folder: 'vars'
+  },
   ...varsList,
   randomLine(), randomLine(),
   randomVector(), randomVector(), randomVector()

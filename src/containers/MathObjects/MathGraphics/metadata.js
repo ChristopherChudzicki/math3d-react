@@ -149,3 +149,28 @@ export const vectorMeta: MetaData = {
   ...lineLike,
   ...vectorSpecific
 }
+
+// ---------- ParametricCurve Specific ---------- //
+const parametricCurveSpecific: MetaData = {
+  expr: {
+    inputType: 'math',
+    defaultValue: 'f(t)=\\left[\\cos\\left(t\\right),\\ \\sin\\left(t\\right),\\ t\\right]',
+    isPrimary: true
+  },
+  range: {
+    inputType: 'math',
+    defaultValue: '\\left[-2\\pi,\\ 2\\pi\\right]',
+    isPrimary: true
+  },
+  samples: {
+    inputType: 'math',
+    defaultValue: '128'
+  }
+}
+
+export const parametricCurveMeta: MetaData = {
+  ...universal,
+  ...labeled,
+  ...lineLike,
+  ...parametricCurveSpecific
+}

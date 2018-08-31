@@ -55,12 +55,16 @@ class MathInputRHS extends PureComponent<Props> {
 }
 
 const mapStateToProps = ( { mathGraphics, mathSymbols, parseErrors, evalErrors, renderErrors }, ownProps) => {
-  const { parentId, field } = ownProps
+  const { parentId, field, prefix } = ownProps
+  const fullLatex = ownProps.latex
+    ? ownProps.latex
+    : getMathObjectProp( [mathGraphics, mathSymbols], parentId, field)
+  const latex = prefix && fullLatex.startsWith(prefix)
+    ? fullLatex.slice(prefix.length)
+    : fullLatex
   return {
     type: getMathObjectProp( [mathGraphics, mathSymbols], parentId, 'type'),
-    latex: ownProps.latex
-      ? ownProps.latex
-      : getMathObjectProp( [mathGraphics, mathSymbols], parentId, field),
+    latex,
     errorMsg: getErrorMsg(parentId, field, parseErrors, evalErrors, renderErrors)
   }
 }

@@ -9,7 +9,7 @@ type MathBoxNode = any
 type HandlerNodes = {
   renderNodes: MathBoxNode,
   dataNodes: MathBoxNode,
-  mathbox: MathBoxNode
+  groupNode: MathBoxNode
 }
 
 type Handler = (nodes: HandlerNodes, handledProps: any) => void
@@ -134,7 +134,7 @@ class AbstractMBC extends React.Component<Props> {
       dataNodes: this.getNodes(this.dataNodeNames),
       // $FlowFixMe: this.renderNodeNames is abstract
       renderNodes: this.getNodes(this.renderNodeNames),
-      mathbox: this.mathbox
+      groupNode: this.mathboxNode
     }
     const handledProps = this.getHandledProps()
 
@@ -393,6 +393,59 @@ export class Vector extends AbstractMBC implements MathBoxComponent {
       .line()
 
     return node
+  }
+
+}
+
+export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
+
+  dataNodeNames = ['interval']
+  renderNodeNames = ['line']
+  handlers = {
+    ...universalHandlers,
+    ...lineLikeHandlers,
+    range: ParametricCurve.handleRange,
+    expr: ParametricCurve.handleExpr,
+    samples: ParametricCurve.handleSamples
+  }
+
+  static handleRange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { range } = handledProps
+    validateVector(range, 2)
+    const cartesian = nodes.groupNode.select('cartesian')
+    cartesian.set('range', [range, [0, 1]] )
+  }
+
+  static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { expr } = handledProps
+    nodes.dataNodes.set('expr', (emit, t) => {
+      return emit(...expr(t))
+    } )
+  }
+
+  static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { samples } = handledProps
+    nodes.dataNodes.set('width', samples)
+  }
+
+  mathboxRender = (parent) => {
+    // NOTE: Updating an <interval>'s range does not work. However, it does work
+    // to make interval a child of its own <cartesian>, inherit range from
+    // \cartesian, and update <cartesian>'s range. See
+    // https://groups.google.com/forum/?fromgroups#!topic/mathbox/zLX6WJjTDZk
+
+    const group = parent.group()
+    const data = group.cartesian().interval( {
+      channels: 3,
+      axis: 1,
+      live: false
+    } )
+
+    group.line( {
+      points: data
+    } )
+
+    return group
   }
 
 }

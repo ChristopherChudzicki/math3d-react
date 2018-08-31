@@ -98,6 +98,15 @@ export default class MathExpression {
       if (raw instanceof math.type.DenseMatrix) {
         return raw.toArray()
       }
+      if (raw instanceof Function) {
+        return (...args) => {
+          const result = raw(...args)
+          if (result instanceof math.type.DenseMatrix) {
+            return result.toArray()
+          }
+          return result
+        }
+      }
       return raw
     }
   }
