@@ -84,5 +84,6 @@ export type Math = {
   type: {
     DenseMatrix: Function
   },
-  add: (Numeric, Numeric) => Numeric
+  add: (Numeric, Numeric) => Numeric,
+  eval: (string, ?Object) => Numeric | Function
 }
