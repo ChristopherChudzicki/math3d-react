@@ -11,7 +11,7 @@ SliderValueDisplay.propTypes = {
   valueText: PropTypes.string.isRequired
 }
 
-const valueStyle = { flex: 0 }
+const valueStyle = { flex: 0, width: '50px' }
 
 export default function SliderValueDisplay(props) {
   return (
