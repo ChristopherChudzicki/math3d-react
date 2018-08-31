@@ -4,6 +4,8 @@ import { Vector as VectorGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from 'containers/MathObjects/MathGraphics/MathGraphicUI'
 import { vectorMeta } from '../metadata'
+import { MainRow } from 'containers/MathObjects/components'
+import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
 
 export const VECTOR = 'VECTOR'
 
@@ -19,7 +21,11 @@ export class VectorUI extends PureComponent<Props> {
         type={VECTOR}
         id={this.props.id}
         mainField={'components'}
-        metadata={vectorMeta}/>
+        metadata={vectorMeta}>
+        <MainRow>
+          <MathInputRHS parentId={this.props.id} field='components'/>
+        </MainRow>
+      </MathGraphicUI>
     )
   }
 

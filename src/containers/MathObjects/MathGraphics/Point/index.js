@@ -4,6 +4,8 @@ import { Point as PointGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from 'containers/MathObjects/MathGraphics/MathGraphicUI'
 import { pointMeta } from '../metadata'
+import { MainRow } from 'containers/MathObjects/components'
+import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
 
 export const POINT = 'POINT'
 
@@ -13,19 +15,16 @@ type Props = {
 
 export class PointUI extends PureComponent<Props> {
 
-  static computedProps = [
-    'coords',
-    'size',
-    'opacity'
-  ]
-
   render() {
     return (
       <MathGraphicUI
         type={POINT}
         id={this.props.id}
-        mainField='coords'
-        metadata={pointMeta}/>
+        metadata={pointMeta}>
+        <MainRow>
+          <MathInputRHS parentId={this.props.id} field='coords'/>
+        </MainRow>
+      </MathGraphicUI>
     )
   }
 

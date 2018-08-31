@@ -37,7 +37,7 @@ function getSettingsFormSpec(metadata: MetaData) {
     } )
 }
 
-const LeftOfSettings = styled(MainRow)`
+const LeftOfSettings = styled.div`
   /* guarantee that settings has room to display */
   max-width: calc(100% - 30px);
   overflow-x: ${props => props.showOverflow ? 'visible' : 'hidden'};
@@ -83,17 +83,7 @@ export default class MathGraphicUI extends React.PureComponent<Props> {
       >
         <MainRow>
           <LeftOfSettings showOverflow={this.props.isActive}>
-            {
-              this.props.mainField
-                ? (
-                  <MathInputRHS
-                    field={this.props.mainField}
-                    prefix={this.props.mainPrefix}
-                    parentId={this.props.id}
-                  />
-                )
-                : this.props.children
-            }
+            {this.props.children}
           </LeftOfSettings>
           <Settings
             title={settingsTitle}
@@ -101,7 +91,6 @@ export default class MathGraphicUI extends React.PureComponent<Props> {
             settingsList={getSettingsFormSpec(this.props.metadata)}
           />
         </MainRow>
-        {this.props.mainField && this.props.children}
       </MathObjectUI>
     )
   }

@@ -33,9 +33,17 @@ export class ParemetricCurveUI extends PureComponent<Props> {
         mainPrefix='f(t)='
         mainField={'expr'}
         metadata={parametricCurveMeta}>
-        <MainRow style={justifyRight}>
-          <StaticMathStyled latex='t\in'/>
+        <MainRow>
           <MathInputRHS
+            field='expr'
+            prefix='f(t)='
+            parentId={this.props.id}
+          />
+        </MainRow>
+        <MainRow style={justifyRight}>
+          <StaticMathStyled latex='t\in' size='small'/>
+          <MathInputRHS
+            size='small'
             parentId={this.props.id}
             field='range'
             style={rangeStyle}

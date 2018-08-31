@@ -9,6 +9,7 @@ import {
   ConnectedStaticMath
 } from 'containers/MathObjects/containers/MathInput'
 import styled from 'styled-components'
+import { MainRow } from 'containers/MathObjects/components'
 
 export const AXIS = 'AXIS'
 
@@ -39,19 +40,20 @@ export class AxisUI extends PureComponent<Props> {
         id={this.props.id}
         metadata={axisMeta}
       >
-        <Cell>
-          <Label>Direction:</Label>
-          <ConnectedStaticMath parentId={this.props.id} field='axis' />
-        </Cell>
-        <Cell>
-          <Label>Min:</Label>
-          <MathInputRHS field='min' parentId={this.props.id} style={noFlex}/>
-        </Cell>
-        <Cell>
-          <Label>Max:</Label>
-          <MathInputRHS field='max' parentId={this.props.id} style={noFlex} />
-        </Cell>
-
+        <MainRow>
+          <Cell>
+            <Label>Direction:</Label>
+            <ConnectedStaticMath parentId={this.props.id} field='axis' />
+          </Cell>
+          <Cell>
+            <Label>Min:</Label>
+            <MathInputRHS field='min' parentId={this.props.id} style={noFlex}/>
+          </Cell>
+          <Cell>
+            <Label>Max:</Label>
+            <MathInputRHS field='max' parentId={this.props.id} style={noFlex} />
+          </Cell>
+        </MainRow>
       </MathGraphicUI>
     )
   }
