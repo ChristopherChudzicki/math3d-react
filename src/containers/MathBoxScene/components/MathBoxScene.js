@@ -4,7 +4,7 @@ import type {
   Props as GraphicProps
 } from 'components/MathBox/MathBoxComponents'
 import React, { PureComponent } from 'react'
-import { MathBox, Grid, Cartesian } from 'components/MathBox'
+import { MathBox, Grid, Cartesian, Camera } from 'components/MathBox'
 import { MathScopeConsumer } from 'containers/MathScopeContext'
 import { MathGraphics } from 'containers/MathObjects'
 import PropTypes from 'prop-types'
@@ -81,9 +81,9 @@ export default class MathBoxScene extends PureComponent<Props> {
         {( { scope, scopeDiff } ) => {
           return (
             <MathBox mathbox={window.mathbox}>
+              <Camera id='camera'/>
               <Cartesian id='rootCartesian'>
-                {/* <Grid axes='xy' /> */}
-                <Grid axes='yz' id='yz' />
+                <Grid axes='xy' id='xy' />
                 {this.props.order.map(id => {
                   const settings = mathGraphics[id]
                   const existingErrors = evalErrors[id]

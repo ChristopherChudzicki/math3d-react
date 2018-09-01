@@ -30,13 +30,13 @@ store.dispatch(
 
 // Make Axes
 store.dispatch(
-  createMathObject(uniqueId(), AXIS, 'axes', 0, { axis: 'x' } )
+  createMathObject(uniqueId(), AXIS, 'axes', 0, { axis: 'x', label: 'x' } )
 )
 store.dispatch(
-  createMathObject(uniqueId(), AXIS, 'axes', 1, { axis: 'y' } )
+  createMathObject(uniqueId(), AXIS, 'axes', 1, { axis: 'y', label: 'y' } )
 )
 store.dispatch(
-  createMathObject(uniqueId(), AXIS, 'axes', 2, { axis: 'z' } )
+  createMathObject(uniqueId(), AXIS, 'axes', 2, { axis: 'z', label: 'z', scale: '1/2' } )
 )
 
 function randomElement<T>(items: Array<T>): T {

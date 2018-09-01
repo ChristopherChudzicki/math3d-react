@@ -199,6 +199,22 @@ const lineLikeHandlers = {
   end: makeSetProperty('end')
 }
 
+export class Camera extends AbstractMBC implements MathBoxComponent {
+
+  dataNodeNames = ['camera']
+  renderNodeNames = null
+  handlers = {}
+
+  mathboxRender = (parent) => {
+    const node = parent.camera( {
+      position: [-3/2, -3/4, 1/4],
+      proxy: true
+    } )
+    return node
+  }
+
+}
+
 export class Cartesian extends AbstractMBC implements MathBoxComponent {
 
   dataNodeNames = ['cartesian']
@@ -215,6 +231,11 @@ export class Cartesian extends AbstractMBC implements MathBoxComponent {
 
 }
 
+function vec3ToArray(vec3Object: { x?: number, y?: number, z?: number } ) {
+  const { x = 0, y = 0, z = 0 } = vec3Object
+  return [x, y, z]
+}
+
 export class Axis extends AbstractMBC implements MathBoxComponent {
 
   dataNodeNames = null
@@ -223,12 +244,31 @@ export class Axis extends AbstractMBC implements MathBoxComponent {
     ...universalHandlers,
     min: Axis.handleMin,
     max: Axis.handleMax,
-    axis: Axis.handleAxis
+    axis: Axis.handleAxis,
+    scale: Axis.handleScale,
+    label: Axis.handleLabel
+  }
+
+  static handleLabel(nodes: HandlerNodes, handledProps: HandledProps) {
+    nodes.groupNode.select('.label text').set('data', [handledProps.label] )
+  }
+
+  static handleScale(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { scale, axis } = handledProps
+    validateNumeric(scale)
+    const cartesian = Axis.getCartesian(nodes.renderNodes)
+    const scaleCopy = { ...cartesian.props.scale }
+    scaleCopy[axis] = scale
+    cartesian.set('scale', scaleCopy)
   }
 
   static handleAxis(nodes: HandlerNodes, handledProps: HandledProps) {
     const { axis } = handledProps
     nodes.renderNodes.set('axis', axis)
+    nodes.groupNode.select('scale').set('axis', axis)
+    if (axis === 'z') {
+      nodes.groupNode.select('.ticks > label').set('offset', [20, 0, 0] )
+    }
   }
 
   static handleMin(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -243,6 +283,9 @@ export class Axis extends AbstractMBC implements MathBoxComponent {
     validateNumeric(max)
     const cartesian = Axis.getCartesian(nodes.renderNodes)
     Axis.setAxisEnd(cartesian, axis, max, 1)
+
+    const labelPosition = vec3ToArray( { [axis]: max } )
+    nodes.groupNode.select('.label > array').set('data', [labelPosition] )
   }
 
   static copyCartesianRange(cartesian: MathBoxNode) {
@@ -274,8 +317,24 @@ export class Axis extends AbstractMBC implements MathBoxComponent {
   }
 
   mathboxRender = (parent) => {
-    const node = parent.group()
+    const node = parent.group( { classes: ['axis'] } )
     node.axis()
+      .scale( {
+        divide: 10,
+        nice: true,
+        zero: false
+      } )
+
+    node.group( { classes: ['ticks'] } )
+      .ticks( { width: 2 } )
+      .format( { digits: 2 } )
+      .label( { classes: ['tick-labels'] } )
+
+    node.group( { classes: ['label'] } )
+      .array( { channels: 3, live: false } )
+      .text( { weight: 'bold' } )
+      .label( { offset: [0, 40, 0] } )
+
     return node
   }
 
@@ -294,8 +353,8 @@ export class Grid extends AbstractMBC implements MathBoxComponent {
       axes: this.props.axes,
       divideX: 10,
       divideY: 10,
-      width: 5,
-      opacity: 0.3
+      width: 1,
+      opacity: 0.5
     } )
     return node
   }
