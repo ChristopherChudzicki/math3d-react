@@ -61,6 +61,18 @@ const axisSpecific: MetaData = {
     inputType: 'text',
     defaultValue: 'x',
     isPrimary: true
+  },
+  scale: {
+    inputType: 'math',
+    defaultValue: '1'
+  },
+  labelVisible: {
+    inputType: 'boolean',
+    defaultValue: true
+  },
+  ticks: {
+    inputType: 'boolean',
+    defaultValue: true
   }
 }
 
