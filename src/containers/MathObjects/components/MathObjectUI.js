@@ -23,9 +23,6 @@ const OuterContainer = styled.span`
     transform: scale(0);
     transform-origin: top left;
   `};
-  ${props => !props.isActive && css`
-    overflow: hidden;
-  `};
   /*
   Note:
   - above, margin-bottom: -1px prevents double-thick borders between (Folders
@@ -74,6 +71,9 @@ const MainContainer = styled.div`
   padding-bottom: 8px;
   padding-left: 6px;
   padding-right: 6px;
+  ${props => !props.isActive && css`
+    overflow: hidden;
+  `};
 `
 
 const HeaderContainer = styled.div`
@@ -158,7 +158,8 @@ export default class MathObjectUI extends PureComponent {
     } = this.props
 
     return (
-      <Fragment>
+      <Fragment
+      >
         <OuterContainer
           onFocus={this.onFocus}
           isActive={isActive}
@@ -171,7 +172,7 @@ export default class MathObjectUI extends PureComponent {
               : <AncestryLine> {sidePanelContent} </AncestryLine>
             }
           </SidePanel>
-          <MainContainer>
+          <MainContainer isActive={isActive}>
             <HeaderContainer>
               <EditableDescription
                 value={description}
