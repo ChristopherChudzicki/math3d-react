@@ -9,7 +9,8 @@ import { FOLDER, defaultSettings } from './metadata'
 const mapStateToProps = (state, ownProps) => ( {
   items: getItems(state, ownProps.id),
   isCollapsed: state.folders[ownProps.id].isCollapsed,
-  isActive: state.activeObject === ownProps.id
+  isActive: state.activeObject === ownProps.id,
+  isDropDisabled: state.folders[ownProps.id].isDropDisabled
 } )
 
 const mapDispatchToProps = {

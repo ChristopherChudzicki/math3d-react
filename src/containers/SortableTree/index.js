@@ -5,8 +5,15 @@ import {
 } from './actions'
 import MathTree from './components/MathTree'
 
-const mapStateToProps = ( { sortableTree } ) => ( {
-  itemIds: sortableTree.root
+function getItems(itemIds, folders) {
+  return itemIds.map(id => ( {
+    id,
+    isDragDisabled: folders[id].isDragDisabled
+  } ))
+}
+
+const mapStateToProps = ( { sortableTree, folders } ) => ( {
+  items: getItems(sortableTree.root, folders)
 } )
 
 const mapDispatchToProps = (dispatch) => ( {
