@@ -6,14 +6,16 @@ import ScrollWithOverflow from 'components/ScrollWithOverflow'
 import MathObjects, {
   Folder,
   MathSymbols,
-  MathGraphics
+  MathGraphics,
+  AXIS, GRID
 } from 'containers/MathObjects'
 
 // First sort the MathObject keys in the order we want, then extract the
 // data relevant to ControllerHeader
+const omit = new Set( [AXIS, GRID] )
 const menuItems = [
   Folder.type,
-  ...Object.keys(MathGraphics).sort(),
+  ...Object.keys(MathGraphics).filter(x => !omit.has(x)).sort(),
   ...Object.keys(MathSymbols).sort()
 ].map(type => ( {
   type,

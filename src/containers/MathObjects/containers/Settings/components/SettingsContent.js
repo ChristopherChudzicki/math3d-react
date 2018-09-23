@@ -69,6 +69,7 @@ export default class SettingsContent extends React.PureComponent<Props> {
         return (
           <Switch
             style={switchStyle}
+            size='small'
             checked={this.props.data[property]}
             onChange={value => this.props.setProperty(property, value)}
           />

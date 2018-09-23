@@ -8,6 +8,7 @@ import {
   VARIABLE,
   VARIABLE_SLIDER,
   AXIS,
+  GRID,
   POINT,
   LINE,
   VECTOR,
@@ -37,6 +38,15 @@ store.dispatch(
 )
 store.dispatch(
   createMathObject(uniqueId(), AXIS, 'axes', 2, { axis: 'z', label: 'z', scale: '1/2' } )
+)
+store.dispatch(
+  createMathObject(uniqueId(), GRID, 'axes', 3, { axes: 'xy' } )
+)
+store.dispatch(
+  createMathObject(uniqueId(), GRID, 'axes', 4, { axes: 'yz', visible: false } )
+)
+store.dispatch(
+  createMathObject(uniqueId(), GRID, 'axes', 5, { axes: 'zx', visible: false } )
 )
 
 function randomElement<T>(items: Array<T>): T {

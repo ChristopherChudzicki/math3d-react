@@ -18,6 +18,7 @@ export { FOLDER } from './Folder'
 export { VARIABLE, VARIABLE_SLIDER } from './MathSymbols'
 export {
   AXIS,
+  GRID,
   POINT,
   LINE,
   VECTOR,

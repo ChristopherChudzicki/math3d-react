@@ -45,8 +45,13 @@ const labeled: MetaData = {
   }
 }
 
-// ---------- Point ---------- //
+// ---------- Axis ---------- //
 const axisSpecific: MetaData = {
+  color: {
+    inputType: 'text',
+    defaultValue: '#808080',
+    isPrimary: true
+  },
   min: {
     inputType: 'math',
     defaultValue: '-5',
@@ -80,6 +85,36 @@ export const axisMeta: MetaData = {
   ...universal,
   ...labeled,
   ...axisSpecific
+}
+
+// ---------- Grid ---------- //
+const gridSpecific: MetaData = {
+  color: {
+    inputType: 'text',
+    defaultValue: '#808080',
+    isPrimary: true
+  },
+  opacity: {
+    inputType: 'math',
+    defaultValue: '0.5'
+  },
+  width: {
+    inputType: 'math',
+    defaultValue: '1'
+  },
+  divisions: {
+    inputType: 'math',
+    defaultValue: '\\left[10,\\ 10\\right]'
+  },
+  snap: {
+    inputType: 'boolean',
+    defaultValue: true
+  }
+}
+
+export const gridMeta: MetaData = {
+  ...universal,
+  ...gridSpecific
 }
 
 // ---------- Point ---------- //

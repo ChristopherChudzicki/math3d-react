@@ -3,13 +3,7 @@ import styled, { css } from 'styled-components'
 import { lighten } from 'constants/theme'
 import PropTypes from 'prop-types'
 
-const SubtleButtonInner = styled.button`
-  border: none;
-  border-radius: ${props => props.theme.borderRadius};
-  transition-duration: ${props => props.theme.transitionDuration};
-  transition-timing-function: ${props => props.theme.transitionTimingFunction};
-  transition-property: all;
-  background-color: ${props => props.backgroundColor}
+const buttonEffects = css`
   &:focus {
     outline: none;
     color: ${props => props.focusColor || props.theme.primary[4]};
@@ -22,18 +16,32 @@ const SubtleButtonInner = styled.button`
       background-color: rgba(0,0,0,0.20);
       transition-duration: 0.1s;
       transform: translateY(1px);
-    `};
-  };
-  /* if lightenOnHover, then lighten background on hover */
-  ${props => props.lightenOnHover && css`
-    background-color: ${props => props.backgroundColor};
-    &:hover {
-      background-color: ${props => lighten(props.backgroundColor, 0.75)};
-      ${props => props.pressing && css`
-        background-color: ${props => lighten(props.backgroundColor, 1)};
-        transition-duration: 0.1s;
       `};
     };
+    /* if lightenOnHover, then lighten background on hover */
+    ${props => props.lightenOnHover && css`
+      background-color: ${props => props.backgroundColor};
+      &:hover {
+        background-color: ${props => lighten(props.backgroundColor, 0.75)};
+        ${props => props.pressing && css`
+          background-color: ${props => lighten(props.backgroundColor, 1)};
+          transition-duration: 0.1s;
+          `};
+        };
+        `}
+`
+
+const SubtleButtonInner = styled.button`
+  border: none;
+  border-radius: ${props => props.theme.borderRadius};
+  transition-duration: ${props => props.theme.transitionDuration};
+  transition-timing-function: ${props => props.theme.transitionTimingFunction};
+  transition-property: all;
+  background-color: ${props => props.backgroundColor}
+  ${props => !props.disabled && buttonEffects}
+  ${props => props.disabled && css`
+    opacity: 0.5;
+    cursor: not-allowed;
   `}
 `
 

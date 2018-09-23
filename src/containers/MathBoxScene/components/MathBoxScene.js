@@ -83,7 +83,6 @@ export default class MathBoxScene extends PureComponent<Props> {
             <MathBox mathbox={window.mathbox}>
               <Camera id='camera'/>
               <Cartesian id='rootCartesian'>
-                <Grid axes='xy' id='xy' />
                 {this.props.order.map(id => {
                   const settings = mathGraphics[id]
                   const existingErrors = evalErrors[id]

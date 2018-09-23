@@ -12,7 +12,7 @@ const initialState = {
   folders: {
     'axes': {
       description: 'Axes and Grids',
-      isCollapsed: false
+      isCollapsed: true
     }
   }
 }

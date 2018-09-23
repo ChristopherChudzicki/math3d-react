@@ -181,7 +181,9 @@ class AbstractMBC extends React.Component<Props> {
 }
 
 function makeSetProperty(propName) {
-  return ( { renderNodes }, handledProps) => renderNodes.set(propName, handledProps[propName] )
+  return ( { renderNodes }: HandlerNodes, handledProps: HandledProps) => {
+    return renderNodes.set(propName, handledProps[propName] )
+  }
 }
 
 const universalHandlers = {
@@ -345,17 +347,33 @@ export class Grid extends AbstractMBC implements MathBoxComponent {
   dataNodeNames = null
   renderNodeNames = ['grid']
   handlers = {
-    ...universalHandlers
+    ...universalHandlers,
+    axes: Grid.handleAxes,
+    width: Grid.handleWidth,
+    divisions: Grid.handleDivisions,
+    snap: Grid.handleSnap
+  }
+
+  static handleAxes = makeSetProperty('axes')
+  static handleWidth = makeSetProperty('width')
+  static handleDivisions(nodes: HandlerNodes, handledProps: HandledProps) {
+    const divisions = handledProps.divisions
+    validateVector(divisions, 2)
+    nodes.renderNodes.set( {
+      divideX: divisions[0],
+      divideY: divisions[1]
+    } )
+  }
+  static handleSnap(nodes: HandlerNodes, handledProps: HandledProps) {
+    nodes.renderNodes.set( {
+      niceX: handledProps.snap,
+      niceY: handledProps.snap
+    } )
   }
 
   mathboxRender = (parent) => {
-    const node = parent.grid( {
-      axes: this.props.axes,
-      divideX: 10,
-      divideY: 10,
-      width: 1,
-      opacity: 0.5
-    } )
+    const node = parent.group()
+    node.grid()
     return node
   }
 
@@ -371,7 +389,7 @@ export class Point extends AbstractMBC implements MathBoxComponent {
     coords: Point.handleCoords
   }
 
-  static handleCoords(nodes: HandlerNodes, handledProps: any) {
+  static handleCoords(nodes: HandlerNodes, handledProps: HandledProps) {
     const coords = handledProps.coords
     const data = (coords instanceof Array) && (coords[0] instanceof Number)
       ? [coords]

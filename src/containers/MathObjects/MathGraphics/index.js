@@ -4,6 +4,7 @@ import Point from './Point'
 import Line from './Line'
 import Vector from './Vector'
 import Axis from './Axis'
+import Grid from './Grid'
 import ParametricCurve from './ParametricCurve'
 
 function makeExports(mathGraphics: Array<MathGraphic>) {
@@ -15,6 +16,7 @@ function makeExports(mathGraphics: Array<MathGraphic>) {
 
 export default makeExports( [
   Axis,
+  Grid,
   Point,
   Line,
   Vector,
@@ -22,6 +24,7 @@ export default makeExports( [
 ] )
 
 export { AXIS } from './Axis'
+export { GRID } from './Grid'
 export { POINT } from './Point'
 export { LINE } from './Line'
 export { VECTOR } from './Vector'

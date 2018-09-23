@@ -39,6 +39,7 @@ export class AxisUI extends PureComponent<Props> {
         type={AXIS}
         id={this.props.id}
         metadata={axisMeta}
+        isDeleteable={false}
       >
         <MainRow>
           <Cell>

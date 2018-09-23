@@ -31,9 +31,12 @@ const mapStateToProps = (state, ownProps) => {
   const mathObjectData = getMathObjectData(state, id)
   const parentId = getParent(state.sortableTree, id)
 
-  const isDeleteable = type === FOLDER
-    ? state.sortableTree[id].length === 0
-    : true
+  const isDeleteable = ownProps.isDeleteable !== undefined
+    ? ownProps.isDeleteable
+    // otherwise, infer the value
+    : type === FOLDER
+      ? state.sortableTree[id].length === 0
+      : true
 
   return {
     isActive: state.activeObject === id,
