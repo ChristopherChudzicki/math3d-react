@@ -201,6 +201,17 @@ const lineLikeHandlers = {
   end: makeSetProperty('end')
 }
 
+function makeHandleLabel(dataOffset) {
+  return (nodes: HandlerNodes, handledProps: HandledProps) => {
+    const data = [...Array(dataOffset).fill(''), handledProps.label]
+    nodes.groupNode.select('format.label').set('data', data)
+  }
+}
+
+function handleLabelVisible(nodes: HandlerNodes, handledProps: HandledProps) {
+  nodes.groupNode.select('label.label').set('visible', handledProps.labelVisible)
+}
+
 export class Camera extends AbstractMBC implements MathBoxComponent {
 
   dataNodeNames = ['camera']
@@ -244,11 +255,12 @@ export class Axis extends AbstractMBC implements MathBoxComponent {
   renderNodeNames = ['axis']
   handlers = {
     ...universalHandlers,
+    label: Axis.handleLabel,
+    labelVisible: handleLabelVisible,
     min: Axis.handleMin,
     max: Axis.handleMax,
     axis: Axis.handleAxis,
-    scale: Axis.handleScale,
-    label: Axis.handleLabel
+    scale: Axis.handleScale
   }
 
   static handleLabel(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -385,6 +397,8 @@ export class Point extends AbstractMBC implements MathBoxComponent {
   renderNodeNames = ['point']
   handlers = {
     ...universalHandlers,
+    label: makeHandleLabel(0),
+    labelVisible: handleLabelVisible,
     size: makeSetProperty('size'),
     coords: Point.handleCoords
   }
@@ -398,9 +412,11 @@ export class Point extends AbstractMBC implements MathBoxComponent {
   }
 
   mathboxRender = (parent) => {
-    const node = parent.group()
+    const node = parent.group( { classes: ['point'] } )
     node.array( { items: 1, channels: 3 } )
       .point()
+      .format( { classes: ['label'], weight: 'bold' } )
+      .label( { classes: ['label'], offset: [0, 40, 0] } )
 
     return node
   }
@@ -414,6 +430,8 @@ export class Line extends AbstractMBC implements MathBoxComponent {
   handlers = {
     ...universalHandlers,
     ...lineLikeHandlers,
+    label: makeHandleLabel(1),
+    labelVisible: handleLabelVisible,
     coords: Line.handleCoords
   }
 
@@ -422,9 +440,11 @@ export class Line extends AbstractMBC implements MathBoxComponent {
   }
 
   mathboxRender = (parent) => {
-    const node = parent.group()
+    const node = parent.group( { classes: ['line'] } )
     node.array( { items: 1, channels: 3 } )
       .line()
+      .format( { classes: ['label'], weight: 'bold' } )
+      .label( { classes: ['label'], offset: [0, 40, 0] } )
 
     return node
   }
@@ -438,6 +458,8 @@ export class Vector extends AbstractMBC implements MathBoxComponent {
   handlers = {
     ...universalHandlers,
     ...lineLikeHandlers,
+    label: makeHandleLabel(1),
+    labelVisible: handleLabelVisible,
     components: Vector.handleComponents,
     tail: Vector.handleTail
   }
@@ -465,9 +487,11 @@ export class Vector extends AbstractMBC implements MathBoxComponent {
   }
 
   mathboxRender = (parent) => {
-    const node = parent.group()
+    const node = parent.group( { classes: ['vector'] } )
     node.array( { items: 1, channels: 3 } )
       .line()
+      .format( { classes: ['label'], weight: 'bold' } )
+      .label( { classes: ['label'], offset: [0, 40, 0] } )
 
     return node
   }
