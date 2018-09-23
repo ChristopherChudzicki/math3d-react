@@ -24,7 +24,8 @@ type Props = {
   settingsTitle?: string,
   mainField?: string,
   mainPrefix?: string,
-  isActive: bool
+  isActive: bool,
+  isDeleteable?: bool
 }
 
 function getSettingsFormSpec(metadata: MetaData) {
@@ -70,6 +71,7 @@ export default class MathGraphicUI extends React.PureComponent<Props> {
       : this.props.settingsTitle
     return (
       <MathObjectUI
+        isDeleteable={this.props.isDeleteable}
         id={this.props.id}
         type={this.props.type}
         sidePanelContent={
