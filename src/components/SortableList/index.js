@@ -19,7 +19,8 @@ SortableList.propTypes = {
   // array of items to be rendered inisde <Draggable>s
   items: PropTypes.arrayOf(
     PropTypes.shape( {
-      id: PropTypes.string.isRequired
+      id: PropTypes.string.isRequired,
+      isDraggable: PropTypes.bool
     } )
   ).isRequired,
   // function to render each item
@@ -72,6 +73,7 @@ function renderDraggableItem(item, renderItem, draggableProps) {
     <Draggable
       key={item.id}
       draggableId={item.id}
+      isDragDisabled={item.isDragDisabled}
       {...draggableProps}
     >
       {(provided, snapshot) => (

@@ -23,7 +23,8 @@ export default class Folder extends PureComponent {
   }
 
   static defaultProps = {
-    animationSpeed: 200
+    animationSpeed: 200,
+    isDropDisabled: false
   }
 
   constructor(props) {
@@ -59,7 +60,7 @@ export default class Folder extends PureComponent {
             droppableType='FOLDER_ITEM'
             draggableType='FOLDER_ITEM'
             // this prevents dropping into collapsed folders
-            isDropDisabled={props.isCollapsed}
+            isDropDisabled={props.isCollapsed || props.isDropDisabled}
             droppableId={props.id}
             items={props.items}
             renderItem={renderItem}

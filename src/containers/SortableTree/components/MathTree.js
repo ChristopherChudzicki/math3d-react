@@ -14,7 +14,7 @@ const SortableListOfFolders = styled(SortableList)`
 
 MathTree.propTypes = {
   onDragEnd: PropTypes.func.isRequired,
-  itemIds: PropTypes.arrayOf(PropTypes.string).isRequired
+  items: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired
 }
 
 export default function MathTree(props) {
@@ -24,7 +24,7 @@ export default function MathTree(props) {
         droppableType='FOLDER'
         draggableType='FOLDER'
         droppableId={'root'}
-        items={props.itemIds.map(id => ( { id } ))}
+        items={props.items}
         renderItem={(item) => <FolderComponent id={item.id} /> }
       />
     </DragDropContext>
