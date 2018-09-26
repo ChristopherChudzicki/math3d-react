@@ -9,7 +9,6 @@ import typeof {
 } from 'containers/MathObjects/actions'
 import { capitalize } from 'utils/helpers'
 import type { MetaData } from '../types'
-import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
 import styled from 'styled-components'
 
 type Props = {
@@ -22,8 +21,6 @@ type Props = {
   children: React.Node,
   metadata: MetaData,
   settingsTitle?: string,
-  mainField?: string,
-  mainPrefix?: string,
   isActive: bool,
   isDeleteable?: bool
 }

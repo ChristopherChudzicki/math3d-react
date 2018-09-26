@@ -12,21 +12,25 @@ import {
   POINT,
   LINE,
   VECTOR,
-  PARAMETRIC_CURVE
+  PARAMETRIC_CURVE,
+  IMPLICIT_SURFACE
 } from 'containers/MathObjects'
 
 // Make Some Folders
 store.dispatch(
-  createMathObject('vars', FOLDER, 'root', 1, { description: 'Some Variables' } )
+  createMathObject('testFolder', FOLDER, 'root', 1, { description: 'Testing Stuff' } )
 )
 store.dispatch(
-  createMathObject('folder1', FOLDER, 'root', 2, { description: 'Folder 1' } )
+  createMathObject('vars', FOLDER, 'root', 2, { description: 'Some Variables' } )
 )
 store.dispatch(
-  createMathObject('folder2', FOLDER, 'root', 3, { description: 'Folder 2', isCollapsed: true } )
+  createMathObject('folder1', FOLDER, 'root', 3, { description: 'Folder 1' } )
 )
 store.dispatch(
-  createMathObject('folder3', FOLDER, 'root', 4, { description: 'Folder 3' } )
+  createMathObject('folder2', FOLDER, 'root', 4, { description: 'Folder 2', isCollapsed: true } )
+)
+store.dispatch(
+  createMathObject('folder3', FOLDER, 'root', 5, { description: 'Folder 3' } )
 )
 
 // Make Axes
@@ -165,15 +169,19 @@ const varsList = [
 
 const settingsList = [
   {
+    type: IMPLICIT_SURFACE,
+    folder: 'testFolder'
+  },
+  {
     type: PARAMETRIC_CURVE,
-    folder: 'vars'
+    folder: 'testFolder'
   },
   ...varsList,
   randomLine(), randomLine(),
   randomVector(), randomVector(), randomVector()
 ]
 
-for (let j = 0; j < 30; j++) {
+for (let j = 0; j < 10; j++) {
   settingsList.push(randomPoint())
 }
 

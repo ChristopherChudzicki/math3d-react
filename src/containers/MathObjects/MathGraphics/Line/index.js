@@ -20,7 +20,6 @@ export class LineUI extends PureComponent<Props> {
       <MathGraphicUI
         type={LINE}
         id={this.props.id}
-        mainField={'coords'}
         metadata={lineMeta}>
         <MainRow>
           <MathInputRHS parentId={this.props.id} field='coords'/>

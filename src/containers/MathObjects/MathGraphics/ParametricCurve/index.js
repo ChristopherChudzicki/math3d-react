@@ -30,8 +30,6 @@ export class ParemetricCurveUI extends PureComponent<Props> {
       <MathGraphicUI
         type={PARAMETRIC_CURVE}
         id={this.props.id}
-        mainPrefix='f(t)='
-        mainField={'expr'}
         metadata={parametricCurveMeta}>
         <MainRow>
           <MathInputRHS

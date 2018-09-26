@@ -205,7 +205,7 @@ export const vectorMeta: MetaData = {
   ...vectorSpecific
 }
 
-// ---------- ParametricCurve Specific ---------- //
+// ---------- ParametricCurve ---------- //
 const parametricCurveSpecific: MetaData = {
   expr: {
     inputType: 'math',
@@ -228,4 +228,48 @@ export const parametricCurveMeta: MetaData = {
   ...labeled,
   ...lineLike,
   ...parametricCurveSpecific
+}
+
+// ---------- Implicit Surface ---------- //
+const implicitSurfaceSpecific: MetaData = {
+  lhs: {
+    inputType: 'math',
+    defaultValue: 'f(x,y,z)=x^2+y^2',
+    isPrimary: true
+  },
+  rhs: {
+    inputType: 'math',
+    defaultValue: 'f(x,y,z)=z^2+1',
+    isPrimary: true
+  },
+  xRange: {
+    inputType: 'math',
+    defaultValue: '\\left[-5,\\ 5\\right]',
+    isPrimary: true
+  },
+  yRange: {
+    inputType: 'math',
+    defaultValue: '\\left[-5,\\ 5\\right]',
+    isPrimary: true
+  },
+  zRange: {
+    inputType: 'math',
+    defaultValue: '\\left[-5,\\ 5\\right]',
+    isPrimary: true
+  },
+  samples: {
+    inputType: 'math',
+    defaultValue: '512'
+  },
+  shaded: {
+    inputType: 'boolean',
+    defaultValue: true
+  }
+}
+
+export const implicitSurfaceMeta: MetaData = {
+  ...universal,
+  ...labeled,
+  ...lineLike,
+  ...implicitSurfaceSpecific
 }
