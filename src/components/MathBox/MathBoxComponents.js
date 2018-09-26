@@ -1,7 +1,12 @@
 // @flow
 import * as React from 'react'
 import math from 'utils/mathjs'
-import { isEqualNumerically, validateNumeric, validateVector, isVector } from './helpers'
+import {
+  isEqualNumerically,
+  validateNumeric,
+  validateVector,
+  isVector
+} from './helpers'
 import diffWithSets from 'utils/shallowDiffWithSets'
 
 type MathBoxNode = any
@@ -470,7 +475,11 @@ export class Vector extends AbstractMBC implements MathBoxComponent {
 
   static handleTail(nodes: HandlerNodes, handledProps: HandledProps) {
     const { tail, components } = handledProps
-    validateVector(tail, 3)
+    validateVector(tail, 3) // throws error if tail invalid
+
+    // If head is valid, finish updating. If head is not valid:
+    //    1. don't update, but...
+    //    2. do not throw error. it's not the tail's fault!
     if (isVector(components, 3)) {
       Vector.updateData(nodes, handledProps)
     }
@@ -549,6 +558,60 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
     group.line( {
       points: data
     } )
+
+    return group
+  }
+
+}
+
+export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
+
+  dataNodeNames = ['array']
+  renderNodeNames = ['strip']
+  handlers = {
+    ...universalHandlers,
+    shaded: makeSetProperty('shaded'),
+    lhs: ImplicitSurface.handleLHS,
+    rhs: ImplicitSurface.handleRHS
+  }
+
+  // @jason The two methods handleLHS and handleRHS will probably be almost the
+  // same. Both methods need recalculate the implicit surface data and update
+  // mathbox.
+  // The difference is that:
+  //    handleLHS should throw error if LHS is invalid, but not if RHS is invalid.
+  //    handleRHS should throw error if RHS is invalid, but not if LHS is invalid.
+  //
+  // See Vector class handleTail method for example of how I implemented this.
+  //
+  // @Jason BUT: feel free not to worry too much about the validation business at first.
+  static handleLHS(nodes: HandlerNodes, handledProps: HandledProps) {
+    // get lhs and rhs from handledProps
+    const { lhs, rhs } = handledProps
+    // get the nodes you want, determined by class properties above
+    // You probably don't need renderNodes for this method, but I included it
+    const { renderNodes, dataNodes } = nodes
+  }
+
+  // @jason this method should be almost 100% the same as handleLHS
+  // but possibly validate differently
+  static handleRHS(nodes: HandlerNodes, handledProps: HandledProps) {
+
+  }
+
+  // @jason feel free to not implement this yet.
+  static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { samples } = handledProps
+  }
+
+  mathboxRender = (parent) => {
+
+    // @jason put all of the implicit-surface related MathBox code inside a
+    // group. This function MUST return the group.
+    const group = parent.group()
+
+    group.array()
+    group.strip()
 
     return group
   }

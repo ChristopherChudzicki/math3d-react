@@ -20,7 +20,6 @@ export class VectorUI extends PureComponent<Props> {
       <MathGraphicUI
         type={VECTOR}
         id={this.props.id}
-        mainField={'components'}
         metadata={vectorMeta}>
         <MainRow>
           <MathInputRHS parentId={this.props.id} field='components'/>

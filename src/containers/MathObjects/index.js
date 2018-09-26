@@ -22,5 +22,6 @@ export {
   POINT,
   LINE,
   VECTOR,
-  PARAMETRIC_CURVE
+  PARAMETRIC_CURVE,
+  IMPLICIT_SURFACE
 } from './MathGraphics'

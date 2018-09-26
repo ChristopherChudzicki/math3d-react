@@ -6,6 +6,7 @@ import Vector from './Vector'
 import Axis from './Axis'
 import Grid from './Grid'
 import ParametricCurve from './ParametricCurve'
+import ImplicitSurface from './ImplicitSurface'
 
 function makeExports(mathGraphics: Array<MathGraphic>) {
   return mathGraphics.reduce((acc, obj) => {
@@ -20,7 +21,8 @@ export default makeExports( [
   Point,
   Line,
   Vector,
-  ParametricCurve
+  ParametricCurve,
+  ImplicitSurface
 ] )
 
 export { AXIS } from './Axis'
@@ -29,3 +31,4 @@ export { POINT } from './Point'
 export { LINE } from './Line'
 export { VECTOR } from './Vector'
 export { PARAMETRIC_CURVE } from './ParametricCurve'
+export { IMPLICIT_SURFACE } from './ImplicitSurface'
