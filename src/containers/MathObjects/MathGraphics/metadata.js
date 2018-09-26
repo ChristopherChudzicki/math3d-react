@@ -78,6 +78,14 @@ const axisSpecific: MetaData = {
   ticks: {
     inputType: 'boolean',
     defaultValue: true
+  },
+  size: {
+    inputType: 'math',
+    defaultValue: '2'
+  },
+  width: {
+    inputType: 'math',
+    defaultValue: '1'
   }
 }
 
