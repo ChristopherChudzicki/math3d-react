@@ -255,6 +255,10 @@ export class Axis extends AbstractMBC implements MathBoxComponent {
   renderNodeNames = ['axis']
   handlers = {
     ...universalHandlers,
+    // not using lineLikeHandlers because axis doesn't have start/end.
+    width: makeSetProperty('width'),
+    size: makeSetProperty('size'),
+    // now the rest
     label: Axis.handleLabel,
     labelVisible: handleLabelVisible,
     min: Axis.handleMin,
