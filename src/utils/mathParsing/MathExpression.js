@@ -99,13 +99,16 @@ export default class MathExpression {
         return raw.toArray()
       }
       if (raw instanceof Function) {
-        return (...args) => {
+        const temp = (...args) => {
           const result = raw(...args)
           if (result instanceof math.type.DenseMatrix) {
             return result.toArray()
           }
           return result
         }
+        Object.defineProperty(temp, 'length', { value: raw.length } )
+        Object.defineProperty(temp, 'name', { value: raw.name } )
+        return temp
       }
       return raw
     }

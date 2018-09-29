@@ -81,9 +81,10 @@ export default class MathInput extends PureComponent {
     return this._ref ? this._ref : document.body
   }
   onEdit(mq) {
+    const { prefix } = this.props
     const latex = mq.latex()
     const errorData = this.validateSelf(latex)
-    this.props.onValidatedTextChange(this.props.field, latex, errorData)
+    this.props.onValidatedTextChange(this.props.field, prefix + latex, errorData)
   }
   onFocus() {
     this.setState( { isFocused: true } )
