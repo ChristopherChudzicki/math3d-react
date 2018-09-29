@@ -80,6 +80,7 @@ export type Node =
   | OperatorNode<Node>
 
 export type Math = {
+  Complex: Object,
   parse: string => Node,
   type: {
     DenseMatrix: Function

@@ -185,23 +185,28 @@ class AbstractMBC extends React.Component<Props> {
 
 }
 
-function makeSetProperty(propName) {
+function makeSetProperty(propName, validator: ?Function) {
   return ( { renderNodes }: HandlerNodes, handledProps: HandledProps) => {
+    if (validator) {
+      validator(handledProps[propName] )
+    }
     return renderNodes.set(propName, handledProps[propName] )
   }
 }
 
+// NOTE: For now, only validating math inputs.
+
 const universalHandlers = {
-  opacity: makeSetProperty('opacity'),
+  opacity: makeSetProperty('opacity', validateNumeric),
   visible: makeSetProperty('visible'),
-  zBias: makeSetProperty('zBias'),
-  zIndex: makeSetProperty('zIndex'),
+  zBias: makeSetProperty('zBias', validateNumeric),
+  zIndex: makeSetProperty('zIndex', validateNumeric),
   color: makeSetProperty('color')
 }
 
 const lineLikeHandlers = {
-  size: makeSetProperty('size'),
-  width: makeSetProperty('width'),
+  size: makeSetProperty('size', validateNumeric),
+  width: makeSetProperty('width', validateNumeric),
   start: makeSetProperty('start'),
   end: makeSetProperty('end')
 }
@@ -539,6 +544,7 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
 
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
     const { samples } = handledProps
+    validateNumeric(samples)
     nodes.dataNodes.set('width', samples)
   }
 
