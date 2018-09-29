@@ -80,10 +80,10 @@ export type Node =
   | OperatorNode<Node>
 
 export type Math = {
-  Complex: Object,
   parse: string => Node,
   type: {
-    DenseMatrix: Function
+    DenseMatrix: Function,
+    Complex: Function
   },
   add: (Numeric, Numeric) => Numeric,
   eval: (string, ?Object) => Numeric | Function

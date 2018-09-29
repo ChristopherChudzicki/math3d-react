@@ -39,7 +39,7 @@ export function validateVector(value: mixed, numComponents: number) {
 
 // Validate that func is a function from R^numInputs to R^numpOutputs
 export function validateFunctionSignature(func: mixed, numInputs: number, numOutputs: number) {
-  if (!(func instanceof Function)) {
+  if (!(typeof func === 'function')) {
     throw TypeError(`Expected a function, but received a ${typeof func}`)
   }
 
@@ -51,7 +51,7 @@ export function validateFunctionSignature(func: mixed, numInputs: number, numOut
   const result = func(...theArgs) // if func throws, well... then that's the error!
 
   if (numOutputs === 1) {
-    if (isNumeric(result) || result instanceof math.Complex) {
+    if (isNumeric(result) || result instanceof math.type.Complex) {
       return
     }
     throw TypeError('Expected function to return a number, but it did not.')
