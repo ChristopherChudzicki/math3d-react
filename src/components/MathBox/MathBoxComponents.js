@@ -5,7 +5,8 @@ import {
   isEqualNumerically,
   validateNumeric,
   validateVector,
-  isVector
+  isVector,
+  validateFunctionSignature
 } from './helpers'
 import diffWithSets from 'utils/shallowDiffWithSets'
 
@@ -537,6 +538,7 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
 
   static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
     const { expr } = handledProps
+    validateFunctionSignature(expr, 1, 3)
     nodes.dataNodes.set('expr', (emit, t) => {
       return emit(...expr(t))
     } )
