@@ -2,12 +2,13 @@
 
 # dependencies
 /node_modules
+react-ui/node_modules
 
 # testing
 /coverage
 
 # production
-/build
+react-ui/build
 
 # misc
 .DS_Store

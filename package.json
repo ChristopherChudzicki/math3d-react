@@ -1,72 +1,31 @@
 {
-  "name": "math3d-react",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "antd": "^3.2.2",
-    "classnames": "^2.2.5",
-    "color": "^3.0.0",
-    "css-time": "^0.1.12",
-    "immutability-helper": "^2.6.6",
-    "lodash": "^4.17.4",
-    "mathjs": "^3.18.1",
-    "mathquill": "^0.10.1",
-    "memoize-one": "^4.0.0",
-    "re-reselect": "^2.1.0",
-    "react": "^16.2.0",
-    "react-beautiful-dnd": "^5.0.0",
-    "react-collapsible": "^2.0.4",
-    "react-color": "^2.14.1",
-    "react-dom": "^16.2.0",
-    "react-pointable": "^1.1.1",
-    "react-redux": "^5.0.7",
-    "react-scripts": "^2.0.0-next.3e165448",
-    "react-textarea-autosize": "^6.0.0",
-    "redux": "^3.7.2",
-    "redux-batched-actions": "^0.3.0",
-    "redux-thunk": "^2.2.0",
-    "shallow-diff": "0.0.5",
-    "styled-components": "^3.1.6",
-    "tarjan-graph": "^1.0.1",
-    "toposort": "^1.0.6"
+  "name": "heroku-cra-node",
+  "version": "1.0.0",
+  "description": "How to use create-react-app with a custom Node API on Heroku",
+  "engines": {
+    "node": "8.9.x"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "coverage": "react-scripts test --env=jsdom --coverage",
-    "eject": "react-scripts eject",
-    "flow": "flow"
+    "start": "node server",
+    "heroku-postbuild": "cd react-ui/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
   },
-  "devDependencies": {
-    "babel-core": "^7.0.0-beta.41",
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1",
-    "eslint-config-standard": "^11.0.0-beta.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jest": "^21.5.0",
-    "eslint-plugin-node": "^5.2.1",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1",
-    "flow": "^0.2.3",
-    "flow-bin": "^0.79.1",
-    "jest-diff": "^23.0.0",
-    "jest-get-type": "^22.4.3",
-    "jest-matcher-deep-close-to": "^1.0.2",
-    "jquery": "^3.3.1",
-    "why-did-you-update": "^0.1.1"
+  "cacheDirectories": [
+    "node_modules",
+    "react-ui/node_modules"
+  ],
+  "dependencies": {
+    "express": "^4.16.3"
   },
-  "browserslist": {
-    "development": [
-      "last 2 chrome versions",
-      "last 2 firefox versions",
-      "last 2 edge versions"
-    ],
-    "production": [
-      ">1%",
-      "last 4 versions",
-      "Firefox ESR",
-      "not ie < 11"
-    ]
-  }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mars/heroku-cra-node.git"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "create-react-app",
+    "react"
+  ],
+  "license": "MIT",
+  "devDependencies": {}
 }
