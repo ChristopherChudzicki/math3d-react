@@ -12,7 +12,13 @@ First, install server dependencies and start the server:
 > npm install
 > npm start
 ```
-In a new terminal window, install ui dependencies and start:
+
+Next, install `mongodb`, which is our database. This is not installed by `npm`: you'll need to install it yourself. On a Mac, `brew install mongodb` will do. Now, in a new terminal window, start the database:
+```bash
+> npm run start-db
+```
+
+Finally, in a new terminal window, install ui dependencies and start the app:
 ```bash
 > cd react-ui
 > npm install
