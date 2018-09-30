@@ -1,13 +1,14 @@
 {
-  "name": "heroku-cra-node",
-  "version": "1.0.0",
-  "description": "How to use create-react-app with a custom Node API on Heroku",
+  "name": "math3d-server",
+  "version": "0.1.0",
+  "description": "Express server for math3d-react app.",
   "engines": {
     "node": "8.9.x"
   },
   "scripts": {
     "start": "node server",
-    "heroku-postbuild": "cd react-ui/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
+    "heroku-postbuild": "cd react-ui/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
+    "start-db": "mongod --dbpath data/db"
   },
   "cacheDirectories": [
     "node_modules",
