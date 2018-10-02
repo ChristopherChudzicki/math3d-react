@@ -1,70 +1,66 @@
 import { dehydrate, rehydrate } from './hydration'
 
+window.dehydrate = dehydrate
+
 const initialState = {
-  "sortableTree": {
-    "root": [
-      "axes",
-      "mainFolder"
+  'sortableTree': {
+    'root': [
+      'axes',
+      'mainFolder'
     ],
-    "axes": [
-      "axis-x",
-      "axis-y",
-      "axis-z",
-      "grid-xy",
-      "grid-yz",
-      "grid-zx"
+    'axes': [
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
     ],
-    "mainFolder": []
+    'mainFolder': []
   },
-  "sliderValues": {},
-  "folders": {
-    "axes": {
-      "description": "Axes and Grids",
-      "isCollapsed": true,
-      "isDropDisabled": true,
-      "isDragDisabled": true
+  'folders': {
+    'axes': {
+      'isCollapsed': true,
+      'isDropDisabled': true,
+      'isDragDisabled': true,
+      'description': 'Axes and Grids'
     },
-    "mainFolder": {
-      "description": "A Folder"
+    'mainFolder': {
+      'description': 'A Folder'
     }
   },
-  "mathSymbols": {},
-  "mathGraphics": {
-    "axis-x": {
-      "type": "AXIS",
-      "label": "x"
+  'mathSymbols': {},
+  'mathGraphics': {
+    '1': {
+      'type': 'AXIS',
+      'label': 'x'
     },
-    "axis-y": {
-      "type": "AXIS",
-      "label": "y",
-      "axis": "y"
+    '2': {
+      'type': 'AXIS',
+      'label': 'y',
+      'axis': 'y'
     },
-    "axis-z": {
-      "type": "AXIS",
-      "label": "z",
-      "axis": "z",
-      "scale": "1/2"
+    '3': {
+      'type': 'AXIS',
+      'label': 'z',
+      'axis': 'z',
+      'scale': '1/2'
     },
-    "grid-xy": {
-      "type": "GRID",
-      "axes": "xy"
+    '4': {
+      'type': 'GRID',
+      'axes': 'xy'
     },
-    "grid-yz": {
-      "type": "GRID",
-      "visible": false,
-      "axes": "yz"
+    '5': {
+      'type': 'GRID',
+      'visible': false,
+      'axes': 'yz'
     },
-    "grid-zx": {
-      "type": "GRID",
-      "visible": false,
-      "axes": "zx"
+    '6': {
+      'type': 'GRID',
+      'visible': false,
+      'axes': 'zx'
     }
-  },
-  "parseErrors": {},
-  "evalErrors": {},
-  "renderErrors": {}
+  }
 }
-
-
 
 export default rehydrate(initialState)

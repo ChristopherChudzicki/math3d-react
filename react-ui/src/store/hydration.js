@@ -1,18 +1,12 @@
-import MathObjects, { FOLDER } from 'containers/MathObjects'
-
-window.simpleDiff = simpleDiff
-
-function isEmpty(obj) {
-  // https://stackoverflow.com/a/32108184/2747370
-  return Object.keys(obj).length === 0 && obj.constructor === Object
-}
+import MathObjects, { FOLDER, VARIABLE_SLIDER } from 'containers/MathObjects'
+import idGenerator from 'constants/idGenerator'
 
 // difference in obj1 and obj2
 // ASSUMING obj1 keys are superset of obj2
 // GOAL: { ...obj2, ...simpleDiff(obj1, obj2) } == obj1
 function simpleDiff(obj1, obj2, keep = new Set()) {
   return Object.keys(obj1).reduce((acc, key) => {
-    if (obj1[key] !== obj2[key] || keep.has(key) ) {
+    if (obj1[key] !== obj2[key] || keep.has(key)) {
       acc[key] = obj1[key]
     }
     return acc
@@ -35,24 +29,16 @@ function simpleDiff(obj1, obj2, keep = new Set()) {
 export function dehydrate(state) {
   const {
     sortableTree,
-    sliderValues,
     folders,
     mathSymbols,
-    mathGraphics,
-    parseErrors,
-    evalErrors,
-    renderErrors
+    mathGraphics
   } = state
 
   const startingPoint = {
-    sortableTree,
-    sliderValues,
+    sortableTree: sortableTree,
     folders: {},
     mathSymbols: {},
-    mathGraphics: {},
-    parseErrors: {},
-    evalErrors: {},
-    renderErrors: {}
+    mathGraphics: {}
   }
 
   const keep = new Set( ['type'] )
@@ -66,50 +52,30 @@ export function dehydrate(state) {
   const withSymbols = Object.keys(mathSymbols).reduce((acc, key) => {
     const item = mathSymbols[key]
     acc.mathSymbols[key] = simpleDiff(item, MathObjects[item.type].defaultSettings, keep)
-    acc.parseErrors[key] = simpleDiff(parseErrors[key], {} )
-    acc.evalErrors[key] = simpleDiff(evalErrors[key], {} )
-    acc.renderErrors[key] = simpleDiff(renderErrors[key], {} )
     return acc
   }, withFolders)
 
   const withGraphics = Object.keys(mathGraphics).reduce((acc, key) => {
     const item = mathGraphics[key]
     acc.mathGraphics[key] = simpleDiff(item, MathObjects[item.type].defaultSettings, keep)
-    acc.parseErrors[key] = simpleDiff(parseErrors[key], {} )
-    acc.evalErrors[key] = simpleDiff(evalErrors[key], {} )
-    acc.renderErrors[key] = simpleDiff(renderErrors[key], {} )
     return acc
   }, withSymbols)
 
-  const errTypes = ['parseErrors', 'evalErrors', 'renderErrors']
-  const withoutEmptyErrors = errTypes.reduce((acc, errType) => {
-    for (const key of Object.keys(acc[errType] )) {
-      if (isEmpty(acc[errType][key] )) {
-        delete acc[errType][key]
-      }
-    }
-    return acc
-  }, withGraphics)
-
-  return withoutEmptyErrors
+  return withGraphics
 
 }
 
 export function rehydrate(dehydrated) {
   const {
     sortableTree,
-    sliderValues,
     folders,
     mathSymbols,
-    mathGraphics,
-    parseErrors,
-    evalErrors,
-    renderErrors
+    mathGraphics
   } = dehydrated
 
   const startingPoint = {
     sortableTree,
-    sliderValues,
+    sliderValues: {},
     folders: {},
     mathSymbols: {},
     mathGraphics: {},
@@ -127,21 +93,41 @@ export function rehydrate(dehydrated) {
   const withSymbols = Object.keys(mathSymbols).reduce((acc, key) => {
     const item = mathSymbols[key]
     acc.mathSymbols[key] = { ...MathObjects[item.type].defaultSettings, ...item }
-    acc.parseErrors[key] = parseErrors[key] || {}
-    acc.evalErrors[key] = evalErrors[key] || {}
-    acc.renderErrors[key] = renderErrors[key] || {}
+    if (item.type === VARIABLE_SLIDER) {
+      acc.sliderValues[key] = 0
+    }
+    acc.parseErrors[key] = {}
+    acc.evalErrors[key] = {}
+    acc.renderErrors[key] = {}
     return acc
   }, withFolders)
 
   const withGraphics = Object.keys(mathGraphics).reduce((acc, key) => {
     const item = mathGraphics[key]
     acc.mathGraphics[key] = { ...MathObjects[item.type].defaultSettings, ...item }
-    acc.parseErrors[key] = parseErrors[key] || {}
-    acc.evalErrors[key] = evalErrors[key] || {}
-    acc.renderErrors[key] = renderErrors[key] || {}
+    acc.parseErrors[key] = {}
+    acc.evalErrors[key] = {}
+    acc.renderErrors[key] = {}
     return acc
   }, withSymbols)
 
+  const maxId = getMaxId(sortableTree)
+  idGenerator.setNextId(maxId + 1)
+
   return withGraphics
 
+}
+
+function getMaxId(sortableTree) {
+  let maxId = 0
+  sortableTree.root.forEach(folderId => {
+    sortableTree[folderId].forEach(id => {
+      const asNumber = parseInt(id, 10)
+      if (asNumber > maxId) {
+        maxId = asNumber
+      }
+    } )
+  } )
+
+  return maxId
 }
