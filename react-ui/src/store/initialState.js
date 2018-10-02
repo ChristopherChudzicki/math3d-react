@@ -1,6 +1,4 @@
-import { dehydrate, rehydrate } from './hydration'
-
-window.dehydrate = dehydrate
+import { rehydrate } from './hydration'
 
 const initialState = {
   'sortableTree': {
