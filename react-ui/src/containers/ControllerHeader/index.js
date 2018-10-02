@@ -10,6 +10,10 @@ const mapStateToProps = ( { activeObject, sortableTree } ) => {
   const treeRoot = sortableTree.root
   const activeFolder = getActiveFolder(sortableTree, activeObject)
 
+  if (Object.keys(treeRoot).length === 0) {
+    throw Error('root folder requires at least 1 child')
+  }
+
   // If no active folder, insert new items into last folder
   const targetFolder = activeFolder || treeRoot[treeRoot.length - 1]
   const newFolderIndex = treeRoot.indexOf(targetFolder) + 1
