@@ -1,23 +1,9 @@
 // import React from 'react' // used by why-did-you-update
 import { createStore, applyMiddleware, compose } from 'redux'
-import rootReducer from './reducer.js'
+import rootReducer from './reducer'
 import thunk from 'redux-thunk'
 import { enableBatching } from 'redux-batched-actions'
-
-const initialState = {
-  sortableTree: {
-    root: ['axes'],
-    axes: []
-  },
-  folders: {
-    'axes': {
-      description: 'Axes and Grids',
-      isCollapsed: true,
-      isDropDisabled: true,
-      isDragDisabled: true
-    }
-  }
-}
+import initialState from './initialState'
 
 const enhancers = []
 const middleware = [thunk]

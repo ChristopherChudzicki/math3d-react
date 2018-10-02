@@ -1,7 +1,7 @@
 // @flow
 // NOTE: This is just for tinkering and testing ...
 import { uniqueId } from 'lodash'
-import store from './store'
+import store from './index'
 import { createMathObject } from 'containers/MathObjects/actions'
 import {
   FOLDER,
@@ -16,10 +16,7 @@ import {
   IMPLICIT_SURFACE
 } from 'containers/MathObjects'
 
-// Make Some Folders
-store.dispatch(
-  createMathObject('testFolder', FOLDER, 'root', 1, { description: 'Testing Stuff' } )
-)
+// folders 'axes' and 'mainFolder' already exist from initialState
 store.dispatch(
   createMathObject('vars', FOLDER, 'root', 2, { description: 'Some Variables' } )
 )
@@ -31,26 +28,6 @@ store.dispatch(
 )
 store.dispatch(
   createMathObject('folder3', FOLDER, 'root', 5, { description: 'Folder 3' } )
-)
-
-// Make Axes
-store.dispatch(
-  createMathObject(uniqueId(), AXIS, 'axes', 0, { axis: 'x', label: 'x' } )
-)
-store.dispatch(
-  createMathObject(uniqueId(), AXIS, 'axes', 1, { axis: 'y', label: 'y' } )
-)
-store.dispatch(
-  createMathObject(uniqueId(), AXIS, 'axes', 2, { axis: 'z', label: 'z', scale: '1/2' } )
-)
-store.dispatch(
-  createMathObject(uniqueId(), GRID, 'axes', 3, { axes: 'xy' } )
-)
-store.dispatch(
-  createMathObject(uniqueId(), GRID, 'axes', 4, { axes: 'yz', visible: false } )
-)
-store.dispatch(
-  createMathObject(uniqueId(), GRID, 'axes', 5, { axes: 'zx', visible: false } )
 )
 
 function randomElement<T>(items: Array<T>): T {
@@ -154,7 +131,7 @@ const varsList = [
     folder: 'vars',
     description: 'One more variable',
     name: 'b',
-    value: '\\left[-2,1,4\\right]'
+    value: '\\left[-2,1+,4\\right]'
   },
   {
     type: VARIABLE_SLIDER,
@@ -170,11 +147,11 @@ const varsList = [
 const settingsList = [
   {
     type: IMPLICIT_SURFACE,
-    folder: 'testFolder'
+    folder: 'mainFolder'
   },
   {
     type: PARAMETRIC_CURVE,
-    folder: 'testFolder'
+    folder: 'mainFolder'
   },
   ...varsList,
   randomLine(), randomLine(),

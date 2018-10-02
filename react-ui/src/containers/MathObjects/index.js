@@ -25,3 +25,6 @@ export {
   PARAMETRIC_CURVE,
   IMPLICIT_SURFACE
 } from './MathGraphics'
+
+
+window.MathObjects = mathObjects

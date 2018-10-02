@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import Header from './components/Header'
 import FlexContainer from './components/FlexContainer'
 
 import UserControls from './views/UserControls'
 import Scene from './views/Scene'
 import Examples from './views/Examples'
+import Header from './views/Header'
 
 class App extends Component {
 

@@ -1,4 +1,5 @@
 import update from 'immutability-helper'
+import { FOLDER } from 'containers/MathObjects'
 import {
   PARSE_ERROR,
   EVAL_ERROR,
@@ -15,7 +16,7 @@ const initialState = {}
 export function createErrorReducer(errorTypes) {
   return (state = initialState, action) => {
 
-    const { type, payload } = action
+    const { type, payload, name } = action
 
     switch (type) {
 
@@ -42,6 +43,11 @@ export function createErrorReducer(errorTypes) {
 
       case CREATE_MATH_OBJECT: {
         const { id } = payload
+        // Folders don't have any math-input fields, so they will
+        // never contain errors
+        if (name === FOLDER) {
+          return state
+        }
         return update(state, { [id]: { $set: {} } } )
       }
 

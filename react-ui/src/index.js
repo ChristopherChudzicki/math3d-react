@@ -13,7 +13,7 @@ import theme from './constants/theme'
 import { ThemeProvider } from 'styled-components'
 
 // run all the code in mockState
-import './mockState'
+import './store/mockState'
 
 const target = document.querySelector('#root')
 
