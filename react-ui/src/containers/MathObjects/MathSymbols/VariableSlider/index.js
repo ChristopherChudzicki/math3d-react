@@ -10,6 +10,7 @@ import { defaultSettings, VARIABLE_SLIDER } from './metadata'
 
 const mapStateToProps = ( { mathSymbols, sliderValues, evalErrors }, ownProps) => {
   const { id } = ownProps
+  console.log(mathSymbols[id].isAnimating)
   const mathSymbol = mathSymbols[id]
   return {
     name: mathSymbol.name,

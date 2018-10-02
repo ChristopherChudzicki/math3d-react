@@ -122,7 +122,7 @@ export default class AnimationControls extends PureComponent<Props> {
 
   componentDidMount() {
     if (this.props.isAnimating) {
-      this.stopAnimation()
+      this.startAnimation()
     }
   }
 
