@@ -1,6 +1,6 @@
 // @flow
 // NOTE: This is just for tinkering and testing ...
-import { uniqueId } from 'lodash'
+import idGenerator from 'constants/idGenerator'
 import store from './index'
 import { createMathObject } from 'containers/MathObjects/actions'
 import {
@@ -85,7 +85,7 @@ function createObject(settings: {
   const parentFolder = folder || randomElement(folders)
   const insertAt = store.getState().sortableTree[parentFolder].length
   store.dispatch(
-    createMathObject(uniqueId(), type, parentFolder, insertAt, otherSettings)
+    createMathObject(idGenerator.next(), type, parentFolder, insertAt, otherSettings)
   )
 }
 
@@ -138,7 +138,8 @@ const varsList = [
     folder: 'vars',
     description: 'A slider!',
     name: 'T',
-    value: null,
+    value: '3',
+    isAnimating: false,
     min: '-\\pi',
     max: '2\\pi'
   }
@@ -151,7 +152,8 @@ const settingsList = [
   },
   {
     type: PARAMETRIC_CURVE,
-    folder: 'mainFolder'
+    folder: 'mainFolder',
+    expr: 'f(t)=\\left[\\cos(t),\\sin(t),T\\right]'
   },
   ...varsList,
   randomLine(), randomLine(),
