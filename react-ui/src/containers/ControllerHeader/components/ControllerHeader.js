@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react'
 import styled from 'styled-components'
 import { Menu, Dropdown, Button, Icon } from 'antd'
-import { uniqueId } from 'lodash'
+import idGenerator from 'constants/idGenerator'
 import typeof {
   createMathObject as CreateMathObject
 } from 'containers/MathObjects/actions'
@@ -57,7 +57,7 @@ export default class ControllerHeader extends PureComponent<Props> {
   }
 
   handleMenuClick = ( { key } : { key: string } ) => {
-    const id = uniqueId()
+    const id = idGenerator.next()
     const parentFolderId = key === FOLDER
       ? 'root'
       : this.props.targetFolder
