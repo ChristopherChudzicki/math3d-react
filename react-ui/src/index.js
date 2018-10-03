@@ -15,7 +15,7 @@ import { ThemeProvider } from 'styled-components'
 import { BrowserRouter } from 'react-router-dom'
 
 // run all the code in mockState
-import './store/mockState'
+// import './store/mockState'
 
 const target = document.querySelector('#root')
 

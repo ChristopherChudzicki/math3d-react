@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import MainView from './views/MainView'
 import { Switch, Route } from 'react-router-dom'
 
-class App extends Component {
+class App extends PureComponent {
 
   renderGraph( { match } ) {
     return (
-      <MainView graph={match.graph}/>
+      <MainView graphId={match.params.graph}/>
     )
   }
 

@@ -1,14 +1,14 @@
 // Example api call:
 
-export const getGraph = (id) => fetch(`api/graph/${id}`, {
+export const getGraph = async (id) => fetch(`api/graph/${id}`, {
   method: 'GET',
   headers: {}
 } ).then(res => res.json())
 
-export const saveGraph = (id, state) => {
+export const saveGraph = async (id, dehydrated) => {
   const body = {
     '_id': id,
-    state: state
+    dehydrated
   }
   return fetch(`/api/graph`, {
     method: 'POST',

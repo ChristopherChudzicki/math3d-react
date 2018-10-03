@@ -8,6 +8,7 @@ import {
   mathGraphics,
   mathSymbols
 } from 'containers/MathObjects/reducer'
+import { LOAD_STATE } from './actions'
 
 import {
   parseErrors,
@@ -15,7 +16,7 @@ import {
   renderErrors
 } from 'services/errors/reducer'
 
-export default combineReducers( {
+const combinedReducer = combineReducers( {
   drawers,
   sortableTree,
   folders,
@@ -27,3 +28,10 @@ export default combineReducers( {
   sliderValues,
   activeObject
 } )
+
+export default function rootReducer(state, action) {
+  if (action.type === LOAD_STATE) {
+    return { ...state, ...action.payload.state }
+  }
+  return combinedReducer(state, action)
+}
