@@ -1,5 +1,5 @@
 import React from 'react'
-import Drawer from '../containers/Drawer'
+import Drawer from 'containers/Drawer'
 import SortableTree from 'containers/SortableTree'
 import ControllerHeader from 'containers/ControllerHeader'
 import ScrollWithOverflow from 'components/ScrollWithOverflow'

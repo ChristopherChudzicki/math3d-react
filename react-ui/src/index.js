@@ -12,6 +12,8 @@ import { scopeEvaluator, parser } from './constants/parsing'
 import theme from './constants/theme'
 import { ThemeProvider } from 'styled-components'
 
+import { BrowserRouter } from 'react-router-dom'
+
 // run all the code in mockState
 import './store/mockState'
 
@@ -21,7 +23,9 @@ render(
   <Provider store={store}>
     <MathScopeProvider scopeEvaluator={scopeEvaluator} parser={parser}>
       <ThemeProvider theme={theme}>
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </ThemeProvider>
     </MathScopeProvider>
   </Provider>,

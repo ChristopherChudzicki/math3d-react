@@ -1,23 +1,23 @@
 import React, { Component } from 'react'
-import FlexContainer from './components/FlexContainer'
-
-import UserControls from './views/UserControls'
-import Scene from './views/Scene'
-import Examples from './views/Examples'
-import Header from './views/Header'
+import MainView from './views/MainView'
+import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {
 
-  render() {
+  renderGraph( { match } ) {
     return (
-      <FlexContainer style={ { overflow: 'hidden', flexDirection: 'column' } }>
-        <Header />
-        <FlexContainer>
-          <UserControls />
-          <Scene />
-          <Examples />
-        </FlexContainer>
-      </FlexContainer>
+      <MainView graph={match.graph}/>
+    )
+  }
+
+  render() {
+    // NOTE: I tried path='/load/:graph' for the routes, but got strange errors.
+    // This seems to work...
+    return (
+      <Switch>
+        <Route exact path='/:graph' render={this.renderGraph}/>
+        <Route exact path='/' render={this.renderGraph}/>
+      </Switch>
     )
   }
 

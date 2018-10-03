@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import FlexContainer from '../components/FlexContainer'
+import FlexContainer from 'components/FlexContainer'
 import MathBoxContainer from 'containers/MathBoxContainer'
 import MathBoxScene from 'containers/MathBoxScene'
 
