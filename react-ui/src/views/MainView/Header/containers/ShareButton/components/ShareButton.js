@@ -35,7 +35,7 @@ export default class ShareButton extends PureComponent<Props, State> {
     return (
       <div>
         <pre>
-          {this.state.id && `http://localhost:3000/load/${this.state.id}`}
+          {this.state.id && `https://math3d-react.herokuapp.com/${this.state.id}`}
         </pre>
       </div>
     )
