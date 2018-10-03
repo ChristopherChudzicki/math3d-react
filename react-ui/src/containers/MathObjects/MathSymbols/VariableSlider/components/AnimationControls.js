@@ -22,6 +22,10 @@ const AnimationButton = styled(Button)`
 `
 
 const speedDisplay = { cursor: 'default' }
+// weird bug: Button.Group seems to display differently in
+// development vs production build. why??
+// groupStyle seems to fix it.
+const groupStyle = { display: 'flex' }
 
 type Props = {
   isAnimating: bool,
@@ -154,7 +158,7 @@ export default class AnimationControls extends PureComponent<Props> {
               : 'caret-right'
           } />
         </AnimationButton>
-        <Button.Group size='small'>
+        <Button.Group size='small' style={groupStyle}>
           <AnimationButton
             onClick={() => this.decrementSpeed(speedMultiplier)}
           >
@@ -170,7 +174,7 @@ export default class AnimationControls extends PureComponent<Props> {
             <Icon type="forward" />
           </AnimationButton>
         </Button.Group>
-        <Button.Group size='small'>
+        <Button.Group size='small' style={groupStyle}>
           <AnimationButton
             onClick={() => this.props.incrementByFraction(-0.01)}
           >
