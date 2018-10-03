@@ -15,6 +15,7 @@
     "react-ui/node_modules"
   ],
   "dependencies": {
+    "body-parser": "^1.18.3",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "mongodb": "^3.1.6"

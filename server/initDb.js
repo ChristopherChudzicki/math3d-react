@@ -7,9 +7,9 @@ const DATABASE_URI = process.env.MONGODB_URI || process.env.LOCAL_MONGODB_URI
 const GRAPH_COLLECTION = 'graph'
 
 const examples = [
-  { "_id": 1, "value": "cat" },
-  { "_id": 2, "value": "dog" },
-  { "_id": 3, "value": "zebra" }
+  { "_id": "1", "value": "cat" },
+  { "_id": "2", "value": "dog" },
+  { "_id": "3", "value": "zebra" }
 ]
 
 mongodb.MongoClient.connect(DATABASE_URI, function (err, client) {

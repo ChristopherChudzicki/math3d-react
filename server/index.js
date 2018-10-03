@@ -1,6 +1,7 @@
 // From https://github.com/mars/heroku-cra-node
 const express = require('express')
 const dotenv = require('dotenv')
+const bodyParser = require("body-parser");
 const path = require('path')
 const cluster = require('cluster')
 const mongodb = require('mongodb')
@@ -32,6 +33,9 @@ else {
   let db;
   const app = express();
 
+  // get json from request bodies
+  app.use(bodyParser.json());
+
   // Priority serve any static files.
   app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
@@ -51,23 +55,39 @@ else {
     })
 
     // Implement database API
+   /**
+    * "api/graph"
+    * POST: post a new graph
+    */
+    app.post("/api/graph", function(req, res) {
+      const newGraph = req.body;
 
-    // Hello world
-    app.get('/api/test', function (req, res) {
-      res.set('Content-Type', 'application/json');
-      res.send('{"message":"Hello from the custom server!"}');
-    })
-
-    // Get all graphs from the database
-    app.get("/api/graph", function(req, res) {
-      db.collection(GRAPH_COLLECTION).find({}).toArray(function(err, docs) {
+      db.collection(GRAPH_COLLECTION).insertOne(newGraph, function(err, doc) {
         if (err) {
-          console.log(`Failed to get graphs, error: ${err.message}`)
-        } else {
-          res.status(200).json(docs);
+          handleError(res, err.message, "Failed to save new graph.");
+        }
+        else {
+          res.status(201).json(doc.ops[0]);
         }
       });
+
     });
+    /**
+     * "api/graph:id"
+     * GET: get graph by id
+     * PUT: update graph by id
+     * DELETE: delete graph by id
+     */
+
+     app.get("/api/graph/:id", function(req, res) {
+       db.collection(GRAPH_COLLECTION).findOne({ _id: req.params.id }, function(err, doc) {
+         if (err) {
+           handleError(res, err.message, "Failed to get graph");
+         } else {
+           res.status(200).json(doc);
+         }
+       });
+     });
 
     // All remaining requests return the React app, so it can handle routing.
     app.get('*', function(request, response) {
@@ -77,22 +97,11 @@ else {
   })
 }
 
-// Example api call:
-// fetch('/api/graph')
-//   .then(response => {
-//     if (!response.ok) {
-//       throw new Error(`status ${response.status}`);
-//     }
-//     return response.json();
-//   })
-//   .then(json => {
-//     console.log({
-//       message: json,
-//       fetching: false
-//     });
-//   }).catch(e => {
-//     console.log({
-//       message: `API call failed: ${e}`,
-//       fetching: false
-//     });
-//   })
+// Generic error handler used by all api endpoints.
+function handleError(res, reason, message, code) {
+  console.group()
+  console.warn('Database Error')
+  console.warn(reason)
+  console.groupEnd()
+  res.status(code || 500).json({"error": message});
+}
