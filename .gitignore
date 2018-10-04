@@ -2,12 +2,16 @@
 
 # dependencies
 /node_modules
+react-ui/node_modules
+
+# local mongodb
+/data
 
 # testing
 /coverage
 
 # production
-/build
+react-ui/build
 
 # misc
 .DS_Store
