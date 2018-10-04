@@ -18,6 +18,7 @@ const AnimationButton = styled(Button)`
   justify-content: center;
   & i {
     color: ${props => props.theme.gray[5]};
+    font-size:100%;
   }
 `
 
