@@ -102,8 +102,11 @@ export default class AnimationControls extends PureComponent<Props> {
     clearInterval(this._interval)
   }
 
-  incrementSpeed(speed: number) {
-    const index = speedValues.indexOf(speed)
+  canIncrement() {
+    return this.props.speedMultiplier !== speedValues[speedValues.length - 1]
+  }
+  incrementSpeed() {
+    const index = speedValues.indexOf(this.props.speedMultiplier)
     const newIndex = Math.min(index + 1, speedValues.length)
     const newSpeed = speedValues[newIndex]
     this.props.setProperty('speedMultiplier', newSpeed)
@@ -113,8 +116,11 @@ export default class AnimationControls extends PureComponent<Props> {
     }
   }
 
+  canDecrement() {
+    return this.props.speedMultiplier !== speedValues[0]
+  }
   decrementSpeed(speed: number) {
-    const index = speedValues.indexOf(speed)
+    const index = speedValues.indexOf(this.props.speedMultiplier)
     const newIndex = Math.max(index - 1, 0)
     const newSpeed = speedValues[newIndex]
     this.props.setProperty('speedMultiplier', newSpeed)
@@ -160,7 +166,8 @@ export default class AnimationControls extends PureComponent<Props> {
         </AnimationButton>
         <Button.Group size='small' style={groupStyle}>
           <AnimationButton
-            onClick={() => this.decrementSpeed(speedMultiplier)}
+            onClick={this.decrementSpeed}
+            disabled={!this.canDecrement()}
           >
             <Icon type="backward" />
           </AnimationButton>
@@ -169,7 +176,8 @@ export default class AnimationControls extends PureComponent<Props> {
             <Icon type="close" style={ { fontSize: '75%' } } />
           </AnimationButton>
           <AnimationButton
-            onClick={() => this.incrementSpeed(speedMultiplier)}
+            onClick={this.incrementSpeed}
+            disabled={!this.canIncrement()}
           >
             <Icon type="forward" />
           </AnimationButton>
