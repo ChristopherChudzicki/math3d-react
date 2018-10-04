@@ -71,13 +71,19 @@ export default class VariableSlider extends PureComponent<Props> {
     this.forceUpdate()
   }
 
+  static getLaTeX(manualValue: ?string, value: number) {
+    return (manualValue !== null && manualValue !== undefined)
+      ? manualValue
+      : value.toFixed(2)
+  }
+
   render() {
     const {
       id,
       value,
       manualValue
     } = this.props
-    const valueText = manualValue || value.toFixed(2)
+    const valueText = VariableSlider.getLaTeX(manualValue, value)
     return (
       <MathObjectUI
         id={id}
@@ -118,7 +124,8 @@ export default class VariableSlider extends PureComponent<Props> {
 
   renderSlider( { scope }: { scope: Scope } ) {
     const { manualValue, value } = this.props
-    const valueText = manualValue || value.toFixed(2)
+    const valueText = VariableSlider.getLaTeX(manualValue, value)
+
     return (
       <EvaluatedSlider
         ref={ref => { this._evaluatedSlider = ref }}
