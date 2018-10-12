@@ -15,7 +15,7 @@ const mathObjects : { [string]: MathObjectWrapper } = {
 export default mathObjects
 
 export { FOLDER } from './Folder'
-export { VARIABLE, VARIABLE_SLIDER } from './MathSymbols'
+export { VARIABLE, VARIABLE_SLIDER, BOOLEAN_VARIABLE } from './MathSymbols'
 export {
   AXIS,
   GRID,
