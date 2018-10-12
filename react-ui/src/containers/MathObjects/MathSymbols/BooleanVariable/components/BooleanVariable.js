@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react'
 import { Switch } from 'antd'
 import MathObjectUI from 'containers/MathObjects/MathObjectUI'
-import { MainRow } from 'containers/MathObjects/components'
+import { MainRow, Cell, Label } from 'containers/MathObjects/components'
 import {
   MathInputLHS
 } from 'containers/MathObjects/containers/MathInput'
@@ -28,15 +28,25 @@ export default class BooleanVariable extends PureComponent<Props> {
         type={BOOLEAN_VARIABLE}
       >
         <MainRow>
-          <MathInputLHS
-            parentId={this.props.id}
-          />
-          <Switch
-            checkedChildren='On'
-            unCheckedChildren='Off'
-            checked={this.props.value}
-            onChange={this.onChange}
-          />
+          <Cell>
+            <Label>
+              Name:
+            </Label>
+            <MathInputLHS
+              parentId={this.props.id}
+            />
+          </Cell>
+          <Cell>
+            <Label>
+              Value:
+            </Label>
+            <Switch
+              checkedChildren='On'
+              unCheckedChildren='Off'
+              checked={this.props.value}
+              onChange={this.onChange}
+            />
+          </Cell>
         </MainRow>
       </MathObjectUI>
     )

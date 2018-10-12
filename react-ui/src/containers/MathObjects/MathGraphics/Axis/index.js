@@ -8,8 +8,7 @@ import {
   MathInputRHS,
   ConnectedStaticMath
 } from 'containers/MathObjects/containers/MathInput'
-import styled from 'styled-components'
-import { MainRow } from 'containers/MathObjects/components'
+import { MainRow, Cell, Label } from 'containers/MathObjects/components'
 
 export const AXIS = 'AXIS'
 
@@ -20,16 +19,6 @@ type Props = {
 const noFlex = {
   flex: 0
 }
-
-const Cell = styled.div`
-  display: flex;
-  flex: 1;
-  align-items:center;
-`
-const Label = styled.span`
-  padding-left:5px;
-  padding-right:5px;
-`
 
 export class AxisUI extends PureComponent<Props> {
 
