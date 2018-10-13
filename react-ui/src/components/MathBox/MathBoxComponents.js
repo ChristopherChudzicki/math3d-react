@@ -12,6 +12,7 @@ import {
 } from './helpers'
 import diffWithSets from 'utils/shallowDiffWithSets'
 import { lighten } from 'utils/colors'
+import marchingCubes from 'utils/marchingCubes'
 
 type MathBoxNode = any
 
@@ -853,18 +854,33 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
   //
   // @Jason BUT: feel free not to worry too much about the validation business at first.
   static handleLHS(nodes: HandlerNodes, handledProps: HandledProps) {
-    // get lhs and rhs from handledProps
-    const { lhs, rhs } = handledProps
-    // get the nodes you want, determined by class properties above
-    // You probably don't need renderNodes for this method, but I included it
-    const { renderNodes, dataNodes } = nodes
+    const { lhs } = handledProps
+    validateFunctionSignature(lhs, 3, 1)
+    ImplicitSurface.updateData(nodes, handledProps)
   }
 
   // @jason this method should be almost 100% the same as handleLHS
   // but possibly validate differently
   static handleRHS(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { rhs } = handledProps
+    validateFunctionSignature(rhs, 3, 1)
+    ImplicitSurface.updateData(nodes, handledProps)
+  }
+
 
   }
+
+  static updateData(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { lhs, rhs } = handledProps
+    const { dataNodes } = nodes
+
+    const implicitFunc = (x, y, z) => lhs(x, y, z) - rhs(x, y, z)
+
+    // Figure out how to get the bounds
+    const implicitTriangles = marchingCubes(-5, 5, -5, 5, -5, 5, implicitFunc, 0, 20)
+    dataNodes.set('data', implicitTriangles)
+    dataNodes.set('width', implicitTriangles.length)
+}
 
   // @jason feel free to not implement this yet.
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -877,8 +893,14 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     // group. This function MUST return the group.
     const group = parent.group()
 
-    group.array()
-    group.strip()
+    // Array stores a list of the points of the triangles
+    // Use strip to render them
+    group.array( {
+      channels: 3,
+      items: 3,
+      width: 0,
+      live: false
+    } ).strip()
 
     return group
   }
