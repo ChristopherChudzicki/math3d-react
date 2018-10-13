@@ -30,8 +30,8 @@ function getSettingsFormSpec(metadata: MetaData) {
     .filter(property => !metadata[property].isPrimary)
     .sort()
     .map(property => {
-      const { inputType, label = property } = metadata[property]
-      return { property, inputType, label }
+      const { inputType, label = property, allowEmpty } = metadata[property]
+      return { property, inputType, label, allowEmpty }
     } )
 }
 

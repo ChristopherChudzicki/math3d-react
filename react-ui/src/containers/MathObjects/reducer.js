@@ -10,7 +10,8 @@ import {
 import MathObjects, {
   Folder,
   MathSymbols,
-  MathGraphics
+  MathGraphics,
+  BOOLEAN_VARIABLE
 } from './index'
 
 const initialState = {}
@@ -62,4 +63,41 @@ export function createReducer(mathObjectNames) {
 
 export const folders = createReducer(new Set( [Folder.type] ))
 export const mathSymbols = createReducer(new Set(Object.keys(MathSymbols)))
-export const mathGraphics = createReducer(new Set(Object.keys(MathGraphics)))
+const mathGraphicsRaw = createReducer(new Set(Object.keys(MathGraphics)))
+
+// Add in some custom logic for handling calculatedVisibility.
+// sets `useCalculatedVisibility` to:
+//    false, whenever object's visibility is set
+//    true, whenever a toggle variable is edited
+//    true, whenever calculatedVisibility is edited
+// In most cases, just defer to mathGraphicsRaw
+export function mathGraphics(state, action) {
+  const { name, type, payload } = action
+  const partialUpdate = mathGraphicsRaw(state, action)
+  if (type !== SET_PROPERTY && type !== TOGGLE_PROPERTY) {
+    return partialUpdate
+  }
+  const { property } = payload
+  if (property === 'visible') {
+    return update(partialUpdate, {
+      [payload.id]: { useCalculatedVisibility: { $set: false } }
+    } )
+  }
+  else if (property === 'calculatedVisibility') {
+    return update(partialUpdate, {
+      [payload.id]: { useCalculatedVisibility: { $set: true } }
+    } )
+  }
+  else if (name === BOOLEAN_VARIABLE) {
+    // mutation is ok here because partialUpdate is a copy of the previous state.
+    for (const id of Object.keys(partialUpdate)) {
+      if (partialUpdate[id].calculatedVisibility !== 'null') {
+        partialUpdate[id].useCalculatedVisibility = true
+      }
+    }
+    return partialUpdate
+  }
+  else {
+    return partialUpdate
+  }
+}

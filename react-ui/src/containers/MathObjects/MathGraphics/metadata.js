@@ -31,6 +31,12 @@ const universal: MetaData = {
   zBias: {
     inputType: 'math',
     defaultValue: '0'
+  },
+  calculatedVisibility: {
+    inputType: 'math',
+    defaultValue: '',
+    allowEmpty: true,
+    label: 'calculated visibility'
   }
 }
 
@@ -41,7 +47,8 @@ const labeled: MetaData = {
   },
   labelVisible: {
     inputType: 'boolean',
-    defaultValue: false
+    defaultValue: false,
+    label: 'label visibile'
   }
 }
 

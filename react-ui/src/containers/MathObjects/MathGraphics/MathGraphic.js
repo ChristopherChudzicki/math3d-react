@@ -32,7 +32,11 @@ export default class MathGraphic implements MathObjectWrapper {
   }
 
   static getDefaultSettings(type: string, metadata: MetaData, description: ?string) {
-    const initial = { type, description: description || capitalize(type) }
+    const initial = {
+      type,
+      description: description || capitalize(type),
+      useCalculatedVisibility: false
+    }
     return Object.keys(metadata).reduce((acc, property) => {
       acc[property] = metadata[property].defaultValue
       return acc

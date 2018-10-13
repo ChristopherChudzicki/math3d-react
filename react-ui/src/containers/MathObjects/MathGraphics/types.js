@@ -24,6 +24,7 @@ export type MetaData = {
   [property: string]: InputTypeData & {
     label?: string,
     isPrimary?: boolean,
+    allowEmpty?: boolean
   }
 }
 

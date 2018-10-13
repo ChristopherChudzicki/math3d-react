@@ -9,7 +9,8 @@ type InputType = 'text' | 'boolean' | 'math'
 export type FormRow = {
   inputType: InputType,
   property: string,
-  label: string
+  label: string,
+  allowEmpty?: bool
 }
 
 // TODO: don't use any
@@ -29,6 +30,8 @@ const Grid = styled.div`
 const Label = styled.span`
   color: ${props => props.theme.gray[6]};
   justify-self: end;
+  text-align: justify;
+  direction: rtl;
 `
 
 const switchStyle = { width: 40 }
@@ -44,17 +47,18 @@ export default class SettingsContent extends React.PureComponent<Props> {
   }
 
   renderRow(formRow: FormRow) {
-    const { property, label, inputType } = formRow
+    console.log(formRow)
+    const { property, label, inputType, allowEmpty } = formRow
 
     return (
       <React.Fragment key={property}>
         <Label>{label}</Label>
-        {this.renderInput(property, inputType)}
+        {this.renderInput(property, inputType, allowEmpty)}
       </React.Fragment>
     )
   }
 
-  renderInput(property: string, inputType: InputType) {
+  renderInput(property: string, inputType: InputType, allowEmpty: ?bool) {
     switch (inputType) {
 
       case 'text': {
@@ -79,6 +83,7 @@ export default class SettingsContent extends React.PureComponent<Props> {
         return (
           <MathInputRHS
             size='small'
+            allowEmpty={allowEmpty}
             parentId={this.props.parentId}
             field={property}
           />
