@@ -2,6 +2,7 @@
 import * as React from 'react'
 import math from 'utils/mathjs'
 import {
+  validateBoolean,
   isEqualNumerically,
   validateNumeric,
   validateVector,
@@ -18,11 +19,11 @@ type HandlerNodes = {
   groupNode: MathBoxNode
 }
 
-type Handler = (nodes: HandlerNodes, handledProps: any) => void
-
 export type HandledProps = {
   [string]: any,
 }
+
+type Handler = (nodes: HandlerNodes, props: HandledProps) => void
 
 type ErrorMap = {
   [string]: Error
@@ -142,7 +143,6 @@ class AbstractMBC extends React.Component<Props> {
       renderNodes: this.getNodes(this.renderNodeNames),
       groupNode: this.mathboxNode
     }
-    const handledProps = this.getHandledProps()
 
     const errors = {}
     Object.keys(propsToUpdate).forEach(prop => {
@@ -150,7 +150,7 @@ class AbstractMBC extends React.Component<Props> {
       const handler = this.handlers[prop]
       if (handler) {
         try {
-          handler(nodes, handledProps)
+          handler(nodes, this.props)
         }
         catch (error) {
           errors[prop] = error
@@ -166,11 +166,9 @@ class AbstractMBC extends React.Component<Props> {
     if (Object.keys(errors).length === 0) {
       return
     }
-    console.group('Errors caught while trying to re-render:')
     Object.keys(errors).forEach(propName => {
       console.warn(errors[propName] )
     } )
-    console.groupEnd()
   }
 
   componentDidUpdate() {
@@ -199,10 +197,21 @@ function makeSetProperty(propName, validator: ?Function) {
 
 const universalHandlers = {
   opacity: makeSetProperty('opacity', validateNumeric),
-  visible: makeSetProperty('visible'),
   zBias: makeSetProperty('zBias', validateNumeric),
   zIndex: makeSetProperty('zIndex', validateNumeric),
-  color: makeSetProperty('color')
+  color: makeSetProperty('color'),
+  calculatedVisibility: function(nodes: HandlerNodes, props: Props) {
+    const { calculatedVisibility, useCalculatedVisibility } = props
+    if (useCalculatedVisibility) {
+      validateBoolean(calculatedVisibility)
+      nodes.renderNodes.set('visible', calculatedVisibility)
+    }
+  },
+  visible: function(nodes: HandlerNodes, props: Props) {
+    if (!props.useCalculatedVisibility) {
+      nodes.renderNodes.set('visible', props.visible)
+    }
+  }
 }
 
 const lineLikeHandlers = {
