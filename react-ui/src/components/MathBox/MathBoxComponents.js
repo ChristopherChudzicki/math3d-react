@@ -840,7 +840,10 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     ...universalHandlers,
     shaded: makeSetProperty('shaded'),
     lhs: ImplicitSurface.handleLHS,
-    rhs: ImplicitSurface.handleRHS
+    rhs: ImplicitSurface.handleRHS,
+    xRange: ImplicitSurface.handleXRange,
+    yRange: ImplicitSurface.handleYRange,
+    zRange: ImplicitSurface.handleZRange
   }
 
   // @jason The two methods handleLHS and handleRHS will probably be almost the
@@ -867,17 +870,31 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     ImplicitSurface.updateData(nodes, handledProps)
   }
 
+  static handleXRange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { xRange } = handledProps
+    validateVector(xRange, 2)
+    ImplicitSurface.updateData(nodes, handledProps)
+  }
 
+  static handleYRange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { yRange } = handledProps
+    validateVector(yRange, 2)
+    ImplicitSurface.updateData(nodes, handledProps)
+  }
+
+  static handleZRange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { zRange } = handledProps
+    validateVector(zRange, 2)
+    ImplicitSurface.updateData(nodes, handledProps)
   }
 
   static updateData(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { lhs, rhs } = handledProps
+    const { lhs, rhs, xRange, yRange, zRange } = handledProps
     const { dataNodes } = nodes
 
     const implicitFunc = (x, y, z) => lhs(x, y, z) - rhs(x, y, z)
-
-    // Figure out how to get the bounds
-    const implicitTriangles = marchingCubes(-5, 5, -5, 5, -5, 5, implicitFunc, 0, 20)
+    const implicitTriangles = marchingCubes(xRange[0], xRange[1], yRange[0], yRange[1],
+                                            zRange[0], zRange[1], implicitFunc, 0, 20)
     dataNodes.set('data', implicitTriangles)
     dataNodes.set('width', implicitTriangles.length)
 }
