@@ -3,6 +3,8 @@ import React, { PureComponent } from 'react'
 import { Button, Icon } from 'antd'
 import styled from 'styled-components'
 
+window.timers = {}
+
 const AnimationControlsContainer = styled.div`
   display: flex;
   flex: 1;
@@ -89,12 +91,13 @@ export default class AnimationControls extends PureComponent<Props> {
     this.props.setProperty('isAnimating', true)
     const { baseAnimationDuration, fps, speedMultiplier } = this.props
     const duration = baseAnimationDuration/speedMultiplier
-    const delay = 1/fps
+    const delay = 1/fps // delay in SECONDS !
+    const delayMs = delay * 1000 // delay in ms
     const fractionalStepSize = delay/duration // inverse of numSteps = duration/delay
     const incrementByFraction = this.props.incrementByFraction
     this._interval = setInterval(
       () => incrementByFraction(fractionalStepSize),
-      delay
+      delayMs
     )
   }
 
