@@ -53,7 +53,7 @@ export default class MathBoxScene extends PureComponent<Props> {
     // clear old errors if no longer present
     const oldErrors = this.props.renderErrors
     Object.keys(oldErrors[id] )
-      .filter(prop => updatedProps[prop] ) // make sure the prop was updated
+      .filter(prop => updatedProps.hasOwnProperty(prop)) // make sure the prop was updated
       .filter(prop => !errors[prop] ) // make sure updated prop does not have error
       .forEach(prop => { // clear the error
         setError(id, prop, new RenderErrorData())
