@@ -47,7 +47,6 @@ export default class SettingsContent extends React.PureComponent<Props> {
   }
 
   renderRow(formRow: FormRow) {
-    console.log(formRow)
     const { property, label, inputType, allowEmpty } = formRow
 
     return (
