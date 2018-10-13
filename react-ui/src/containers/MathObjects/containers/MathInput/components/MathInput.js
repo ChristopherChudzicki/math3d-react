@@ -20,8 +20,10 @@ const ErrorContainer = styled.div`
 
 export default class MathInput extends PureComponent {
 
-  static validate(validators, parser, latex, validateAgainst) {
-
+  static validate(validators, parser, latex, validateAgainst, allowEmpty=false) {
+    if (allowEmpty && latex.trim() === '') {
+      return new ParseErrorData(null)
+    }
     for (const validator of validators) {
       const parseErrorData = validator(parser, latex, validateAgainst)
       if (parseErrorData.isError) {
@@ -41,6 +43,7 @@ export default class MathInput extends PureComponent {
     validators: PropTypes.arrayOf(PropTypes.func).isRequired,
     validateAgainst: PropTypes.any,
     size: PropTypes.oneOf( ['small', 'large'] ).isRequired,
+    allowEmpty: PropTypes.bool.isRequired,
     // (prop, latex, error) => ...
     onValidatedTextChange: PropTypes.func.isRequired,
     prefix: PropTypes.string.isRequired,
@@ -56,7 +59,8 @@ export default class MathInput extends PureComponent {
     validators: [isAssignmentRHS],
     displayErrorDelay: 1500,
     size: 'large',
-    prefix: ''
+    prefix: '',
+    allowEmpty: false
   }
 
   state = {
@@ -119,8 +123,8 @@ export default class MathInput extends PureComponent {
   }
 
   validateSelf(latex) {
-    const { validators, validateAgainst, parser } = this.props
-    return MathInput.validate(validators, parser, latex, validateAgainst)
+    const { validators, validateAgainst, parser, allowEmpty } = this.props
+    return MathInput.validate(validators, parser, latex, validateAgainst, allowEmpty)
   }
 
   componentDidMount() {

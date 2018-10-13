@@ -3,6 +3,13 @@ import math from 'utils/mathjs'
 
 // TODO test this? Maybe Flow is good enough
 
+export function validateBoolean(value: mixed) {
+  const valueType = typeof value
+  if (valueType !== 'boolean') {
+    throw new TypeError('value must be boolean')
+  }
+}
+
 export function isEqualNumerically(obj1: mixed, obj2: mixed): bool {
   if (obj1 === obj2) { return true }
   if (!(obj1 instanceof Array && obj2 instanceof Array)) { return false }
