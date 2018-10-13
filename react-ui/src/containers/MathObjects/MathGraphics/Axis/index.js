@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react'
 import { Axis as AxisGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
-import MathGraphicUI from 'containers/MathObjects/MathGraphics/MathGraphicUI'
+import MathGraphicUI from '../containers/MathGraphicUI'
 import { axisMeta } from '../metadata'
 import {
   MathInputRHS,

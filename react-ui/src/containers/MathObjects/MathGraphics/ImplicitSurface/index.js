@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react'
 import { ImplicitSurface as ImplicitSurfaceGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
-import MathGraphicUI from 'containers/MathObjects/MathGraphics/MathGraphicUI'
+import MathGraphicUI from '../containers/MathGraphicUI'
 import { implicitSurfaceMeta } from '../metadata'
 import { MainRow } from 'containers/MathObjects/components'
 import {
@@ -82,6 +82,7 @@ export class ImplicitSurfaceUI extends PureComponent<Props> {
 
 export default new MathGraphic( {
   type: IMPLICIT_SURFACE,
+  description: 'Implicit Surface',
   metadata: implicitSurfaceMeta,
   uiComponent: ImplicitSurfaceUI,
   mathboxComponent: ImplicitSurfaceGraphic
