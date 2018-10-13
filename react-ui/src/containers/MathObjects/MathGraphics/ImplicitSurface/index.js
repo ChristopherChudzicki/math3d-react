@@ -82,6 +82,7 @@ export class ImplicitSurfaceUI extends PureComponent<Props> {
 
 export default new MathGraphic( {
   type: IMPLICIT_SURFACE,
+  description: 'Implicit Surface',
   metadata: implicitSurfaceMeta,
   uiComponent: ImplicitSurfaceUI,
   mathboxComponent: ImplicitSurfaceGraphic

@@ -55,6 +55,7 @@ export class ParemetricCurveUI extends PureComponent<Props> {
 
 export default new MathGraphic( {
   type: PARAMETRIC_CURVE,
+  description: 'Parametric Curve',
   metadata: parametricCurveMeta,
   uiComponent: ParemetricCurveUI,
   mathboxComponent: ParametricCurveGraphic
