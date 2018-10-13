@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react'
 import { Vector as VectorGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
-import MathGraphicUI from 'containers/MathObjects/MathGraphics/MathGraphicUI'
+import MathGraphicUI from '../containers/MathGraphicUI'
 import { vectorMeta } from '../metadata'
 import { MainRow } from 'containers/MathObjects/components'
 import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'

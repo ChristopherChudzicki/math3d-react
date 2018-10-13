@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react'
 import { Grid as GridGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
-import MathGraphicUI from 'containers/MathObjects/MathGraphics/MathGraphicUI'
+import MathGraphicUI from '../containers/MathGraphicUI'
 import { gridMeta } from '../metadata'
 import {
   ConnectedStaticMath

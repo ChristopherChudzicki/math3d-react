@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react'
 import { ParametricCurve as ParametricCurveGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
-import MathGraphicUI from 'containers/MathObjects/MathGraphics/MathGraphicUI'
+import MathGraphicUI from '../containers/MathGraphicUI'
 import { parametricCurveMeta } from '../metadata'
 import { MainRow } from 'containers/MathObjects/components'
 import {
