@@ -34,7 +34,7 @@ export class ParemetricCurveUI extends PureComponent<Props> {
         <MainRow>
           <MathInputRHS
             field='expr'
-            prefix='f(t)='
+            prefix='_f(t)='
             parentId={this.props.id}
           />
         </MainRow>
