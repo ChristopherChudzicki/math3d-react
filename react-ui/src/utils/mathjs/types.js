@@ -96,4 +96,5 @@ export type Math = {
   multiply: (Numeric, Numeric) => Numeric,
   cross: (Numeric, Numeric) => Numeric,
   norm: (Numeric) => number,
+  i: {im: number, re: number}
 }
