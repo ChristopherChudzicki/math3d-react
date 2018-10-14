@@ -153,7 +153,7 @@ const settingsList = [
   {
     type: PARAMETRIC_CURVE,
     folder: 'mainFolder',
-    expr: 'f(t)=\\left[\\cos(t),\\sin(t),T\\right]'
+    expr: '_f(t)=\\left[\\cos(t),\\sin(t),T\\right]'
   },
   ...varsList,
   randomLine(), randomLine(),

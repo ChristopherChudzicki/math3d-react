@@ -216,7 +216,7 @@ export const vectorMeta: MetaData = {
 const parametricCurveSpecific: MetaData = {
   expr: {
     inputType: 'math',
-    defaultValue: 'f(t)=\\left[\\cos\\left(t\\right),\\ \\sin\\left(t\\right),\\ t\\right]',
+    defaultValue: '_f(t)=\\left[\\cos\\left(t\\right),\\ \\sin\\left(t\\right),\\ t\\right]',
     isPrimary: true
   },
   range: {
