@@ -3,7 +3,7 @@
 // These types are for a subset of MathJS that math3d uses
 // Not complete! At all!
 
-type Numeric = number | Array<Numeric>
+export type Numeric = number | Array<Numeric>
 
 // Parse tree types
 // guided by http://mathjs.org/docs/expressions/expression_trees.html
@@ -85,6 +85,15 @@ export type Math = {
     DenseMatrix: Function,
     Complex: Function
   },
+  eval: (string, ?Object) => Numeric | Function,
+  import: (Object) => void,
+  // TODO: The types below are too loose; e.g., add/subtract should both be
+  // length-preserving polymorphic types; cross only works
+  // with 3-component vectors, norm does not accept matrices
   add: (Numeric, Numeric) => Numeric,
-  eval: (string, ?Object) => Numeric | Function
+  subtract: (Numeric, Numeric) => Numeric,
+  divide: (Numeric, Numeric) => Numeric,
+  multiply: (Numeric, Numeric) => Numeric,
+  cross: (Numeric, Numeric) => Numeric,
+  norm: (Numeric) => number,
 }

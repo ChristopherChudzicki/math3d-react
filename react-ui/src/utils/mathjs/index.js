@@ -1,7 +1,7 @@
 // @flow
 import customMath from './custom'
-import type { Math } from './types'
+import { diff, unitT, unitN, unitB } from './derivatives'
 
-const math: Math = customMath
+customMath.import( { diff, unitT, unitN, unitB } )
 
-export default math
+export default customMath

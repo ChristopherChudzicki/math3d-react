@@ -1,5 +1,7 @@
+// @flow
+import type { Math } from './types'
 import core from 'mathjs/core'
-const math = core.create()
+const math: Math = core.create()
 
 math.import(require('mathjs/lib/type/matrix'))
 math.import(require('mathjs/lib/type/complex'))
