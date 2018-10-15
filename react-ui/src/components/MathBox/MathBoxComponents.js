@@ -843,7 +843,8 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     rhs: ImplicitSurface.handleRHS,
     xRange: ImplicitSurface.handleXRange,
     yRange: ImplicitSurface.handleYRange,
-    zRange: ImplicitSurface.handleZRange
+    zRange: ImplicitSurface.handleZRange,
+    samples: ImplicitSurface.handleSamples
   }
 
   // @jason The two methods handleLHS and handleRHS will probably be almost the
@@ -889,12 +890,12 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
   }
 
   static updateData(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { lhs, rhs, xRange, yRange, zRange } = handledProps
+    const { lhs, rhs, xRange, yRange, zRange, samples } = handledProps
     const { dataNodes } = nodes
 
     const implicitFunc = (x, y, z) => lhs(x, y, z) - rhs(x, y, z)
     const implicitTriangles = marchingCubes(xRange[0], xRange[1], yRange[0], yRange[1],
-                                            zRange[0], zRange[1], implicitFunc, 0, 20)
+                                            zRange[0], zRange[1], implicitFunc, 0, samples)
     dataNodes.set('data', implicitTriangles)
     dataNodes.set('width', implicitTriangles.length)
 }
@@ -902,6 +903,14 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
   // @jason feel free to not implement this yet.
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
     const { samples } = handledProps
+    validateNumeric(samples)
+    if (samples < 2) {
+      throw new Error('Samples needs to be greater than 1')
+    }
+    if (samples > 50) {
+      throw new Error('Samples shouldn\'t be greater than 50')
+    }
+    ImplicitSurface.updateData(nodes, handledProps)
   }
 
   mathboxRender = (parent) => {
