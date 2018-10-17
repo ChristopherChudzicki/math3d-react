@@ -38,8 +38,10 @@ export default class MathExpression {
     this.name = this.tree.name ? this.tree.name : null
     this._postprocess(postprocessors)
 
-    this.eval = memoizeOne(this._getEval())
     this.dependencies = this._getDependencies()
+
+    // $FlowFixMe memoizeOne expects itsequality function arguments to be of type mixed, but we specify that they are of type Scope
+    this.eval = memoizeOne(this._getEval(), this._getSubscopeEquality())
   }
 
   _preprocess(preprocessors: Array<PreProcessor>) {
@@ -113,6 +115,18 @@ export default class MathExpression {
       }
       return raw
     }
+  }
+
+  _getSubscopeEquality() {
+    const subscopeEquality = (newScope: Scope, oldScope: Scope) => {
+      for (const symbol of this.dependencies) {
+        if (newScope[symbol] !== oldScope[symbol] ) {
+          return false
+        }
+      }
+      return true
+    }
+    return subscopeEquality
   }
 
 }
