@@ -77,7 +77,6 @@ class AbstractMBC extends React.Component<Props> {
         unchanged.add(prop)
       }
     }
-
     return updated.size !== 0 || added.size !== 0 || deleted.size !== 0
   }
 
@@ -543,6 +542,8 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
     validateVector(range, 2)
     const cartesian = nodes.groupNode.select('cartesian')
     cartesian.set('range', [range, [0, 1]] )
+
+    ParametricCurve.forceUpdate(nodes, handledProps)
   }
 
   static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -557,6 +558,17 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
     const { samples } = handledProps
     validateNumeric(samples)
     nodes.dataNodes.set('width', samples)
+  }
+
+  // This method is a hacky way to force the interval data primitive to update.
+  static forceUpdate(nodes: HandlerNodes, handledProps: HandledProps) {
+    try {
+      ParametricCurve.handleExpr(nodes, handledProps)
+    }
+    catch (err) {
+      // don't do anything with the error; it should have been caught when
+      // handleExpr was called directly.
+    }
   }
 
   mathboxRender = (parent) => {

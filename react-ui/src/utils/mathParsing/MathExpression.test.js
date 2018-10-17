@@ -115,3 +115,31 @@ describe('Evaluation and Name Assignment', () => {
   } )
 
 } )
+
+describe('Math Expression evaluation caching', () => {
+  it('does not reevaluate if scope is equal by reference', () => {
+    const expr = new MathExpression('f(t)=t^n')
+    const scope = { n: 2 }
+    const f1 = expr.eval(scope)
+    const f2 = expr.eval(scope)
+    expect(f1).toBe(f2)
+  } )
+
+  it('does not reevaluate expression if only irrelevant variables change', () => {
+    const expr = new MathExpression('f(t)=t^n')
+    const scope1 = { n: 2, a: 5 }
+    const scope2 = { n: 2, a: 2, b: 3 }
+    const f1 = expr.eval(scope1)
+    const f2 = expr.eval(scope2)
+    expect(f1).toBe(f2)
+  } )
+
+  it('does reevaluate scope if used variables have changed', () => {
+    const expr = new MathExpression('f(t)=t^n')
+    const scope1 = { n: 2, a: 5 }
+    const scope2 = { n: 3, a: 2, b: 3 }
+    const f1 = expr.eval(scope1)
+    const f2 = expr.eval(scope2)
+    expect(f1).not.toBe(f2)
+  } )
+} )
