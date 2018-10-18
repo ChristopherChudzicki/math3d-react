@@ -120,7 +120,10 @@ export default class MathExpression {
   _getSubscopeEquality() {
     const subscopeEquality = (newScope: Scope, oldScope: Scope) => {
       for (const symbol of this.dependencies) {
-        if (newScope[symbol] !== oldScope[symbol] ) {
+        if (newScope[symbol]===undefined) {
+          return false
+        }
+        else if (newScope[symbol] !== oldScope[symbol] ) {
           return false
         }
       }
