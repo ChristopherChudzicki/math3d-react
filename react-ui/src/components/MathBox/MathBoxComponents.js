@@ -220,6 +220,10 @@ const lineLikeHandlers = {
   end: makeSetProperty('end')
 }
 
+const surfaceHandlers = {
+  shaded: makeSetProperty('shaded')
+}
+
 function makeHandleLabel(dataOffset) {
   return (nodes: HandlerNodes, handledProps: HandledProps) => {
     const data = [...Array(dataOffset).fill(''), handledProps.label]
@@ -587,6 +591,102 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
     group.line( {
       points: data
     } )
+
+    return group
+  }
+
+}
+
+export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
+
+  dataNodeNames = ['area']
+  renderNodeNames = ['surface']
+  handlers = {
+    ...universalHandlers,
+    ...surfaceHandlers,
+    expr: ParametricSurface.handleExpr,
+    uRange: ParametricSurface.handleURange,
+    vRange: ParametricSurface.handleVRange
+    // gridColor
+    // gridOpacity
+    // gridU
+    // gridV
+  }
+
+  static handleURange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { uRange, vRange } = handledProps
+    validateVector(uRange, 2)
+    if (isVector(vRange, 2)) {
+      ParametricSurface.updateRange(nodes, handledProps)
+    }
+  }
+
+  static handleVRange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { uRange, vRange } = handledProps
+    validateVector(vRange, 2)
+    if (isVector(uRange, 2)) {
+      ParametricSurface.updateRange(nodes, handledProps)
+    }
+  }
+
+  static updateRange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { uRange, vRange } = handledProps
+
+    const cartesian = nodes.groupNode.select('cartesian')
+    cartesian.set('range', [uRange, vRange] )
+    ParametricSurface.forceUpdate(nodes, handledProps)
+  }
+
+  static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { expr } = handledProps
+    validateFunctionSignature(expr, 2, 3)
+    nodes.dataNodes.set('expr', (emit, u, v) => {
+      return emit(...expr(u, v))
+    } )
+  }
+
+  // This method is a hacky way to force the interval data primitive to update.
+  static forceUpdate(nodes: HandlerNodes, handledProps: HandledProps) {
+    try {
+      ParametricSurface.handleExpr(nodes, handledProps)
+    }
+    catch (err) {
+      // don't do anything with the error; it should have been caught when
+      // handleExpr was called directly.
+    }
+  }
+
+  mathboxRender = (parent) => {
+
+    const group = parent.group()
+
+    const data = group.cartesian()
+      .area( {
+        width: 64,
+        height: 64,
+        channels: 3,
+        axes: [1, 2],
+        live: false
+      } )
+
+    group
+      .surface( {
+        points: data
+      } ).group().set('classes', ['gridV'] )
+      .resample( {
+        height: 8, // this.settings.gridV,
+        source: data
+      } )
+      .line()
+      .end()
+      .group().set('classes', ['gridU'] )
+      .resample( {
+        width: 8, // this.settings.gridU,
+        source: data
+      } )
+      .transpose( { order: 'yx' } )
+      .line()
+      .end()
 
     return group
   }
