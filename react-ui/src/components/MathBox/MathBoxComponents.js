@@ -149,6 +149,7 @@ class AbstractMBC extends React.Component<Props> {
       const handler = this.handlers[prop]
       if (handler) {
         try {
+          console.log(handler.name)
           handler(nodes, this.props)
         }
         catch (error) {
@@ -606,11 +607,27 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     ...surfaceHandlers,
     expr: ParametricSurface.handleExpr,
     uRange: ParametricSurface.handleURange,
-    vRange: ParametricSurface.handleVRange
+    vRange: ParametricSurface.handleVRange,
+    uSamples: ParametricSurface.handleUSamples,
+    vSamples: ParametricSurface.handleVSamples
     // gridColor
     // gridOpacity
     // gridU
     // gridV
+  }
+
+  static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { dataNodes } = nodes
+    const { uSamples } = handledProps
+    validateNumeric(uSamples)
+    dataNodes.set('width', uSamples)
+  }
+
+  static handleVSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { dataNodes } = nodes
+    const { vSamples } = handledProps
+    validateNumeric(vSamples)
+    dataNodes.set('height', vSamples)
   }
 
   static handleURange(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -662,8 +679,6 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
     const data = group.cartesian()
       .area( {
-        width: 64,
-        height: 64,
         channels: 3,
         axes: [1, 2],
         live: false

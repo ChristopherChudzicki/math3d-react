@@ -265,6 +265,14 @@ const parametricSurfacaSpecific: MetaData = {
     inputType: 'math',
     defaultValue: '\\left[-3, 3\\right]',
     isPrimary: true
+  },
+  uSamples: {
+    inputType: 'math',
+    defaultValue: '64'
+  },
+  vSamples: {
+    inputType: 'math',
+    defaultValue: '64'
   }
 }
 
