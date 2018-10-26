@@ -7,7 +7,8 @@ import {
   validateNumeric,
   validateVector,
   isVector,
-  validateFunctionSignature
+  validateFunctionSignature,
+  hasFunctionSignature
 } from './helpers'
 import diffWithSets from 'utils/shallowDiffWithSets'
 
@@ -630,42 +631,44 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     dataNodes.set('height', vSamples)
   }
 
+  // The next three handlers all perform validation, then delegate to updateExpr
   static handleURange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { uRange, vRange } = handledProps
+    const { uRange } = handledProps
     validateVector(uRange, 2)
-    if (isVector(vRange, 2)) {
-      ParametricSurface.updateRange(nodes, handledProps)
-    }
+    ParametricSurface.updateExpr(nodes, handledProps)
   }
 
   static handleVRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { uRange, vRange } = handledProps
+    const { vRange } = handledProps
     validateVector(vRange, 2)
-    if (isVector(uRange, 2)) {
-      ParametricSurface.updateRange(nodes, handledProps)
-    }
-  }
-
-  static updateRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { uRange, vRange } = handledProps
-
-    const cartesian = nodes.groupNode.select('cartesian')
-    cartesian.set('range', [uRange, vRange] )
-    ParametricSurface.forceUpdate(nodes, handledProps)
+    ParametricSurface.updateExpr(nodes, handledProps)
   }
 
   static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
     const { expr } = handledProps
     validateFunctionSignature(expr, 2, 3)
+    ParametricSurface.updateExpr(nodes, handledProps)
+  }
+
+  // updates expression if expr, uRange, vRange all valid
+  static updateExpr(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { expr, uRange, vRange } = handledProps
+    const isValid = isVector(uRange, 2) && isVector(vRange, 2) && hasFunctionSignature(expr, 2, 3)
+    if (!isValid) {
+      return
+    }
+
     nodes.dataNodes.set('expr', (emit, u, v) => {
-      return emit(...expr(u, v))
+      const trueU = uRange[0] + u*(uRange[1] - uRange[0] )
+      const trueV = vRange[0] + v*(vRange[1] - vRange[0] )
+      return emit(...expr(trueU, trueV))
     } )
   }
 
   // This method is a hacky way to force the interval data primitive to update.
   static forceUpdate(nodes: HandlerNodes, handledProps: HandledProps) {
     try {
-      ParametricSurface.handleExpr(nodes, handledProps)
+      ParametricSurface.updateExpr(nodes, handledProps)
     }
     catch (err) {
       // don't do anything with the error; it should have been caught when
@@ -677,12 +680,13 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
     const group = parent.group()
 
-    const data = group.cartesian()
-      .area( {
-        channels: 3,
-        axes: [1, 2],
-        live: false
-      } )
+    const data = group.area( {
+      channels: 3,
+      axes: [1, 2],
+      live: false,
+      rangeX: [0, 1],
+      rangeY: [0, 1]
+    } )
 
     group
       .surface( {
