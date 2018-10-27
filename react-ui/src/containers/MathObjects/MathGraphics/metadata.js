@@ -273,6 +273,14 @@ const parametricSurfacaSpecific: MetaData = {
   vSamples: {
     inputType: 'math',
     defaultValue: '64'
+  },
+  gridU: {
+    inputType: 'math',
+    defaultValue: '8'
+  },
+  gridV: {
+    inputType: 'math',
+    defaultValue: '8'
   }
 }
 

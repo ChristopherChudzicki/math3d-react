@@ -610,11 +610,23 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     uRange: ParametricSurface.handleRange,
     vRange: ParametricSurface.handleRange,
     uSamples: ParametricSurface.handleUSamples,
-    vSamples: ParametricSurface.handleVSamples
+    vSamples: ParametricSurface.handleVSamples,
     // gridColor
     // gridOpacity
-    // gridU
-    // gridV
+    gridU: ParametricSurface.handleGridU,
+    gridV: ParametricSurface.handleGridV
+  }
+
+  static handleGridU(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { gridU } = handledProps
+    validateNumeric(gridU)
+    console.log(nodes.groupNode.select('resample.u').print())
+    nodes.groupNode.select('.gridU resample').set('width', gridU)
+  }
+  static handleGridV(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { gridV } = handledProps
+    validateNumeric(gridV)
+    nodes.groupNode.select('.gridV resample').set('height', gridV)
   }
 
   static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -738,20 +750,13 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     } )
 
     group
-      .surface( {
-        points: data
-      } ).group().set('classes', ['gridV'] )
-      .resample( {
-        height: 8, // this.settings.gridV,
-        source: data
-      } )
+      .surface( { points: data } )
+      .group( { classes: ['gridV'] } )
+      .resample( { source: data } )
       .line()
       .end()
-      .group().set('classes', ['gridU'] )
-      .resample( {
-        width: 8, // this.settings.gridU,
-        source: data
-      } )
+      .group( { classes: 'gridU' } )
+      .resample( { source: data } )
       .transpose( { order: 'yx' } )
       .line()
       .end()
