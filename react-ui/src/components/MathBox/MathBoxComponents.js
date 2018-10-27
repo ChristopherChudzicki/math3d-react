@@ -631,7 +631,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     dataNodes.set('height', vSamples)
   }
 
-  // The next three handlers all perform validation, then delegate to updateExpr
+  // The next two handlers all perform validation, then delegate to updateExpr
   static handleRange(nodes: HandlerNodes, handledProps: HandledProps) {
     const { uRange, vRange, expr } = handledProps
     const { dataNodes: area } = nodes
@@ -680,7 +680,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     }
   }
 
-  // updates expression if expr, uRange, vRange all valid
+  // assumes expr, uRange, vRange all valid
   static updateExpr(
     area: MathBoxNode,
     uRange: [number, number] | (number) => [number, number],
