@@ -607,8 +607,8 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     ...universalHandlers,
     ...surfaceHandlers,
     expr: ParametricSurface.handleExpr,
-    uRange: ParametricSurface.handleURange,
-    vRange: ParametricSurface.handleVRange,
+    uRange: ParametricSurface.handleRange,
+    vRange: ParametricSurface.handleRange,
     uSamples: ParametricSurface.handleUSamples,
     vSamples: ParametricSurface.handleVSamples
     // gridColor
@@ -632,48 +632,97 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   }
 
   // The next three handlers all perform validation, then delegate to updateExpr
-  static handleURange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { uRange } = handledProps
-    validateVector(uRange, 2)
-    ParametricSurface.updateExpr(nodes, handledProps)
+  static handleRange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { uRange, vRange, expr } = handledProps
+    const { dataNodes: area } = nodes
+
+    const isRangeValid = ParametricSurface.isRangeValid(uRange, vRange)
+    const isExprValid = hasFunctionSignature(expr, 2, 3)
+    if (isRangeValid && isExprValid) {
+      ParametricSurface.updateExpr(area, uRange, vRange, expr)
+    }
+    else if (!isRangeValid) {
+      if (typeof uRange === 'function' && typeof vRange === 'function') {
+        throw new Error('Either the u-range can depend on v, OR the v-range can dependent on u, but NOT both.')
+      }
+      else {
+        throw new Error(`Parameter ranges must be 2-component arrays.`)
+      }
+    }
+
   }
 
-  static handleVRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { vRange } = handledProps
-    validateVector(vRange, 2)
-    ParametricSurface.updateExpr(nodes, handledProps)
+  static isRangeValid(uRange: mixed, vRange: mixed) {
+    if (isVector(uRange, 2) && isVector(vRange, 2)) {
+      return true
+    }
+    else if (hasFunctionSignature(uRange, 1, 2) && isVector(vRange, 2)) {
+      return true
+    }
+
+    else if (isVector(uRange, 2) && hasFunctionSignature(vRange, 1, 2)) {
+      return true
+    }
+    else {
+      return false
+    }
   }
 
   static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { expr } = handledProps
+    const { expr, uRange, vRange } = handledProps
+    const { dataNodes: area } = nodes
     validateFunctionSignature(expr, 2, 3)
-    ParametricSurface.updateExpr(nodes, handledProps)
+    const isRangeValid = ParametricSurface.isRangeValid(uRange, vRange)
+
+    // Already know expr is valid
+    if (isRangeValid) {
+      ParametricSurface.updateExpr(area, uRange, vRange, expr)
+    }
   }
 
   // updates expression if expr, uRange, vRange all valid
-  static updateExpr(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { expr, uRange, vRange } = handledProps
-    const isValid = isVector(uRange, 2) && isVector(vRange, 2) && hasFunctionSignature(expr, 2, 3)
-    if (!isValid) {
-      return
+  static updateExpr(
+    area: MathBoxNode,
+    uRange: [number, number] | (number) => [number, number],
+    vRange: [number, number] | (number) => [number, number],
+    expr: (number, number) => [number, number, number]
+  ) {
+    // Cases
+    if (Array.isArray(uRange) && Array.isArray(vRange)) {
+      area.set('expr', (emit, u, v) => {
+        const du = uRange
+        const dv = vRange
+        const trueU = du[0] + u*(du[1] - du[0] )
+        const trueV = dv[0] + v*(dv[1] - dv[0] )
+        return emit(...expr(trueU, trueV))
+      } )
+    }
+    else if (Array.isArray(uRange) && typeof vRange === 'function') {
+      area.set('expr', (emit, u, v) => {
+        const du = uRange
+        const trueU = du[0] + u*(du[1] - du[0] )
+        // $FlowFixMe
+        const dv = vRange(trueU)
+        const trueV = dv[0] + v*(dv[1] - dv[0] )
+        return emit(...expr(trueU, trueV))
+      } )
+    }
+    else if (Array.isArray(vRange) && typeof uRange === 'function') {
+      area.set('expr', (emit, u, v) => {
+        const dv = vRange
+        const trueV = dv[0] + v*(dv[1] - dv[0] )
+        // $FlowFixMe
+        const du = uRange(trueV)
+        const trueU = du[0] + u*(du[1] - du[0] )
+        return emit(...expr(trueU, trueV))
+      } )
+    }
+    else {
+      throw new Error(`Expected vRange and uRange to be (1) array, array (2)
+                       array, function, or (3) function array. Instead, found
+                       ${typeof uRange} and ${typeof vRange}`)
     }
 
-    nodes.dataNodes.set('expr', (emit, u, v) => {
-      const trueU = uRange[0] + u*(uRange[1] - uRange[0] )
-      const trueV = vRange[0] + v*(vRange[1] - vRange[0] )
-      return emit(...expr(trueU, trueV))
-    } )
-  }
-
-  // This method is a hacky way to force the interval data primitive to update.
-  static forceUpdate(nodes: HandlerNodes, handledProps: HandledProps) {
-    try {
-      ParametricSurface.updateExpr(nodes, handledProps)
-    }
-    catch (err) {
-      // don't do anything with the error; it should have been caught when
-      // handleExpr was called directly.
-    }
   }
 
   mathboxRender = (parent) => {

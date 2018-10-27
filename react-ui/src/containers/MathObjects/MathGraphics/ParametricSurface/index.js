@@ -9,6 +9,7 @@ import {
   MathInputRHS,
   StaticMathStyled
 } from 'containers/MathObjects/containers/MathInput'
+import { parser } from 'constants/parsing'
 
 export const PARAMETRIC_SURFACE = 'PARAMETRIC_SURFACE'
 
@@ -21,6 +22,23 @@ const justifyRight = {
 }
 const rangeStyle = {
   flex: 0
+}
+
+function stripFuncPrefixIfPossible(latex: string): string {
+  try {
+    const full = parser.parse(latex)
+    if (full.tree.type !== 'FunctionAssignmentNode') {
+      return latex
+    }
+    const prefixLength = '_f(*)='.length
+    const varname = full.tree.params[0]
+    const texRHS = latex.slice(prefixLength)
+    const rhs = parser.parse(texRHS)
+    return rhs.dependencies.has(varname) ? latex : texRHS
+  }
+  catch (error) {
+    return latex
+  }
 }
 
 export class ParametricSurfaceUI extends PureComponent<Props> {
@@ -43,6 +61,8 @@ export class ParametricSurfaceUI extends PureComponent<Props> {
           <MathInputRHS
             size='small'
             parentId={this.props.id}
+            prefix='_f(v)='
+            postProcessLaTeX={stripFuncPrefixIfPossible}
             field='uRange'
             style={rangeStyle}
           />
@@ -52,6 +72,8 @@ export class ParametricSurfaceUI extends PureComponent<Props> {
           <MathInputRHS
             size='small'
             parentId={this.props.id}
+            prefix='_f(u)='
+            postProcessLaTeX={stripFuncPrefixIfPossible}
             field='vRange'
             style={rangeStyle}
           />
