@@ -620,7 +620,6 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   static handleGridU(nodes: HandlerNodes, handledProps: HandledProps) {
     const { gridU } = handledProps
     validateNumeric(gridU)
-    console.log(nodes.groupNode.select('resample.u').print())
     nodes.groupNode.select('.gridU resample').set('width', gridU)
   }
   static handleGridV(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -630,19 +629,30 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   }
 
   static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { dataNodes } = nodes
+    const { groupNode } = nodes
     const { uSamples } = handledProps
     validateNumeric(uSamples)
-    dataNodes.set('width', uSamples)
+    const area = groupNode.select('area')
+    if (area.get('width') === null) {
+      area.set('width', uSamples)
+    }
+    else {
+      throw new Error('samples will be updated if graph is saved and reloaded')
+    }
   }
 
   static handleVSamples(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { dataNodes } = nodes
+    const { groupNode } = nodes
     const { vSamples } = handledProps
     validateNumeric(vSamples)
-    dataNodes.set('height', vSamples)
+    const area = groupNode.select('area')
+    if (area.get('height') === null) {
+      area.set('height', vSamples)
+    }
+    else {
+      throw new Error('samples will be updated if graph is saved and reloaded')
+    }
   }
-
   // The next two handlers all perform validation, then delegate to updateExpr
   static handleRange(nodes: HandlerNodes, handledProps: HandledProps) {
     const { uRange, vRange, expr } = handledProps
@@ -741,6 +751,10 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
     const group = parent.group()
 
+    return ParametricSurface.renderParametricSurface(group)
+  }
+
+  static renderParametricSurface(group: MathBoxNode) {
     const data = group.area( {
       channels: 3,
       axes: [1, 2],
