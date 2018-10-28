@@ -281,6 +281,14 @@ const parametricSurfacaSpecific: MetaData = {
   gridV: {
     inputType: 'math',
     defaultValue: '8'
+  },
+  gridOpacity: {
+    inputType: 'math',
+    defaultValue: '0.75'
+  },
+  gridWidth: {
+    inputType: 'math',
+    defaultValue: '4'
   }
 }
 

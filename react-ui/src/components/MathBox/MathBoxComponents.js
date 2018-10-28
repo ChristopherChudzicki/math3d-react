@@ -612,7 +612,8 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     uSamples: ParametricSurface.handleUSamples,
     vSamples: ParametricSurface.handleVSamples,
     // gridColor
-    // gridOpacity
+    gridWidth: ParametricSurface.handleGridWidth,
+    gridOpacity: ParametricSurface.handleGridOpacity,
     gridU: ParametricSurface.handleGridU,
     gridV: ParametricSurface.handleGridV
   }
@@ -622,6 +623,20 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   dataNodeNames = ParametricSurface.dataNodeNames
   renderNodeNames = ParametricSurface.renderNodeNames
   handlers = ParametricSurface.handlers
+
+  static handleGridOpacity(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { gridOpacity } = handledProps
+    const { groupNode } = nodes
+    validateNumeric(gridOpacity)
+    groupNode.select('line').set('opacity', gridOpacity)
+  }
+
+  static handleGridWidth(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { gridWidth } = handledProps
+    const { groupNode } = nodes
+    validateNumeric(gridWidth)
+    groupNode.select('line').set('width', gridWidth)
+  }
 
   static handleGridU(nodes: HandlerNodes, handledProps: HandledProps) {
     const { gridU } = handledProps
