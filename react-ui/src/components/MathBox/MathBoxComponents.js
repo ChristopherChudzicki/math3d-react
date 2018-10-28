@@ -601,9 +601,9 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
 
 export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
-  dataNodeNames = ['area']
-  renderNodeNames = ['surface']
-  handlers = {
+  static dataNodeNames = ['area']
+  static renderNodeNames = ['surface']
+  static handlers = {
     ...universalHandlers,
     ...surfaceHandlers,
     expr: ParametricSurface.handleExpr,
@@ -617,6 +617,12 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     gridV: ParametricSurface.handleGridV
   }
 
+  // TODO: delete this, and change these properties to statics on all
+  // MathBoxComponents
+  dataNodeNames = ParametricSurface.dataNodeNames
+  renderNodeNames = ParametricSurface.renderNodeNames
+  handlers = ParametricSurface.handlers
+
   static handleGridU(nodes: HandlerNodes, handledProps: HandledProps) {
     const { gridU } = handledProps
     validateNumeric(gridU)
@@ -628,6 +634,18 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     nodes.groupNode.select('.gridV resample').set('height', gridV)
   }
 
+  static rerender(groupNode: MathBoxNode, handledProps: HandledProps) {
+    groupNode.select('area, surface, .gridU, .gridV').remove()
+    ParametricSurface.renderParametricSurface(groupNode)
+    const newNodes = {
+      groupNode,
+      dataNodes: groupNode.select(ParametricSurface.dataNodeNames.join(', ')),
+      renderNodes: groupNode.select(ParametricSurface.renderNodeNames.join(', '))
+    }
+    Object.keys(ParametricSurface.handlers).forEach(key => {
+      ParametricSurface.handlers[key](newNodes, handledProps)
+    } )
+  }
   static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps) {
     const { groupNode } = nodes
     const { uSamples } = handledProps
@@ -637,7 +655,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       area.set('width', uSamples)
     }
     else {
-      throw new Error('samples will be updated if graph is saved and reloaded')
+      ParametricSurface.rerender(groupNode, handledProps)
     }
   }
 
@@ -650,7 +668,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       area.set('height', vSamples)
     }
     else {
-      throw new Error('samples will be updated if graph is saved and reloaded')
+      ParametricSurface.rerender(groupNode, handledProps)
     }
   }
   // The next two handlers all perform validation, then delegate to updateExpr
