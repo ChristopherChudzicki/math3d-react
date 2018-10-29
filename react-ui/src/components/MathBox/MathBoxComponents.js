@@ -11,6 +11,7 @@ import {
   hasFunctionSignature
 } from './helpers'
 import diffWithSets from 'utils/shallowDiffWithSets'
+import { lighten } from 'utils/colors'
 
 type MathBoxNode = any
 
@@ -606,6 +607,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   static handlers = {
     ...universalHandlers,
     ...surfaceHandlers,
+    color: ParametricSurface.handleColor,
     expr: ParametricSurface.handleExpr,
     uRange: ParametricSurface.handleRange,
     vRange: ParametricSurface.handleRange,
@@ -623,6 +625,15 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   dataNodeNames = ParametricSurface.dataNodeNames
   renderNodeNames = ParametricSurface.renderNodeNames
   handlers = ParametricSurface.handlers
+
+  static handleColor(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { color } = handledProps
+    const { renderNodes, groupNode } = nodes
+    renderNodes.set('color', color)
+
+    const lineColor = lighten(color, -0.75)
+    groupNode.select('line').set('color', lineColor)
+  }
 
   static handleGridOpacity(nodes: HandlerNodes, handledProps: HandledProps) {
     const { gridOpacity } = handledProps
