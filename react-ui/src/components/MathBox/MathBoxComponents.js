@@ -7,9 +7,11 @@ import {
   validateNumeric,
   validateVector,
   isVector,
-  validateFunctionSignature
+  validateFunctionSignature,
+  hasFunctionSignature
 } from './helpers'
 import diffWithSets from 'utils/shallowDiffWithSets'
+import { lighten } from 'utils/colors'
 
 type MathBoxNode = any
 
@@ -149,6 +151,7 @@ class AbstractMBC extends React.Component<Props> {
       const handler = this.handlers[prop]
       if (handler) {
         try {
+          console.log(handler.name)
           handler(nodes, this.props)
         }
         catch (error) {
@@ -218,6 +221,10 @@ const lineLikeHandlers = {
   width: makeSetProperty('width', validateNumeric),
   start: makeSetProperty('start'),
   end: makeSetProperty('end')
+}
+
+const surfaceHandlers = {
+  shaded: makeSetProperty('shaded')
 }
 
 function makeHandleLabel(dataOffset) {
@@ -587,6 +594,230 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
     group.line( {
       points: data
     } )
+
+    return group
+  }
+
+}
+
+export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
+
+  static dataNodeNames = ['area']
+  static renderNodeNames = ['surface']
+  static handlers = {
+    ...universalHandlers,
+    ...surfaceHandlers,
+    color: ParametricSurface.handleColor,
+    expr: ParametricSurface.handleExpr,
+    uRange: ParametricSurface.handleRange,
+    vRange: ParametricSurface.handleRange,
+    uSamples: ParametricSurface.handleUSamples,
+    vSamples: ParametricSurface.handleVSamples,
+    // gridColor
+    gridWidth: ParametricSurface.handleGridWidth,
+    gridOpacity: ParametricSurface.handleGridOpacity,
+    gridU: ParametricSurface.handleGridU,
+    gridV: ParametricSurface.handleGridV
+  }
+
+  // TODO: delete this, and change these properties to statics on all
+  // MathBoxComponents
+  dataNodeNames = ParametricSurface.dataNodeNames
+  renderNodeNames = ParametricSurface.renderNodeNames
+  handlers = ParametricSurface.handlers
+
+  static handleColor(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { color } = handledProps
+    const { renderNodes, groupNode } = nodes
+    renderNodes.set('color', color)
+
+    const lineColor = lighten(color, -0.75)
+    groupNode.select('line').set('color', lineColor)
+  }
+
+  static handleGridOpacity(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { gridOpacity } = handledProps
+    const { groupNode } = nodes
+    validateNumeric(gridOpacity)
+    groupNode.select('line').set('opacity', gridOpacity)
+  }
+
+  static handleGridWidth(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { gridWidth } = handledProps
+    const { groupNode } = nodes
+    validateNumeric(gridWidth)
+    groupNode.select('line').set('width', gridWidth)
+  }
+
+  static handleGridU(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { gridU } = handledProps
+    validateNumeric(gridU)
+    nodes.groupNode.select('.gridU resample').set('width', gridU)
+  }
+  static handleGridV(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { gridV } = handledProps
+    validateNumeric(gridV)
+    nodes.groupNode.select('.gridV resample').set('height', gridV)
+  }
+
+  static rerender(groupNode: MathBoxNode, handledProps: HandledProps) {
+    groupNode.select('area, surface, .gridU, .gridV').remove()
+    ParametricSurface.renderParametricSurface(groupNode)
+    const newNodes = {
+      groupNode,
+      dataNodes: groupNode.select(ParametricSurface.dataNodeNames.join(', ')),
+      renderNodes: groupNode.select(ParametricSurface.renderNodeNames.join(', '))
+    }
+    Object.keys(ParametricSurface.handlers).forEach(key => {
+      ParametricSurface.handlers[key](newNodes, handledProps)
+    } )
+  }
+  static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { groupNode } = nodes
+    const { uSamples } = handledProps
+    validateNumeric(uSamples)
+    const area = groupNode.select('area')
+    if (area.get('width') === null) {
+      area.set('width', uSamples)
+    }
+    else {
+      ParametricSurface.rerender(groupNode, handledProps)
+    }
+  }
+
+  static handleVSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { groupNode } = nodes
+    const { vSamples } = handledProps
+    validateNumeric(vSamples)
+    const area = groupNode.select('area')
+    if (area.get('height') === null) {
+      area.set('height', vSamples)
+    }
+    else {
+      ParametricSurface.rerender(groupNode, handledProps)
+    }
+  }
+  // The next two handlers all perform validation, then delegate to updateExpr
+  static handleRange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { uRange, vRange, expr } = handledProps
+    const { dataNodes: area } = nodes
+
+    const isRangeValid = ParametricSurface.isRangeValid(uRange, vRange)
+    const isExprValid = hasFunctionSignature(expr, 2, 3)
+    if (isRangeValid && isExprValid) {
+      ParametricSurface.updateExpr(area, uRange, vRange, expr)
+    }
+    else if (!isRangeValid) {
+      if (typeof uRange === 'function' && typeof vRange === 'function') {
+        throw new Error('Either the u-range can depend on v, OR the v-range can dependent on u, but NOT both.')
+      }
+      else {
+        throw new Error(`Parameter ranges must be 2-component arrays.`)
+      }
+    }
+
+  }
+
+  static isRangeValid(uRange: mixed, vRange: mixed) {
+    if (isVector(uRange, 2) && isVector(vRange, 2)) {
+      return true
+    }
+    else if (hasFunctionSignature(uRange, 1, 2) && isVector(vRange, 2)) {
+      return true
+    }
+
+    else if (isVector(uRange, 2) && hasFunctionSignature(vRange, 1, 2)) {
+      return true
+    }
+    else {
+      return false
+    }
+  }
+
+  static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { expr, uRange, vRange } = handledProps
+    const { dataNodes: area } = nodes
+    validateFunctionSignature(expr, 2, 3)
+    const isRangeValid = ParametricSurface.isRangeValid(uRange, vRange)
+
+    // Already know expr is valid
+    if (isRangeValid) {
+      ParametricSurface.updateExpr(area, uRange, vRange, expr)
+    }
+  }
+
+  // assumes expr, uRange, vRange all valid
+  static updateExpr(
+    area: MathBoxNode,
+    uRange: [number, number] | (number) => [number, number],
+    vRange: [number, number] | (number) => [number, number],
+    expr: (number, number) => [number, number, number]
+  ) {
+    // Cases
+    if (Array.isArray(uRange) && Array.isArray(vRange)) {
+      area.set('expr', (emit, u, v) => {
+        const du = uRange
+        const dv = vRange
+        const trueU = du[0] + u*(du[1] - du[0] )
+        const trueV = dv[0] + v*(dv[1] - dv[0] )
+        return emit(...expr(trueU, trueV))
+      } )
+    }
+    else if (Array.isArray(uRange) && typeof vRange === 'function') {
+      area.set('expr', (emit, u, v) => {
+        const du = uRange
+        const trueU = du[0] + u*(du[1] - du[0] )
+        // $FlowFixMe
+        const dv = vRange(trueU)
+        const trueV = dv[0] + v*(dv[1] - dv[0] )
+        return emit(...expr(trueU, trueV))
+      } )
+    }
+    else if (Array.isArray(vRange) && typeof uRange === 'function') {
+      area.set('expr', (emit, u, v) => {
+        const dv = vRange
+        const trueV = dv[0] + v*(dv[1] - dv[0] )
+        // $FlowFixMe
+        const du = uRange(trueV)
+        const trueU = du[0] + u*(du[1] - du[0] )
+        return emit(...expr(trueU, trueV))
+      } )
+    }
+    else {
+      throw new Error(`Expected vRange and uRange to be (1) array, array (2)
+                       array, function, or (3) function array. Instead, found
+                       ${typeof uRange} and ${typeof vRange}`)
+    }
+
+  }
+
+  mathboxRender = (parent) => {
+
+    const group = parent.group()
+
+    return ParametricSurface.renderParametricSurface(group)
+  }
+
+  static renderParametricSurface(group: MathBoxNode) {
+    const data = group.area( {
+      channels: 3,
+      axes: [1, 2],
+      live: false,
+      rangeX: [0, 1],
+      rangeY: [0, 1]
+    } )
+
+    group
+      .surface( { points: data } )
+      .group( { classes: ['gridV'] } )
+      .resample( { source: data } )
+      .line()
+      .end()
+      .group( { classes: 'gridU' } )
+      .resample( { source: data } )
+      .transpose( { order: 'yx' } )
+      .line()
+      .end()
 
     return group
   }

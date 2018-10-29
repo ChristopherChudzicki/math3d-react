@@ -126,7 +126,7 @@ describe('Math Expression evaluation caching', () => {
   } )
 
   it('does not reevaluate expression if only irrelevant variables change', () => {
-    const expr = new MathExpression('f(t)=t^n')
+    const expr = new MathExpression('f(t)=sin(t) + t^n')
     const scope1 = { n: 2, a: 5 }
     const scope2 = { n: 2, a: 2, b: 3 }
     const f1 = expr.eval(scope1)

@@ -97,7 +97,8 @@ export default class MathExpression {
     const compiled = this.tree.compile()
 
     return (scope: Scope): Evaluated => {
-      const raw = compiled.eval(scope)
+      const localScope = { ...scope }
+      const raw = compiled.eval(localScope)
       if (raw instanceof math.type.DenseMatrix) {
         return raw.toArray()
       }
@@ -120,7 +121,7 @@ export default class MathExpression {
   _getSubscopeEquality() {
     const subscopeEquality = (newScope: Scope, oldScope: Scope) => {
       for (const symbol of this.dependencies) {
-        if (newScope[symbol]===undefined) {
+        if (newScope[symbol]===undefined && math[symbol]===undefined) {
           return false
         }
         else if (newScope[symbol] !== oldScope[symbol] ) {

@@ -22,7 +22,8 @@ export type Props = {
   parentId: string,
   type: string,
   onValidatedTextChange: typeof setPropertyAndError,
-  onValidatorAndErrorChange: typeof setError
+  onValidatorAndErrorChange: typeof setError,
+  postProcessLaTeX: (string) => string
 }
 
 class MathInputLHS extends PureComponent<Props> {
@@ -35,6 +36,10 @@ class MathInputLHS extends PureComponent<Props> {
     isAssignment
   ]
 
+  static defaultProps = {
+    postProcessLaTeX: latex => latex
+  }
+
   constructor(props) {
     super(props)
     // $FlowFixMe
@@ -44,8 +49,9 @@ class MathInputLHS extends PureComponent<Props> {
   }
 
   onValidatedTextChange(prop, latex, error) {
-    const { parentId, type } = this.props
-    this.props.onValidatedTextChange(parentId, type, prop, latex, error)
+    const { parentId, type, postProcessLaTeX } = this.props
+    const processedLaTeX = postProcessLaTeX(latex)
+    this.props.onValidatedTextChange(parentId, type, prop, processedLaTeX, error)
   }
 
   onValidatorAndErrorChange(prop, error) {

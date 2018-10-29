@@ -86,7 +86,7 @@ export type Math = {
     Complex: Function
   },
   eval: (string, ?Object) => Numeric | Function,
-  import: (Object) => void,
+  import: (Object, ?Object) => void,
   // TODO: The types below are too loose; e.g., add/subtract should both be
   // length-preserving polymorphic types; cross only works
   // with 3-component vectors, norm does not accept matrices

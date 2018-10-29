@@ -6,6 +6,7 @@ import Vector from './Vector'
 import Axis from './Axis'
 import Grid from './Grid'
 import ParametricCurve from './ParametricCurve'
+import ParametricSurface from './ParametricSurface'
 import ImplicitSurface from './ImplicitSurface'
 
 function makeExports(mathGraphics: Array<MathGraphic>) {
@@ -22,6 +23,7 @@ export default makeExports( [
   Line,
   Vector,
   ParametricCurve,
+  ParametricSurface,
   ImplicitSurface
 ] )
 
@@ -31,4 +33,5 @@ export { POINT } from './Point'
 export { LINE } from './Line'
 export { VECTOR } from './Vector'
 export { PARAMETRIC_CURVE } from './ParametricCurve'
+export { PARAMETRIC_SURFACE } from './ParametricSurface'
 export { IMPLICIT_SURFACE } from './ImplicitSurface'

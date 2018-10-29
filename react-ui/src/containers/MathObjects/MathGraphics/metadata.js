@@ -237,6 +237,67 @@ export const parametricCurveMeta: MetaData = {
   ...parametricCurveSpecific
 }
 
+// ---------- ParametricSurface ---------- //
+
+const surfaceLike: MetaData = {
+  shaded: {
+    inputType: 'boolean',
+    defaultValue: true
+  },
+  opacity: {
+    inputType: 'math',
+    defaultValue: '0.75'
+  }
+}
+
+const parametricSurfacaSpecific: MetaData = {
+  expr: {
+    inputType: 'math',
+    defaultValue: '_f(u,v)=\\left[v\\cdot\\cos\\left(u\\right),v\\cdot\\sin\\left(u\\right),v\\right]',
+    isPrimary: true
+  },
+  uRange: {
+    inputType: 'math',
+    defaultValue: '\\left[-\\pi,\\ \\pi\\right]',
+    isPrimary: true
+  },
+  vRange: {
+    inputType: 'math',
+    defaultValue: '\\left[-3, 3\\right]',
+    isPrimary: true
+  },
+  uSamples: {
+    inputType: 'math',
+    defaultValue: '64'
+  },
+  vSamples: {
+    inputType: 'math',
+    defaultValue: '64'
+  },
+  gridU: {
+    inputType: 'math',
+    defaultValue: '8'
+  },
+  gridV: {
+    inputType: 'math',
+    defaultValue: '8'
+  },
+  gridOpacity: {
+    inputType: 'math',
+    defaultValue: '0.75'
+  },
+  gridWidth: {
+    inputType: 'math',
+    defaultValue: '4'
+  }
+}
+
+export const parametricSurfacaMeta: MetaData = {
+  ...universal,
+  ...surfaceLike,
+  ...parametricSurfacaSpecific
+}
+
 // ---------- Implicit Surface ---------- //
 const implicitSurfaceSpecific: MetaData = {
   lhs: {

@@ -23,9 +23,14 @@ class MathInputRHS extends PureComponent<Props> {
     this.onValidatorAndErrorChange = this.onValidatorAndErrorChange.bind(this)
   }
 
+  static defaultProps = {
+    postProcessLaTeX: latex => latex
+  }
+
   onValidatedTextChange(prop, latex, error) {
-    const { parentId, type } = this.props
-    this.props.onValidatedTextChange(parentId, type, prop, latex, error)
+    const { parentId, type, postProcessLaTeX } = this.props
+    const processedLaTeX = postProcessLaTeX(latex)
+    this.props.onValidatedTextChange(parentId, type, prop, processedLaTeX, error)
   }
 
   onValidatorAndErrorChange(prop, error) {
