@@ -894,11 +894,15 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     const { dataNodes } = nodes
 
     const implicitFunc = (x, y, z) => lhs(x, y, z) - rhs(x, y, z)
-    const implicitTriangles = marchingCubes(xRange[0], xRange[1], yRange[0], yRange[1],
-                                            zRange[0], zRange[1], implicitFunc, 0, samples)
+    const implicitTriangles = marchingCubes(
+      xRange[0], xRange[1],
+      yRange[0], yRange[1],
+      zRange[0], zRange[1],
+      implicitFunc, 0, samples)
+
     dataNodes.set('data', implicitTriangles)
     dataNodes.set('width', implicitTriangles.length)
-}
+  }
 
   // @jason feel free to not implement this yet.
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
