@@ -151,7 +151,7 @@ class AbstractMBC extends React.Component<Props> {
       const handler = this.handlers[prop]
       if (handler) {
         try {
-          console.log(handler.name)
+          // console.log(`Running handler ${handler.name}`)
           handler(nodes, this.props)
         }
         catch (error) {
@@ -290,7 +290,14 @@ export class Axis extends AbstractMBC implements MathBoxComponent {
     min: Axis.handleMin,
     max: Axis.handleMax,
     axis: Axis.handleAxis,
-    scale: Axis.handleScale
+    scale: Axis.handleScale,
+    ticksVisible: Axis.handleTicksVisible
+  }
+
+  static handleTicksVisible(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { groupNode } = nodes
+    const { ticksVisible } = handledProps
+    groupNode.select('.ticks').set('visible', ticksVisible)
   }
 
   static handleLabel(nodes: HandlerNodes, handledProps: HandledProps) {

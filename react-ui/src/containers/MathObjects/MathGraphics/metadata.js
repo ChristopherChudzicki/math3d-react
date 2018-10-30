@@ -26,11 +26,13 @@ const universal: MetaData = {
   },
   zIndex: {
     inputType: 'math',
-    defaultValue: '0'
+    defaultValue: '0',
+    label: 'z-index'
   },
   zBias: {
     inputType: 'math',
-    defaultValue: '0'
+    defaultValue: '0',
+    label: 'z-bias'
   },
   calculatedVisibility: {
     inputType: 'math',
@@ -80,11 +82,13 @@ const axisSpecific: MetaData = {
   },
   labelVisible: {
     inputType: 'boolean',
-    defaultValue: true
+    defaultValue: true,
+    label: 'label visible'
   },
-  ticks: {
+  ticksVisible: {
     inputType: 'boolean',
-    defaultValue: true
+    defaultValue: true,
+    label: 'ticks visible'
   },
   size: {
     inputType: 'math',
