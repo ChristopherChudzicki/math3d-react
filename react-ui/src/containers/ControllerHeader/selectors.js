@@ -1,4 +1,9 @@
 import { getParent } from 'containers/MathObjects/selectors'
+
+const FORBIDDEN_INSERT_FOLDERS = new Set( [
+  'axes'
+] )
+
 /**
  * gets the folder corresponding to activeObject, which is:
  * - the id of the folder containing activeObject if activeObject
@@ -16,5 +21,7 @@ export function getActiveFolder(tree, activeObject) {
     return activeObject
   }
   // getParent will throw an error if no parent or multiple parents
-  return getParent(tree, activeObject)
+  const parent = getParent(tree, activeObject)
+
+  return FORBIDDEN_INSERT_FOLDERS.has(parent) ? null : parent
 }
