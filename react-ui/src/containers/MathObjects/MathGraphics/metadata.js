@@ -331,7 +331,8 @@ const implicitSurfaceSpecific: MetaData = {
   },
   samples: {
     inputType: 'math',
-    defaultValue: '20'
+    defaultValue: '25',
+    isPrimary: true
   },
   shaded: {
     inputType: 'boolean',
