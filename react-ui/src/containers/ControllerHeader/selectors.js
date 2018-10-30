@@ -18,7 +18,7 @@ export function getActiveFolder(tree, activeObject) {
     return null
   }
   if (tree[activeObject] ) {
-    return activeObject
+    return FORBIDDEN_INSERT_FOLDERS.has(activeObject) ? null : activeObject
   }
   // getParent will throw an error if no parent or multiple parents
   const parent = getParent(tree, activeObject)
