@@ -35,22 +35,20 @@ export default class EditableDescription extends PureComponent {
     width: '100%'
   }
 
-  componentDidMount() {
-    this.setWidth(this.props.value)
+  static getDerivedStateFromProps(props) {
+    return {
+      width: EditableDescription.getWidthFromText(props.value)
+    }
   }
 
-  setWidth = text => {
+  static getWidthFromText(text) {
     const textWidth = getTextWidth(text, '14px sans-serif')
     const paddingWidth = 4
-
-    this.setState( {
-      width: `${textWidth + paddingWidth}px`
-    } )
+    return `${textWidth + paddingWidth}px`
   }
 
   onChange = e => {
     const text = e.target.value
-    this.setWidth(text)
     this.props.onChange(text)
   }
 
