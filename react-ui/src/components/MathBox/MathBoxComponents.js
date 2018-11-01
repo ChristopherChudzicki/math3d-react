@@ -911,13 +911,18 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
       zRange[0], zRange[1],
       implicitFunc, 0, samples)
 
-    if (implicitTriangles.length > 5400) {
+    // "samples" really determines the field discretization length
+    // true number of samples depends on discretization length and implicitFunc
+    const trueSamplesNum = implicitTriangles.length
+    // Sample cap of 5400 was found experimentally; I do not really understand
+    // what goes wrong when too many samples are generated.
+    if (trueSamplesNum > 5400) {
       throw new Error('Too many data points generated. Please decrease sample size.')
     }
 
     dataNodes.set( {
       data: implicitTriangles,
-      width: implicitTriangles.length
+      width: trueSamplesNum
     } )
   }
 
