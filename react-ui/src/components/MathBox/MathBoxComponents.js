@@ -4,6 +4,7 @@ import math from 'utils/mathjs'
 import {
   validateBoolean,
   isEqualNumerically,
+  isNumeric,
   validateNumeric,
   validateVector,
   isVector,
@@ -847,24 +848,13 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     samples: ImplicitSurface.handleSamples
   }
 
-  // @jason The two methods handleLHS and handleRHS will probably be almost the
-  // same. Both methods need recalculate the implicit surface data and update
-  // mathbox.
-  // The difference is that:
-  //    handleLHS should throw error if LHS is invalid, but not if RHS is invalid.
-  //    handleRHS should throw error if RHS is invalid, but not if LHS is invalid.
-  //
-  // See Vector class handleTail method for example of how I implemented this.
-  //
-  // @Jason BUT: feel free not to worry too much about the validation business at first.
+  // The next several handlers all validate, then delgate to updateData
   static handleLHS(nodes: HandlerNodes, handledProps: HandledProps) {
     const { lhs } = handledProps
     validateFunctionSignature(lhs, 3, 1)
     ImplicitSurface.updateData(nodes, handledProps)
   }
 
-  // @jason this method should be almost 100% the same as handleLHS
-  // but possibly validate differently
   static handleRHS(nodes: HandlerNodes, handledProps: HandledProps) {
     const { rhs } = handledProps
     validateFunctionSignature(rhs, 3, 1)
@@ -889,7 +879,28 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     ImplicitSurface.updateData(nodes, handledProps)
   }
 
+  static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { samples } = handledProps
+    validateNumeric(samples)
+    ImplicitSurface.updateData(nodes, handledProps)
+  }
+
+  static canUpdate(handledProps: HandledProps) {
+    const { lhs, rhs, xRange, yRange, zRange, samples } = handledProps
+    return (
+      isVector(xRange, 2) &&
+      isVector(yRange, 2) &&
+      isVector(zRange, 2) &&
+      hasFunctionSignature(lhs, 3, 1) &&
+      hasFunctionSignature(rhs, 3, 1) &&
+      isNumeric(samples)
+    )
+  }
+
   static updateData(nodes: HandlerNodes, handledProps: HandledProps) {
+    if (!ImplicitSurface.canUpdate(handledProps)) {
+      return
+    }
     const { lhs, rhs, xRange, yRange, zRange, samples } = handledProps
     const { dataNodes } = nodes
 
@@ -900,21 +911,14 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
       zRange[0], zRange[1],
       implicitFunc, 0, samples)
 
-    dataNodes.set('data', implicitTriangles)
-    dataNodes.set('width', implicitTriangles.length)
-  }
+    if (implicitTriangles.length > 5400) {
+      throw new Error('Too many data points generated. Please decrease sample size.')
+    }
 
-  // @jason feel free to not implement this yet.
-  static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { samples } = handledProps
-    validateNumeric(samples)
-    if (samples < 2) {
-      throw new Error('Samples needs to be greater than 1')
-    }
-    if (samples > 50) {
-      throw new Error('Samples shouldn\'t be greater than 50')
-    }
-    ImplicitSurface.updateData(nodes, handledProps)
+    dataNodes.set( {
+      data: implicitTriangles,
+      width: implicitTriangles.length
+    } )
   }
 
   mathboxRender = (parent) => {
