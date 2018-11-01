@@ -4,6 +4,7 @@ import math from 'utils/mathjs'
 import {
   validateBoolean,
   isEqualNumerically,
+  isNumeric,
   validateNumeric,
   validateVector,
   isVector,
@@ -12,6 +13,7 @@ import {
 } from './helpers'
 import diffWithSets from 'utils/shallowDiffWithSets'
 import { lighten } from 'utils/colors'
+import marchingCubes from 'utils/marchingCubes'
 
 type MathBoxNode = any
 
@@ -839,36 +841,89 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     ...universalHandlers,
     shaded: makeSetProperty('shaded'),
     lhs: ImplicitSurface.handleLHS,
-    rhs: ImplicitSurface.handleRHS
+    rhs: ImplicitSurface.handleRHS,
+    xRange: ImplicitSurface.handleXRange,
+    yRange: ImplicitSurface.handleYRange,
+    zRange: ImplicitSurface.handleZRange,
+    samples: ImplicitSurface.handleSamples
   }
 
-  // @jason The two methods handleLHS and handleRHS will probably be almost the
-  // same. Both methods need recalculate the implicit surface data and update
-  // mathbox.
-  // The difference is that:
-  //    handleLHS should throw error if LHS is invalid, but not if RHS is invalid.
-  //    handleRHS should throw error if RHS is invalid, but not if LHS is invalid.
-  //
-  // See Vector class handleTail method for example of how I implemented this.
-  //
-  // @Jason BUT: feel free not to worry too much about the validation business at first.
+  // The next several handlers all validate, then delgate to updateData
   static handleLHS(nodes: HandlerNodes, handledProps: HandledProps) {
-    // get lhs and rhs from handledProps
-    const { lhs, rhs } = handledProps
-    // get the nodes you want, determined by class properties above
-    // You probably don't need renderNodes for this method, but I included it
-    const { renderNodes, dataNodes } = nodes
+    const { lhs } = handledProps
+    validateFunctionSignature(lhs, 3, 1)
+    ImplicitSurface.updateData(nodes, handledProps)
   }
 
-  // @jason this method should be almost 100% the same as handleLHS
-  // but possibly validate differently
   static handleRHS(nodes: HandlerNodes, handledProps: HandledProps) {
-
+    const { rhs } = handledProps
+    validateFunctionSignature(rhs, 3, 1)
+    ImplicitSurface.updateData(nodes, handledProps)
   }
 
-  // @jason feel free to not implement this yet.
+  static handleXRange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { xRange } = handledProps
+    validateVector(xRange, 2)
+    ImplicitSurface.updateData(nodes, handledProps)
+  }
+
+  static handleYRange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { yRange } = handledProps
+    validateVector(yRange, 2)
+    ImplicitSurface.updateData(nodes, handledProps)
+  }
+
+  static handleZRange(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { zRange } = handledProps
+    validateVector(zRange, 2)
+    ImplicitSurface.updateData(nodes, handledProps)
+  }
+
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
     const { samples } = handledProps
+    validateNumeric(samples)
+    ImplicitSurface.updateData(nodes, handledProps)
+  }
+
+  static canUpdate(handledProps: HandledProps) {
+    const { lhs, rhs, xRange, yRange, zRange, samples } = handledProps
+    return (
+      isVector(xRange, 2) &&
+      isVector(yRange, 2) &&
+      isVector(zRange, 2) &&
+      hasFunctionSignature(lhs, 3, 1) &&
+      hasFunctionSignature(rhs, 3, 1) &&
+      isNumeric(samples)
+    )
+  }
+
+  static updateData(nodes: HandlerNodes, handledProps: HandledProps) {
+    if (!ImplicitSurface.canUpdate(handledProps)) {
+      return
+    }
+    const { lhs, rhs, xRange, yRange, zRange, samples } = handledProps
+    const { dataNodes } = nodes
+
+    const implicitFunc = (x, y, z) => lhs(x, y, z) - rhs(x, y, z)
+    const implicitTriangles = marchingCubes(
+      xRange[0], xRange[1],
+      yRange[0], yRange[1],
+      zRange[0], zRange[1],
+      implicitFunc, 0, samples)
+
+    // "samples" really determines the field discretization length
+    // true number of samples depends on discretization length and implicitFunc
+    const trueSamplesNum = implicitTriangles.length
+    // Sample cap of 5400 was found experimentally; I do not really understand
+    // what goes wrong when too many samples are generated.
+    if (trueSamplesNum > 5400) {
+      throw new Error('Too many data points generated. Please decrease sample size.')
+    }
+
+    dataNodes.set( {
+      data: implicitTriangles,
+      width: trueSamplesNum
+    } )
   }
 
   mathboxRender = (parent) => {
@@ -877,8 +932,14 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     // group. This function MUST return the group.
     const group = parent.group()
 
-    group.array()
-    group.strip()
+    // Array stores a list of the points of the triangles
+    // Use strip to render them
+    group.array( {
+      channels: 3,
+      items: 3,
+      width: 0,
+      live: false
+    } ).strip()
 
     return group
   }

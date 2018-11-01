@@ -236,7 +236,6 @@ const parametricCurveSpecific: MetaData = {
 
 export const parametricCurveMeta: MetaData = {
   ...universal,
-  ...labeled,
   ...lineLike,
   ...parametricCurveSpecific
 }
@@ -331,17 +330,16 @@ const implicitSurfaceSpecific: MetaData = {
   },
   samples: {
     inputType: 'math',
-    defaultValue: '512'
+    defaultValue: '20'
   },
-  shaded: {
-    inputType: 'boolean',
-    defaultValue: true
+  opacity: {
+    inputType: 'math',
+    defaultValue: '1'
   }
 }
 
 export const implicitSurfaceMeta: MetaData = {
   ...universal,
-  ...labeled,
-  ...lineLike,
+  ...surfaceLike,
   ...implicitSurfaceSpecific
 }
