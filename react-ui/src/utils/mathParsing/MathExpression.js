@@ -104,7 +104,16 @@ export default class MathExpression {
       }
       if (raw instanceof Function) {
         const temp = (...args) => {
-          const result = raw(...args)
+          let result
+
+          if (raw.length > 1 && args.length === 1 && Array.isArray(args[0] )) {
+            // This allways for inputing a vector expression into a multivariable function
+            result = raw(...args[0] )
+          }
+          else {
+            result = raw(...args)
+          }
+
           if (result instanceof math.type.DenseMatrix) {
             return result.toArray()
           }
