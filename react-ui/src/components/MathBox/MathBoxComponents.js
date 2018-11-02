@@ -27,7 +27,8 @@ export type HandledProps = {
   [string]: any,
 }
 
-type Handler = (nodes: HandlerNodes, props: HandledProps) => void
+type Handler = (nodes: HandlerNodes, props: HandledProps, handlers: { [string]: Handler } ) => void
+type Handlers = { [string]: Handler }
 
 type ErrorMap = {
   [string]: Error
@@ -45,9 +46,7 @@ interface MathBoxComponent {
   mathboxRender: (MathBoxNode) => MathBoxNode,
   dataNodeNames: ?Array<string>,
   renderNodeNames: ?Array<string>,
-  handlers: {
-    [nodeName: string]: Handler
-  }
+  handlers: Handlers
 }
 
 class AbstractMBC extends React.Component<Props> {
@@ -154,7 +153,8 @@ class AbstractMBC extends React.Component<Props> {
       if (handler) {
         try {
           console.log(`Running handler ${handler.name}`)
-          handler(nodes, this.props)
+          // $FlowFixMe: this.handlers is abstract
+          handler(nodes, this.props, this.handlers)
         }
         catch (error) {
           errors[prop] = error
@@ -611,9 +611,9 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
 
 export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
-  static dataNodeNames = ['area']
-  static renderNodeNames = ['surface']
-  static handlers = {
+  dataNodeNames = ['area']
+  renderNodeNames = ['surface']
+  handlers = {
     ...universalHandlers,
     ...surfaceHandlers,
     color: ParametricSurface.handleColor,
@@ -628,12 +628,6 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     gridU: ParametricSurface.handleGridU,
     gridV: ParametricSurface.handleGridV
   }
-
-  // TODO: delete this, and change these properties to statics on all
-  // MathBoxComponents
-  dataNodeNames = ParametricSurface.dataNodeNames
-  renderNodeNames = ParametricSurface.renderNodeNames
-  handlers = ParametricSurface.handlers
 
   static handleColor(nodes: HandlerNodes, handledProps: HandledProps) {
     const { color } = handledProps
@@ -669,19 +663,20 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     nodes.groupNode.select('.gridV resample').set('height', gridV)
   }
 
-  static rerender(groupNode: MathBoxNode, handledProps: HandledProps) {
+  static rerender(groupNode: MathBoxNode, handledProps: HandledProps, handlers: Handlers) {
     groupNode.select('area, surface, .gridU, .gridV').remove()
     ParametricSurface.renderParametricSurface(groupNode)
     const newNodes = {
       groupNode,
-      dataNodes: groupNode.select(ParametricSurface.dataNodeNames.join(', ')),
-      renderNodes: groupNode.select(ParametricSurface.renderNodeNames.join(', '))
+      dataNodes: groupNode.select('area'),
+      renderNodes: groupNode.select('surface')
     }
-    Object.keys(ParametricSurface.handlers).forEach(key => {
-      ParametricSurface.handlers[key](newNodes, handledProps)
+    Object.keys(handlers).forEach(key => {
+      handlers[key](newNodes, handledProps, handlers)
     } )
   }
-  static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+
+  static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
     const { groupNode } = nodes
     const { uSamples } = handledProps
     validateNumeric(uSamples)
@@ -690,11 +685,11 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       area.set('width', uSamples)
     }
     else {
-      ParametricSurface.rerender(groupNode, handledProps)
+      ParametricSurface.rerender(groupNode, handledProps, handlers)
     }
   }
 
-  static handleVSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+  static handleVSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
     const { groupNode } = nodes
     const { vSamples } = handledProps
     validateNumeric(vSamples)
@@ -703,7 +698,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       area.set('height', vSamples)
     }
     else {
-      ParametricSurface.rerender(groupNode, handledProps)
+      ParametricSurface.rerender(groupNode, handledProps, handlers)
     }
   }
 
