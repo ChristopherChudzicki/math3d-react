@@ -52,7 +52,7 @@ export class ImplicitSurfaceUI extends PureComponent<Props> {
           <MathInputRHS
             size='small'
             parentId={this.props.id}
-            field='xRange'
+            field='rangeX'
             style={rangeStyle}
           />
         </MainRow>
@@ -61,7 +61,7 @@ export class ImplicitSurfaceUI extends PureComponent<Props> {
           <MathInputRHS
             size='small'
             parentId={this.props.id}
-            field='yRange'
+            field='rangeY'
             style={rangeStyle}
           />
         </MainRow>
@@ -70,7 +70,7 @@ export class ImplicitSurfaceUI extends PureComponent<Props> {
           <MathInputRHS
             size='small'
             parentId={this.props.id}
-            field='zRange'
+            field='rangeZ'
             style={rangeStyle}
           />
         </MainRow>
