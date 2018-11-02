@@ -4,7 +4,7 @@ import { Popover } from 'antd'
 import ColorPicker from './ColorPicker'
 
 const colors = [
-  '#1abc9c',
+  '#33FF00',
   '#2ecc71',
   '#3498db',
   '#9b59b6',
