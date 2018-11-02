@@ -152,7 +152,7 @@ class AbstractMBC extends React.Component<Props> {
       const handler = this.handlers[prop]
       if (handler) {
         try {
-          console.log(`Running handler ${handler.name}`)
+          // console.log(`Running handler ${handler.name}`)
           // $FlowFixMe: this.handlers is abstract
           handler(nodes, this.props, this.handlers)
         }
