@@ -313,21 +313,6 @@ const implicitSurfaceSpecific: MetaData = {
     defaultValue: 'f(x,y,z)=z^2+1',
     isPrimary: true
   },
-  xRange: {
-    inputType: 'math',
-    defaultValue: '\\left[-5,\\ 5\\right]',
-    isPrimary: true
-  },
-  yRange: {
-    inputType: 'math',
-    defaultValue: '\\left[-5,\\ 5\\right]',
-    isPrimary: true
-  },
-  zRange: {
-    inputType: 'math',
-    defaultValue: '\\left[-5,\\ 5\\right]',
-    isPrimary: true
-  },
   samples: {
     inputType: 'math',
     defaultValue: '20'
@@ -338,8 +323,46 @@ const implicitSurfaceSpecific: MetaData = {
   }
 }
 
+const volumetricRange = {
+  rangeX: {
+    inputType: 'math',
+    defaultValue: '\\left[-5,\\ 5\\right]',
+    isPrimary: true
+  },
+  rangeY: {
+    inputType: 'math',
+    defaultValue: '\\left[-5,\\ 5\\right]',
+    isPrimary: true
+  },
+  rangeZ: {
+    inputType: 'math',
+    defaultValue: '\\left[-5,\\ 5\\right]',
+    isPrimary: true
+  }
+}
+
 export const implicitSurfaceMeta: MetaData = {
   ...universal,
   ...surfaceLike,
+  ...volumetricRange,
   ...implicitSurfaceSpecific
+}
+
+// ---------- Vector Field ---------- //
+const vectorFieldSpecific: MetaData = {
+  expr: {
+    inputType: 'math',
+    defaultValue: 'f(x,y,z)=\\frac{[x,y,0]}{\\sqrt{x^2+y^2}}',
+    isPrimary: true
+  },
+  samples: {
+    inputType: 'math',
+    defaultValue: '[10, 10, 5]'
+  }
+}
+
+export const vectorFieldMeta: MetaData = {
+  ...universal,
+  ...volumetricRange,
+  ...vectorFieldSpecific
 }

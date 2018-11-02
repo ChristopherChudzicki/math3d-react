@@ -153,7 +153,7 @@ class AbstractMBC extends React.Component<Props> {
       const handler = this.handlers[prop]
       if (handler) {
         try {
-          // console.log(`Running handler ${handler.name}`)
+          console.log(`Running handler ${handler.name}`)
           handler(nodes, this.props)
         }
         catch (error) {
@@ -842,9 +842,9 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     shaded: makeSetProperty('shaded'),
     lhs: ImplicitSurface.handleLHS,
     rhs: ImplicitSurface.handleRHS,
-    xRange: ImplicitSurface.handleXRange,
-    yRange: ImplicitSurface.handleYRange,
-    zRange: ImplicitSurface.handleZRange,
+    rangeX: ImplicitSurface.makeHandleRange('rangeX'),
+    rangeY: ImplicitSurface.makeHandleRange('rangeY'),
+    rangeZ: ImplicitSurface.makeHandleRange('rangeZ'),
     samples: ImplicitSurface.handleSamples
   }
 
@@ -861,22 +861,12 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     ImplicitSurface.updateData(nodes, handledProps)
   }
 
-  static handleXRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { xRange } = handledProps
-    validateVector(xRange, 2)
-    ImplicitSurface.updateData(nodes, handledProps)
-  }
-
-  static handleYRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { yRange } = handledProps
-    validateVector(yRange, 2)
-    ImplicitSurface.updateData(nodes, handledProps)
-  }
-
-  static handleZRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { zRange } = handledProps
-    validateVector(zRange, 2)
-    ImplicitSurface.updateData(nodes, handledProps)
+  static makeHandleRange(rangeName: 'rangeX' | 'rangeY' | 'rangeZ') {
+    return (nodes: HandlerNodes, handledProps: HandledProps) => {
+      const range = handledProps[rangeName]
+      validateVector(range, 2)
+      ImplicitSurface.updateData(nodes, handledProps)
+    }
   }
 
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -886,11 +876,11 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
   }
 
   static canUpdate(handledProps: HandledProps) {
-    const { lhs, rhs, xRange, yRange, zRange, samples } = handledProps
+    const { lhs, rhs, rangeX, rangeY, rangeZ, samples } = handledProps
     return (
-      isVector(xRange, 2) &&
-      isVector(yRange, 2) &&
-      isVector(zRange, 2) &&
+      isVector(rangeX, 2) &&
+      isVector(rangeY, 2) &&
+      isVector(rangeZ, 2) &&
       hasFunctionSignature(lhs, 3, 1) &&
       hasFunctionSignature(rhs, 3, 1) &&
       isNumeric(samples)
@@ -901,14 +891,14 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     if (!ImplicitSurface.canUpdate(handledProps)) {
       return
     }
-    const { lhs, rhs, xRange, yRange, zRange, samples } = handledProps
+    const { lhs, rhs, rangeX, rangeY, rangeZ, samples } = handledProps
     const { dataNodes } = nodes
 
     const implicitFunc = (x, y, z) => lhs(x, y, z) - rhs(x, y, z)
     const implicitTriangles = marchingCubes(
-      xRange[0], xRange[1],
-      yRange[0], yRange[1],
-      zRange[0], zRange[1],
+      rangeX[0], rangeX[1],
+      rangeY[0], rangeY[1],
+      rangeZ[0], rangeZ[1],
       implicitFunc, 0, samples)
 
     // "samples" really determines the field discretization length
@@ -940,6 +930,96 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
       width: 0,
       live: false
     } ).strip()
+
+    return group
+  }
+
+}
+
+export class VectorField extends AbstractMBC implements MathBoxComponent {
+
+  dataNodeNames = ['volume']
+  renderNodeNames = ['vector']
+  handlers = {
+    ...universalHandlers,
+    ...lineLikeHandlers,
+    rangeX: VectorField.makeHandleRange('rangeX'),
+    rangeY: VectorField.makeHandleRange('rangeY'),
+    rangeZ: VectorField.makeHandleRange('rangeZ'),
+    samples: VectorField.handleSamples,
+    expr: VectorField.handleExpr
+  }
+
+  static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { dataNodes: volume } = nodes
+    const { expr, rangeX, rangeY, rangeZ } = handledProps
+    validateFunctionSignature(expr, 3, 3)
+    VectorField.updateRangeAndExpr(volume, rangeX, rangeY, rangeZ, expr)
+  }
+
+  static canUpdateRangeAndExpr(rangeX: mixed, rangeY: mixed, rangeZ: mixed, expr: mixed) {
+    return (
+      isVector(rangeX, 2) &&
+      isVector(rangeY, 2) &&
+      isVector(rangeZ, 2) &&
+      hasFunctionSignature(expr, 3, 3)
+    )
+  }
+
+  static updateRangeAndExpr(
+    volume: MathBoxNode,
+    rangeX: [number, number],
+    rangeY: [number, number],
+    rangeZ: [number, number],
+    expr: (number, number, number) => [number, number, number]
+  ) {
+    if (!VectorField.canUpdateRangeAndExpr(rangeX, rangeY, rangeZ, expr)) {
+      return
+    }
+    volume.set('expr', (emit, scaledX, scaledY, scaledZ) => {
+      const x = rangeX[0] + scaledX * (rangeX[1] - rangeX[0] )
+      const y = rangeY[0] + scaledY * (rangeY[1] - rangeY[0] )
+      const z = rangeZ[0] + scaledZ * (rangeZ[1] - rangeZ[0] )
+      emit(x, y, z)
+      const [vx, vy, vz] = expr(x, y, z)
+      emit(x + vx, y + vy, z + vz)
+    } )
+  }
+
+  static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { dataNodes } = nodes
+    const { samples } = handledProps
+
+    validateVector(samples, 3)
+
+    dataNodes.set( {
+      width: samples[0],
+      height: samples[1],
+      depth: samples[2]
+    } )
+  }
+
+  static makeHandleRange(rangeName: 'rangeX' | 'rangeY' | 'rangeZ') {
+    return (nodes: HandlerNodes, handledProps: HandledProps) => {
+      validateVector(handledProps[rangeName], 2)
+      const { dataNodes: volume } = nodes
+      const { expr, rangeX, rangeY, rangeZ } = handledProps
+      VectorField.updateRangeAndExpr(volume, rangeX, rangeY, rangeZ, expr)
+    }
+  }
+
+  mathboxRender = (parent) => {
+    const group = parent.group( { classes: ['vector-field'] } )
+
+    group.volume( {
+      items: 2,
+      channels: 3,
+      rangeX: [0, 1],
+      rangeY: [0, 1],
+      rangeZ: [0, 1]
+    } ).vector( {
+
+    } )
 
     return group
   }
