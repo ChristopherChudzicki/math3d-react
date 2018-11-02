@@ -663,19 +663,6 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     nodes.groupNode.select('.gridV resample').set('height', gridV)
   }
 
-  static rerender(groupNode: MathBoxNode, handledProps: HandledProps, handlers: Handlers) {
-    groupNode.select('area, surface, .gridU, .gridV').remove()
-    ParametricSurface.renderParametricSurface(groupNode)
-    const newNodes = {
-      groupNode,
-      dataNodes: groupNode.select('area'),
-      renderNodes: groupNode.select('surface')
-    }
-    Object.keys(handlers).forEach(key => {
-      handlers[key](newNodes, handledProps, handlers)
-    } )
-  }
-
   static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
     const { groupNode } = nodes
     const { uSamples } = handledProps
@@ -828,6 +815,19 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     return group
   }
 
+  static rerender(groupNode: MathBoxNode, handledProps: HandledProps, handlers: Handlers) {
+    groupNode.select('area, surface, .gridU, .gridV').remove()
+    ParametricSurface.renderParametricSurface(groupNode)
+    const newNodes = {
+      groupNode,
+      dataNodes: groupNode.select('area'),
+      renderNodes: groupNode.select('surface')
+    }
+    Object.keys(handlers).forEach(key => {
+      handlers[key](newNodes, handledProps, handlers)
+    } )
+  }
+
 }
 
 export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
@@ -944,6 +944,7 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
     rangeY: VectorField.makeHandleRange('rangeY'),
     rangeZ: VectorField.makeHandleRange('rangeZ'),
     samples: VectorField.handleSamples,
+    scale: VectorField.handleScale,
     expr: VectorField.handleExpr
   }
 
@@ -956,75 +957,101 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
   static makeHandleRange(rangeName: 'rangeX' | 'rangeY' | 'rangeZ') {
     return (nodes: HandlerNodes, handledProps: HandledProps) => {
       validateVector(handledProps[rangeName], 2)
-      const { dataNodes: volume } = nodes
-      const { expr, rangeX, rangeY, rangeZ } = handledProps
-      VectorField.updateRangeAndExpr(volume, rangeX, rangeY, rangeZ, expr)
+      VectorField.updateRangeAndExpr(nodes, handledProps)
     }
   }
 
   static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { dataNodes: volume } = nodes
-    const { expr, rangeX, rangeY, rangeZ } = handledProps
+    const { expr } = handledProps
     validateFunctionSignature(expr, 3, 3)
-    VectorField.updateRangeAndExpr(volume, rangeX, rangeY, rangeZ, expr)
+    VectorField.updateRangeAndExpr(nodes, handledProps)
   }
 
-  static canUpdateRangeAndExpr(rangeX: mixed, rangeY: mixed, rangeZ: mixed, expr: mixed) {
+  static handleScale(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { scale } = handledProps
+    isNumeric(scale)
+    VectorField.updateRangeAndExpr(nodes, handledProps)
+  }
+
+  static canUpdateRangeAndExpr(rangeX: mixed, rangeY: mixed, rangeZ: mixed, expr: mixed, samples: mixed, scale: mixed) {
     return (
       isVector(rangeX, 2) &&
       isVector(rangeY, 2) &&
       isVector(rangeZ, 2) &&
+      isVector(samples, 3) &&
+      isNumeric(scale) &&
       hasFunctionSignature(expr, 3, 3)
     )
   }
 
-  static updateRangeAndExpr(
-    volume: MathBoxNode,
-    rangeX: [number, number],
-    rangeY: [number, number],
-    rangeZ: [number, number],
-    expr: (number, number, number) => [number, number, number]
-  ) {
-    if (!VectorField.canUpdateRangeAndExpr(rangeX, rangeY, rangeZ, expr)) {
+  static updateRangeAndExpr(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { rangeX, rangeY, rangeZ, expr, samples, scale } = handledProps
+    const { dataNodes: volume } = nodes
+    if (!VectorField.canUpdateRangeAndExpr(rangeX, rangeY, rangeZ, expr, samples, scale)) {
       return
     }
+
     volume.set('expr', (emit, scaledX, scaledY, scaledZ) => {
-      const x = rangeX[0] + scaledX * (rangeX[1] - rangeX[0] )
-      const y = rangeY[0] + scaledY * (rangeY[1] - rangeY[0] )
-      const z = rangeZ[0] + scaledZ * (rangeZ[1] - rangeZ[0] )
+      const percentX = samples[0] === 1 ? 0.5 : scaledX
+      const percentY = samples[1] === 1 ? 0.5 : scaledY
+      const percentZ = samples[2] === 1 ? 0.5 : scaledZ
+
+      const x = rangeX[0] + percentX * (rangeX[1] - rangeX[0] )
+      const y = rangeY[0] + percentY * (rangeY[1] - rangeY[0] )
+      const z = rangeZ[0] + percentZ * (rangeZ[1] - rangeZ[0] )
       emit(x, y, z)
       const [vx, vy, vz] = expr(x, y, z)
-      emit(x + vx, y + vy, z + vz)
-    } )
-  }
-
-  static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { dataNodes } = nodes
-    const { samples } = handledProps
-
-    validateVector(samples, 3)
-
-    dataNodes.set( {
-      width: samples[0],
-      height: samples[1],
-      depth: samples[2]
+      emit(x + scale*vx, y + scale*vy, z + scale*vz)
     } )
   }
 
   mathboxRender = (parent) => {
     const group = parent.group( { classes: ['vector-field'] } )
 
+    return VectorField.renderVectorField(group)
+  }
+
+  static renderVectorField(group: MathBoxNode) {
     group.volume( {
       items: 2,
       channels: 3,
       rangeX: [0, 1],
       rangeY: [0, 1],
       rangeZ: [0, 1]
-    } ).vector( {
-
-    } )
+    } ).vector()
 
     return group
+  }
+
+  static rerender(groupNode: MathBoxNode, handledProps: HandledProps, handlers: Handlers) {
+    groupNode.select('volume, vector').remove()
+    VectorField.renderVectorField(groupNode)
+    const newNodes = {
+      groupNode,
+      dataNodes: groupNode.select('volume'),
+      renderNodes: groupNode.select('vector')
+    }
+    Object.keys(handlers).forEach(key => {
+      console.log(`rerrunning ${key}`)
+      handlers[key](newNodes, handledProps, handlers)
+    } )
+  }
+
+  static handleSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
+    const { dataNodes, groupNode } = nodes
+    const { samples } = handledProps
+    validateVector(samples, 3)
+    const volume = dataNodes
+    if (volume.get('width') === null) {
+      dataNodes.set( {
+        width: samples[0],
+        height: samples[1],
+        depth: samples[2]
+      } )
+    }
+    else {
+      VectorField.rerender(groupNode, handledProps, handlers)
+    }
   }
 
 }

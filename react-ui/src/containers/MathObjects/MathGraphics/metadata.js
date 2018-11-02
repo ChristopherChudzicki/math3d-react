@@ -160,7 +160,7 @@ export const pointMeta: MetaData = {
 const lineLike: MetaData = {
   size: {
     inputType: 'math',
-    defaultValue: '16'
+    defaultValue: '6'
   },
   width: {
     inputType: 'math',
@@ -352,17 +352,30 @@ export const implicitSurfaceMeta: MetaData = {
 const vectorFieldSpecific: MetaData = {
   expr: {
     inputType: 'math',
-    defaultValue: 'f(x,y,z)=\\frac{[x,y,0]}{\\sqrt{x^2+y^2}}',
+    defaultValue: 'f(x,y,z)=\\frac{[y,\\ -x,\\ 0]}{\\sqrt{x^2+y^2}}',
     isPrimary: true
   },
   samples: {
     inputType: 'math',
     defaultValue: '[10, 10, 5]'
+  },
+  scale: {
+    inputType: 'math',
+    defaultValue: '1'
+  },
+  width: {
+    inputType: 'math',
+    defaultValue: '2'
+  },
+  end: {
+    inputType: 'boolean',
+    defaultValue: true
   }
 }
 
 export const vectorFieldMeta: MetaData = {
   ...universal,
+  ...lineLike,
   ...volumetricRange,
   ...vectorFieldSpecific
 }
