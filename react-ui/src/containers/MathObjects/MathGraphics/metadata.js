@@ -259,12 +259,12 @@ const parametricSurfacaSpecific: MetaData = {
     defaultValue: '_f(u,v)=\\left[v\\cdot\\cos\\left(u\\right),v\\cdot\\sin\\left(u\\right),v\\right]',
     isPrimary: true
   },
-  uRange: {
+  rangeU: {
     inputType: 'math',
     defaultValue: '\\left[-\\pi,\\ \\pi\\right]',
     isPrimary: true
   },
-  vRange: {
+  rangeV: {
     inputType: 'math',
     defaultValue: '\\left[-3, 3\\right]',
     isPrimary: true

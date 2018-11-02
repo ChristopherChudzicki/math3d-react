@@ -618,8 +618,8 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     ...surfaceHandlers,
     color: ParametricSurface.handleColor,
     expr: ParametricSurface.handleExpr,
-    uRange: ParametricSurface.handleRange,
-    vRange: ParametricSurface.handleRange,
+    rangeU: ParametricSurface.handleRange,
+    rangeV: ParametricSurface.handleRange,
     uSamples: ParametricSurface.handleUSamples,
     vSamples: ParametricSurface.handleVSamples,
     // gridColor
@@ -710,16 +710,16 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   // The next two handlers all perform validation, then delegate to updateExpr
   // Handlers are structured this way because range properties can be functions.
   static handleRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { uRange, vRange, expr } = handledProps
+    const { rangeU, rangeV, expr } = handledProps
     const { dataNodes: area } = nodes
 
-    const isRangeValid = ParametricSurface.isRangeValid(uRange, vRange)
+    const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV)
     const isExprValid = hasFunctionSignature(expr, 2, 3)
     if (isRangeValid && isExprValid) {
-      ParametricSurface.updateExpr(area, uRange, vRange, expr)
+      ParametricSurface.updateExpr(area, rangeU, rangeV, expr)
     }
     else if (!isRangeValid) {
-      if (typeof uRange === 'function' && typeof vRange === 'function') {
+      if (typeof rangeU === 'function' && typeof rangeV === 'function') {
         throw new Error('Either the u-range can depend on v, OR the v-range can dependent on u, but NOT both.')
       }
       else {
@@ -729,15 +729,15 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
   }
 
-  static isRangeValid(uRange: mixed, vRange: mixed) {
-    if (isVector(uRange, 2) && isVector(vRange, 2)) {
+  static isRangeValid(rangeU: mixed, rangeV: mixed) {
+    if (isVector(rangeU, 2) && isVector(rangeV, 2)) {
       return true
     }
-    else if (hasFunctionSignature(uRange, 1, 2) && isVector(vRange, 2)) {
+    else if (hasFunctionSignature(rangeU, 1, 2) && isVector(rangeV, 2)) {
       return true
     }
 
-    else if (isVector(uRange, 2) && hasFunctionSignature(vRange, 1, 2)) {
+    else if (isVector(rangeU, 2) && hasFunctionSignature(rangeV, 1, 2)) {
       return true
     }
     else {
@@ -746,58 +746,58 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   }
 
   static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { expr, uRange, vRange } = handledProps
+    const { expr, rangeU, rangeV } = handledProps
     const { dataNodes: area } = nodes
     validateFunctionSignature(expr, 2, 3)
-    const isRangeValid = ParametricSurface.isRangeValid(uRange, vRange)
+    const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV)
 
     // Already know expr is valid
     if (isRangeValid) {
-      ParametricSurface.updateExpr(area, uRange, vRange, expr)
+      ParametricSurface.updateExpr(area, rangeU, rangeV, expr)
     }
   }
 
-  // assumes expr, uRange, vRange all valid
+  // assumes expr, rangeU, rangeV all valid
   static updateExpr(
     area: MathBoxNode,
-    uRange: [number, number] | (number) => [number, number],
-    vRange: [number, number] | (number) => [number, number],
+    rangeU: [number, number] | (number) => [number, number],
+    rangeV: [number, number] | (number) => [number, number],
     expr: (number, number) => [number, number, number]
   ) {
     // Cases
-    if (Array.isArray(uRange) && Array.isArray(vRange)) {
+    if (Array.isArray(rangeU) && Array.isArray(rangeV)) {
       area.set('expr', (emit, u, v) => {
-        const du = uRange
-        const dv = vRange
+        const du = rangeU
+        const dv = rangeV
         const trueU = du[0] + u*(du[1] - du[0] )
         const trueV = dv[0] + v*(dv[1] - dv[0] )
         return emit(...expr(trueU, trueV))
       } )
     }
-    else if (Array.isArray(uRange) && typeof vRange === 'function') {
+    else if (Array.isArray(rangeU) && typeof rangeV === 'function') {
       area.set('expr', (emit, u, v) => {
-        const du = uRange
+        const du = rangeU
         const trueU = du[0] + u*(du[1] - du[0] )
         // $FlowFixMe
-        const dv = vRange(trueU)
+        const dv = rangeV(trueU)
         const trueV = dv[0] + v*(dv[1] - dv[0] )
         return emit(...expr(trueU, trueV))
       } )
     }
-    else if (Array.isArray(vRange) && typeof uRange === 'function') {
+    else if (Array.isArray(rangeV) && typeof rangeU === 'function') {
       area.set('expr', (emit, u, v) => {
-        const dv = vRange
+        const dv = rangeV
         const trueV = dv[0] + v*(dv[1] - dv[0] )
         // $FlowFixMe
-        const du = uRange(trueV)
+        const du = rangeU(trueV)
         const trueU = du[0] + u*(du[1] - du[0] )
         return emit(...expr(trueU, trueV))
       } )
     }
     else {
-      throw new Error(`Expected vRange and uRange to be (1) array, array (2)
+      throw new Error(`Expected rangeV and rangeU to be (1) array, array (2)
                        array, function, or (3) function array. Instead, found
-                       ${typeof uRange} and ${typeof vRange}`)
+                       ${typeof rangeU} and ${typeof rangeV}`)
     }
 
   }
