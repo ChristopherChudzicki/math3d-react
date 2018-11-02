@@ -13,7 +13,7 @@ const colors = [
   '#f1c40f',
   '#e67e22',
   '#e74c3c',
-  '#f39c12'
+  '#808080'
 ]
 
 export default class ColorPickerPopover extends React.Component {

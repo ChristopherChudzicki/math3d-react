@@ -63,7 +63,7 @@ export class ParametricSurfaceUI extends PureComponent<Props> {
             parentId={this.props.id}
             prefix='_f(v)='
             postProcessLaTeX={stripFuncPrefixIfPossible}
-            field='uRange'
+            field='rangeU'
             style={rangeStyle}
           />
         </MainRow>
@@ -74,7 +74,7 @@ export class ParametricSurfaceUI extends PureComponent<Props> {
             parentId={this.props.id}
             prefix='_f(u)='
             postProcessLaTeX={stripFuncPrefixIfPossible}
-            field='vRange'
+            field='rangeV'
             style={rangeStyle}
           />
         </MainRow>

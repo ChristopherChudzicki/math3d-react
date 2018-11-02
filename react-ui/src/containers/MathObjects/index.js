@@ -23,8 +23,8 @@ export {
   LINE,
   VECTOR,
   PARAMETRIC_CURVE,
-  IMPLICIT_SURFACE
+  IMPLICIT_SURFACE,
+  VECTOR_FIELD
 } from './MathGraphics'
-
 
 window.MathObjects = mathObjects

@@ -27,7 +27,8 @@ export type HandledProps = {
   [string]: any,
 }
 
-type Handler = (nodes: HandlerNodes, props: HandledProps) => void
+type Handler = (nodes: HandlerNodes, props: HandledProps, handlers: { [string]: Handler } ) => void
+type Handlers = { [string]: Handler }
 
 type ErrorMap = {
   [string]: Error
@@ -45,9 +46,7 @@ interface MathBoxComponent {
   mathboxRender: (MathBoxNode) => MathBoxNode,
   dataNodeNames: ?Array<string>,
   renderNodeNames: ?Array<string>,
-  handlers: {
-    [nodeName: string]: Handler
-  }
+  handlers: Handlers
 }
 
 class AbstractMBC extends React.Component<Props> {
@@ -154,7 +153,8 @@ class AbstractMBC extends React.Component<Props> {
       if (handler) {
         try {
           // console.log(`Running handler ${handler.name}`)
-          handler(nodes, this.props)
+          // $FlowFixMe: this.handlers is abstract
+          handler(nodes, this.props, this.handlers)
         }
         catch (error) {
           errors[prop] = error
@@ -611,15 +611,15 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
 
 export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
-  static dataNodeNames = ['area']
-  static renderNodeNames = ['surface']
-  static handlers = {
+  dataNodeNames = ['area']
+  renderNodeNames = ['surface']
+  handlers = {
     ...universalHandlers,
     ...surfaceHandlers,
     color: ParametricSurface.handleColor,
     expr: ParametricSurface.handleExpr,
-    uRange: ParametricSurface.handleRange,
-    vRange: ParametricSurface.handleRange,
+    rangeU: ParametricSurface.handleRange,
+    rangeV: ParametricSurface.handleRange,
     uSamples: ParametricSurface.handleUSamples,
     vSamples: ParametricSurface.handleVSamples,
     // gridColor
@@ -628,12 +628,6 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     gridU: ParametricSurface.handleGridU,
     gridV: ParametricSurface.handleGridV
   }
-
-  // TODO: delete this, and change these properties to statics on all
-  // MathBoxComponents
-  dataNodeNames = ParametricSurface.dataNodeNames
-  renderNodeNames = ParametricSurface.renderNodeNames
-  handlers = ParametricSurface.handlers
 
   static handleColor(nodes: HandlerNodes, handledProps: HandledProps) {
     const { color } = handledProps
@@ -669,19 +663,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     nodes.groupNode.select('.gridV resample').set('height', gridV)
   }
 
-  static rerender(groupNode: MathBoxNode, handledProps: HandledProps) {
-    groupNode.select('area, surface, .gridU, .gridV').remove()
-    ParametricSurface.renderParametricSurface(groupNode)
-    const newNodes = {
-      groupNode,
-      dataNodes: groupNode.select(ParametricSurface.dataNodeNames.join(', ')),
-      renderNodes: groupNode.select(ParametricSurface.renderNodeNames.join(', '))
-    }
-    Object.keys(ParametricSurface.handlers).forEach(key => {
-      ParametricSurface.handlers[key](newNodes, handledProps)
-    } )
-  }
-  static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+  static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
     const { groupNode } = nodes
     const { uSamples } = handledProps
     validateNumeric(uSamples)
@@ -690,11 +672,11 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       area.set('width', uSamples)
     }
     else {
-      ParametricSurface.rerender(groupNode, handledProps)
+      ParametricSurface.rerender(groupNode, handledProps, handlers)
     }
   }
 
-  static handleVSamples(nodes: HandlerNodes, handledProps: HandledProps) {
+  static handleVSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
     const { groupNode } = nodes
     const { vSamples } = handledProps
     validateNumeric(vSamples)
@@ -703,21 +685,23 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       area.set('height', vSamples)
     }
     else {
-      ParametricSurface.rerender(groupNode, handledProps)
+      ParametricSurface.rerender(groupNode, handledProps, handlers)
     }
   }
+
   // The next two handlers all perform validation, then delegate to updateExpr
+  // Handlers are structured this way because range properties can be functions.
   static handleRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { uRange, vRange, expr } = handledProps
+    const { rangeU, rangeV, expr } = handledProps
     const { dataNodes: area } = nodes
 
-    const isRangeValid = ParametricSurface.isRangeValid(uRange, vRange)
+    const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV)
     const isExprValid = hasFunctionSignature(expr, 2, 3)
     if (isRangeValid && isExprValid) {
-      ParametricSurface.updateExpr(area, uRange, vRange, expr)
+      ParametricSurface.updateExpr(area, rangeU, rangeV, expr)
     }
     else if (!isRangeValid) {
-      if (typeof uRange === 'function' && typeof vRange === 'function') {
+      if (typeof rangeU === 'function' && typeof rangeV === 'function') {
         throw new Error('Either the u-range can depend on v, OR the v-range can dependent on u, but NOT both.')
       }
       else {
@@ -727,15 +711,15 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
   }
 
-  static isRangeValid(uRange: mixed, vRange: mixed) {
-    if (isVector(uRange, 2) && isVector(vRange, 2)) {
+  static isRangeValid(rangeU: mixed, rangeV: mixed) {
+    if (isVector(rangeU, 2) && isVector(rangeV, 2)) {
       return true
     }
-    else if (hasFunctionSignature(uRange, 1, 2) && isVector(vRange, 2)) {
+    else if (hasFunctionSignature(rangeU, 1, 2) && isVector(rangeV, 2)) {
       return true
     }
 
-    else if (isVector(uRange, 2) && hasFunctionSignature(vRange, 1, 2)) {
+    else if (isVector(rangeU, 2) && hasFunctionSignature(rangeV, 1, 2)) {
       return true
     }
     else {
@@ -744,58 +728,58 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   }
 
   static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { expr, uRange, vRange } = handledProps
+    const { expr, rangeU, rangeV } = handledProps
     const { dataNodes: area } = nodes
     validateFunctionSignature(expr, 2, 3)
-    const isRangeValid = ParametricSurface.isRangeValid(uRange, vRange)
+    const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV)
 
     // Already know expr is valid
     if (isRangeValid) {
-      ParametricSurface.updateExpr(area, uRange, vRange, expr)
+      ParametricSurface.updateExpr(area, rangeU, rangeV, expr)
     }
   }
 
-  // assumes expr, uRange, vRange all valid
+  // assumes expr, rangeU, rangeV all valid
   static updateExpr(
     area: MathBoxNode,
-    uRange: [number, number] | (number) => [number, number],
-    vRange: [number, number] | (number) => [number, number],
+    rangeU: [number, number] | (number) => [number, number],
+    rangeV: [number, number] | (number) => [number, number],
     expr: (number, number) => [number, number, number]
   ) {
     // Cases
-    if (Array.isArray(uRange) && Array.isArray(vRange)) {
+    if (Array.isArray(rangeU) && Array.isArray(rangeV)) {
       area.set('expr', (emit, u, v) => {
-        const du = uRange
-        const dv = vRange
+        const du = rangeU
+        const dv = rangeV
         const trueU = du[0] + u*(du[1] - du[0] )
         const trueV = dv[0] + v*(dv[1] - dv[0] )
         return emit(...expr(trueU, trueV))
       } )
     }
-    else if (Array.isArray(uRange) && typeof vRange === 'function') {
+    else if (Array.isArray(rangeU) && typeof rangeV === 'function') {
       area.set('expr', (emit, u, v) => {
-        const du = uRange
+        const du = rangeU
         const trueU = du[0] + u*(du[1] - du[0] )
         // $FlowFixMe
-        const dv = vRange(trueU)
+        const dv = rangeV(trueU)
         const trueV = dv[0] + v*(dv[1] - dv[0] )
         return emit(...expr(trueU, trueV))
       } )
     }
-    else if (Array.isArray(vRange) && typeof uRange === 'function') {
+    else if (Array.isArray(rangeV) && typeof rangeU === 'function') {
       area.set('expr', (emit, u, v) => {
-        const dv = vRange
+        const dv = rangeV
         const trueV = dv[0] + v*(dv[1] - dv[0] )
         // $FlowFixMe
-        const du = uRange(trueV)
+        const du = rangeU(trueV)
         const trueU = du[0] + u*(du[1] - du[0] )
         return emit(...expr(trueU, trueV))
       } )
     }
     else {
-      throw new Error(`Expected vRange and uRange to be (1) array, array (2)
+      throw new Error(`Expected rangeV and rangeU to be (1) array, array (2)
                        array, function, or (3) function array. Instead, found
-                       ${typeof uRange} and ${typeof vRange}`)
+                       ${typeof rangeU} and ${typeof rangeV}`)
     }
 
   }
@@ -831,6 +815,19 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     return group
   }
 
+  static rerender(groupNode: MathBoxNode, handledProps: HandledProps, handlers: Handlers) {
+    groupNode.select('area, surface, .gridU, .gridV').remove()
+    ParametricSurface.renderParametricSurface(groupNode)
+    const newNodes = {
+      groupNode,
+      dataNodes: groupNode.select('area'),
+      renderNodes: groupNode.select('surface')
+    }
+    Object.keys(handlers).forEach(key => {
+      handlers[key](newNodes, handledProps, handlers)
+    } )
+  }
+
 }
 
 export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
@@ -842,9 +839,9 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     shaded: makeSetProperty('shaded'),
     lhs: ImplicitSurface.handleLHS,
     rhs: ImplicitSurface.handleRHS,
-    xRange: ImplicitSurface.handleXRange,
-    yRange: ImplicitSurface.handleYRange,
-    zRange: ImplicitSurface.handleZRange,
+    rangeX: ImplicitSurface.makeHandleRange('rangeX'),
+    rangeY: ImplicitSurface.makeHandleRange('rangeY'),
+    rangeZ: ImplicitSurface.makeHandleRange('rangeZ'),
     samples: ImplicitSurface.handleSamples
   }
 
@@ -861,22 +858,12 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     ImplicitSurface.updateData(nodes, handledProps)
   }
 
-  static handleXRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { xRange } = handledProps
-    validateVector(xRange, 2)
-    ImplicitSurface.updateData(nodes, handledProps)
-  }
-
-  static handleYRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { yRange } = handledProps
-    validateVector(yRange, 2)
-    ImplicitSurface.updateData(nodes, handledProps)
-  }
-
-  static handleZRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { zRange } = handledProps
-    validateVector(zRange, 2)
-    ImplicitSurface.updateData(nodes, handledProps)
+  static makeHandleRange(rangeName: 'rangeX' | 'rangeY' | 'rangeZ') {
+    return (nodes: HandlerNodes, handledProps: HandledProps) => {
+      const range = handledProps[rangeName]
+      validateVector(range, 2)
+      ImplicitSurface.updateData(nodes, handledProps)
+    }
   }
 
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -886,11 +873,11 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
   }
 
   static canUpdate(handledProps: HandledProps) {
-    const { lhs, rhs, xRange, yRange, zRange, samples } = handledProps
+    const { lhs, rhs, rangeX, rangeY, rangeZ, samples } = handledProps
     return (
-      isVector(xRange, 2) &&
-      isVector(yRange, 2) &&
-      isVector(zRange, 2) &&
+      isVector(rangeX, 2) &&
+      isVector(rangeY, 2) &&
+      isVector(rangeZ, 2) &&
       hasFunctionSignature(lhs, 3, 1) &&
       hasFunctionSignature(rhs, 3, 1) &&
       isNumeric(samples)
@@ -901,14 +888,14 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     if (!ImplicitSurface.canUpdate(handledProps)) {
       return
     }
-    const { lhs, rhs, xRange, yRange, zRange, samples } = handledProps
+    const { lhs, rhs, rangeX, rangeY, rangeZ, samples } = handledProps
     const { dataNodes } = nodes
 
     const implicitFunc = (x, y, z) => lhs(x, y, z) - rhs(x, y, z)
     const implicitTriangles = marchingCubes(
-      xRange[0], xRange[1],
-      yRange[0], yRange[1],
-      zRange[0], zRange[1],
+      rangeX[0], rangeX[1],
+      rangeY[0], rangeY[1],
+      rangeZ[0], rangeZ[1],
       implicitFunc, 0, samples)
 
     // "samples" really determines the field discretization length
@@ -942,6 +929,129 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
     } ).strip()
 
     return group
+  }
+
+}
+
+export class VectorField extends AbstractMBC implements MathBoxComponent {
+
+  dataNodeNames = ['volume']
+  renderNodeNames = ['vector']
+  handlers = {
+    ...universalHandlers,
+    ...lineLikeHandlers,
+    rangeX: VectorField.makeHandleRange('rangeX'),
+    rangeY: VectorField.makeHandleRange('rangeY'),
+    rangeZ: VectorField.makeHandleRange('rangeZ'),
+    samples: VectorField.handleSamples,
+    scale: VectorField.handleScale,
+    expr: VectorField.handleExpr
+  }
+
+  // handleExpr and makeHandleRange both delegate to updateRangeAndExpression.
+  // handlers are structured this way because updating the range properties of
+  // a volume node seems not to have any effect. Area nodes suffer a similar
+  // bug, see discussion at
+  // https://groups.google.com/forum/?fromgroups#!topic/mathbox/zLX6WJjTDZk
+  // for an alternative approach.
+  static makeHandleRange(rangeName: 'rangeX' | 'rangeY' | 'rangeZ') {
+    return (nodes: HandlerNodes, handledProps: HandledProps) => {
+      validateVector(handledProps[rangeName], 2)
+      VectorField.updateRangeAndExpr(nodes, handledProps)
+    }
+  }
+
+  static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { expr } = handledProps
+    validateFunctionSignature(expr, 3, 3)
+    VectorField.updateRangeAndExpr(nodes, handledProps)
+  }
+
+  static handleScale(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { scale } = handledProps
+    isNumeric(scale)
+    VectorField.updateRangeAndExpr(nodes, handledProps)
+  }
+
+  static canUpdateRangeAndExpr(rangeX: mixed, rangeY: mixed, rangeZ: mixed, expr: mixed, samples: mixed, scale: mixed) {
+    return (
+      isVector(rangeX, 2) &&
+      isVector(rangeY, 2) &&
+      isVector(rangeZ, 2) &&
+      isVector(samples, 3) &&
+      isNumeric(scale) &&
+      hasFunctionSignature(expr, 3, 3)
+    )
+  }
+
+  static updateRangeAndExpr(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { rangeX, rangeY, rangeZ, expr, samples, scale } = handledProps
+    const { dataNodes: volume } = nodes
+    if (!VectorField.canUpdateRangeAndExpr(rangeX, rangeY, rangeZ, expr, samples, scale)) {
+      return
+    }
+
+    volume.set('expr', (emit, scaledX, scaledY, scaledZ) => {
+      const percentX = samples[0] === 1 ? 0.5 : scaledX
+      const percentY = samples[1] === 1 ? 0.5 : scaledY
+      const percentZ = samples[2] === 1 ? 0.5 : scaledZ
+
+      const x = rangeX[0] + percentX * (rangeX[1] - rangeX[0] )
+      const y = rangeY[0] + percentY * (rangeY[1] - rangeY[0] )
+      const z = rangeZ[0] + percentZ * (rangeZ[1] - rangeZ[0] )
+      emit(x, y, z)
+      const [vx, vy, vz] = expr(x, y, z)
+      emit(x + scale*vx, y + scale*vy, z + scale*vz)
+    } )
+  }
+
+  mathboxRender = (parent) => {
+    const group = parent.group( { classes: ['vector-field'] } )
+
+    return VectorField.renderVectorField(group)
+  }
+
+  static renderVectorField(group: MathBoxNode) {
+    group.volume( {
+      items: 2,
+      channels: 3,
+      rangeX: [0, 1],
+      rangeY: [0, 1],
+      rangeZ: [0, 1]
+    } ).vector()
+
+    return group
+  }
+
+  static rerender(groupNode: MathBoxNode, handledProps: HandledProps, handlers: Handlers) {
+    groupNode.select('volume, vector').remove()
+    VectorField.renderVectorField(groupNode)
+    const newNodes = {
+      groupNode,
+      dataNodes: groupNode.select('volume'),
+      renderNodes: groupNode.select('vector')
+    }
+    Object.keys(handlers).forEach(key => {
+      console.log(`rerrunning ${key}`)
+      handlers[key](newNodes, handledProps, handlers)
+    } )
+  }
+
+  static handleSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
+    const { dataNodes, groupNode } = nodes
+    const { samples } = handledProps
+    validateVector(samples, 3)
+    const volume = dataNodes
+    if (volume.get('width') === null) {
+      dataNodes.set( {
+        width: samples[0],
+        height: samples[1],
+        depth: samples[2]
+      } )
+    }
+    else {
+      VectorField.rerender(groupNode, handledProps, handlers)
+    }
   }
 
 }

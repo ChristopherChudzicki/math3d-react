@@ -1,16 +1,16 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { ImplicitSurface as ImplicitSurfaceGraphic } from 'components/MathBox'
+import { VectorField as VectorFieldGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from '../containers/MathGraphicUI'
-import { implicitSurfaceMeta } from '../metadata'
+import { vectorFieldMeta } from '../metadata'
 import { MainRow } from 'containers/MathObjects/components'
 import {
   MathInputRHS,
   StaticMathStyled
 } from 'containers/MathObjects/containers/MathInput'
 
-export const IMPLICIT_SURFACE = 'IMPLICIT_SURFACE'
+export const VECTOR_FIELD = 'VECTOR_FIELD'
 
 type Props = {
   id: string
@@ -23,30 +23,21 @@ const rangeStyle = {
   flex: 0
 }
 
-export class ImplicitSurfaceUI extends PureComponent<Props> {
+export class VectorFieldUI extends PureComponent<Props> {
 
   render() {
     return (
       <MathGraphicUI
-        type={IMPLICIT_SURFACE}
+        type={VECTOR_FIELD}
         id={this.props.id}
-        metadata={implicitSurfaceMeta}>
+        metadata={vectorFieldMeta}>
         <MainRow>
           <MathInputRHS
-            field='lhs'
-            prefix='f(x,y,z)='
-            parentId={this.props.id}
-          />
-          <StaticMathStyled latex='='/>
-          <MathInputRHS
-            field='rhs'
-            // that lhs and rhs have same prefix name is irrelevant.
-            // So far we've used f(...) as a function prefix everywhere.
+            field='expr'
             prefix='f(x,y,z)='
             parentId={this.props.id}
           />
         </MainRow>
-        {/* Maybe better to put all of the ranges on one row.  */}
         <MainRow style={justifyRight}>
           <StaticMathStyled latex='x\in' size='small'/>
           <MathInputRHS
@@ -81,9 +72,9 @@ export class ImplicitSurfaceUI extends PureComponent<Props> {
 }
 
 export default new MathGraphic( {
-  type: IMPLICIT_SURFACE,
-  description: 'Implicit Surface',
-  metadata: implicitSurfaceMeta,
-  uiComponent: ImplicitSurfaceUI,
-  mathboxComponent: ImplicitSurfaceGraphic
+  type: VECTOR_FIELD,
+  description: 'Vector Field',
+  metadata: vectorFieldMeta,
+  uiComponent: VectorFieldUI,
+  mathboxComponent: VectorFieldGraphic
 } )

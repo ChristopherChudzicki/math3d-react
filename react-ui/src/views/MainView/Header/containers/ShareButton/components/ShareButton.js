@@ -1,6 +1,6 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { Button, Popover } from 'antd'
+import { Button, Popover, Icon } from 'antd'
 import { saveGraph } from 'services/api'
 import { dehydrate } from 'store/hydration'
 import randomstring from 'randomstring'
@@ -32,18 +32,23 @@ export default class ShareButton extends PureComponent<Props, State> {
   }
 
   renderContent() {
+    const url = this.state.id && `https://math3d-react.herokuapp.com/${this.state.id}`
     return (
-      <div>
+      <div style={ { width: 400 } }>
         <pre>
-          {this.state.id && `https://math3d-react.herokuapp.com/${this.state.id}`}
+          {url}
         </pre>
+        <p>
+          <Icon type="warning" theme="outlined" /> This updated version of math3d is in <strong>beta</strong>.
+          Graphs saved now may not work in the future.
+        </p>
       </div>
     )
   }
 
   render() {
     return (
-      <Popover placement="bottomRight" title={'Title'} content={this.renderContent()} trigger="click">
+      <Popover placement="bottomRight" title={'Share'} content={this.renderContent()} trigger="click">
         <Button size='small' type='ghost' onClick={this.saveGraph}>
           Share
         </Button>
