@@ -706,7 +706,9 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       ParametricSurface.rerender(groupNode, handledProps)
     }
   }
+
   // The next two handlers all perform validation, then delegate to updateExpr
+  // Handlers are structured this way because range properties can be functions.
   static handleRange(nodes: HandlerNodes, handledProps: HandledProps) {
     const { uRange, vRange, expr } = handledProps
     const { dataNodes: area } = nodes
@@ -950,6 +952,21 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
     expr: VectorField.handleExpr
   }
 
+  // handleExpr and makeHandleRange both delegate to updateRangeAndExpression.
+  // handlers are structured this way because updating the range properties of
+  // a volume node seems not to have any effect. Area nodes suffer a similar
+  // bug, see discussion at
+  // https://groups.google.com/forum/?fromgroups#!topic/mathbox/zLX6WJjTDZk
+  // for an alternative approach.
+  static makeHandleRange(rangeName: 'rangeX' | 'rangeY' | 'rangeZ') {
+    return (nodes: HandlerNodes, handledProps: HandledProps) => {
+      validateVector(handledProps[rangeName], 2)
+      const { dataNodes: volume } = nodes
+      const { expr, rangeX, rangeY, rangeZ } = handledProps
+      VectorField.updateRangeAndExpr(volume, rangeX, rangeY, rangeZ, expr)
+    }
+  }
+
   static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
     const { dataNodes: volume } = nodes
     const { expr, rangeX, rangeY, rangeZ } = handledProps
@@ -997,15 +1014,6 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
       height: samples[1],
       depth: samples[2]
     } )
-  }
-
-  static makeHandleRange(rangeName: 'rangeX' | 'rangeY' | 'rangeZ') {
-    return (nodes: HandlerNodes, handledProps: HandledProps) => {
-      validateVector(handledProps[rangeName], 2)
-      const { dataNodes: volume } = nodes
-      const { expr, rangeX, rangeY, rangeZ } = handledProps
-      VectorField.updateRangeAndExpr(volume, rangeX, rangeY, rangeZ, expr)
-    }
   }
 
   mathboxRender = (parent) => {
