@@ -97,6 +97,7 @@ export default class SettingsContent extends React.PureComponent<Props> {
   }
 
   render() {
+    console.log(this.props.settingsList)
     return (
       <Grid>
         {this.props.settingsList.map(this.renderRow)}

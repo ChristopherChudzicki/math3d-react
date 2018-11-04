@@ -253,6 +253,31 @@ const surfaceLike: MetaData = {
   }
 }
 
+function makeParametricSamplesAndGrid(labelU: string, labelV: string) {
+  return {
+    uSamples: {
+      inputType: 'math',
+      defaultValue: '64',
+      label: `${labelU} samples`
+    },
+    vSamples: {
+      inputType: 'math',
+      defaultValue: '64',
+      label: `${labelV} samples`
+    },
+    gridU: {
+      inputType: 'math',
+      defaultValue: '8',
+      label: `${labelU} gridlines`
+    },
+    gridV: {
+      inputType: 'math',
+      defaultValue: '8',
+      label: `${labelV} gridlines`
+    }
+  }
+}
+
 const parametricSurfacaSpecific: MetaData = {
   expr: {
     inputType: 'math',
@@ -269,36 +294,65 @@ const parametricSurfacaSpecific: MetaData = {
     defaultValue: '\\left[-3, 3\\right]',
     isPrimary: true
   },
-  uSamples: {
-    inputType: 'math',
-    defaultValue: '64'
-  },
-  vSamples: {
-    inputType: 'math',
-    defaultValue: '64'
-  },
-  gridU: {
-    inputType: 'math',
-    defaultValue: '8'
-  },
-  gridV: {
-    inputType: 'math',
-    defaultValue: '8'
-  },
   gridOpacity: {
     inputType: 'math',
-    defaultValue: '0.75'
+    defaultValue: '0.5'
   },
   gridWidth: {
     inputType: 'math',
     defaultValue: '4'
-  }
+  },
+  ...makeParametricSamplesAndGrid('u', 'v')
 }
 
 export const parametricSurfacaMeta: MetaData = {
   ...universal,
   ...surfaceLike,
   ...parametricSurfacaSpecific
+}
+
+// ---------- Explicit Surface (Rectangular) ---------- //
+
+export const explicitSurfaceMeta: MetaData = {
+  ...parametricSurfacaMeta,
+  ...makeParametricSamplesAndGrid('x', 'y'),
+  expr: {
+    inputType: 'math',
+    defaultValue: '_f(x,y)=x^2-y^2',
+    isPrimary: true
+  },
+  rangeU: {
+    inputType: 'math',
+    defaultValue: '\\left[-2,\\ 2\\right]',
+    isPrimary: true
+  },
+  rangeV: {
+    inputType: 'math',
+    defaultValue: '\\left[-2,\\ 2\\right]',
+    isPrimary: true
+  }
+}
+
+// ---------- ExplicitSurface Polar ---------- //
+
+export const explicitSurfacePolarMeta: MetaData = {
+  ...parametricSurfacaMeta,
+  ...makeParametricSamplesAndGrid('r', '\u03B8'), // \u03B8 is lowercase theta
+  expr: {
+    inputType: 'math',
+    defaultValue: '_f(r,\\theta)=\\frac{1}{4}r^2\\cdot\\cos\\left(3\\theta\\right)',
+    isPrimary: true
+  },
+  rangeU: {
+    inputType: 'math',
+    defaultValue: '\\left[0,\\ 3\\right]',
+    isPrimary: true
+  },
+  rangeV: {
+    inputType: 'math',
+    defaultValue: '\\left[-\\pi,\\ \\pi\\right]',
+    isPrimary: true
+  }
 }
 
 // ---------- Implicit Surface ---------- //

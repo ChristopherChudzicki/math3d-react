@@ -27,9 +27,6 @@ export type HandledProps = {
   [string]: any,
 }
 
-type Handler = (nodes: HandlerNodes, props: HandledProps, handlers: { [string]: Handler } ) => void
-type Handlers = { [string]: Handler }
-
 type ErrorMap = {
   [string]: Error
 }
@@ -41,6 +38,9 @@ export type Props = HandledProps & {
   mathboxParent?: MathBoxNode, // supplied by parent during render
   handleErrors: (errors: ErrorMap, props: Props, updatedProps: HandledProps) => void
 }
+
+type Handler = (nodes: HandlerNodes, props: Props, handlers: { [string]: Handler } ) => void
+type Handlers = { [string]: Handler }
 
 interface MathBoxComponent {
   mathboxRender: (MathBoxNode) => MathBoxNode,
@@ -128,15 +128,6 @@ class AbstractMBC extends React.Component<Props> {
       : undefined
   }
 
-  getHandledProps() {
-    // $FlowFixMe: this.handlers is abstract
-    return Object.keys(this.handlers)
-      .reduce((acc, propName) => {
-        acc[propName] = this.props[propName]
-        return acc
-      }, {} )
-  }
-
   updateHandledProps(propsToUpdate: HandledProps) {
     const nodes = {
       // $FlowFixMe: this.dataNodeNames is abstract
@@ -149,12 +140,11 @@ class AbstractMBC extends React.Component<Props> {
     const errors = {}
     Object.keys(propsToUpdate).forEach(prop => {
       // $FlowFixMe: this.handlers is abstract
-      const handler = this.handlers[prop]
-      if (handler) {
+      if (this.handlers.hasOwnProperty(prop)) {
         try {
           // console.log(`Running handler ${handler.name}`)
           // $FlowFixMe: this.handlers is abstract
-          handler(nodes, this.props, this.handlers)
+          this.handlers[prop](nodes, this.props, this.handlers)
         }
         catch (error) {
           errors[prop] = error
@@ -166,7 +156,7 @@ class AbstractMBC extends React.Component<Props> {
 
   }
 
-  static defaultHandleErrors(errors: ErrorMap) {
+  static defaultHandleErrors(errors: ErrorMap, props: Props, updatedProps: HandledProps) {
     if (Object.keys(errors).length === 0) {
       return
     }
@@ -196,8 +186,6 @@ function makeSetProperty(propName, validator: ?Function) {
     return renderNodes.set(propName, handledProps[propName] )
   }
 }
-
-// NOTE: For now, only validating math inputs.
 
 const universalHandlers = {
   opacity: makeSetProperty('opacity', validateNumeric),
@@ -613,20 +601,26 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
   dataNodeNames = ['area']
   renderNodeNames = ['surface']
-  handlers = {
-    ...universalHandlers,
-    ...surfaceHandlers,
-    color: ParametricSurface.handleColor,
-    expr: ParametricSurface.handleExpr,
-    rangeU: ParametricSurface.handleRange,
-    rangeV: ParametricSurface.handleRange,
-    uSamples: ParametricSurface.handleUSamples,
-    vSamples: ParametricSurface.handleVSamples,
-    // gridColor
-    gridWidth: ParametricSurface.handleGridWidth,
-    gridOpacity: ParametricSurface.handleGridOpacity,
-    gridU: ParametricSurface.handleGridU,
-    gridV: ParametricSurface.handleGridV
+  handlers: Handlers
+
+  constructor(props: Props) {
+    super(props)
+
+    this.handlers = {
+      ...universalHandlers,
+      ...surfaceHandlers,
+      color: ParametricSurface.handleColor,
+      expr: this.handleExpr,
+      rangeU: ParametricSurface.handleRange,
+      rangeV: ParametricSurface.handleRange,
+      uSamples: ParametricSurface.handleUSamples,
+      vSamples: ParametricSurface.handleVSamples,
+      // gridColor
+      gridWidth: ParametricSurface.handleGridWidth,
+      gridOpacity: ParametricSurface.handleGridOpacity,
+      gridU: ParametricSurface.handleGridU,
+      gridV: ParametricSurface.handleGridV
+    }
   }
 
   static handleColor(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -727,15 +721,23 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     }
   }
 
-  static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { expr, rangeU, rangeV } = handledProps
-    const { dataNodes: area } = nodes
+  // Inheriting classes override this method to transform scalar functions in
+  // rectangular and polar coordinates into parametric surfaces
+  static validateAndTransformExpr(expr: mixed): (number, number) => [number, number, number] {
     validateFunctionSignature(expr, 2, 3)
+    // $FlowFixMe previous line will throw if invalid type
+    return expr
+  }
+
+  handleExpr = (nodes: HandlerNodes, handledProps: HandledProps) => {
+    const { expr, rangeU, rangeV } = handledProps
+    const transformedExpr = this.constructor.validateAndTransformExpr(expr)
+    const { dataNodes: area } = nodes
     const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV)
 
     // Already know expr is valid
     if (isRangeValid) {
-      ParametricSurface.updateExpr(area, rangeU, rangeV, expr)
+      ParametricSurface.updateExpr(area, rangeU, rangeV, transformedExpr)
     }
   }
 
@@ -826,6 +828,26 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     Object.keys(handlers).forEach(key => {
       handlers[key](newNodes, handledProps, handlers)
     } )
+  }
+
+}
+
+export class ExplicitSurface extends ParametricSurface implements MathBoxComponent {
+
+  static validateAndTransformExpr(expr: mixed): (number, number) => [number, number, number] {
+    validateFunctionSignature(expr, 2, 1)
+    // $FlowFixMe expr's type has been validated
+    return (u, v) => [u, v, expr(u, v)]
+  }
+
+}
+
+export class ExplicitSurfacePolar extends ParametricSurface implements MathBoxComponent {
+
+  static validateAndTransformExpr(expr: mixed): (number, number) => [number, number, number] {
+    validateFunctionSignature(expr, 2, 1)
+    // $FlowFixMe expr's type has been validated
+    return (u, v) => [u*Math.cos(v), u*Math.sin(v), expr(u, v)]
   }
 
 }

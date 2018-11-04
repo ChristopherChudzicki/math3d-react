@@ -1,17 +1,24 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { ParametricSurface as ParametricSurfaceGraphic } from 'components/MathBox'
+import {
+  ParametricSurface as ParametricSurfaceGraphic,
+  ExplicitSurface as ExplicitSurfaceGraphic,
+  ExplicitSurfacePolar as ExplicitSurfacePolarGraphic
+} from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from '../containers/MathGraphicUI'
-import { parametricSurfacaMeta } from '../metadata'
+import {
+  parametricSurfacaMeta,
+  explicitSurfaceMeta,
+  explicitSurfacePolarMeta
+} from '../metadata'
+import type { MetaData } from '../types'
 import { MainRow } from 'containers/MathObjects/components'
 import {
   MathInputRHS,
   StaticMathStyled
 } from 'containers/MathObjects/containers/MathInput'
 import { parser } from 'constants/parsing'
-
-export const PARAMETRIC_SURFACE = 'PARAMETRIC_SURFACE'
 
 type Props = {
   id: string
@@ -24,70 +31,98 @@ const rangeStyle = {
   flex: 0
 }
 
-function stripFuncPrefixIfPossible(latex: string): string {
-  try {
-    const full = parser.parse(latex)
-    if (full.tree.type !== 'FunctionAssignmentNode') {
+function makeStripFuncPrefix(varname: string) {
+  const prefixLength = `_f(${varname})=`.length
+  return function stripFuncPrefixIfPossible(latex: string): string {
+    try {
+      const full = parser.parse(latex)
+      if (full.tree.type !== 'FunctionAssignmentNode') {
+        return latex
+      }
+      const varname = full.tree.params[0]
+      const texRHS = latex.slice(prefixLength)
+      const rhs = parser.parse(texRHS)
+      return rhs.dependencies.has(varname) ? latex : texRHS
+    }
+    catch (error) {
       return latex
     }
-    const prefixLength = '_f(*)='.length
-    const varname = full.tree.params[0]
-    const texRHS = latex.slice(prefixLength)
-    const rhs = parser.parse(texRHS)
-    return rhs.dependencies.has(varname) ? latex : texRHS
-  }
-  catch (error) {
-    return latex
   }
 }
 
-export class ParametricSurfaceUI extends PureComponent<Props> {
+function makeSurfaceComponent(type: string, meta: MetaData, labelU: string, labelV: string) {
 
-  render() {
-    return (
-      <MathGraphicUI
-        type={PARAMETRIC_SURFACE}
-        id={this.props.id}
-        metadata={parametricSurfacaMeta}>
-        <MainRow>
-          <MathInputRHS
-            field='expr'
-            prefix='_f(u,v)='
-            parentId={this.props.id}
-          />
-        </MainRow>
-        <MainRow style={justifyRight}>
-          <StaticMathStyled latex='u\in' size='small'/>
-          <MathInputRHS
-            size='small'
-            parentId={this.props.id}
-            prefix='_f(v)='
-            postProcessLaTeX={stripFuncPrefixIfPossible}
-            field='rangeU'
-            style={rangeStyle}
-          />
-        </MainRow>
-        <MainRow style={justifyRight}>
-          <StaticMathStyled latex='v\in' size='small'/>
-          <MathInputRHS
-            size='small'
-            parentId={this.props.id}
-            prefix='_f(u)='
-            postProcessLaTeX={stripFuncPrefixIfPossible}
-            field='rangeV'
-            style={rangeStyle}
-          />
-        </MainRow>
-      </MathGraphicUI>
-    )
+  const stripFuncPrefixIfPossibleU = makeStripFuncPrefix(labelU)
+  const stripFuncPrefixIfPossibleV = makeStripFuncPrefix(labelV)
+
+  return class ParametricSurfaceUI extends PureComponent<Props> {
+
+    render() {
+      return (
+        <MathGraphicUI
+          type={type}
+          id={this.props.id}
+          metadata={meta}>
+          <MainRow>
+            <MathInputRHS
+              field='expr'
+              prefix={`_f(${labelU},${labelV})=`}
+              parentId={this.props.id}
+            />
+          </MainRow>
+          <MainRow style={justifyRight}>
+            <StaticMathStyled latex={`${labelU}\\in`} size='small'/>
+            <MathInputRHS
+              size='small'
+              parentId={this.props.id}
+              prefix={`_f(${labelV})=`}
+              postProcessLaTeX={stripFuncPrefixIfPossibleV}
+              field='rangeU'
+              style={rangeStyle}
+            />
+          </MainRow>
+          <MainRow style={justifyRight}>
+            <StaticMathStyled latex={`${labelV}\\in`} size='small'/>
+            <MathInputRHS
+              size='small'
+              parentId={this.props.id}
+              prefix={`_f(${labelU})=`}
+              postProcessLaTeX={stripFuncPrefixIfPossibleU}
+              field='rangeV'
+              style={rangeStyle}
+            />
+          </MainRow>
+        </MathGraphicUI>
+      )
+    }
+
   }
-
 }
 
-export default new MathGraphic( {
+export const PARAMETRIC_SURFACE = 'PARAMETRIC_SURFACE'
+export const EXPLICIT_SURFACE = 'EXPLICIT_SURFACE'
+export const EXPLICIT_SURFACE_POLAR = 'EXPLICIT_SURFACE_POLAR'
+
+export const ParametricSurface = new MathGraphic( {
   type: PARAMETRIC_SURFACE,
   description: 'Parametric Surface',
   metadata: parametricSurfacaMeta,
-  uiComponent: ParametricSurfaceUI,
+  uiComponent: makeSurfaceComponent(PARAMETRIC_SURFACE, parametricSurfacaMeta, 'u', 'v'),
   mathboxComponent: ParametricSurfaceGraphic
+} )
+
+export const ExplicitSurface = new MathGraphic( {
+  type: EXPLICIT_SURFACE,
+  description: 'Explicit Surface',
+  metadata: explicitSurfaceMeta,
+  uiComponent: makeSurfaceComponent(EXPLICIT_SURFACE, explicitSurfaceMeta, 'x', 'y'),
+  mathboxComponent: ExplicitSurfaceGraphic
+} )
+
+export const ExplicitSurfacePolar = new MathGraphic( {
+  type: EXPLICIT_SURFACE_POLAR,
+  description: 'Explicit Surface (Polar)',
+  metadata: explicitSurfacePolarMeta,
+  uiComponent: makeSurfaceComponent(EXPLICIT_SURFACE_POLAR, explicitSurfacePolarMeta, 'r', '\\theta'),
+  mathboxComponent: ExplicitSurfacePolarGraphic
 } )
