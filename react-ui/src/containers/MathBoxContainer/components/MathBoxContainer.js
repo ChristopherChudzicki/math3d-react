@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 const MathBoxOuterDiv = styled.div`
   width: 100%;
   transform: translateX(${props => props.leftOffset});
-  transition-duration: ${props => props.theme.transitionDuration};
+  transition-duration: 1s;
   & ${props => !props.isAnimating && css`
     transition-duration: 0s;
   `}
