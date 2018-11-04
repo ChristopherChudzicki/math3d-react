@@ -208,12 +208,12 @@ const universalHandlers = {
     const { calculatedVisibility, useCalculatedVisibility } = props
     if (useCalculatedVisibility) {
       validateBoolean(calculatedVisibility)
-      nodes.renderNodes.set('visible', calculatedVisibility)
+      nodes.groupNode.set('visible', calculatedVisibility)
     }
   },
   visible: function(nodes: HandlerNodes, props: Props) {
     if (!props.useCalculatedVisibility) {
-      nodes.renderNodes.set('visible', props.visible)
+      nodes.groupNode.set('visible', props.visible)
     }
   }
 }
