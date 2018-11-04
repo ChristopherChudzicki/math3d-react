@@ -6,7 +6,11 @@ import Vector from './Vector'
 import Axis from './Axis'
 import Grid from './Grid'
 import ParametricCurve from './ParametricCurve'
-import ParametricSurface from './ParametricSurface'
+import {
+  ParametricSurface,
+  ExplicitSurface,
+  ExplicitSurfacePolar
+} from './ParametricSurface'
 import ImplicitSurface from './ImplicitSurface'
 import VectorField from './VectorField'
 
@@ -25,6 +29,8 @@ export default makeExports( [
   Vector,
   ParametricCurve,
   ParametricSurface,
+  ExplicitSurface,
+  ExplicitSurfacePolar,
   ImplicitSurface,
   VectorField
 ] )
@@ -35,6 +41,10 @@ export { POINT } from './Point'
 export { LINE } from './Line'
 export { VECTOR } from './Vector'
 export { PARAMETRIC_CURVE } from './ParametricCurve'
-export { PARAMETRIC_SURFACE } from './ParametricSurface'
+export {
+  PARAMETRIC_SURFACE,
+  EXPLICIT_SURFACE,
+  EXPLICIT_SURFACE_POLAR
+} from './ParametricSurface'
 export { IMPLICIT_SURFACE } from './ImplicitSurface'
 export { VECTOR_FIELD } from './VectorField'

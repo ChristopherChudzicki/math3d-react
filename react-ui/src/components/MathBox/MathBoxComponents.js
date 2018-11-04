@@ -842,6 +842,16 @@ export class ExplicitSurface extends ParametricSurface implements MathBoxCompone
 
 }
 
+export class ExplicitSurfacePolar extends ParametricSurface implements MathBoxComponent {
+
+  static validateAndTransformExpr(expr: mixed): (number, number) => [number, number, number] {
+    validateFunctionSignature(expr, 2, 1)
+    // $FlowFixMe expr's type has been validated
+    return (u, v) => [u*Math.cos(v), u*Math.sin(v), expr(u, v)]
+  }
+
+}
+
 export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
 
   dataNodeNames = ['array']
