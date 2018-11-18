@@ -1,5 +1,6 @@
 // @flow
 import type MathGraphic from './MathGraphic'
+import Camera from './Camera'
 import Point from './Point'
 import Line from './Line'
 import Vector from './Vector'
@@ -22,6 +23,7 @@ function makeExports(mathGraphics: Array<MathGraphic>) {
 }
 
 export default makeExports( [
+  Camera,
   Axis,
   Grid,
   Point,
@@ -35,6 +37,7 @@ export default makeExports( [
   VectorField
 ] )
 
+export { CAMERA } from './Camera'
 export { AXIS } from './Axis'
 export { GRID } from './Grid'
 export { POINT } from './Point'

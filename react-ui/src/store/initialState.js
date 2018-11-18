@@ -7,6 +7,7 @@ const initialState = {
       'mainFolder'
     ],
     'axes': [
+      'camera',
       '1',
       '2',
       '3',
@@ -29,6 +30,9 @@ const initialState = {
   },
   'mathSymbols': {},
   'mathGraphics': {
+    'camera': {
+      type: 'CAMERA'
+    },
     '1': {
       'type': 'AXIS',
       'label': 'x'

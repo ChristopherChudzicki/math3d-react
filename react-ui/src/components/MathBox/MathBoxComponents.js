@@ -20,7 +20,8 @@ type MathBoxNode = any
 type HandlerNodes = {
   renderNodes: MathBoxNode,
   dataNodes: MathBoxNode,
-  groupNode: MathBoxNode
+  groupNode: MathBoxNode,
+  root: MathBoxNode
 }
 
 export type HandledProps = {
@@ -134,7 +135,8 @@ class AbstractMBC extends React.Component<Props> {
       dataNodes: this.getNodes(this.dataNodeNames),
       // $FlowFixMe: this.renderNodeNames is abstract
       renderNodes: this.getNodes(this.renderNodeNames),
-      groupNode: this.mathboxNode
+      groupNode: this.mathboxNode,
+      root: this.mathbox
     }
 
     const errors = {}
@@ -232,14 +234,30 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
 
   dataNodeNames = ['camera']
   renderNodeNames = null
-  handlers = {}
+  handlers = {
+    relativePosition: Camera.handleRelativePosition,
+    relativeLookAt: Camera.handleRelativeLookAt
+  }
+
+  static handleRelativePosition(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { dataNodes } = nodes
+    const { relativePosition } = handledProps
+    dataNodes.set('position', relativePosition)
+  }
+
+  static handleRelativeLookAt(nodes: HandlerNodes, handledProps: HandledProps) {
+    // MathBox Camera lookAt prop seems to do nothing. Set the center of threejs
+    // OrbitControls object instead
+    const { root } = nodes
+    const { relativeLookAt } = handledProps
+    root.three.controls.center.set(...relativeLookAt)
+  }
 
   mathboxRender = (parent) => {
-    const node = parent.camera( {
-      position: [-3/2, -3/4, 1/4],
-      proxy: true
-    } )
-    return node
+    const group = parent.group( { classes: ['camera'] } )
+
+    group.camera( { proxy: true } )
+    return group
   }
 
 }

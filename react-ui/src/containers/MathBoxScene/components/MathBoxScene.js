@@ -81,7 +81,6 @@ export default class MathBoxScene extends PureComponent<Props> {
         {( { scope, scopeDiff } ) => {
           return (
             <MathBox mathbox={window.mathbox}>
-              <Camera id='camera'/>
               <Cartesian id='rootCartesian'>
                 {this.props.order.map(id => {
                   const settings = mathGraphics[id]

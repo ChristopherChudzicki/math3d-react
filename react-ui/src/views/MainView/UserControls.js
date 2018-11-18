@@ -7,12 +7,12 @@ import MathObjects, {
   Folder,
   MathSymbols,
   MathGraphics,
-  AXIS, GRID
+  AXIS, GRID, CAMERA
 } from 'containers/MathObjects'
 
 // First sort the MathObject keys in the order we want, then extract the
 // data relevant to ControllerHeader
-const omit = new Set( [AXIS, GRID] )
+const omit = new Set( [AXIS, GRID, CAMERA] )
 const menuItems = [
   Folder.type,
   ...Object.keys(MathGraphics).filter(x => !omit.has(x)).sort(),

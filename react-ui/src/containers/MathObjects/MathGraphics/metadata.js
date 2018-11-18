@@ -433,3 +433,17 @@ export const vectorFieldMeta: MetaData = {
   ...volumetricRange,
   ...vectorFieldSpecific
 }
+
+// ---------- Camera ---------- //
+export const cameraMeta = {
+  relativePosition: {
+    inputType: 'math',
+    defaultValue: '\\left[-1.25, -1.75, 0.5\\right]',
+    isPrimary: true
+  },
+  relativeLookAt: {
+    inputType: 'math',
+    defaultValue: '\\left[0, 0, 0\\right]',
+    isPrimary: true
+  }
+}
