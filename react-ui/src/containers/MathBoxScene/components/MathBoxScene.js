@@ -4,7 +4,7 @@ import type {
   Props as GraphicProps
 } from 'components/MathBox/MathBoxComponents'
 import React, { PureComponent } from 'react'
-import { MathBox, Grid, Cartesian, Camera } from 'components/MathBox'
+import { MathBox, Cartesian } from 'components/MathBox'
 import { MathScopeConsumer } from 'containers/MathScopeContext'
 import { MathGraphics } from 'containers/MathObjects'
 import PropTypes from 'prop-types'
