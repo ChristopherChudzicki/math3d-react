@@ -684,7 +684,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       area.set('width', uSamples)
     }
     else {
-      ParametricSurface.rerender(groupNode, handledProps, handlers)
+      ParametricSurface.rerender(nodes, handledProps, handlers)
     }
   }
 
@@ -697,7 +697,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       area.set('height', vSamples)
     }
     else {
-      ParametricSurface.rerender(groupNode, handledProps, handlers)
+      ParametricSurface.rerender(nodes, handledProps, handlers)
     }
   }
 
@@ -835,11 +835,13 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     return group
   }
 
-  static rerender(groupNode: MathBoxNode, handledProps: HandledProps, handlers: Handlers) {
+  static rerender(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
+    const { groupNode, root } = nodes
     groupNode.select('area, surface, .gridU, .gridV').remove()
     ParametricSurface.renderParametricSurface(groupNode)
     const newNodes = {
       groupNode,
+      root,
       dataNodes: groupNode.select('area'),
       renderNodes: groupNode.select('surface')
     }
@@ -1063,11 +1065,13 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
     return group
   }
 
-  static rerender(groupNode: MathBoxNode, handledProps: HandledProps, handlers: Handlers) {
+  static rerender(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
+    const { groupNode, root } = nodes
     groupNode.select('volume, vector').remove()
     VectorField.renderVectorField(groupNode)
     const newNodes = {
       groupNode,
+      root,
       dataNodes: groupNode.select('volume'),
       renderNodes: groupNode.select('vector')
     }
@@ -1078,7 +1082,7 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
   }
 
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
-    const { dataNodes, groupNode } = nodes
+    const { dataNodes } = nodes
     const { samples } = handledProps
     validateVector(samples, 3)
     const volume = dataNodes
@@ -1090,7 +1094,7 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
       } )
     }
     else {
-      VectorField.rerender(groupNode, handledProps, handlers)
+      VectorField.rerender(nodes, handledProps, handlers)
     }
   }
 
