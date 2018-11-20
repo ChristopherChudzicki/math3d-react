@@ -239,7 +239,10 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
     relativeLookAt: Camera.handleRelativeLookAt,
     isRotateEnabled: Camera.handleIsRotateEnabled,
     isZoomEnabled: Camera.handleIsZoomEnabled,
-    isPanEnabled: Camera.handlePanIsPanEnabled
+    isPanEnabled: Camera.handlePanIsPanEnabled,
+    computedPosition: Camera.handleComputedPosition,
+    computedLookAt: Camera.handleComputedLookAt,
+    useComputed: Camera.handleUseComputed
   }
 
   static handlePanIsPanEnabled(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -269,6 +272,61 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
     const { root } = nodes
     const { relativeLookAt } = handledProps
     root.three.controls.center.set(...relativeLookAt)
+  }
+
+  static handleUseComputed(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { computedPosition, computedLookAt } = handledProps
+    if (isVector(computedPosition, 3)) {
+      Camera.handleComputedPosition(nodes, handledProps)
+    }
+    if (isVector(computedLookAt, 3)) {
+      Camera.handleComputedLookAt(nodes, handledProps)
+    }
+  }
+
+  static handleComputedPosition(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { computedPosition, useComputed } = handledProps
+    validateVector(computedPosition, 3)
+    if (!useComputed) { return }
+    const { root } = nodes
+    // range is an array of 4 THREE.Vector2 objects
+    const cartesian = root.select('cartesian')
+    const relPosition = Camera.toRelativeCoords(computedPosition, cartesian)
+    // set position directly on camera object, not in mathBox
+    root.three.camera.position.set(...relPosition)
+  }
+
+  static handleComputedLookAt(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { computedLookAt, useComputed } = handledProps
+    validateVector(computedLookAt, 3)
+    if (!useComputed) { return }
+    const { root } = nodes
+    // range is an array of 4 THREE.Vector2 objects
+    const cartesian = root.select('cartesian')
+    const relLookAt = Camera.toRelativeCoords(computedLookAt, cartesian)
+    // set position directly on camera object, not in mathBox
+    root.three.controls.center.set(...relLookAt)
+  }
+
+  static toRelativeCoords(
+    coords: Array<number>,
+    cartesian: MathBoxNode
+  ): Array<number> {
+    // Converts from cartesian's coordinates to relative coordinates
+    // input box:
+    //  [xMin, xMax] by [yMin, yMax] by [zMin, zMax] from range
+    // output box:
+    //  [-scale.x, +scale.x] by [-scale.y, +scale.y] by [-scale.z, +scale.z]
+
+    const range: Array<{ x: number, y:number }> = cartesian.get('range')
+    const scale: Array<number> = cartesian.get('scale').toArray()
+
+    return coords.map((coord, index) => {
+      const { y: max, x: min } = range[index]
+      const b = -(max + min)/(max - min)
+      const a = 2/(max - min)
+      return (a*coord + b)*scale[index]
+    } )
   }
 
   mathboxRender = (parent) => {
