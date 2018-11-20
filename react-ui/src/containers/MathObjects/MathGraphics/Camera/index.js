@@ -10,11 +10,13 @@ import {
 } from 'containers/MathObjects/containers/MathInput'
 import ToggleSwitch from 'containers/MathObjects/containers/ToggleSwitch'
 import { MainRow, Cell, Label } from 'containers/MathObjects/components'
+import UseComputedToggle from './UseComputedToggle'
 import styled from 'styled-components'
 import typeof { setProperty } from 'containers/MathObjects/actions'
 
 const IndentedRow = styled(MainRow)`
   padding-left:20px;
+  padding-right:30px;
 `
 
 export const CAMERA = 'CAMERA'
@@ -98,10 +100,10 @@ export class CameraUI extends PureComponent<Props> {
         <MainRow>
           <Cell>
             <Label>Computed Camera:</Label>
-            <ToggleSwitch
+            {/* $FlowFixMe trouble with connect */}
+            <UseComputedToggle
               parentId={id}
               size='small'
-              field='useComputed'
               checkedChildren='on'
               unCheckedChildren='off'
             />
