@@ -1,6 +1,5 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { Switch } from 'antd'
 import { Camera as CameraGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathObjectUI from 'containers/MathObjects/MathObjectUI'
@@ -13,7 +12,6 @@ import ToggleSwitch from 'containers/MathObjects/containers/ToggleSwitch'
 import { MainRow, Cell, Label } from 'containers/MathObjects/components'
 import styled from 'styled-components'
 import typeof { setProperty } from 'containers/MathObjects/actions'
-import type { ExtractReturn } from 'utils/flow'
 
 const IndentedRow = styled(MainRow)`
   padding-left:20px;
