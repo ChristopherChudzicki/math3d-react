@@ -5,6 +5,9 @@ import { saveGraph } from 'services/api'
 import { dehydrate } from 'store/hydration'
 import randomstring from 'randomstring'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import typeof { setProperty as SetProperty } from 'containers/MathObjects/actions'
+import getCameraData from 'services/getCameraData'
+import { CAMERA } from 'containers/MathObjects'
 import styled, { keyframes } from 'styled-components'
 
 const SharePopoverContainer = styled.div`
@@ -37,7 +40,8 @@ const copyButtonStyle = { margin: '10px' }
 
 type Props = {
   onClick: () => void,
-  state: {}
+  state: {},
+  setProperty: SetProperty
 }
 type State = {
   id: ?string,
@@ -56,7 +60,16 @@ export default class ShareButton extends PureComponent<Props, State> {
       randomstring.generate( { length: 7, charset: 'alphanumeric' } )
   }
 
+  saveCameraData = () => {
+    const { position, lookAt } = getCameraData()
+    const id = 'camera'
+    const type = CAMERA
+    this.props.setProperty(id, type, 'relativePosition', position)
+    this.props.setProperty(id, type, 'relativeLookAt', lookAt)
+  }
+
   saveGraph = () => {
+    this.saveCameraData()
     const dehydrated = dehydrate(this.props.state)
     const id = this.getId()
     saveGraph(id, dehydrated)
@@ -92,7 +105,12 @@ export default class ShareButton extends PureComponent<Props, State> {
   render() {
     return (
       <Popover placement="bottomRight" title={'Share your scene'} content={this.renderContent()} trigger="click">
-        <Button size='small' type='ghost' onClick={this.saveGraph}>
+        <Button
+          size='small'
+          type='ghost'
+          onMouseEnter={this.saveCameraData}
+          onClick={this.saveGraph}
+        >
           Share
         </Button>
       </Popover>

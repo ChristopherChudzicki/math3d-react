@@ -2,7 +2,7 @@
 import typeof { Component, PureComponent } from 'react'
 import type { Node } from 'react'
 
-export type InputType = 'math' | 'boolean' | 'text'
+export type InputType = 'math' | 'boolean' | 'text' | 'numericArray'
 type InputTypeData =
   | {
       inputType: 'math',
@@ -18,6 +18,14 @@ type InputTypeData =
       inputType: 'text',
       defaultValue: string,
       generateRandomValue?: () => string
+    }
+    // numericArray inputType is only used by Camera component, and it's not
+    // really an inputType because users cannot edit it... hacky
+  | {
+      inputType: 'numericArray',
+      defaultValue: Array<number>,
+      isPrimary: true, // prevents numericArray from appearing in settings
+      generateRandomValue?: () => Array<number>
     }
 
 export type MetaData = {

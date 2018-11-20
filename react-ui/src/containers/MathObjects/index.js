@@ -17,6 +17,7 @@ export default mathObjects
 export { FOLDER } from './Folder'
 export { VARIABLE, VARIABLE_SLIDER, BOOLEAN_VARIABLE } from './MathSymbols'
 export {
+  CAMERA,
   AXIS,
   GRID,
   POINT,

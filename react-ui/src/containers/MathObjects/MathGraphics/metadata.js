@@ -433,3 +433,47 @@ export const vectorFieldMeta: MetaData = {
   ...volumetricRange,
   ...vectorFieldSpecific
 }
+
+// ---------- Camera ---------- //
+export const cameraMeta: MetaData = {
+  isPanEnabled: {
+    inputType: 'boolean',
+    defaultValue: false,
+    isPrimary: true
+  },
+  isZoomEnabled: {
+    inputType: 'boolean',
+    defaultValue: true,
+    isPrimary: true
+  },
+  isRotateEnabled: {
+    inputType: 'boolean',
+    defaultValue: true,
+    isPrimary: true
+  },
+  relativePosition: {
+    inputType: 'numericArray',
+    defaultValue: [-0.75, -1.25, 0.25],
+    isPrimary: true
+  },
+  relativeLookAt: {
+    inputType: 'numericArray',
+    defaultValue: [0, 0, 0],
+    isPrimary: true
+  },
+  computedPosition: {
+    inputType: 'math',
+    defaultValue: '\\left[-6, -4, 2\\right]',
+    isPrimary: true
+  },
+  computedLookAt: {
+    inputType: 'math',
+    defaultValue: '\\left[0, 0, 0\\right]',
+    isPrimary: true
+  },
+  useComputed: {
+    inputType: 'boolean',
+    defaultValue: false,
+    isPrimary: true
+  }
+}
