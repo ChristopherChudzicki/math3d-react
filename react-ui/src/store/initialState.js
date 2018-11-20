@@ -3,11 +3,12 @@ import { rehydrate } from './hydration'
 const initialState = {
   'sortableTree': {
     'root': [
+      'cameraFolder',
       'axes',
       'mainFolder'
     ],
+    'cameraFolder': ['camera'],
     'axes': [
-      'camera',
       '1',
       '2',
       '3',
@@ -18,6 +19,12 @@ const initialState = {
     'mainFolder': []
   },
   'folders': {
+    'cameraFolder': {
+      'isCollapsed': true,
+      'isDropDisabled': true,
+      'isDragDisabled': true,
+      'description': 'Camera Controls'
+    },
     'axes': {
       'isCollapsed': true,
       'isDropDisabled': true,
