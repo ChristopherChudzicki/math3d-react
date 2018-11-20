@@ -82,21 +82,6 @@ export class CameraUI extends PureComponent<Props> {
             />
           </Cell>
         </IndentedRow>
-        <IndentedRow>
-          <em>(Coordinates relative to axis lengths)</em>
-        </IndentedRow>
-        <IndentedRow>
-          <Cell>
-            <Label>Position:</Label>
-            <ConnectedStaticMath parentId={this.props.id} field='relativePosition' />
-          </Cell>
-        </IndentedRow>
-        <IndentedRow>
-          <Cell>
-            <Label>Look At:</Label>
-            <ConnectedStaticMath parentId={this.props.id} field='relativeLookAt' />
-          </Cell>
-        </IndentedRow>
         <MainRow>
           <Cell>
             <Label>Computed Camera:</Label>
@@ -109,9 +94,6 @@ export class CameraUI extends PureComponent<Props> {
             />
           </Cell>
         </MainRow>
-        <IndentedRow>
-          <em>(Standard axis coordinates)</em>
-        </IndentedRow>
         <IndentedRow>
           <Cell>
             <Label>Position:</Label>
