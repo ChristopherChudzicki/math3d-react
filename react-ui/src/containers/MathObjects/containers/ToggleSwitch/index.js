@@ -16,7 +16,7 @@ type Props = {
   setProperty: SetProperty
 }
 
-class ToggleSwitch extends PureComponent<Props> {
+class _ToggleSwitch extends PureComponent<Props> {
 
   static defaultProps = {
     disabled: false
@@ -42,7 +42,7 @@ class ToggleSwitch extends PureComponent<Props> {
 
 }
 
-const mapStateToProps = ( { mathGraphics }, ownProps) => {
+const mapStateToProps = ( { mathGraphics }: any, ownProps: Props) => {
   const { field, parentId, disabledField, disabled, ...otherProps } = ownProps
   const inferDisabled = (typeof disabled === 'boolean')
     ? disabled
@@ -58,4 +58,6 @@ const mapStateToProps = ( { mathGraphics }, ownProps) => {
 
 const mapDispatchToProps = { setProperty }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ToggleSwitch)
+const ToggleSwitch = connect(mapStateToProps, mapDispatchToProps)(_ToggleSwitch)
+
+export default ToggleSwitch
