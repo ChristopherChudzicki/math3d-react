@@ -3,6 +3,7 @@ import drawers from 'containers/Drawer/reducer'
 import sortableTree from 'containers/SortableTree/reducer'
 import sliderValues from 'containers/MathObjects/MathSymbols/VariableSlider/reducer'
 import activeObject from 'containers/MathObjects/services/activeObject/reducer'
+import metadata from 'services/metadata/reducer'
 import {
   folders,
   mathGraphics,
@@ -17,6 +18,7 @@ import {
 } from 'services/errors/reducer'
 
 const combinedReducer = combineReducers( {
+  metadata,
   drawers,
   sortableTree,
   folders,
