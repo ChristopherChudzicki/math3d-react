@@ -1,7 +1,8 @@
 import { getParent } from 'containers/MathObjects/selectors'
 
 const FORBIDDEN_INSERT_FOLDERS = new Set( [
-  'axes'
+  'axes',
+  'cameraFolder'
 ] )
 
 /**
