@@ -435,7 +435,7 @@ export const vectorFieldMeta: MetaData = {
 }
 
 // ---------- Camera ---------- //
-export const cameraMeta = {
+export const cameraMeta: MetaData = {
   isPanEnabled: {
     inputType: 'boolean',
     defaultValue: false,
@@ -452,13 +452,13 @@ export const cameraMeta = {
     isPrimary: true
   },
   relativePosition: {
-    inputType: 'math',
-    defaultValue: '\\left[-1.25, -1.75, 0.5\\right]',
+    inputType: 'numericArray',
+    defaultValue: [-0.75, -1.25, 0.25],
     isPrimary: true
   },
   relativeLookAt: {
-    inputType: 'math',
-    defaultValue: '\\left[0, 0, 0\\right]',
+    inputType: 'numericArray',
+    defaultValue: [0, 0, 0],
     isPrimary: true
   },
   computedPosition: {

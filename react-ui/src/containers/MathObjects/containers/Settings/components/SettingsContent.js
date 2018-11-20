@@ -3,8 +3,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
 import { Input, Switch } from 'antd'
-
-type InputType = 'text' | 'boolean' | 'math'
+import type { InputType } from 'containers/MathObjects/MathGraphics/types'
 
 export type FormRow = {
   inputType: InputType,
