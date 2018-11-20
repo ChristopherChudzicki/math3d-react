@@ -84,7 +84,7 @@ export default class ShareButton extends PureComponent<Props, State> {
     const url = this.state.id && `https://math3d-react.herokuapp.com/${this.state.id}`
     return (
       <SharePopoverContainer>
-        <Input value={url}/>
+        <Input readOnly={true} value={url}/>
         <CopyContainer>
           <CopyToClipboard text={url} onCopy={this.onCopy}>
             <Button type='primary' style={copyButtonStyle} >Copy</Button>
