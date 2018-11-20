@@ -28,6 +28,7 @@ function simpleDiff(obj1, obj2, keep = new Set()) {
  */
 export function dehydrate(state) {
   const {
+    metadata,
     sortableTree,
     folders,
     mathSymbols,
@@ -35,7 +36,8 @@ export function dehydrate(state) {
   } = state
 
   const startingPoint = {
-    sortableTree: sortableTree,
+    metadata,
+    sortableTree,
     folders: {},
     mathSymbols: {},
     mathGraphics: {}
@@ -67,6 +69,7 @@ export function dehydrate(state) {
 
 export function rehydrate(dehydrated) {
   const {
+    metadata,
     sortableTree,
     folders,
     mathSymbols,
@@ -74,6 +77,7 @@ export function rehydrate(dehydrated) {
   } = dehydrated
 
   const startingPoint = {
+    metadata,
     sortableTree,
     sliderValues: {},
     folders: {},
