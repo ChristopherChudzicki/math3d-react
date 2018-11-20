@@ -236,7 +236,25 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
   renderNodeNames = null
   handlers = {
     relativePosition: Camera.handleRelativePosition,
-    relativeLookAt: Camera.handleRelativeLookAt
+    relativeLookAt: Camera.handleRelativeLookAt,
+    isRotateEnabled: Camera.handleIsRotateEnabled,
+    isZoomEnabled: Camera.handleIsZoomEnabled,
+    isPanEnabled: Camera.handlePanIsPanEnabled
+  }
+
+  static handlePanIsPanEnabled(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { root } = nodes
+    root.three.controls.noPan = !handledProps.isPanEnabled
+  }
+
+  static handleIsZoomEnabled(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { root } = nodes
+    root.three.controls.noZoom = !handledProps.isZoomEnabled
+  }
+
+  static handleIsRotateEnabled(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { root } = nodes
+    root.three.controls.noRotate = !handledProps.isRotateEnabled
   }
 
   static handleRelativePosition(nodes: HandlerNodes, handledProps: HandledProps) {
