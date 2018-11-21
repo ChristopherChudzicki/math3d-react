@@ -16,7 +16,7 @@
     "randomstring": "^1.1.5",
     "re-reselect": "^2.1.0",
     "react": "^16.2.0",
-    "react-beautiful-dnd": "^5.0.0",
+    "react-beautiful-dnd": "^10.0.0",
     "react-collapsible": "^2.0.4",
     "react-color": "^2.14.1",
     "react-copy-to-clipboard": "^5.0.1",
