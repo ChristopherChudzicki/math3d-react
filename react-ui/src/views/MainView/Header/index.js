@@ -3,6 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import ShareButton from './containers/ShareButton'
 import HeaderButton from './components/HeaderButton'
+import TitleInput from './containers/TitleInput'
 
 const HeaderContainer = styled.div`
   height:40px;
@@ -26,6 +27,7 @@ const Header = () => {
     <HeaderContainer>
       <HeaderGroup>
         <HeaderButton type='brand'>Math3D</HeaderButton>
+        <TitleInput />
       </HeaderGroup>
       <HeaderGroup>
         <ShareButton />
