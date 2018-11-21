@@ -44,7 +44,8 @@ export default class EditableDescription extends PureComponent {
   static getWidthFromText(text) {
     const textWidth = getTextWidth(text, '14px sans-serif')
     const paddingWidth = 4
-    return `${textWidth + paddingWidth}px`
+    const extra = 10
+    return `${textWidth + extra + paddingWidth}px`
   }
 
   onChange = e => {
