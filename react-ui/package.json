@@ -20,7 +20,7 @@
     "react-collapsible": "^2.0.4",
     "react-color": "^2.14.1",
     "react-copy-to-clipboard": "^5.0.1",
-    "react-dom": "^16.2.0",
+    "react-dom": "^16.6.3",
     "react-pointable": "^1.1.1",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
