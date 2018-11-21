@@ -108,7 +108,7 @@ export default class ShareButton extends PureComponent<Props, State> {
         <Button
           size='small'
           type='ghost'
-          onMouseEnter={this.saveCameraData}
+          onPointerDown={this.saveCameraData}
           onClick={this.saveGraph}
         >
           Share
