@@ -44,7 +44,12 @@ export default class EditableDescription extends PureComponent {
   static getWidthFromText(text) {
     const textWidth = getTextWidth(text, '14px sans-serif')
     const paddingWidth = 4
+
+    // Hack: Give a bit of extra width...
+    // Phones/Table text width detection was not working.
+    // Maybe a font issue?
     const extra = 10
+
     return `${textWidth + extra + paddingWidth}px`
   }
 
