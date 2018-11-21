@@ -49,3 +49,7 @@ export function findClosingBrace(str: string, startIdx: number) {
   // stack !== 0
   throw Error(`${str} has a brace that opens at position ${startIdx} but does not close.`)
 }
+
+export function getCssProp(element: HTMLElement, property: string) {
+  return window.getComputedStyle(element, null).getPropertyValue(property)
+}
