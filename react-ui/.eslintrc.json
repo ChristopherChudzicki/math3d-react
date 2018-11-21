@@ -4,10 +4,17 @@
 		"es6": true,
 		"node": true
 	},
-  "plugins": ["jest"],
-	"extends": ["standard", "plugin:jest/recommended", "plugin:react/recommended"],
+  "plugins": ["jest", "flowtype"],
+	"extends": [
+    "standard",
+    "plugin:jest/recommended",
+    "plugin:react/recommended",
+    "plugin:flowtype/recommended"
+  ],
 	"parser": "babel-eslint",
 	"rules": {
+    "no-unused-expressions": "off",
+    "flowtype/no-unused-expressions": "error",
     "space-infix-ops": "off",
     "multiline-ternary": ["error", "always-multiline"],
 		"space-in-parens": ["error", "never", { "exceptions": ["{}", "[]"] }],
