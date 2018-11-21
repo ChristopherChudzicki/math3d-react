@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Icon } from 'antd'
 import SubtleButton from 'components/SubtleButton'
 
@@ -9,12 +9,12 @@ const StyledButton = styled(SubtleButton)`
   top:0;
   width:30px;
   height:30px;
-  &.onRight {
-    right:-30px;
-  };
-  &.onLeft {
-    left:-30px;
-  };
+  ${props => props.onSide === 'right' && css`
+    right: -30px;
+  `}
+  ${props => props.onSide === 'left' && css`
+    left: -30px;
+  `};
 `
 
 // slideTo, isDrawerOpen
@@ -43,9 +43,8 @@ export default class DrawerToggleButton extends PureComponent {
     const props = this.props
     const onClick = props.isDrawerOpen ? props.onClose : props.onOpen
     const iconType = buttonIcons[props.slideTo][props.isDrawerOpen]
-    const classNames = props.onSide === 'right' ? 'onRight' : 'onLeft'
     return (
-      <StyledButton onClick={onClick} className={classNames}>
+      <StyledButton onClick={onClick} onSide={props.onSide}>
         <Icon type={iconType} />
       </StyledButton>
     )
