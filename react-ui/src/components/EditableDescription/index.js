@@ -1,8 +1,9 @@
-import React, { PureComponent } from 'react'
+// @flow
+import * as React from 'react'
 import styled from 'styled-components'
 // ant design also has an autosizing textarea, but I found it too hard to resize
 import Textarea from 'react-textarea-autosize'
-import PropTypes from 'prop-types'
+import { getTextWidth } from './getTextWidth'
 
 const StyledTextarea = styled(Textarea)`
   width: ${props => props.width};
@@ -24,24 +25,29 @@ const StyledTextarea = styled(Textarea)`
   };
 `
 
-export default class EditableDescription extends PureComponent {
+type Props = {
+  value: string,
+  onChange: (text: string) => void,
+  style?: Object,
+  className?: Array<string>
+}
+type State = {
+  width: string
+}
 
-  static propTypes = {
-    value: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired
-  }
+export default class EditableDescription extends React.PureComponent<Props, State> {
 
   state = {
     width: '100%'
   }
 
-  static getDerivedStateFromProps(props) {
+  static getDerivedStateFromProps(props: Props) {
     return {
       width: EditableDescription.getWidthFromText(props.value)
     }
   }
 
-  static getWidthFromText(text) {
+  static getWidthFromText(text: string) {
     const textWidth = getTextWidth(text, '14px sans-serif')
     const paddingWidth = 4
 
@@ -53,8 +59,9 @@ export default class EditableDescription extends PureComponent {
     return `${textWidth + extra + paddingWidth}px`
   }
 
-  onChange = e => {
-    const text = e.target.value
+  onChange = (event: SyntheticMouseEvent<HTMLTextAreaElement>) => {
+    const text: string = event.currentTarget.value
+
     this.props.onChange(text)
   }
 
@@ -65,19 +72,10 @@ export default class EditableDescription extends PureComponent {
         width={this.state.width}
         value={this.props.value}
         onChange={this.onChange}
+        style={this.props.style}
+        className={this.props.className}
       />
     )
   }
 
-}
-
-function getTextWidth(text, font) {
-  // from https://stackoverflow.com/a/21015393/2747370
-  // re-use canvas object for better performance
-  const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement('canvas'))
-  const context = canvas.getContext('2d')
-  context.font = font
-  const metrics = context.measureText(text)
-  const roundedWidth = Math.floor(metrics.width) + 1
-  return roundedWidth
 }

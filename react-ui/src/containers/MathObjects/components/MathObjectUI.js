@@ -1,7 +1,7 @@
 import React, { Fragment, PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
-import EditableDescription from './EditableDescription'
+import EditableDescription from 'components/EditableDescription'
 import DeleteButton from './DeleteButton'
 import { theme } from 'constants/theme'
 
