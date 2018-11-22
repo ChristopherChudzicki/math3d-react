@@ -37,39 +37,30 @@ type State = {
 
 export default class EditableDescription extends React.PureComponent<Props, State> {
 
-  state = {
-    width: '100%'
-  }
-
-  static getDerivedStateFromProps(props: Props) {
-    return {
-      width: EditableDescription.getWidthFromText(props.value)
-    }
-  }
-
-  static getWidthFromText(text: string) {
-    const textWidth = getTextWidth(text, '14px sans-serif')
+  getWidthFromText(text: string) {
+    const font = '14px sans-serif'
+    const paddedText = text + ' '
+    const textWidth = getTextWidth(paddedText, font)
     const paddingWidth = 4
 
     // Hack: Give a bit of extra width...
     // Phones/Table text width detection was not working.
     // Maybe a font issue?
     const extra = 10
-
     return `${textWidth + extra + paddingWidth}px`
   }
 
   onChange = (event: SyntheticMouseEvent<HTMLTextAreaElement>) => {
     const text: string = event.currentTarget.value
-
     this.props.onChange(text)
   }
 
   render() {
+    const width = this.getWidthFromText(this.props.value)
     return (
       <StyledTextarea
         rows={1}
-        width={this.state.width}
+        width={width}
         value={this.props.value}
         onChange={this.onChange}
         style={this.props.style}
