@@ -8,7 +8,6 @@ import styled from 'styled-components'
 const StyledInput = styled(EditableDescription)`
   background-color: rgba(0, 0, 0, 0);
   margin-left:8px;
-  size: 125%;
   font-weight:bold;
   padding-top:4px;
 `

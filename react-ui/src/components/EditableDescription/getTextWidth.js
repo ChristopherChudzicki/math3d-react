@@ -14,3 +14,5 @@ export const getTextWidth: GetTextWidth = function getTextWidth(text, font) {
   const roundedWidth = Math.floor(metrics.width) + 1
   return roundedWidth
 }
+
+window.getTextWidth = getTextWidth
