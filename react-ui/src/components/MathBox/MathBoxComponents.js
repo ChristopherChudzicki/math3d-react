@@ -705,8 +705,8 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       ...surfaceHandlers,
       color: ParametricSurface.handleColor,
       expr: this.handleExpr,
-      rangeU: ParametricSurface.handleRange,
-      rangeV: ParametricSurface.handleRange,
+      rangeU: this.handleRange,
+      rangeV: this.handleRange,
       uSamples: ParametricSurface.handleUSamples,
       vSamples: ParametricSurface.handleVSamples,
       // gridColor
@@ -779,14 +779,15 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
   // The next two handlers all perform validation, then delegate to updateExpr
   // Handlers are structured this way because range properties can be functions.
-  static handleRange(nodes: HandlerNodes, handledProps: HandledProps) {
+  handleRange = (nodes: HandlerNodes, handledProps: HandledProps) => {
     const { rangeU, rangeV, expr } = handledProps
+    const transformedExpr = this.constructor.validateAndTransformExpr(expr)
     const { dataNodes: area } = nodes
 
     const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV)
-    const isExprValid = hasFunctionSignature(expr, 2, 3)
+    const isExprValid = hasFunctionSignature(transformedExpr, 2, 3)
     if (isRangeValid && isExprValid) {
-      ParametricSurface.updateExpr(area, rangeU, rangeV, expr)
+      ParametricSurface.updateExpr(area, rangeU, rangeV, transformedExpr)
     }
     else if (!isRangeValid) {
       if (typeof rangeU === 'function' && typeof rangeV === 'function') {
