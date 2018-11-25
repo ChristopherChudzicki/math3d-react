@@ -34,6 +34,7 @@ function renderContent() {
 
           <ContactIcon type="github" />
           <a
+            target="_blank"
             href="https://github.com/ChristopherChudzicki/math3d-react/issues"
           >
             Open an issue on Github.
