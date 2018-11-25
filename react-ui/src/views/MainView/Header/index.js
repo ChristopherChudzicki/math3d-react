@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import ShareButton from './containers/ShareButton'
 import HeaderButton from './components/HeaderButton'
 import TitleInput from './containers/TitleInput'
+import HelpButton from './components/HelpButton'
 
 const HeaderContainer = styled.div`
   height:40px;
@@ -31,6 +32,7 @@ const Header = () => {
       </HeaderGroup>
       <HeaderGroup>
         <ShareButton />
+        <HelpButton/>
       </HeaderGroup>
     </HeaderContainer>
   )
