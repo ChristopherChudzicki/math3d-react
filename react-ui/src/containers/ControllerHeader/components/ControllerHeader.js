@@ -89,7 +89,6 @@ export default class ControllerHeader extends PureComponent<Props> {
 
   render() {
     return (
-      <ControllerHeaderContainer height={this.props.height}>
         <Dropdown
           overlay={this.renderMenu()}
           trigger={['click']}
@@ -101,7 +100,6 @@ export default class ControllerHeader extends PureComponent<Props> {
             </NewObjectButton>
           </GradientDiv>
         </Dropdown>
-      </ControllerHeaderContainer>
     )
   }
 
