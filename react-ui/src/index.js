@@ -4,7 +4,7 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import './index.css'
 import App from './App'
-import registerServiceWorker from './registerServiceWorker'
+import { unregister } from './registerServiceWorker'
 
 import MathScopeProvider from './containers/MathScopeContext'
 import { scopeEvaluator, parser } from './constants/parsing'
@@ -31,4 +31,5 @@ render(
   </Provider>,
   target
 )
-registerServiceWorker()
+
+unregister()
