@@ -9,7 +9,7 @@ import MathObjects, {
   MathGraphics,
   AXIS, GRID, CAMERA
 } from 'containers/MathObjects'
-import { Tabs, Button } from 'antd';
+import ControlledTabs, { TabPane } from 'containers/ControlledTabs'
 
 // First sort the MathObject keys in the order we want, then extract the
 // data relevant to ControllerHeader
@@ -23,20 +23,27 @@ const menuItems = [
   description: MathObjects[type].defaultSettings.description
 } ))
 
-const TabPane = Tabs.TabPane
+const TabStyle = {
+  overflow: 'visible'
+}
 
 const Math3dController = () => {
   return (
     <Drawer id='main' width='400px'>
       <ScrollWithOverflow>
-        <Tabs tabBarExtraContent={<ControllerHeader menuItems={menuItems}/>}>
-          <TabPane tab='Main' key={1}>
-            <SortableTree />
+        <ControlledTabs
+          id='controls'
+          tabBarExtraContent={<ControllerHeader menuItems={menuItems}/>}
+          style={TabStyle}
+          tabBarStyle={ { marginBottom: '0pt' } }
+        >
+          <TabPane tab='Main' key='1'>
+            <SortableTree root='root' />
           </TabPane>
-          <TabPane tab={<span> Axes & <br/> Camera</span>} key={2}>
-            Second Pane
+          <TabPane tab={<span> Axes & <br/> Camera</span>} key='2'>
+            <SortableTree root='setup' />
           </TabPane>
-        </Tabs>
+        </ControlledTabs>
       </ScrollWithOverflow>
     </Drawer>
   )

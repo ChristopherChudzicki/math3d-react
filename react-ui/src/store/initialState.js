@@ -3,18 +3,20 @@ import { rehydrate } from './hydration'
 const initialState = {
   'sortableTree': {
     'root': [
-      'cameraFolder',
-      'axes',
       'mainFolder'
+    ],
+    'setup': [
+      'cameraFolder',
+      'axes'
     ],
     'cameraFolder': ['camera'],
     'axes': [
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6'
+      'axis-x',
+      'axis-y',
+      'axis-z',
+      'grid-xy',
+      'grid-yz',
+      'grid-zx'
     ],
     'mainFolder': []
   },
@@ -26,7 +28,7 @@ const initialState = {
       'description': 'Camera Controls'
     },
     'axes': {
-      'isCollapsed': true,
+      'isCollapsed': false,
       'isDropDisabled': true,
       'isDragDisabled': true,
       'description': 'Axes and Grids'
@@ -40,31 +42,31 @@ const initialState = {
     'camera': {
       type: 'CAMERA'
     },
-    '1': {
+    'axis-x': {
       'type': 'AXIS',
       'label': 'x'
     },
-    '2': {
+    'axis-y': {
       'type': 'AXIS',
       'label': 'y',
       'axis': 'y'
     },
-    '3': {
+    'axis-z': {
       'type': 'AXIS',
       'label': 'z',
       'axis': 'z',
       'scale': '1/2'
     },
-    '4': {
+    'grid-xy': {
       'type': 'GRID',
       'axes': 'xy'
     },
-    '5': {
+    'grid-yz': {
       'type': 'GRID',
       'visible': false,
       'axes': 'yz'
     },
-    '6': {
+    'grid-zx': {
       'type': 'GRID',
       'visible': false,
       'axes': 'zx'
