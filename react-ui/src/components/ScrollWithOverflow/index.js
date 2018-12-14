@@ -30,7 +30,7 @@ const ScrollingDiv = styled.div`
   overflow-y: scroll;
   padding-right: 100vw;
   margin-right: -100vw;
-  height: calc(100% - 50px);
+  height: 100%;
   pointer-events: ${props => props.disablePointer ? 'none' : 'auto'};
 `
 

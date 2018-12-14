@@ -12,8 +12,8 @@ function getItems(itemIds, folders) {
   } ))
 }
 
-const mapStateToProps = ( { sortableTree, folders } ) => ( {
-  items: getItems(sortableTree.root, folders)
+const mapStateToProps = ( { sortableTree, folders }, ownProps) => ( {
+  items: getItems(sortableTree[ownProps.root], folders)
 } )
 
 const mapDispatchToProps = (dispatch) => ( {

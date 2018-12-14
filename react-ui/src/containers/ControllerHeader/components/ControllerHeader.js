@@ -8,14 +8,6 @@ import typeof {
 } from 'containers/MathObjects/actions'
 import { FOLDER } from 'containers/MathObjects/Folder/metadata'
 
-const ControllerHeaderContainer = styled.div`
-  box-sizing:border-box;
-  padding: 8px;
-  height: ${props => props.height};
-  display: flex;
-  align-items:center;
-  justify-content:center;
-`
 const NewObjectButton = styled(Button)`
   font-weight: bold;
   &.ant-btn, &.ant-btn:hover, &.ant-btn:focus {
@@ -32,6 +24,12 @@ const GradientDiv = styled.div`
     ${props => props.theme.gray[1]},
     ${props => props.theme.gray[4]}
     );
+  &.ant-dropdown-trigger {
+    line-height: 1.5;
+    margin-top:16px;
+    margin-bottom:16px;
+    margin-right:16px;
+  }
 `
 
 type MenuItem = {
@@ -45,18 +43,14 @@ type Props = {
   newFolderIndex: number,
   newItemIndex: number,
   setActiveObject: (string) => void,
-  setContentCollapsed: (string, bool) => void,
+  setContentCollapsed: (string, boolean) => void,
   menuItems: Array<MenuItem>,
   createMathObject: CreateMathObject
 }
 
 export default class ControllerHeader extends PureComponent<Props> {
 
-  static defaultProps = {
-    height: '50px'
-  }
-
-  handleMenuClick = ( { key } : { key: string } ) => {
+  handleMenuClick = ( { key }: { key: string } ) => {
     const id = idGenerator.next()
     const parentFolderId = key === FOLDER
       ? 'root'
@@ -75,7 +69,7 @@ export default class ControllerHeader extends PureComponent<Props> {
 
   }
 
-  renderMenuItem = ( { type, description } : MenuItem) => {
+  renderMenuItem = ( { type, description }: MenuItem) => {
     return <Menu.Item key={type}>{description}</Menu.Item>
   }
 
@@ -89,19 +83,17 @@ export default class ControllerHeader extends PureComponent<Props> {
 
   render() {
     return (
-      <ControllerHeaderContainer height={this.props.height}>
-        <Dropdown
-          overlay={this.renderMenu()}
-          trigger={['click']}
-        >
-          <GradientDiv>
-            <NewObjectButton>
-              <Icon type="plus" />
-              New Object
-            </NewObjectButton>
-          </GradientDiv>
-        </Dropdown>
-      </ControllerHeaderContainer>
+      <Dropdown
+        overlay={this.renderMenu()}
+        trigger={['click']}
+      >
+        <GradientDiv>
+          <NewObjectButton>
+            <Icon type="plus" />
+            New Object
+          </NewObjectButton>
+        </GradientDiv>
+      </Dropdown>
     )
   }
 

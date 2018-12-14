@@ -1,4 +1,7 @@
 import cssTime from 'css-time'
+import Drawer from './components/Drawer'
+
+const DEFAULT_ANIMATION_SPEED = Drawer.defaultProps.animationSpeed
 
 export const SET_VISIBILITY = 'SET_VISIBILITY'
 export const SET_ANIMATION_STATUS = 'SET_ANIMATION_STATUS'
@@ -15,7 +18,7 @@ export const setAnimationStatus = (id, isAnimating) => ( {
   payload: { id, isAnimating }
 } )
 
-export const closeDrawer = (id, animationSpeed) => {
+export const closeDrawer = (id, animationSpeed = DEFAULT_ANIMATION_SPEED) => {
   const msDuration = cssTime.from(animationSpeed)
   return dispatch => {
     dispatch(setVisibility(id, false))
@@ -24,7 +27,7 @@ export const closeDrawer = (id, animationSpeed) => {
   }
 }
 
-export const openDrawer = (id, animationSpeed) => {
+export const openDrawer = (id, animationSpeed = DEFAULT_ANIMATION_SPEED) => {
   const msDuration = cssTime.from(animationSpeed)
   return dispatch => {
     dispatch(setVisibility(id, true))

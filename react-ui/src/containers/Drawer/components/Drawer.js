@@ -16,22 +16,22 @@ const DrawerContainer = styled.div`
   height:100%;
   &.closing-or-closed.left {
     transform: ${props => `translateX(-${props.width})`};
-    transition-duration: ${props => props.animationSpeed || props.theme.transitionDuration};
+    transition-duration: ${props => props.animationSpeed};
     margin-right: ${props => `-${props.width}`};
   }
   &.opening.left {
     transform: translateX(0px);
-    transition-duration: ${props => props.animationSpeed || props.theme.transitionDuration};
+    transition-duration: ${props => props.animationSpeed};
     margin-right: 0;
   }
   &.closing-or-closed.right {
     transform: ${props => `translateX(${props.width})`};
-    transition-duration: ${props => props.animationSpeed || props.theme.transitionDuration};
+    transition-duration: ${props => props.animationSpeed};
     margin-left: ${props => `-${props.width}`};
   }
   &.opening.right {
     transform: translateX(0px);
-    transition-duration: ${props => props.animationSpeed || props.theme.transitionDuration};
+    transition-duration: ${props => props.animationSpeed};
     margin-right: 0;
   }
 `

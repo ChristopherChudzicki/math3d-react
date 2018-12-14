@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import drawers from 'containers/Drawer/reducer'
+import tabs from 'containers/ControlledTabs/reducer'
 import sortableTree from 'containers/SortableTree/reducer'
 import sliderValues from 'containers/MathObjects/MathSymbols/VariableSlider/reducer'
 import activeObject from 'containers/MathObjects/services/activeObject/reducer'
@@ -20,6 +21,7 @@ import {
 const combinedReducer = combineReducers( {
   metadata,
   drawers,
+  tabs,
   sortableTree,
   folders,
   mathGraphics,
