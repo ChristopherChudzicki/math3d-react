@@ -48,6 +48,10 @@ type State = {
   isCopied: boolean
 }
 
+const URL_FRONT = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:3000/'
+  : 'https://math3d-react.herokuapp.com'
+
 export default class ShareButton extends PureComponent<Props, State> {
 
   state = {
@@ -81,7 +85,7 @@ export default class ShareButton extends PureComponent<Props, State> {
   }
 
   renderContent() {
-    const url = this.state.id && `https://math3d-react.herokuapp.com/${this.state.id}`
+    const url = this.state.id && `${URL_FRONT}/${this.state.id}`
     return (
       <SharePopoverContainer>
         <Input readOnly={true} value={url}/>
