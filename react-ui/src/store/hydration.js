@@ -14,6 +14,32 @@ function simpleDiff(obj1, obj2, keep = new Set()) {
 }
 
 /**
+ *  Diff each mathObject in subStore with the item-level defaults
+ *
+ * @param  {[type]} subStore either mathGraphics, mathSymbols, or folders
+ * @return {[type]}          subStore where each item has been diff'd with
+ * item-level defaults
+ */
+function dehydrateMathObjects(subStore, type=null) {
+  const keep = new Set( ['type'] )
+  return Object.keys(subStore).reduce((acc, key) => {
+    const item = subStore[key]
+    const itemType = type || item.type
+    acc[key] = simpleDiff(item, MathObjects[itemType].defaultSettings, keep)
+    return acc
+  }, {} )
+}
+
+function rehydrateMathObjects(dehydrated, type=null) {
+  return Object.keys(dehydrated).reduce((acc, key) => {
+    const item = dehydrated[key]
+    const itemType = type || item.type
+    acc[key] = { ...MathObjects[itemType].defaultSettings, ...item }
+    return acc
+  }, {} )
+}
+
+/**
  * Take current state and:
  *  - drop drawers
  *  - drop activeObject
@@ -35,35 +61,15 @@ export function dehydrate(state) {
     mathGraphics
   } = state
 
-  const startingPoint = {
+  const dehydrated = {
     metadata,
     sortableTree,
-    folders: {},
-    mathSymbols: {},
-    mathGraphics: {}
+    folders: dehydrateMathObjects(folders, FOLDER),
+    mathSymbols: dehydrateMathObjects(mathSymbols),
+    mathGraphics: dehydrateMathObjects(mathGraphics)
   }
 
-  const keep = new Set( ['type'] )
-
-  const withFolders = Object.keys(folders).reduce((acc, key) => {
-    const item = folders[key]
-    acc.folders[key] = simpleDiff(item, MathObjects[FOLDER].defaultSettings, keep)
-    return acc
-  }, startingPoint)
-
-  const withSymbols = Object.keys(mathSymbols).reduce((acc, key) => {
-    const item = mathSymbols[key]
-    acc.mathSymbols[key] = simpleDiff(item, MathObjects[item.type].defaultSettings, keep)
-    return acc
-  }, withFolders)
-
-  const withGraphics = Object.keys(mathGraphics).reduce((acc, key) => {
-    const item = mathGraphics[key]
-    acc.mathGraphics[key] = simpleDiff(item, MathObjects[item.type].defaultSettings, keep)
-    return acc
-  }, withSymbols)
-
-  return withGraphics
+  return dehydrated
 
 }
 
@@ -76,49 +82,32 @@ export function rehydrate(dehydrated) {
     mathGraphics
   } = dehydrated
 
-  const startingPoint = {
+  const rehydratedFolders = rehydrateMathObjects(folders, FOLDER)
+  const rehydratedSymbols = rehydrateMathObjects(mathSymbols)
+  const rehydratedGraphics = rehydrateMathObjects(mathGraphics)
+
+  const rehydrated = {
     metadata,
     sortableTree,
     sliderValues: {},
-    folders: {},
-    mathSymbols: {},
-    mathGraphics: {},
+    folders: rehydratedFolders,
+    mathSymbols: rehydratedSymbols,
+    mathGraphics: rehydratedGraphics,
     parseErrors: {},
     evalErrors: {},
     renderErrors: {}
   }
 
-  const withFolders = Object.keys(folders).reduce((acc, key) => {
-    const item = folders[key]
-    acc.folders[key] = { ...MathObjects[FOLDER].defaultSettings, ...item }
-    return acc
-  }, startingPoint)
-
-  const withSymbols = Object.keys(mathSymbols).reduce((acc, key) => {
-    const item = mathSymbols[key]
-    acc.mathSymbols[key] = { ...MathObjects[item.type].defaultSettings, ...item }
-    if (item.type === VARIABLE_SLIDER) {
-      acc.sliderValues[key] = 0
-    }
-    acc.parseErrors[key] = {}
-    acc.evalErrors[key] = {}
-    acc.renderErrors[key] = {}
-    return acc
-  }, withFolders)
-
-  const withGraphics = Object.keys(mathGraphics).reduce((acc, key) => {
-    const item = mathGraphics[key]
-    acc.mathGraphics[key] = { ...MathObjects[item.type].defaultSettings, ...item }
-    acc.parseErrors[key] = {}
-    acc.evalErrors[key] = {}
-    acc.renderErrors[key] = {}
-    return acc
-  }, withSymbols)
+  Object.keys(mathGraphics).concat(Object.keys(mathSymbols)).forEach(key => {
+    rehydrated.parseErrors[key] = {}
+    rehydrated.evalErrors[key] = {}
+    rehydrated.renderErrors[key] = {}
+  } )
 
   const maxId = getMaxId(sortableTree)
   idGenerator.setNextId(maxId + 1)
 
-  return withGraphics
+  return rehydrated
 
 }
 
