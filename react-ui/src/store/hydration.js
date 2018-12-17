@@ -95,7 +95,7 @@ export function dehydrate(state) {
     metadata,
     sortableTree: sortableTreeWithoutFixed,
     folders: dehydrateMathObjects(folders, initialState.folders, true),
-    mathSymbols: dehydrateMathObjects(mathSymbols, initialState.mathObjects),
+    mathSymbols: dehydrateMathObjects(mathSymbols, initialState.mathSymbols),
     mathGraphics: dehydrateMathObjects(mathGraphics, initialState.mathGraphics)
   }
 
