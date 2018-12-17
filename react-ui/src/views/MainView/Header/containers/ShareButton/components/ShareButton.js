@@ -49,7 +49,7 @@ type State = {
 }
 
 const URL_FRONT = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:3000/'
+  ? 'http://localhost:3000'
   : 'https://math3d-react.herokuapp.com'
 
 export default class ShareButton extends PureComponent<Props, State> {
@@ -80,7 +80,7 @@ export default class ShareButton extends PureComponent<Props, State> {
     this.setState( { id } )
   }
 
-  onCopy = async() => {
+  onCopy = () => {
     this.setState( { isCopied: true } )
   }
 
