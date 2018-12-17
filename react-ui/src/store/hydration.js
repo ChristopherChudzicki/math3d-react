@@ -1,5 +1,6 @@
 import MathObjects, { FOLDER, VARIABLE_SLIDER } from 'containers/MathObjects'
 import idGenerator from 'constants/idGenerator'
+import initialState, { sortableTreeFixedPortion } from './initialState'
 
 // difference in obj1 and obj2
 // ASSUMING obj1 keys are superset of obj2
@@ -14,27 +15,49 @@ function simpleDiff(obj1, obj2, keep = new Set()) {
 }
 
 /**
- *  Diff each mathObject in subStore with the item-level defaults
+ *  Diff each mathObject in subStore with its initail value. For items that
+ *  exist in initialState, initialValue is taken from initialState. For new
+ *  items, initialValue means defaultValue.
  *
+ * @param  {object} subStore either mathGraphics, mathSymbols, or folders
+ * @param  {object} initialStore initialState of the substore
+ * @param  {boolean} isFolders whether the subStore is folders
  * @param  {[type]} subStore either mathGraphics, mathSymbols, or folders
  * @return {[type]}          subStore where each item has been diff'd with
  * item-level defaults
  */
-function dehydrateMathObjects(subStore, type=null) {
+function dehydrateMathObjects(subStore, initialStore, isFolders=false) {
   const keep = new Set( ['type'] )
   return Object.keys(subStore).reduce((acc, key) => {
     const item = subStore[key]
-    const itemType = type || item.type
-    acc[key] = simpleDiff(item, MathObjects[itemType].defaultSettings, keep)
+    const itemType = isFolders ? FOLDER : item.type
+    const defaultSettings = MathObjects[itemType].defaultSettings
+    const diffAgainst = initialStore[key]
+      ? { ...defaultSettings, ...initialStore[key] }
+      : defaultSettings
+    const diff = simpleDiff(item, diffAgainst, keep)
+
+    const differsFromInitial = isFolders
+      ? Object.keys(diff).length > 0
+      : Object.keys(diff).length > 1
+    if (initialStore[key] === undefined || differsFromInitial) {
+      acc[key] = diff
+    }
+
     return acc
   }, {} )
 }
 
-function rehydrateMathObjects(dehydrated, type=null) {
-  return Object.keys(dehydrated).reduce((acc, key) => {
-    const item = dehydrated[key]
-    const itemType = type || item.type
-    acc[key] = { ...MathObjects[itemType].defaultSettings, ...item }
+function rehydrateMathObjects(dehydrated, initialStore, isFolders=false) {
+  const withInitial = { ...initialStore, ...dehydrated }
+  return Object.keys(withInitial).reduce((acc, key) => {
+    const item = withInitial[key]
+    const itemType = isFolders ? FOLDER : item.type
+    const defaultSettings = MathObjects[itemType].defaultSettings
+    const diffAgainst = initialStore[key]
+      ? { ...defaultSettings, ...initialStore[key] }
+      : defaultSettings
+    acc[key] = { ...diffAgainst, ...item }
     return acc
   }, {} )
 }
@@ -43,7 +66,7 @@ function rehydrateMathObjects(dehydrated, type=null) {
  * Take current state and:
  *  - drop drawers
  *  - drop activeObject
- *  - save sortableTree directly
+ *  - drop fixed portion from sortableTree
  *
  * Now deal with MathObjects (foldres, mathSymbols, mathGraphics)
  *  - diff each MathObject settings with defaultSettings
@@ -61,12 +84,19 @@ export function dehydrate(state) {
     mathGraphics
   } = state
 
+  const sortableTreeWithoutFixed = Object.keys(sortableTree).reduce((acc, key) => {
+    if (sortableTreeFixedPortion[key] === undefined) {
+      acc[key] = sortableTree[key]
+    }
+    return acc
+  }, { } )
+
   const dehydrated = {
     metadata,
-    sortableTree,
-    folders: dehydrateMathObjects(folders, FOLDER),
-    mathSymbols: dehydrateMathObjects(mathSymbols),
-    mathGraphics: dehydrateMathObjects(mathGraphics)
+    sortableTree: sortableTreeWithoutFixed,
+    folders: dehydrateMathObjects(folders, initialState.folders, true),
+    mathSymbols: dehydrateMathObjects(mathSymbols, initialState.mathObjects),
+    mathGraphics: dehydrateMathObjects(mathGraphics, initialState.mathGraphics)
   }
 
   return dehydrated
@@ -76,15 +106,17 @@ export function dehydrate(state) {
 export function rehydrate(dehydrated) {
   const {
     metadata,
-    sortableTree,
+    sortableTree: sortableTreeWithoutFixed,
     folders,
     mathSymbols,
     mathGraphics
   } = dehydrated
 
-  const rehydratedFolders = rehydrateMathObjects(folders, FOLDER)
-  const rehydratedSymbols = rehydrateMathObjects(mathSymbols)
-  const rehydratedGraphics = rehydrateMathObjects(mathGraphics)
+  const rehydratedFolders = rehydrateMathObjects(folders, initialState.folders, true)
+  const rehydratedSymbols = rehydrateMathObjects(mathSymbols, initialState.mathSymbols)
+  const rehydratedGraphics = rehydrateMathObjects(mathGraphics, initialState.mathGraphics)
+
+  const sortableTree = { ...sortableTreeFixedPortion, ...sortableTreeWithoutFixed }
 
   const rehydrated = {
     metadata,
@@ -98,11 +130,12 @@ export function rehydrate(dehydrated) {
     renderErrors: {}
   }
 
-  Object.keys(mathGraphics).concat(Object.keys(mathSymbols)).forEach(key => {
-    rehydrated.parseErrors[key] = {}
-    rehydrated.evalErrors[key] = {}
-    rehydrated.renderErrors[key] = {}
-  } )
+  Object.keys(rehydratedSymbols)
+    .concat(Object.keys(rehydratedGraphics)).forEach(key => {
+      rehydrated.parseErrors[key] = {}
+      rehydrated.evalErrors[key] = {}
+      rehydrated.renderErrors[key] = {}
+    } )
 
   const maxId = getMaxId(sortableTree)
   idGenerator.setNextId(maxId + 1)

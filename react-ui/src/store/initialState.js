@@ -1,23 +1,26 @@
-import { rehydrate } from './hydration'
+// These are "fixed" in the sense that they cannot be sorted (dragged/dropped)
+const sortableTreeFixedPortion = {
+  'root': [
+    'mainFolder'
+  ],
+  'setup': [
+    'cameraFolder',
+    'axes'
+  ],
+  'cameraFolder': ['camera'],
+  'axes': [
+    'axis-x',
+    'axis-y',
+    'axis-z',
+    'grid-xy',
+    'grid-yz',
+    'grid-zx'
+  ]
+}
 
 const initialState = {
   'sortableTree': {
-    'root': [
-      'mainFolder'
-    ],
-    'setup': [
-      'cameraFolder',
-      'axes'
-    ],
-    'cameraFolder': ['camera'],
-    'axes': [
-      'axis-x',
-      'axis-y',
-      'axis-z',
-      'grid-xy',
-      'grid-yz',
-      'grid-zx'
-    ],
+    ...sortableTreeFixedPortion,
     'mainFolder': []
   },
   'folders': {
@@ -74,4 +77,5 @@ const initialState = {
   }
 }
 
-export default rehydrate(initialState)
+export { sortableTreeFixedPortion }
+export default initialState

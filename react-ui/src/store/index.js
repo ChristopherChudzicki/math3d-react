@@ -4,6 +4,7 @@ import rootReducer from './reducer'
 import thunk from 'redux-thunk'
 import { enableBatching } from 'redux-batched-actions'
 import initialState from './initialState'
+import { rehydrate } from './hydration'
 
 const enhancers = []
 const middleware = [thunk]
@@ -27,7 +28,7 @@ const composedEnhancers = compose(
 
 const store = createStore(
   enableBatching(rootReducer),
-  initialState,
+  rehydrate(initialState),
   composedEnhancers
 )
 
