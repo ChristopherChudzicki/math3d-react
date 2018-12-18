@@ -1,5 +1,7 @@
 # Math3d-React
 
+Live on Heroku: https://math3d-react.herokuapp.com/
+
 ## To Install
 
 This repository has two `package.json` files; as such, there are two places to run `npm` commands:
@@ -7,15 +9,20 @@ This repository has two `package.json` files; as such, there are two places to r
 - `/package.json`: configuration for the express server
 - `/react-ui/package.json`: configuration the user interface. *Most of the app is here.*
 
-First, install server dependencies and start the server:
+First, install server dependencies:
 ```bash
 > npm install
-> npm start
 ```
 
-Next, install `mongodb`, which is our database. This is not installed by `npm`: you'll need to install it yourself. On a Mac, `brew install mongodb` will do. Now, in a new terminal window, start the database:
+Next, install `mongodb`, which is our database. This is not installed by `npm`: you'll need to install it yourself. On a Mac, `brew install mongodb` will do.
+
+Now start the database:
 ```bash
 > npm run start-db
+```
+and in a new terminal window, start the server:
+```bash
+> npm start
 ```
 
 Finally, in a new terminal window, install ui dependencies and start the app:
