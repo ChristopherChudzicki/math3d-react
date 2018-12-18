@@ -6,7 +6,7 @@ import HeaderButton from './components/HeaderButton'
 import TitleInput from './containers/TitleInput'
 import HelpButton from './components/HelpButton'
 import ExamplesButton from './containers/ExamplesButton'
-import store from 'store'
+import store from 'store/index'
 
 const HeaderContainer = styled.div`
   height:40px;
