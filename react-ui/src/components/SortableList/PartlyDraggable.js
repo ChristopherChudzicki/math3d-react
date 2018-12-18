@@ -1,6 +1,13 @@
 import React from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 
+/**
+ * PartlyDraggable
+ *
+ * Temporarily sets isDragDisabled=true when PointerDown event encounters
+ * an HTML element that custom isElementDraggable detects as undraggable.
+ * isElementDraggable could be customized for other use-cases.
+ */
 export default class PartlyDraggable extends React.PureComponent {
 
   state = {
