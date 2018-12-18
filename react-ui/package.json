@@ -31,7 +31,7 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^4.0.0",
     "shallow-diff": "0.0.5",
-    "styled-components": "^3.1.6",
+    "styled-components": "^4.1.3",
     "tarjan-graph": "^1.0.1",
     "toposort": "^1.0.6"
   },
