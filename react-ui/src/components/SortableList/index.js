@@ -1,5 +1,6 @@
-import React from 'react'
-import { Droppable, Draggable } from 'react-beautiful-dnd'
+import React, { Fragment } from 'react'
+import { Droppable } from 'react-beautiful-dnd'
+import PartlyDraggable from './PartlyDraggable'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -70,14 +71,14 @@ export default function SortableList(props) {
 
 function renderDraggableItem(item, renderItem, draggableProps) {
   return (
-    <Draggable
+    <PartlyDraggable
       key={item.id}
       draggableId={item.id}
       isDragDisabled={item.isDragDisabled}
       {...draggableProps}
     >
       {(provided, snapshot) => (
-        <div>
+        <Fragment>
           <div
             ref={provided.innerRef}
             {...provided.draggableProps}
@@ -88,8 +89,8 @@ function renderDraggableItem(item, renderItem, draggableProps) {
             </DraggableItemContainer>
           </div>
           {provided.placeholder}
-        </div>
+        </Fragment>
       )}
-    </Draggable>
+    </PartlyDraggable>
   )
 }
