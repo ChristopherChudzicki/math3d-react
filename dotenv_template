@@ -1,0 +1,4 @@
+# Rename to .env
+# change REMOTE_MONGODB_URI
+LOCAL_MONGODB_URI=mongodb://127.0.0.1:27017
+REMOTE_MONGODB_URI=mongodb://heroku_4h8rcbtf:ah4v3srpd323lhohg8vfr83n66@ds121753.mlab.com:21753/heroku_4h8rcbtf

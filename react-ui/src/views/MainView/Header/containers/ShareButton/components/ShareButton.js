@@ -40,13 +40,19 @@ const copyButtonStyle = { margin: '10px' }
 
 type Props = {
   onClick: () => void,
-  state: {},
+  // We need access to state, but no need to rerender on ever state change.
+  // So pass getState instead.
+  getState: () => {},
   setProperty: SetProperty
 }
 type State = {
   id: ?string,
   isCopied: boolean
 }
+
+const URL_FRONT = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:3000'
+  : 'https://math3d-react.herokuapp.com'
 
 export default class ShareButton extends PureComponent<Props, State> {
 
@@ -70,18 +76,26 @@ export default class ShareButton extends PureComponent<Props, State> {
 
   saveGraph = () => {
     this.saveCameraData()
-    const dehydrated = dehydrate(this.props.state)
+    const state = this.props.getState()
+    const dehydrated = dehydrate(state)
     const id = this.getId()
     saveGraph(id, dehydrated)
     this.setState( { id } )
+    this.dehydratedJson = JSON.stringify(dehydrated)
   }
 
-  onCopy = async() => {
+  onCopy = () => {
     this.setState( { isCopied: true } )
   }
 
+  onVisibleChange = (visible) => {
+    if (!visible) {
+      this.setState( { isCopied: false } )
+    }
+  }
+
   renderContent() {
-    const url = this.state.id && `https://math3d-react.herokuapp.com/${this.state.id}`
+    const url = this.state.id && `${URL_FRONT}/${this.state.id}`
     return (
       <SharePopoverContainer>
         <Input readOnly={true} value={url}/>
@@ -98,13 +112,28 @@ export default class ShareButton extends PureComponent<Props, State> {
           <Icon type="warning" theme="outlined" /> This updated version of math3d is in <strong>beta</strong>.
           Graphs saved now may not work in the future.
         </p>
+
+        {
+          process.env.NODE_ENV === 'development' && (
+            <CopyToClipboard text={this.dehydratedJson}>
+              <Button type='danger'>Copy Dehydrated State (Dev Only)</Button>
+            </CopyToClipboard>
+          )
+        }
+
       </SharePopoverContainer>
     )
   }
 
   render() {
     return (
-      <Popover placement="bottomRight" title={'Share your scene'} content={this.renderContent()} trigger="click">
+      <Popover
+        placement="bottomRight"
+        title={'Share your scene'}
+        content={this.renderContent()}
+        onVisibleChange={this.onVisibleChange}
+        trigger="click"
+      >
         <Button
           size='small'
           type='ghost'
