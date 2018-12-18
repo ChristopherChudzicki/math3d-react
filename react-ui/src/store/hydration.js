@@ -121,15 +121,24 @@ export function rehydrate(dehydrated) {
   const rehydrated = {
     metadata,
     sortableTree,
-    sliderValues: {},
+    sliderValues: {}, // populated below
     folders: rehydratedFolders,
     mathSymbols: rehydratedSymbols,
     mathGraphics: rehydratedGraphics,
-    parseErrors: {},
-    evalErrors: {},
-    renderErrors: {}
+    parseErrors: {}, // populated below
+    evalErrors: {}, // populated below
+    renderErrors: {} // populated below
   }
 
+  // Add in the slider values
+  Object.keys(rehydratedSymbols).forEach(key => {
+    const item = rehydratedSymbols[key]
+    if (item.type === VARIABLE_SLIDER) {
+      rehydrated.sliderValues[key] = 0
+    }
+  } )
+
+  // Add in the error-holders
   Object.keys(rehydratedSymbols)
     .concat(Object.keys(rehydratedGraphics)).forEach(key => {
       rehydrated.parseErrors[key] = {}
