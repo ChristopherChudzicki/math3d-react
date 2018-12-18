@@ -40,7 +40,9 @@ const copyButtonStyle = { margin: '10px' }
 
 type Props = {
   onClick: () => void,
-  state: {},
+  // We need access to state, but no need to rerender on ever state change.
+  // So pass getState instead.
+  getState: () => {},
   setProperty: SetProperty
 }
 type State = {
@@ -74,7 +76,8 @@ export default class ShareButton extends PureComponent<Props, State> {
 
   saveGraph = () => {
     this.saveCameraData()
-    const dehydrated = dehydrate(this.props.state)
+    const state = this.props.getState()
+    const dehydrated = dehydrate(state)
     const id = this.getId()
     saveGraph(id, dehydrated)
     this.setState( { id } )
@@ -83,6 +86,12 @@ export default class ShareButton extends PureComponent<Props, State> {
 
   onCopy = () => {
     this.setState( { isCopied: true } )
+  }
+
+  onVisibleChange = (visible) => {
+    if (!visible) {
+      this.setState( { isCopied: false } )
+    }
   }
 
   renderContent() {
@@ -109,7 +118,6 @@ export default class ShareButton extends PureComponent<Props, State> {
             <CopyToClipboard text={this.dehydratedJson}>
               <Button type='danger'>Copy Dehydrated State (Dev Only)</Button>
             </CopyToClipboard>
-
           )
         }
 
@@ -119,7 +127,13 @@ export default class ShareButton extends PureComponent<Props, State> {
 
   render() {
     return (
-      <Popover placement="bottomRight" title={'Share your scene'} content={this.renderContent()} trigger="click">
+      <Popover
+        placement="bottomRight"
+        title={'Share your scene'}
+        content={this.renderContent()}
+        onVisibleChange={this.onVisibleChange}
+        trigger="click"
+      >
         <Button
           size='small'
           type='ghost'
