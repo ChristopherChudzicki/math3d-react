@@ -78,6 +78,7 @@ export default class ShareButton extends PureComponent<Props, State> {
     const id = this.getId()
     saveGraph(id, dehydrated)
     this.setState( { id } )
+    this.dehydratedJson = JSON.stringify(dehydrated)
   }
 
   onCopy = () => {
@@ -102,6 +103,16 @@ export default class ShareButton extends PureComponent<Props, State> {
           <Icon type="warning" theme="outlined" /> This updated version of math3d is in <strong>beta</strong>.
           Graphs saved now may not work in the future.
         </p>
+
+        {
+          process.env.NODE_ENV === 'development' && (
+            <CopyToClipboard text={this.dehydratedJson}>
+              <Button type='danger'>Copy Dehydrated State (Dev Only)</Button>
+            </CopyToClipboard>
+
+          )
+        }
+
       </SharePopoverContainer>
     )
   }
