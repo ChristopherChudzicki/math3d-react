@@ -1,5 +1,5 @@
 // @flow
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Button, Popover, Icon } from 'antd'
 import styled from 'styled-components'
 
