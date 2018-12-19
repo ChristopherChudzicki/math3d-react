@@ -5,7 +5,7 @@ import { Icon } from 'antd'
 import SubtleButton from 'components/SubtleButton'
 
 const StyledButton = styled(SubtleButton)`
-  z-index:200;
+  z-index:5;
   width:30px;
   height:30px;
   margin: ${props => props.buttonSide === 'left'
