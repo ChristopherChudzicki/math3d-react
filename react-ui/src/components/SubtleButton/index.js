@@ -108,7 +108,7 @@ export default class SubtleButton extends PureComponent {
           lightenOnHover={lightenOnHover}
           backgroundColor={backgroundColor}
           focusColor={focusColor}
-          innerRef={this.getRef}
+          ref={this.getRef}
           pressing={this.state.pressing}
           disabled={this.props.disabled}
           {...otherProps}

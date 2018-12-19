@@ -177,7 +177,7 @@ export default class MathInput extends PureComponent {
       <MathInputContainer
         className={this.props.className}
         style={this.props.style}
-        innerRef={this.assignContainerRef}
+        ref={this.assignContainerRef}
       >
         <Tooltip
           getPopupContainer={this.getContainerRef}
