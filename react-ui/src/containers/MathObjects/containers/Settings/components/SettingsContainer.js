@@ -1,7 +1,17 @@
 import React, { PureComponent } from 'react'
 import SettingsButton from './SettingsButton'
-import { Popover } from 'antd'
+import { Popover, Icon } from 'antd'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import SubtleButton from 'components/SubtleButton'
+const TitleBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+const CloseButton = styled(SubtleButton)`
+  width:30px;
+  height:30px;
+`
 
 export default class SettingsContainer extends PureComponent {
 
@@ -18,31 +28,33 @@ export default class SettingsContainer extends PureComponent {
     isVisible: false
   }
 
-  assignContainerRef = (ref) => {
-    this.ref = ref
-  }
-
-  getContainerRef = () => this.ref
-
   handleVisibleChange = (isVisible) => {
     this.setState( { isVisible } )
   }
 
+  closePopover = () => {
+    this.setState( { isVisible: false } )
+  }
+
   render() {
     return (
-      <div ref={this.assignContainerRef}>
-        <Popover
-          content={this.props.children}
-          title={this.props.title}
-          trigger='click'
-          placement='right'
-          getPopupContainer={this.getContainerRef}
-          visible={this.state.isVisible}
-          onVisibleChange={this.handleVisibleChange}
-        >
-          <SettingsButton />
-        </Popover>
-      </div>
+      <Popover
+        content={this.props.children}
+        title={
+          <TitleBar>
+            <h3>{this.props.title}</h3>
+            <CloseButton onClick={this.closePopover}>
+              <Icon type="close" />
+            </CloseButton>
+          </TitleBar>
+        }
+        trigger='click'
+        placement='right'
+        visible={this.state.isVisible}
+        onVisibleChange={this.handleVisibleChange}
+      >
+        <SettingsButton />
+      </Popover>
     )
   }
 

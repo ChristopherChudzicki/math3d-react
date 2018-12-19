@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import DrawerToggleButton from './DrawerToggleButton'
@@ -96,20 +96,37 @@ export default class Drawer extends React.PureComponent {
     const buttonSide = slideTo === 'left' ? 'right' : 'left'
 
     return (
-      <DrawerContainer
-        width={width}
-        className={className}
-        animationSpeed={animationSpeed}
-      >
-        {children}
-        <DrawerToggleButton
-          isDrawerOpen={isOpen}
-          onOpen={this.onOpen}
-          onClose={this.onClose}
-          side={buttonSide}
-          slideTo={slideTo}
-        />
-      </DrawerContainer>
+      <Fragment>
+        {
+          buttonSide === 'left' && (
+            <DrawerToggleButton
+              isDrawerOpen={isOpen}
+              onOpen={this.onOpen}
+              onClose={this.onClose}
+              side={buttonSide}
+              slideTo={slideTo}
+            />
+          )
+        }
+        <DrawerContainer
+          width={width}
+          className={className}
+          animationSpeed={animationSpeed}
+        >
+          {children}
+        </DrawerContainer>
+        {
+          buttonSide === 'right' && (
+            <DrawerToggleButton
+              isDrawerOpen={isOpen}
+              onOpen={this.onOpen}
+              onClose={this.onClose}
+              side={buttonSide}
+              slideTo={slideTo}
+            />
+          )
+        }
+      </Fragment>
     )
   }
 

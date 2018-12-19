@@ -34,6 +34,7 @@ export class GridUI extends PureComponent<Props> {
         type={GRID}
         id={this.props.id}
         metadata={gridMeta}
+        isDeleteable={false}
       >
         <MainRow>
           <Cell>

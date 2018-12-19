@@ -40,6 +40,10 @@ export default class PartlyDraggable extends React.PureComponent {
     if (!PartlyDraggable.isElementDraggable(current)) {
       return false
     }
+    if (current.parentElement === null) {
+      // happens if current is the root DOM node.
+      return true
+    }
     return PartlyDraggable.isDragAllowed(top, current.parentElement)
   }
 

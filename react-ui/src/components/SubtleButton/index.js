@@ -99,21 +99,18 @@ export default class SubtleButton extends PureComponent {
 
     return (
       // The only purpose of outer div is to capture press events
-      <div
-        onMouseDown={this.beginPress}
-        onMouseUp={this.endPress}
-        onMouseLeave={this.endPress}
-      >
-        <SubtleButtonInner
-          lightenOnHover={lightenOnHover}
-          backgroundColor={backgroundColor}
-          focusColor={focusColor}
-          ref={this.getRef}
-          pressing={this.state.pressing}
-          disabled={this.props.disabled}
-          {...otherProps}
-        />
-      </div>
+      <SubtleButtonInner
+        onPointerDown={this.beginPress}
+        onPointerUp={this.endPress}
+        onPointerLeave={this.endPress}
+        lightenOnHover={lightenOnHover}
+        backgroundColor={backgroundColor}
+        focusColor={focusColor}
+        ref={this.getRef}
+        pressing={this.state.pressing}
+        disabled={this.props.disabled}
+        {...otherProps}
+      />
     )
   }
 

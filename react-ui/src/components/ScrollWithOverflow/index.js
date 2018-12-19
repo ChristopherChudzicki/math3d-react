@@ -19,7 +19,8 @@ import PropTypes from 'prop-types'
  *
  * This approach has a few downsides:
  *  1. Other elements in the padding region do not receive pointer events.
- *    - solved by conditional application of pointer-events:none
+ *    - solved by z-index settings on Scene/SceneBoundary
+ *    - also required child popovers to use root as parent
  *  2. The scrollbar disappears (pushed by padding)
  *    - TODO: Solve this, or at least alleviate with other styling (like
  *      top/bottom shadows) to indicate scrolling
@@ -31,48 +32,19 @@ const ScrollingDiv = styled.div`
   padding-right: 100vw;
   margin-right: -100vw;
   height: 100%;
-  pointer-events: ${props => props.disablePointer ? 'none' : 'auto'};
 `
 
 const ScrollingDivInner = styled.div`
   overflow-x:visible;
-  pointer-events:auto;
   height:100%;
 `
 
-export default class ScrollWithOverflow extends PureComponent {
-
-  static propTypes = {
-    children: PropTypes.oneOfType( [
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node
-    ] )
-  }
-
-  state = {
-    isHovering: false
-  }
-
-  onPointerEnter = () => {
-    this.setState( { isHovering: true } )
-  }
-  onPointerLeave = () => {
-    this.setState( { isHovering: false } )
-  }
-
-  render() {
-    return (
-      <ScrollingDiv
-        disablePointer={!this.state.isHovering}
-      >
-        <ScrollingDivInner
-          onPointerEnter={this.onPointerEnter}
-          onPointerLeave={this.onPointerLeave}
-        >
-          {this.props.children}
-        </ScrollingDivInner>
-      </ScrollingDiv>
-    )
-  }
-
+export default function ScrollWithOverflow(props) {
+  return (
+    <ScrollingDiv>
+      <ScrollingDivInner>
+        {props.children}
+      </ScrollingDivInner>
+    </ScrollingDiv>
+  )
 }
