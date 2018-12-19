@@ -13,6 +13,7 @@ function interp(x1, x2, a, b, c) {
 }
 
 class MarchingCube {
+
   constructor(x, y, z, xStep, yStep, zStep, func, c) {
     this.x = x
     this.y = y
@@ -21,7 +22,7 @@ class MarchingCube {
     this.yStep = yStep
     this.zStep = zStep
     this.c = c
-    this.v1 = func(x,  y, z)
+    this.v1 = func(x, y, z)
     this.v2 = func(x+xStep, y, z)
     this.v4 = func(x+xStep, y, z+zStep)
     this.v8 = func(x, y, z+zStep)
@@ -39,8 +40,10 @@ class MarchingCube {
    */
   getIndex() {
     let index = 0
-    const values = [this.v1, this.v2, this.v4, this.v8,
-                    this.v16, this.v32, this.v64, this.v128]
+    const values = [
+      this.v1, this.v2, this.v4, this.v8,
+      this.v16, this.v32, this.v64, this.v128
+    ]
     for (let i = 0; i < values.length; i++) {
       const bit = 2**i
       index += (values[i] > this.c) * bit
@@ -53,7 +56,8 @@ class MarchingCube {
       return this.edgePoints.get(edgeIndex)
     }
     let x, y, z
-    switch(edgeIndex) {
+    switch (edgeIndex) {
+
       // See edge numbers here: http://paulbourke.net/geometry/polygonise/
       case 0:
         x = interp(this.x, this.x+this.xStep, this.v1, this.v2, this.c)
@@ -116,15 +120,19 @@ class MarchingCube {
         z = this.z + this.zStep
         break
       default:
-        throw 'Edge index must be between 0 and 11'
+        throw new Error('Edge index must be between 0 and 11')
+
     }
-    this.edgePoints.set(edgeIndex, [x, y, z])
+    this.edgePoints.set(edgeIndex, [x, y, z] )
     return [x, y, z]
   }
+
 }
 
-export default function marchingCubes(xMin, xMax, yMin, yMax, zMin, zMax, func,
-                              c = 0, resolution = 128) {
+export default function marchingCubes(
+  xMin, xMax, yMin, yMax, zMin, zMax,
+  func, c = 0, resolution = 128
+) {
   const xStep = (xMax - xMin) / resolution
   const yStep = (yMax - yMin) / resolution
   const zStep = (zMax - zMin) / resolution
@@ -137,9 +145,11 @@ export default function marchingCubes(xMin, xMax, yMin, yMax, zMin, zMax, func,
         const cubeCase = triangleTable[cube.getIndex()]
         for (let i = 0; i < cubeCase.length; i++) {
           const triangle = cubeCase[i]
-          finalTriangles.push([cube.getEdgePoint(triangle[0]),
-                               cube.getEdgePoint(triangle[1]),
-                               cube.getEdgePoint(triangle[2])])
+          finalTriangles.push( [
+            cube.getEdgePoint(triangle[0] ),
+            cube.getEdgePoint(triangle[1] ),
+            cube.getEdgePoint(triangle[2] )
+          ] )
         }
       }
     }
