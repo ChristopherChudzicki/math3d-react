@@ -1,20 +1,17 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Icon } from 'antd'
 import SubtleButton from 'components/SubtleButton'
 
 const StyledButton = styled(SubtleButton)`
-  position:absolute;
-  top:0;
+  z-index:200;
   width:30px;
   height:30px;
-  ${props => props.side === 'right' && css`
-    right: -30px;
-  `}
-  ${props => props.side === 'left' && css`
-    left: -30px;
-  `};
+  margin: ${props => props.buttonSide === 'left'
+    ? '0 0 0 -30'
+    : '0 -30 0 0'
+};
 `
 
 // slideTo, isDrawerOpen
