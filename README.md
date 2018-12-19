@@ -1,6 +1,6 @@
 # Math3d-React
 
-Live on Heroku: https://math3d-react.herokuapp.com/
+Live on Heroku https://math3d-react.herokuapp.com/
 
 ## To Install
 
