@@ -33,9 +33,6 @@
       height: 100%;
     }
 
-    html, body {
-      overflow:hidden;
-    }
     </style>
     <noscript>
       You need to enable JavaScript to run this app.
@@ -71,10 +68,6 @@
     // These window bindings are used by MathBox react component.
     window.mathbox = mathbox
     window.mathboxElement = mathboxElement
-
-    $(window).bind('touchmove', function(e) {
-      e.preventDefault();
-    } );
 
     </script>
     <!--

@@ -67,7 +67,7 @@ export default class ScrollWithOverflow extends PureComponent {
       >
         <ScrollingDivInner
           onPointerEnter={this.onPointerEnter}
-          onPointerLeave={this.onPointerLeave}
+          // onPointerLeave={this.onPointerLeave}
         >
           {this.props.children}
         </ScrollingDivInner>
