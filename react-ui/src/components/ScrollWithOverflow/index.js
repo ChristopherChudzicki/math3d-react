@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react'
+// @flow
+import * as React from 'react'
 import styled from 'styled-components'
-import PropTypes from 'prop-types'
 
 /**
  * ScrollWithOverflow is a component intended to allow scrolling in the
@@ -39,7 +39,11 @@ const ScrollingDivInner = styled.div`
   height:100%;
 `
 
-export default function ScrollWithOverflow(props) {
+type Props = {
+  children?: React.Node
+}
+
+export default function ScrollWithOverflow(props: Props) {
   return (
     <ScrollingDiv>
       <ScrollingDivInner>

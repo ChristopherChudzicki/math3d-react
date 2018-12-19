@@ -4,10 +4,7 @@ import { Camera as CameraGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathObjectUI from 'containers/MathObjects/MathObjectUI'
 import { cameraMeta } from '../metadata'
-import {
-  ConnectedStaticMath,
-  MathInputRHS
-} from 'containers/MathObjects/containers/MathInput'
+import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
 import ToggleSwitch from 'containers/MathObjects/containers/ToggleSwitch'
 import { MainRow, Cell, Label } from 'containers/MathObjects/components'
 import UseComputedToggle from './UseComputedToggle'

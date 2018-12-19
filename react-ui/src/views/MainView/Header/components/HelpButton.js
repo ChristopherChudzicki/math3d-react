@@ -1,5 +1,5 @@
 // @flow
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Button, Popover, Icon } from 'antd'
 import styled from 'styled-components'
 
@@ -35,6 +35,7 @@ function renderContent() {
           <ContactIcon type="github" />
           <a
             target="_blank"
+            rel="noopener noreferrer"
             href="https://github.com/ChristopherChudzicki/math3d-react/issues"
           >
             Open an issue on Github.
