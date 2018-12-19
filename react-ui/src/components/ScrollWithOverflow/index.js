@@ -31,6 +31,7 @@ const ScrollingDiv = styled.div`
   padding-right: 100vw;
   margin-right: -100vw;
   height: 100%;
+  border: 1pt solid red;
   pointer-events: ${props => props.disablePointer ? 'none' : 'auto'};
 `
 
