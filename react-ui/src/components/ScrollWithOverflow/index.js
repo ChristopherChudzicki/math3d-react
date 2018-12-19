@@ -53,10 +53,10 @@ export default class ScrollWithOverflow extends PureComponent {
     isHovering: false
   }
 
-  onMouseEnter = () => {
+  onPointerEnter = () => {
     this.setState( { isHovering: true } )
   }
-  onMouseLeave = () => {
+  onPointerLeave = () => {
     this.setState( { isHovering: false } )
   }
 
@@ -66,8 +66,8 @@ export default class ScrollWithOverflow extends PureComponent {
         disablePointer={!this.state.isHovering}
       >
         <ScrollingDivInner
-          onMouseEnter={this.onMouseEnter}
-          onMouseLeave={this.onMouseLeave}
+          onPointerEnter={this.onPointerEnter}
+          onPointerLeave={this.onPointerLeave}
         >
           {this.props.children}
         </ScrollingDivInner>
