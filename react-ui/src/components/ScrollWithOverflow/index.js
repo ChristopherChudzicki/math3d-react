@@ -1,4 +1,5 @@
-import React from 'react'
+// @flow
+import * as React from 'react'
 import styled from 'styled-components'
 
 /**
@@ -38,7 +39,11 @@ const ScrollingDivInner = styled.div`
   height:100%;
 `
 
-export default function ScrollWithOverflow(props) {
+type Props = {
+  children?: React.Node
+}
+
+export default function ScrollWithOverflow(props: Props) {
   return (
     <ScrollingDiv>
       <ScrollingDivInner>
