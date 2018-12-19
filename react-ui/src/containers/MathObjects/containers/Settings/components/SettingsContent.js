@@ -9,7 +9,7 @@ export type FormRow = {
   inputType: InputType,
   property: string,
   label: string,
-  allowEmpty?: bool
+  allowEmpty?: boolean
 }
 
 // TODO: don't use any
@@ -56,7 +56,7 @@ export default class SettingsContent extends React.PureComponent<Props> {
     )
   }
 
-  renderInput(property: string, inputType: InputType, allowEmpty: ?bool) {
+  renderInput(property: string, inputType: InputType, allowEmpty: ?boolean) {
     switch (inputType) {
 
       case 'text': {
@@ -96,7 +96,6 @@ export default class SettingsContent extends React.PureComponent<Props> {
   }
 
   render() {
-    console.log(this.props.settingsList)
     return (
       <Grid>
         {this.props.settingsList.map(this.renderRow)}
