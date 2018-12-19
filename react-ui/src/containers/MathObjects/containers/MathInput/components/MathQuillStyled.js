@@ -40,6 +40,8 @@ export const MathQuillStyled = styled(MathQuill)`
     ${alignmentStyling};
   }
 `
+// To help enzyme; finding by component reference not working
+MathQuillStyled.displayName = 'MathQuillStyled'
 
 export const StaticMathStyled = styled(StaticMath)`
   &.mq-math-mode {
