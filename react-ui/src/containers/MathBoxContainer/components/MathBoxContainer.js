@@ -43,7 +43,7 @@ export default class MathBoxContainer extends PureComponent {
     return (
       <MathBoxOuterDiv
         leftOffset={this.props.leftOffset}
-        innerRef={this.assignRef}>
+        ref={this.assignRef}>
         {this.props.children}
       </MathBoxOuterDiv>
     )

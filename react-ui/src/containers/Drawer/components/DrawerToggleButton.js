@@ -9,10 +9,10 @@ const StyledButton = styled(SubtleButton)`
   top:0;
   width:30px;
   height:30px;
-  ${props => props.onSide === 'right' && css`
+  ${props => props.side === 'right' && css`
     right: -30px;
   `}
-  ${props => props.onSide === 'left' && css`
+  ${props => props.side === 'left' && css`
     left: -30px;
   `};
 `
@@ -36,7 +36,7 @@ export default class DrawerToggleButton extends PureComponent {
     onOpen: PropTypes.func.isRequired,
     isDrawerOpen: PropTypes.bool.isRequired,
     slideTo: PropTypes.oneOf( ['left', 'right'] ),
-    onSide: PropTypes.oneOf( ['left', 'right'] )
+    side: PropTypes.oneOf( ['left', 'right'] )
   }
 
   render() {
@@ -44,7 +44,7 @@ export default class DrawerToggleButton extends PureComponent {
     const onClick = props.isDrawerOpen ? props.onClose : props.onOpen
     const iconType = buttonIcons[props.slideTo][props.isDrawerOpen]
     return (
-      <StyledButton onClick={onClick} onSide={props.onSide}>
+      <StyledButton onClick={onClick} side={props.side}>
         <Icon type={iconType} />
       </StyledButton>
     )

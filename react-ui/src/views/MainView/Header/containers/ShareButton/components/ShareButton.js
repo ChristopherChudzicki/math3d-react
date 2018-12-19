@@ -61,6 +61,8 @@ export default class ShareButton extends PureComponent<Props, State> {
     isCopied: false
   }
 
+  dehydratedJson: ?string
+
   getId() {
     return randomstring.generate( { length: 1 } ) +
       randomstring.generate( { length: 7, charset: 'alphanumeric' } )
@@ -88,7 +90,7 @@ export default class ShareButton extends PureComponent<Props, State> {
     this.setState( { isCopied: true } )
   }
 
-  onVisibleChange = (visible) => {
+  onVisibleChange = (visible: boolean) => {
     if (!visible) {
       this.setState( { isCopied: false } )
     }

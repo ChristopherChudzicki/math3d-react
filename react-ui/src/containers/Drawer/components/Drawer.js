@@ -106,7 +106,7 @@ export default class Drawer extends React.PureComponent {
           isDrawerOpen={isOpen}
           onOpen={this.onOpen}
           onClose={this.onClose}
-          onSide={buttonSide}
+          side={buttonSide}
           slideTo={slideTo}
         />
       </DrawerContainer>
