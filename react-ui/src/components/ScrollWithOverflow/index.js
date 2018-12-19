@@ -33,12 +33,14 @@ const ScrollingDiv = styled.div`
   height: 100%;
   border: 1pt solid green;
   pointer-events: ${props => props.disablePointer ? 'none' : 'auto'};
+  border-color: ${props => props.disablePointer ? 'red' : 'blue'}
 `
 
 const ScrollingDivInner = styled.div`
   overflow-x:visible;
   pointer-events:auto;
   height:100%;
+  border: 1pt solid black;
 `
 
 export default class ScrollWithOverflow extends PureComponent {
@@ -55,9 +57,11 @@ export default class ScrollWithOverflow extends PureComponent {
   }
 
   onPointerEnter = () => {
+    console.log('enter')
     this.setState( { isHovering: true } )
   }
   onPointerLeave = () => {
+    console.log('leave')
     this.setState( { isHovering: false } )
   }
 
