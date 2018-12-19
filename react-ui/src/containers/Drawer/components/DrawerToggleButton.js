@@ -9,8 +9,8 @@ const StyledButton = styled(SubtleButton)`
   width:30px;
   height:30px;
   margin: ${props => props.buttonSide === 'left'
-    ? '0 0 0 -30'
-    : '0 -30 0 0'
+    ? '0px 0px 0px -30px'
+    : '0px -30px 0px 0px'
 };
 `
 
