@@ -31,7 +31,8 @@ const ScrollingDiv = styled.div`
   padding-right: 100vw;
   margin-right: -100vw;
   height: 100%;
-  border: 1pt solid blue;
+  border: 1pt solid green;
+  pointer-events: ${props => props.disablePointer ? 'none' : 'auto'};
 `
 
 const ScrollingDivInner = styled.div`
@@ -67,7 +68,7 @@ export default class ScrollWithOverflow extends PureComponent {
       >
         <ScrollingDivInner
           onPointerEnter={this.onPointerEnter}
-          // onPointerLeave={this.onPointerLeave}
+          onPointerLeave={this.onPointerLeave}
         >
           {this.props.children}
         </ScrollingDivInner>
