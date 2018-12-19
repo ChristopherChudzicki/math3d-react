@@ -1,4 +1,4 @@
-# Math3d-React
+# Math3d-React [![Build Status](https://travis-ci.com/ChristopherChudzicki/math3d-react.svg?branch=master)](https://travis-ci.com/ChristopherChudzicki/math3d-react)
 
 Live on Heroku: https://math3d-react.herokuapp.com/
 
