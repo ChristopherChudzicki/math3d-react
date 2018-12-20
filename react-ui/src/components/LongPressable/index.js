@@ -89,14 +89,36 @@ export default class LongPressable extends React.PureComponent {
     return distance(this.startingPosition, point) > this.props.dragThreshold
   }
 
+  // Safari doesn't support pointer events out of the box, and PEPjs
+  // seemed not to work with the longpress behavior desired here.
+  // So we use separate mouse/touch handlers, with touch events calling
+  // prevent default so that mouse events are not called additionally.
+
+  onTouchStart = (event) => {
+    this.onPointerDown(event)
+    event.preventDefault()
+  }
+
+  onTouchMove = (event) => {
+    this.onPointerMove(event)
+    event.preventDefault()
+  }
+
+  onTouchEnd = (event) => {
+    this.onPointerUp(event)
+    event.preventDefault()
+  }
+
   render() {
     return (
       <div
-        touchAction={true}
-        onPointerUp={this.onPointerUp}
-        onPointerDown={this.onPointerDown}
-        onPointerMove={this.onPointerMove}
-        onPointerLeave={this.onPointerLeave}
+        onMouseUp={this.onPointerUp}
+        onMouseDown={this.onPointerDown}
+        onMouseMove={this.onPointerMove}
+        onMouseOut={this.onPointerLeave}
+        onTouchStart={this.onTouchStart}
+        onTouchEnd={this.onTouchEnd}
+        onTouchMove={this.onTouchMove}
         className='math3d-longpressable'
       >
         {this.props.children}
