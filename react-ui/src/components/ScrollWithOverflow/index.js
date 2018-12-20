@@ -85,18 +85,26 @@ export default class ScrollWithOverflow extends React.PureComponent<Props, State
   paddingDown = (event) => {
     this.setState( { pointerOnLeft: false } )
 
-    const synth = new MouseEvent('mousedown', {
-      view: event.view,
-      bubbles: event.bubbles,
-      cancelable: event.cancelable,
-      button: event.button,
-      clientX: event.clientX,
-      clientY: event.clientY,
-      screenX: event.screenX,
-      screenY: event.screenY,
-      pageX: event.pageX,
-      pageY: event.pageY
-    } )
+    const synth = event.pointerType === 'mouse'
+      ? new MouseEvent('mousedown', {
+        view: event.view,
+        bubbles: event.bubbles,
+        cancelable: event.cancelable,
+        button: event.button,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        screenX: event.screenX,
+        screenY: event.screenY,
+        pageX: event.pageX,
+        pageY: event.pageY
+      } )
+      : new TouchEvent('touchstart', {
+        view: event.view,
+        bubbles: event.bubbles,
+        cancelable: event.cancelable,
+        touches: event.touches
+      } )
+
     const { domElement } = window.mathbox.three.controls
     domElement.dispatchEvent(synth)
   }
