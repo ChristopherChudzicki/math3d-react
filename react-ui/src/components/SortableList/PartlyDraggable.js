@@ -28,7 +28,6 @@ export default class PartlyDraggable extends React.PureComponent {
     }
     // Detects MathQuill editable fields
     if (element.classList.contains('math3d-longpressable')) {
-      console.log('hello')
       return false
     }
     // Detects Ant Design Slider elements
