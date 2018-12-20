@@ -82,28 +82,40 @@ export default class ScrollWithOverflow extends React.PureComponent<Props, State
     this.setState( { pointerOnLeft: false } )
   }
 
-  paddingDown = (event) => {
+  paddingMouseDown = (event) => {
     this.setState( { pointerOnLeft: false } )
 
-    const synth = event.pointerType === 'mouse'
-      ? new MouseEvent('mousedown', {
-        view: event.view,
-        bubbles: event.bubbles,
-        cancelable: event.cancelable,
-        button: event.button,
-        clientX: event.clientX,
-        clientY: event.clientY,
-        screenX: event.screenX,
-        screenY: event.screenY,
-        pageX: event.pageX,
-        pageY: event.pageY
-      } )
-      : new TouchEvent('touchstart', {
-        view: event.view,
-        bubbles: event.bubbles,
-        cancelable: event.cancelable,
-        touches: event.touches
-      } )
+    const synth = new MouseEvent('mousedown', {
+      view: event.view,
+      bubbles: event.bubbles,
+      cancelable: event.cancelable,
+      button: event.button,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      screenX: event.screenX,
+      screenY: event.screenY,
+      pageX: event.pageX,
+      pageY: event.pageY,
+      shiftKey: event.shiftKey,
+      ctrlKey: event.ctrlKey
+    } )
+
+    const { domElement } = window.mathbox.three.controls
+    domElement.dispatchEvent(synth)
+  }
+
+  paddingTouchStart = (event) => {
+    this.setState( { pointerOnLeft: false } )
+
+    const synth = new TouchEvent('touchstart', {
+      view: event.view,
+      bubbles: event.bubbles,
+      cancelable: event.cancelable,
+      touches: event.touches,
+      targetTouches: event.targetTouches,
+      shiftKey: event.shiftKey,
+      ctrlKey: event.ctrlKey
+    } )
 
     const { domElement } = window.mathbox.three.controls
     domElement.dispatchEvent(synth)
@@ -119,8 +131,8 @@ export default class ScrollWithOverflow extends React.PureComponent<Props, State
           {this.props.children}
         </ScrollingDivInner>
         <PaddingCover
-          onPointerDown={this.paddingDown}
-          onTouchStart={this.pointerOff}
+          onMouseDown={this.paddingMouseDown}
+          onTouchStart={this.paddingTouchStart}
           hasPointer={!this.state.pointerOnLeft}
         />
       </ScrollingDiv>
