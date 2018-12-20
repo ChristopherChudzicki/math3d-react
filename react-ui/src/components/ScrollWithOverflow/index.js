@@ -31,7 +31,7 @@ import styled from 'styled-components'
 
 const ScrollingDiv = styled.div`
   display:flex;
-  overflow-y: ${props => props.isScrollEnabled ? 'scroll' : 'hidden'};
+  overflow-y: scroll;
   padding-right: 100vw;
   margin-right: -100vw;
   height: 100%;
