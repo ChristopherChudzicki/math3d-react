@@ -1,6 +1,5 @@
 import React from 'react'
 import PropType from 'prop-types'
-import Pointable from 'react-pointable'
 
 function eventToPosition(event) {
   return {
@@ -92,14 +91,15 @@ export default class LongPressable extends React.PureComponent {
 
   render() {
     return (
-      <Pointable
+      <div
         onPointerUp={this.onPointerUp}
         onPointerDown={this.onPointerDown}
         onPointerMove={this.onPointerMove}
         onPointerLeave={this.onPointerLeave}
+        className='math3d-longpressable'
       >
         {this.props.children}
-      </Pointable>
+      </div>
     )
   }
 
