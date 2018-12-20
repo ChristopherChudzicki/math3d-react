@@ -32,23 +32,45 @@ const ScrollingDiv = styled.div`
   padding-right: 100vw;
   margin-right: -100vw;
   height: 100%;
+  pointer-events: ${props => props.hasPointer ? 'auto' : 'none'};
+  border: 1pt solid red;
+  border-color: ${props => props.hasPointer ? 'blue' : 'red'}
 `
 
 const ScrollingDivInner = styled.div`
   overflow-x:visible;
   height:100%;
+  pointer-events: auto;
 `
 
 type Props = {
   children?: React.Node
 }
 
-export default function ScrollWithOverflow(props: Props) {
-  return (
-    <ScrollingDiv>
-      <ScrollingDivInner>
-        {props.children}
-      </ScrollingDivInner>
-    </ScrollingDiv>
-  )
+type State = {
+  hasPointer: boolean
+}
+
+export default  class ScrollWithOverflow extends React.PureComponent<Props, State> {
+
+  state = {
+    hasPointer: false
+  }
+
+  onPointerDown = () => {
+    this.setState( { hasPointer: true } )
+  }
+
+  render() {
+    return (
+      <ScrollingDiv hasPointer={this.state.hasPointer}>
+        <ScrollingDivInner
+          onPointerDown={this.onPointerDown}
+        >
+          {this.props.children}
+        </ScrollingDivInner>
+      </ScrollingDiv>
+    )
+  }
+
 }
