@@ -29,13 +29,10 @@ import styled from 'styled-components'
 
 const ScrollingDiv = styled.div`
   display:flex;
-  overflow-y: scroll;
+  overflow-y: ${props => props.isScrollEnabled ? 'scroll' : 'hidden'};
   padding-right: 100vw;
   margin-right: -100vw;
   height: 100%;
-  pointer-events: ${props => props.hasPointer ? 'auto' : 'none'};
-  border: 1pt solid red;
-  border-color: ${props => props.hasPointer ? 'blue' : 'red'}
 `
 
 const ScrollingDivInner = styled.div`
@@ -55,85 +52,69 @@ const PaddingCover = styled.div`
   max-width:0px;
   padding-right: 100vw;
   margin-right: -100vw;
-  border: 1pt solid green;
-  pointer-events: auto;
-  pointer-events: ${props => props.hasPointer ? 'none' : 'auto'};
+  position:relative;
 `
 
+function forwardEventToElement(domElement: HTMLElement, event: SyntheticEvent<HTMLElement>) {
+  event.stopPropagation()
+  let syntheticEvent
+  if (event.nativeEvent instanceof MouseEvent) {
+    // $FlowFixMe
+    syntheticEvent = new MouseEvent(event.type, event.nativeEvent)
+  }
+  else if (event.nativeEvent instanceof TouchEvent) {
+    syntheticEvent = new TouchEvent(event.type, event.nativeEvent)
+  }
+  else {
+    console.log(event)
+    throw new TypeError(`Event not recognized`)
+  }
+  domElement.dispatchEvent(syntheticEvent)
+}
+
 type Props = {
-  children?: React.Node
+  children?: React.Node,
+  forwardingElement: HTMLElement
 }
 
 type State = {
-  pointerOnLeft: boolean
+  isScrollEnabled: boolean
 }
 
 export default class ScrollWithOverflow extends React.PureComponent<Props, State> {
 
   state = {
-    pointerOnLeft: false
+    isScrollEnabled: true
   }
 
-  pointerOn = () => {
-    this.setState( { pointerOnLeft: true } )
+  canvas = window.mathbox.three.controls.domElement
+
+  handleEvent = (event: SyntheticEvent<HTMLElement>) => {
+    forwardEventToElement(this.canvas, event)
   }
 
-  pointerOff = () => {
-    this.setState( { pointerOnLeft: false } )
+  onTouchStart = (event: SyntheticEvent<HTMLElement>) => {
+    this.setState( { isScrollEnabled: false } )
+    forwardEventToElement(this.canvas, event)
   }
-
-  paddingMouseDown = (event) => {
-    this.setState( { pointerOnLeft: false } )
-
-    const synth = new MouseEvent('mousedown', {
-      view: event.view,
-      bubbles: event.bubbles,
-      cancelable: event.cancelable,
-      button: event.button,
-      clientX: event.clientX,
-      clientY: event.clientY,
-      screenX: event.screenX,
-      screenY: event.screenY,
-      pageX: event.pageX,
-      pageY: event.pageY,
-      shiftKey: event.shiftKey,
-      ctrlKey: event.ctrlKey
-    } )
-
-    const { domElement } = window.mathbox.three.controls
-    domElement.dispatchEvent(synth)
-  }
-
-  paddingTouchStart = (event) => {
-    this.setState( { pointerOnLeft: false } )
-
-    const synth = new TouchEvent('touchstart', {
-      view: event.view,
-      bubbles: event.bubbles,
-      cancelable: event.cancelable,
-      touches: event.touches,
-      targetTouches: event.targetTouches,
-      shiftKey: event.shiftKey,
-      ctrlKey: event.ctrlKey
-    } )
-
-    const { domElement } = window.mathbox.three.controls
-    domElement.dispatchEvent(synth)
+  onTouchEnd = (event: SyntheticEvent<HTMLElement>) => {
+    this.setState( { isScrollEnabled: true } )
+    forwardEventToElement(this.canvas, event)
   }
 
   render() {
     return (
-      <ScrollingDiv hasPointer={this.state.pointerOnLeft}>
-        <ScrollingDivInner
-          onPointerDown={this.pointerOn}
-          onTouchStart={this.pointerOn}
-        >
+      <ScrollingDiv isScrollEnabled={this.state.isScrollEnabled}>
+        <ScrollingDivInner>
           {this.props.children}
         </ScrollingDivInner>
         <PaddingCover
-          onMouseDown={this.paddingMouseDown}
-          onTouchStart={this.paddingTouchStart}
-          hasPointer={!this.state.pointerOnLeft}
+          onMouseDown={this.handleEvent}
+          onMouseMove={this.handleEvent}
+          onMouseUp={this.handleEvent}
+          onTouchStart={this.onTouchStart}
+          onTouchMove={this.handleEvent}
+          onTouchEnd={this.onTouchEnd}
         />
       </ScrollingDiv>
     )
