@@ -57,22 +57,16 @@ const PaddingCover = styled.div`
   position:relative;
 `
 
-function forwardEventToElement(domElement: HTMLElement, event: SyntheticEvent<HTMLElement>) {
+function forwardEventToElement(domElement: HTMLElement, event: Event) {
   event.stopPropagation()
-
-  // Wheel events can be either any of (mousewheel, DOMMouseScroll, wheel). But
-  // The MathBox version of OrbitControls only listens to the first two.
-  const type = event.type === 'wheel' ? 'mousewheel' : event.type
-
+  event.preventDefault()
   // $FlowFixMe
-  const syntheticEvent = new event.nativeEvent.constructor(type, event.nativeEvent)
+  const syntheticEvent = new event.constructor(event.type, event)
   domElement.dispatchEvent(syntheticEvent)
-  return syntheticEvent
 }
 
 type Props = {
-  children?: React.Node,
-  forwardingElement: HTMLElement
+  children?: React.Node
 }
 
 type State = {
@@ -81,45 +75,52 @@ type State = {
 
 export default class ScrollWithOverflow extends React.PureComponent<Props, State> {
 
-  state = {
-    isScrollEnabled: true
+  coverRef: { current: null | HTMLDivElement }
+
+  eventNames = [
+    'mousedown', 'mousemove', 'mouseup', 'mousewheel',
+    'touchstart', 'touchmove', 'touchend'
+  ]
+
+  domElement = window.mathbox.three.controls.domElement
+
+  constructor(props: Props) {
+    super(props)
+    this.coverRef = React.createRef()
   }
 
-  canvas = window.mathbox.three.controls.domElement
-
-  handleEvent = (event: SyntheticEvent<HTMLElement>) => {
-    return forwardEventToElement(this.canvas, event)
+  forwardEvent = (event: Event) => {
+    forwardEventToElement(this.domElement, event)
   }
 
-  onTouchStart = (event: SyntheticEvent<HTMLElement>) => {
-    this.setState( { isScrollEnabled: false } )
-    forwardEventToElement(this.canvas, event)
+  componentDidMount() {
+    const { current } = this.coverRef
+    if (current === null) { return }
+    const options = { passive: false }
+    this.eventNames.forEach(eventName => {
+      current.addEventListener(eventName, this.forwardEvent, options)
+    } )
   }
-  onTouchEnd = (event: SyntheticEvent<HTMLElement>) => {
-    this.setState( { isScrollEnabled: true } )
-    forwardEventToElement(this.canvas, event)
+
+  componentWillUnmount() {
+    const { current } = this.coverRef
+    if (current === null) { return }
+    this.eventNames.forEach(eventName => {
+      current.removeEventListener(eventName, this.forwardEvent)
+    } )
   }
 
   render() {
     return (
-      <ScrollingDiv isScrollEnabled={this.state.isScrollEnabled}>
+      <ScrollingDiv>
         <ScrollingDivInner>
           {this.props.children}
         </ScrollingDivInner>
-        <PaddingCover
-          onMouseDown={this.handleEvent}
-          onMouseMove={this.handleEvent}
-          onWheel={event => {
-            console.log('forwarding:')
-            console.log(event)
-            const synth = this.handleEvent(event)
-            console.log(synth)
-          }}
-          onMouseUp={this.handleEvent}
-          onTouchStart={this.onTouchStart}
-          onTouchMove={this.handleEvent}
-          onTouchEnd={this.onTouchEnd}
-        />
+        {/* $FlowFixMe I think Flow does not like the ref value.
+          I updated styled components to Version 4 a while ago,
+          but did not update the typedefs. Should do that!
+        */}
+        <PaddingCover ref={this.coverRef} />
       </ScrollingDiv>
     )
   }
