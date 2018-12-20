@@ -59,19 +59,15 @@ const PaddingCover = styled.div`
 
 function forwardEventToElement(domElement: HTMLElement, event: SyntheticEvent<HTMLElement>) {
   event.stopPropagation()
-  let syntheticEvent
-  if (event.nativeEvent instanceof MouseEvent) {
-    // $FlowFixMe
-    syntheticEvent = new MouseEvent(event.type, event.nativeEvent)
-  }
-  else if (event.nativeEvent instanceof TouchEvent) {
-    syntheticEvent = new TouchEvent(event.type, event.nativeEvent)
-  }
-  else {
-    console.log(event)
-    throw new TypeError(`Event not recognized`)
-  }
+
+  // Wheel events can be either any of (mousewheel, DOMMouseScroll, wheel). But
+  // The MathBox version of OrbitControls only listens to the first two.
+  const type = event.type === 'wheel' ? 'mousewheel' : event.type
+
+  // $FlowFixMe
+  const syntheticEvent = new event.nativeEvent.constructor(type, event.nativeEvent)
   domElement.dispatchEvent(syntheticEvent)
+  return syntheticEvent
 }
 
 type Props = {
@@ -92,7 +88,7 @@ export default class ScrollWithOverflow extends React.PureComponent<Props, State
   canvas = window.mathbox.three.controls.domElement
 
   handleEvent = (event: SyntheticEvent<HTMLElement>) => {
-    forwardEventToElement(this.canvas, event)
+    return forwardEventToElement(this.canvas, event)
   }
 
   onTouchStart = (event: SyntheticEvent<HTMLElement>) => {
@@ -113,6 +109,12 @@ export default class ScrollWithOverflow extends React.PureComponent<Props, State
         <PaddingCover
           onMouseDown={this.handleEvent}
           onMouseMove={this.handleEvent}
+          onWheel={event => {
+            console.log('forwarding:')
+            console.log(event)
+            const synth = this.handleEvent(event)
+            console.log(synth)
+          }}
           onMouseUp={this.handleEvent}
           onTouchStart={this.onTouchStart}
           onTouchMove={this.handleEvent}
