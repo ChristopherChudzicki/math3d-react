@@ -98,7 +98,7 @@ export default class Drawer extends React.PureComponent {
     return (
       <Fragment>
         {
-          buttonSide === 'left' && (
+          buttonSide === 'left' && isOpen && (
             <DrawerToggleButton
               isDrawerOpen={isOpen}
               onOpen={this.onOpen}

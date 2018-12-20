@@ -8,7 +8,6 @@ const SceneBoundary = styled.div`
   height:100%;
   overflow: hidden;
   flex: 1;
-  z-index:100;
 `
 
 export default class Math3dScene extends PureComponent {

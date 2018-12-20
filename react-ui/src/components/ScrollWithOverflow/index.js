@@ -18,16 +18,19 @@ import styled from 'styled-components'
  * so that children can appear to overflow without actually overflowing.
  *
  * This approach has a few downsides:
- *  1. Other elements in the padding region do not receive pointer events.
- *    - solved by z-index settings on Scene/SceneBoundary
- *    - also required child popovers to use root as parent
+ *  1. Other elements covered by the padding region do not emit pointer events.
  *  2. The scrollbar disappears (pushed by padding)
- *    - TODO: Solve this, or at least alleviate with other styling (like
- *      top/bottom shadows) to indicate scrolling
- * Not ideal, but the best I've got for now...
+ *
+ * To resolve #1, we use event handlers to forward events to the covered up
+ * mathbox canvas element. Note: this works for because only 1 element is
+ * covered. If multiple elements were covered, we'd have trouble
+ *
+ * I currently have not good solution for #2.
+ *
  */
 
 const ScrollingDiv = styled.div`
+  display:flex;
   overflow-y: scroll;
   padding-right: 100vw;
   margin-right: -100vw;
@@ -37,18 +40,89 @@ const ScrollingDiv = styled.div`
 const ScrollingDivInner = styled.div`
   overflow-x:visible;
   height:100%;
+  pointer-events: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 1;
+  width:100%;
 `
+
+const PaddingCover = styled.div`
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 0;
+  max-width:0px;
+  padding-right: 100vw;
+  margin-right: -100vw;
+  position:relative;
+`
+
+function forwardEventToElement(domElement: HTMLElement, event: Event) {
+  event.stopPropagation()
+  event.preventDefault()
+  // $FlowFixMe
+  const syntheticEvent = new event.constructor(event.type, event)
+  domElement.dispatchEvent(syntheticEvent)
+}
 
 type Props = {
   children?: React.Node
 }
 
-export default function ScrollWithOverflow(props: Props) {
-  return (
-    <ScrollingDiv>
-      <ScrollingDivInner>
-        {props.children}
-      </ScrollingDivInner>
-    </ScrollingDiv>
-  )
+type State = {
+  isScrollEnabled: boolean
+}
+
+export default class ScrollWithOverflow extends React.PureComponent<Props, State> {
+
+  coverRef: { current: null | HTMLDivElement }
+
+  eventNames = [
+    'mousedown', 'mousemove', 'mouseup', 'mousewheel',
+    'touchstart', 'touchmove', 'touchend'
+  ]
+
+  domElement = window.mathbox.three.controls.domElement
+
+  constructor(props: Props) {
+    super(props)
+    this.coverRef = React.createRef()
+  }
+
+  forwardEvent = (event: Event) => {
+    forwardEventToElement(this.domElement, event)
+  }
+
+  componentDidMount() {
+    const { current } = this.coverRef
+    if (current === null) { return }
+    const options = { passive: false }
+    this.eventNames.forEach(eventName => {
+      current.addEventListener(eventName, this.forwardEvent, options)
+    } )
+  }
+
+  componentWillUnmount() {
+    const { current } = this.coverRef
+    if (current === null) { return }
+    this.eventNames.forEach(eventName => {
+      current.removeEventListener(eventName, this.forwardEvent)
+    } )
+  }
+
+  render() {
+    return (
+      <ScrollingDiv>
+        <ScrollingDivInner>
+          {this.props.children}
+        </ScrollingDivInner>
+        {/* $FlowFixMe I think Flow does not like the ref value.
+          I updated styled components to Version 4 a while ago,
+          but did not update the typedefs. Should do that!
+        */}
+        <PaddingCover ref={this.coverRef} />
+      </ScrollingDiv>
+    )
+  }
+
 }
