@@ -92,10 +92,13 @@ export default class LongPressable extends React.PureComponent {
   render() {
     return (
       <div
-        onPointerUp={this.onPointerUp}
-        onPointerDown={this.onPointerDown}
-        onPointerMove={this.onPointerMove}
-        onPointerLeave={this.onPointerLeave}
+        onMouseUp={this.onPointerUp}
+        onMouseDown={this.onPointerDown}
+        onMouseMove={this.onPointerMove}
+        onMouseOut={this.onPointerLeave}
+        onTouchEnd={this.onPointerUp}
+        onTouchStart={this.onPointerDown}
+        onTouchMove={this.onPointerMove}
         className='math3d-longpressable'
       >
         {this.props.children}
