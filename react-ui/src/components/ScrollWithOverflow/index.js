@@ -29,8 +29,6 @@ import styled from 'styled-components'
 
 const ScrollingDiv = styled.div`
   overflow-y: scroll;
-  padding-right: 100vw;
-  margin-right: -100vw;
   height: 100%;
 `
 
