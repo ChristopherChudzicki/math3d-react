@@ -43,6 +43,17 @@ const ScrollingDivInner = styled.div`
   pointer-events: auto;
 `
 
+const PaddingCover = styled.div`
+  width: 0px;
+  padding-right: 100vw;
+  margin-right: -100vw;
+  height: 100%;
+  border: 1pt solid green;
+  pointer-events: auto;
+`
+
+const Fragment = React.Fragment
+
 type Props = {
   children?: React.Node
 }
@@ -51,7 +62,7 @@ type State = {
   hasPointer: boolean
 }
 
-export default  class ScrollWithOverflow extends React.PureComponent<Props, State> {
+export default class ScrollWithOverflow extends React.PureComponent<Props, State> {
 
   state = {
     hasPointer: false
@@ -63,13 +74,16 @@ export default  class ScrollWithOverflow extends React.PureComponent<Props, Stat
 
   render() {
     return (
-      <ScrollingDiv hasPointer={this.state.hasPointer}>
-        <ScrollingDivInner
-          onPointerDown={this.onPointerDown}
-        >
-          {this.props.children}
-        </ScrollingDivInner>
-      </ScrollingDiv>
+      <Fragment>
+        <ScrollingDiv hasPointer={this.state.hasPointer}>
+          <ScrollingDivInner
+            onPointerDown={this.onPointerDown}
+            onTouchStart={this.onPointerDown}
+          >
+            {this.props.children}
+          </ScrollingDivInner>
+        </ScrollingDiv>
+      </Fragment>
     )
   }
 
