@@ -28,6 +28,7 @@ import styled from 'styled-components'
  */
 
 const ScrollingDiv = styled.div`
+  display:flex;
   overflow-y: scroll;
   padding-right: 100vw;
   margin-right: -100vw;
@@ -41,18 +42,20 @@ const ScrollingDivInner = styled.div`
   overflow-x:visible;
   height:100%;
   pointer-events: auto;
+  flex:1;
+  widht:100%;
 `
 
 const PaddingCover = styled.div`
-  width: 0px;
+  flex:0;
+  width:0px;
+  max-width:0px;
   padding-right: 100vw;
   margin-right: -100vw;
   height: 100%;
   border: 1pt solid green;
   pointer-events: auto;
 `
-
-const Fragment = React.Fragment
 
 type Props = {
   children?: React.Node
@@ -68,22 +71,28 @@ export default class ScrollWithOverflow extends React.PureComponent<Props, State
     hasPointer: false
   }
 
-  onPointerDown = () => {
+  pointerOn = () => {
     this.setState( { hasPointer: true } )
+  }
+
+  pointerOff = () => {
+    this.setState( { hasPointer: false } )
   }
 
   render() {
     return (
-      <Fragment>
-        <ScrollingDiv hasPointer={this.state.hasPointer}>
-          <ScrollingDivInner
-            onPointerDown={this.onPointerDown}
-            onTouchStart={this.onPointerDown}
-          >
-            {this.props.children}
-          </ScrollingDivInner>
-        </ScrollingDiv>
-      </Fragment>
+      <ScrollingDiv hasPointer={this.state.hasPointer}>
+        <ScrollingDivInner
+          onPointerDown={this.pointerOn}
+          onTouchStart={this.pointerOn}
+        >
+          {this.props.children}
+        </ScrollingDivInner>
+        <PaddingCover
+          onPointerDown={this.pointerOff}
+          onTouchStart={this.pointerOff}
+        />
+      </ScrollingDiv>
     )
   }
 
