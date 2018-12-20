@@ -55,7 +55,6 @@ const PaddingCover = styled.div`
   max-width:0px;
   padding-right: 100vw;
   margin-right: -100vw;
-  height: 100%;
   border: 1pt solid green;
   pointer-events: auto;
   pointer-events: ${props => props.hasPointer ? 'none' : 'auto'};
@@ -66,26 +65,45 @@ type Props = {
 }
 
 type State = {
-  leftPointer: boolean
+  pointerOnLeft: boolean
 }
 
 export default class ScrollWithOverflow extends React.PureComponent<Props, State> {
 
   state = {
-    leftPointer: false
+    pointerOnLeft: false
   }
 
   pointerOn = () => {
-    this.setState( { leftPointer: true } )
+    this.setState( { pointerOnLeft: true } )
   }
 
   pointerOff = () => {
-    this.setState( { leftPointer: false } )
+    this.setState( { pointerOnLeft: false } )
+  }
+
+  paddingDown = (event) => {
+    this.setState( { pointerOnLeft: false } )
+
+    const synth = new MouseEvent('mousedown', {
+      view: event.view,
+      bubbles: event.bubbles,
+      cancelable: event.cancelable,
+      button: event.button,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      screenX: event.screenX,
+      screenY: event.screenY,
+      pageX: event.pageX,
+      pageY: event.pageY
+    } )
+    const { domElement } = window.mathbox.three.controls
+    domElement.dispatchEvent(synth)
   }
 
   render() {
     return (
-      <ScrollingDiv hasPointer={this.state.leftPointer}>
+      <ScrollingDiv hasPointer={this.state.pointerOnLeft}>
         <ScrollingDivInner
           onPointerDown={this.pointerOn}
           onTouchStart={this.pointerOn}
@@ -93,9 +111,9 @@ export default class ScrollWithOverflow extends React.PureComponent<Props, State
           {this.props.children}
         </ScrollingDivInner>
         <PaddingCover
-          onPointerDown={this.pointerOff}
+          onPointerDown={this.paddingDown}
           onTouchStart={this.pointerOff}
-          hasPointer={!this.state.leftPointer}
+          hasPointer={!this.state.pointerOnLeft}
         />
       </ScrollingDiv>
     )
