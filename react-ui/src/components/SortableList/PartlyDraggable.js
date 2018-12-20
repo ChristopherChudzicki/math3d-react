@@ -26,6 +26,11 @@ export default class PartlyDraggable extends React.PureComponent {
     if (element.classList.contains('mq-editable-field')) {
       return false
     }
+    // Detects MathQuill editable fields
+    if (element.classList.contains('math3d-longpressable')) {
+      console.log('hello')
+      return false
+    }
     // Detects Ant Design Slider elements
     if (element.classList.contains('ant-slider')) {
       return false
