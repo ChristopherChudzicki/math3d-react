@@ -18,13 +18,15 @@ import styled from 'styled-components'
  * so that children can appear to overflow without actually overflowing.
  *
  * This approach has a few downsides:
- *  1. Other elements in the padding region do not receive pointer events.
- *    - solved by z-index settings on Scene/SceneBoundary
- *    - also required child popovers to use root as parent
+ *  1. Other elements covered by the padding region do not emit pointer events.
  *  2. The scrollbar disappears (pushed by padding)
- *    - TODO: Solve this, or at least alleviate with other styling (like
- *      top/bottom shadows) to indicate scrolling
- * Not ideal, but the best I've got for now...
+ *
+ * To resolve #1, we use event handlers to forward events to the covered up
+ * mathbox canvas element. Note: this works for because only 1 element is
+ * covered. If multiple elements were covered, we'd have trouble
+ *
+ * I currently have not good solution for #2.
+ *
  */
 
 const ScrollingDiv = styled.div`
