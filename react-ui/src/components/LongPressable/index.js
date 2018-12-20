@@ -101,7 +101,7 @@ export default class LongPressable extends React.PureComponent {
 
   onTouchMove = (event) => {
     this.onPointerMove(event)
-    event.preventDefault()
+    // Don't preventDefault for this one, chrome implements it as passive
   }
 
   onTouchEnd = (event) => {
