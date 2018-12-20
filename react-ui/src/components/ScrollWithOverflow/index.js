@@ -42,19 +42,23 @@ const ScrollingDivInner = styled.div`
   overflow-x:visible;
   height:100%;
   pointer-events: auto;
-  flex:1;
-  widht:100%;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 1;
+  width:100%;
 `
 
 const PaddingCover = styled.div`
-  flex:0;
-  width:0px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 0;
   max-width:0px;
   padding-right: 100vw;
   margin-right: -100vw;
   height: 100%;
   border: 1pt solid green;
   pointer-events: auto;
+  pointer-events: ${props => props.hasPointer ? 'none' : 'auto'};
 `
 
 type Props = {
@@ -62,26 +66,26 @@ type Props = {
 }
 
 type State = {
-  hasPointer: boolean
+  leftPointer: boolean
 }
 
 export default class ScrollWithOverflow extends React.PureComponent<Props, State> {
 
   state = {
-    hasPointer: false
+    leftPointer: false
   }
 
   pointerOn = () => {
-    this.setState( { hasPointer: true } )
+    this.setState( { leftPointer: true } )
   }
 
   pointerOff = () => {
-    this.setState( { hasPointer: false } )
+    this.setState( { leftPointer: false } )
   }
 
   render() {
     return (
-      <ScrollingDiv hasPointer={this.state.hasPointer}>
+      <ScrollingDiv hasPointer={this.state.leftPointer}>
         <ScrollingDivInner
           onPointerDown={this.pointerOn}
           onTouchStart={this.pointerOn}
@@ -91,6 +95,7 @@ export default class ScrollWithOverflow extends React.PureComponent<Props, State
         <PaddingCover
           onPointerDown={this.pointerOff}
           onTouchStart={this.pointerOff}
+          hasPointer={!this.state.leftPointer}
         />
       </ScrollingDiv>
     )
