@@ -16,9 +16,6 @@ const OuterContainer = styled.span`
   transition-duration: ${props => props.theme.transitionDuration};
   transition-timing-function: ${props => props.theme.transitionTimingFunction};
   transition-property: all;
-  ${props => props.isFolder && css`
-    height:40px;
-  `};
   ${props => props.isDeleting && css`
     transform: scale(0);
     transform-origin: top left;
@@ -78,6 +75,7 @@ const MainContainer = styled.div`
 
 const HeaderContainer = styled.div`
   position:relative;
+  max-width:75vw;
 `
 
 export default class MathObjectUI extends PureComponent {
