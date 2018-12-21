@@ -56,25 +56,27 @@
     *  - MathQuill requires jQuery anyway, so I'm using it here, too.
     *
     */
-    const mathboxElement = document.getElementById('mathbox')
-    const mathbox = mathBox({
-      plugins: ['core', 'controls', 'cursor'],
-      controls: {
-        klass: THREE.OrbitControls
-      },
-      element: mathboxElement,
-      camera: {
-        up: new THREE.Vector3(0, 0, 1)
-      }
-    });
-    const three = mathbox.three;
+    if (window.mathBox) {
+      const mathboxElement = document.getElementById('mathbox')
+      const mathbox = mathBox({
+        plugins: ['core', 'controls', 'cursor'],
+        controls: {
+          klass: THREE.OrbitControls
+        },
+        element: mathboxElement,
+        camera: {
+          up: new THREE.Vector3(0, 0, 1)
+        }
+      });
+      const three = mathbox.three;
 
-    three.camera.position.set(1, 1, 2);
-    three.renderer.setClearColor(new THREE.Color(0xFFFFFF), 1.0);
+      three.camera.position.set(1, 1, 2);
+      three.renderer.setClearColor(new THREE.Color(0xFFFFFF), 1.0);
 
-    // These window bindings are used by MathBox react component.
-    window.mathbox = mathbox
-    window.mathboxElement = mathboxElement
+      // These window bindings are used by MathBox react component.
+      window.mathbox = mathbox
+      window.mathboxElement = mathboxElement
+    }
 
     </script>
     <!--

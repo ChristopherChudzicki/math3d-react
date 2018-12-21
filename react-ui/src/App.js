@@ -1,12 +1,12 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import MainView from './views/MainView'
 import { Switch, Route } from 'react-router-dom'
 
-class App extends PureComponent {
+class App extends Component {
 
   renderGraph( { match } ) {
     return (
-      <MainView graphId={match.params.graph}/>
+      <MainView graphId={match.params.id}/>
     )
   }
 
@@ -15,7 +15,7 @@ class App extends PureComponent {
     // This seems to work...
     return (
       <Switch>
-        <Route exact path='/:graph' render={this.renderGraph}/>
+        <Route exact path='/:id' render={this.renderGraph}/>
         <Route exact path='/' render={this.renderGraph}/>
       </Switch>
     )
