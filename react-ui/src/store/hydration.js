@@ -81,7 +81,8 @@ export function dehydrate(state) {
     sortableTree,
     folders,
     mathSymbols,
-    mathGraphics
+    mathGraphics,
+    sliderValues
   } = state
 
   const sortableTreeWithoutFixed = Object.keys(sortableTree).reduce((acc, key) => {
@@ -96,7 +97,8 @@ export function dehydrate(state) {
     sortableTree: sortableTreeWithoutFixed,
     folders: dehydrateMathObjects(folders, initialState.folders, true),
     mathSymbols: dehydrateMathObjects(mathSymbols, initialState.mathSymbols),
-    mathGraphics: dehydrateMathObjects(mathGraphics, initialState.mathGraphics)
+    mathGraphics: dehydrateMathObjects(mathGraphics, initialState.mathGraphics),
+    sliderValues
   }
 
   return dehydrated
@@ -109,7 +111,8 @@ export function rehydrate(dehydrated) {
     sortableTree: sortableTreeWithoutFixed,
     folders,
     mathSymbols,
-    mathGraphics
+    mathGraphics,
+    sliderValues
   } = dehydrated
 
   const rehydratedFolders = rehydrateMathObjects(folders, initialState.folders, true)
@@ -121,7 +124,7 @@ export function rehydrate(dehydrated) {
   const rehydrated = {
     metadata,
     sortableTree,
-    sliderValues: {}, // populated below
+    sliderValues,
     folders: rehydratedFolders,
     mathSymbols: rehydratedSymbols,
     mathGraphics: rehydratedGraphics,
@@ -129,14 +132,6 @@ export function rehydrate(dehydrated) {
     evalErrors: {}, // populated below
     renderErrors: {} // populated below
   }
-
-  // Add in the slider values
-  Object.keys(rehydratedSymbols).forEach(key => {
-    const item = rehydratedSymbols[key]
-    if (item.type === VARIABLE_SLIDER) {
-      rehydrated.sliderValues[key] = 0
-    }
-  } )
 
   // Add in the error-holders
   Object.keys(rehydratedSymbols)
