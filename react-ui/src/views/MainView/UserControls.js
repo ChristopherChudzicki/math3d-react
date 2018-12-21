@@ -39,10 +39,6 @@ const StyledControlledTabs = styled(ControlledTabs)`
   }
 `
 
-const TabStyle = {
-  overflow: 'visible'
-}
-
 const Math3dController = () => {
   return (
     <Drawer id='main' width='400px'>
