@@ -21,7 +21,8 @@ const menuItems = [
   ...Object.keys(MathSymbols).sort()
 ].map(type => ( {
   type,
-  description: MathObjects[type].defaultSettings.description
+  description: MathObjects[type].defaultSettings.description,
+  support: MathObjects[type].support
 } ))
 
 const StyledControlledTabs = styled(ControlledTabs)`

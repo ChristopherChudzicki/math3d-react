@@ -1,7 +1,7 @@
 // @flow
 import type { MetaData } from './types'
 import { capitalize } from 'utils/helpers'
-import type { MathObjectWrapper, Settings } from '../MathObject'
+import type { MathObjectWrapper, Settings, Support } from '../MathObject'
 
 /**
  * Contains metadata about MathGraphic and coerces it into a form consumable
@@ -14,16 +14,19 @@ export default class MathGraphic implements MathObjectWrapper {
   uiComponent: Function
   mathboxComponent: Function
   computedProps: Array<string>
+  support: Support
   reducer = 'mathGraphics'
 
-  constructor( { type, description, metadata, uiComponent, mathboxComponent }: {
+  constructor( { type, description, metadata, uiComponent, mathboxComponent, support = 'full' }: {
     type: string,
     description?: string,
     metadata: MetaData,
     uiComponent: Function,
-    mathboxComponent: Function
+    mathboxComponent: Function,
+    support?: Support
   } ) {
     this.type = type
+    this.support = support
     this.uiComponent = uiComponent
     this.mathboxComponent = mathboxComponent
     this.defaultSettings = MathGraphic.getDefaultSettings(type, metadata, description)
