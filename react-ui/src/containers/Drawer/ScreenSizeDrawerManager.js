@@ -1,4 +1,5 @@
 // @flow
+import React from 'react'
 import { connect } from 'react-redux'
 import withSizes from 'react-sizes'
 import { closeDrawer, openDrawer } from './actions'
@@ -10,16 +11,30 @@ type Props = {
   id: string
 }
 
-function ScreenSizeDrawerManager(props: Props) {
-  console.log(props.isSmall)
-  if (props.isSmall) {
-    props.closeDrawer(props.id)
-  }
-  else {
-    props.openDrawer(props.id)
+class ScreenSizeDrawerManager extends React.PureComponent<Props> {
+
+  resize() {
+    const { id, isSmall, closeDrawer, openDrawer } = this.props
+    if (isSmall) {
+      closeDrawer(id)
+    }
+    else {
+      openDrawer(id)
+    }
   }
 
-  return null
+  componentDidUpdate() {
+    this.resize()
+  }
+
+  componentDidMount() {
+    this.resize()
+  }
+
+  render() {
+    return null
+  }
+
 }
 
 const mapSizesToProps = ( { width } ) => ( { isSmall: width < 480 } )
