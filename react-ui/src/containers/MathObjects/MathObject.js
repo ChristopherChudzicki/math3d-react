@@ -12,17 +12,21 @@ export type Settings = { [property: string]: any, description: string }
  * - Graphic: wrapped defined in ./MathGraphics
  */
 
+export type Support = 'full' | 'experimental' | 'deprecationWarning'
+
 type Config = {
   type: string,
   defaultSettings: Settings,
-  uiComponent: Function
+  uiComponent: Function,
+  support?: Support
 }
 
 export interface MathObjectWrapper {
   type: string,
   defaultSettings: Settings,
   uiComponent: Function,
-  reducer: string
+  reducer: string,
+  support: Support
 }
 
 export class MathFolder implements MathObjectWrapper {
@@ -31,8 +35,12 @@ export class MathFolder implements MathObjectWrapper {
   defaultSettings: Settings
   uiComponent: Function
   reducer = 'folders'
+  support: Support
 
   constructor(config: Config) {
+    if (!config.support) {
+      config.support = 'full'
+    }
     Object.assign(this, config)
   }
 
@@ -44,8 +52,12 @@ export class MathSymbol implements MathObjectWrapper {
   defaultSettings: Settings
   uiComponent: Function
   reducer = 'mathSymbols'
+  support: Support
 
   constructor(config: Config) {
+    if (!config.support) {
+      config.support = 'full'
+    }
     Object.assign(this, config)
   }
 

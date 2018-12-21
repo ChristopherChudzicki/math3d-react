@@ -1,5 +1,5 @@
 // @flow
-import React, { PureComponent } from 'react'
+import * as React from 'react'
 import styled from 'styled-components'
 import { Menu, Dropdown, Button, Icon } from 'antd'
 import idGenerator from 'constants/idGenerator'
@@ -7,6 +7,7 @@ import typeof {
   createMathObject as CreateMathObject
 } from 'containers/MathObjects/actions'
 import { FOLDER } from 'containers/MathObjects/Folder/metadata'
+import type { Support } from 'containers/MathObjects/MathObject'
 
 const NewObjectButton = styled(Button)`
   font-weight: bold;
@@ -32,9 +33,14 @@ const GradientDiv = styled.div`
   }
 `
 
+const WarningSpan = styled.span`
+  color: ${props => props.theme.gray[5]}
+`
+
 type MenuItem = {
   type: string,
-  description: string
+  description: string,
+  support: Support
 }
 
 type Props = {
@@ -48,7 +54,7 @@ type Props = {
   createMathObject: CreateMathObject
 }
 
-export default class ControllerHeader extends PureComponent<Props> {
+export default class ControllerHeader extends React.PureComponent<Props> {
 
   handleMenuClick = ( { key }: { key: string } ) => {
     const id = idGenerator.next()
@@ -69,8 +75,18 @@ export default class ControllerHeader extends PureComponent<Props> {
 
   }
 
-  renderMenuItem = ( { type, description }: MenuItem) => {
-    return <Menu.Item key={type}>{description}</Menu.Item>
+  renderMenuItem = ( { type, description, support }: MenuItem) => {
+    console.log(support)
+    return (
+      <Menu.Item key={type}>
+        {description}
+        {support === 'experimental' && (
+          <WarningSpan>
+            {' '}( <Icon type="experiment" /> Unstable Feature)
+          </WarningSpan>
+        )}
+      </Menu.Item>
+    )
   }
 
   renderMenu = () => {

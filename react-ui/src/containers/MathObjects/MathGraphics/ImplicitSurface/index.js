@@ -85,5 +85,6 @@ export default new MathGraphic( {
   description: 'Implicit Surface',
   metadata: implicitSurfaceMeta,
   uiComponent: ImplicitSurfaceUI,
-  mathboxComponent: ImplicitSurfaceGraphic
+  mathboxComponent: ImplicitSurfaceGraphic,
+  support: 'experimental'
 } )
