@@ -40,7 +40,7 @@ const StyledControlledTabs = styled(ControlledTabs)`
   }
 `
 
-const Math3dController = () => {
+const ControlsDrawer = () => {
   return (
     <Drawer id='main' width='400px'>
       <StyledControlledTabs
@@ -58,9 +58,8 @@ const Math3dController = () => {
           </ScrollWithOverflow>
         </TabPane>
       </StyledControlledTabs>
-
     </Drawer>
   )
 }
 
-export default Math3dController
+export default ControlsDrawer
