@@ -10,6 +10,7 @@ import MathObjects, {
   AXIS, GRID, CAMERA
 } from 'containers/MathObjects'
 import ControlledTabs, { TabPane } from 'containers/ControlledTabs'
+import styled from 'styled-components'
 
 // First sort the MathObject keys in the order we want, then extract the
 // data relevant to ControllerHeader
@@ -23,6 +24,21 @@ const menuItems = [
   description: MathObjects[type].defaultSettings.description
 } ))
 
+const StyledControlledTabs = styled(ControlledTabs)`
+  overflow: visible;
+  height: 100%;
+  & .ant-tabs-bar {
+    height: 65px;
+    margin-bottom: 0px;
+  }
+  & > .ant-tabs-content {
+    height: calc(100% - 65px);
+  }
+  & > .ant-tabs-content > ant-tabs-tabpane {
+    height: 100%;
+  }
+`
+
 const TabStyle = {
   overflow: 'visible'
 }
@@ -30,21 +46,22 @@ const TabStyle = {
 const Math3dController = () => {
   return (
     <Drawer id='main' width='400px'>
-      <ScrollWithOverflow>
-        <ControlledTabs
-          id='controls'
-          tabBarExtraContent={<ControllerHeader menuItems={menuItems}/>}
-          style={TabStyle}
-          tabBarStyle={ { marginBottom: '0pt' } }
-        >
-          <TabPane tab='Main' key='1'>
+      <StyledControlledTabs
+        id='controls'
+        tabBarExtraContent={<ControllerHeader menuItems={menuItems}/>}
+      >
+        <TabPane tab='Main' key='1'>
+          <ScrollWithOverflow>
             <SortableTree root='root' />
-          </TabPane>
-          <TabPane tab={<span> Axes & <br/> Camera</span>} key='2'>
+          </ScrollWithOverflow>
+        </TabPane>
+        <TabPane tab={<span> Axes & <br/> Camera</span>} key='2'>
+          <ScrollWithOverflow>
             <SortableTree root='setup' />
-          </TabPane>
-        </ControlledTabs>
-      </ScrollWithOverflow>
+          </ScrollWithOverflow>
+        </TabPane>
+      </StyledControlledTabs>
+
     </Drawer>
   )
 }
