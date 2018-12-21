@@ -11,7 +11,7 @@ type State = {
 
 type Action = ExtractReturn<setTitle>
 
-const initialState: State = {
+export const initialState: State = {
   title: 'Untitled',
   versionAtCreation: process.env.REACT_APP_VERSION,
   creationDate: JSON.stringify(new Date())

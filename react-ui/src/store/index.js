@@ -32,5 +32,4 @@ const store = createStore(
   composedEnhancers
 )
 
-window.store = store
 export default store

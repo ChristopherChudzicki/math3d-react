@@ -1,7 +1,7 @@
 import { getGraph } from 'services/api'
 import { loadDehydratedState } from 'store/actions'
 
-export function loadGraph(id) {
+export function loadGraphFromDb(id) {
 
   return async dispatch => {
     const { dehydrated } = await getGraph(id)

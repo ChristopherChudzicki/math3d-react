@@ -1,6 +1,7 @@
-import MathObjects, { FOLDER, VARIABLE_SLIDER } from 'containers/MathObjects'
+import MathObjects, { FOLDER } from 'containers/MathObjects'
 import idGenerator from 'constants/idGenerator'
 import initialState, { sortableTreeFixedPortion } from './initialState'
+import { initialState as metadataInitial } from 'services/metadata/reducer'
 
 // difference in obj1 and obj2
 // ASSUMING obj1 keys are superset of obj2
@@ -93,7 +94,7 @@ export function dehydrate(state) {
   }, { } )
 
   const dehydrated = {
-    metadata,
+    metadata: simpleDiff(metadata, metadataInitial),
     sortableTree: sortableTreeWithoutFixed,
     folders: dehydrateMathObjects(folders, initialState.folders, true),
     mathSymbols: dehydrateMathObjects(mathSymbols, initialState.mathSymbols),
@@ -122,7 +123,7 @@ export function rehydrate(dehydrated) {
   const sortableTree = { ...sortableTreeFixedPortion, ...sortableTreeWithoutFixed }
 
   const rehydrated = {
-    metadata,
+    metadata: { ...metadataInitial, ...metadata },
     sortableTree,
     sliderValues,
     folders: rehydratedFolders,

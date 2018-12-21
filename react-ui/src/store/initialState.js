@@ -19,11 +19,12 @@ const sortableTreeFixedPortion = {
 }
 
 const initialState = {
-  'sortableTree': {
+  metaData: {},
+  sortableTree: {
     ...sortableTreeFixedPortion,
     'mainFolder': []
   },
-  'folders': {
+  folders: {
     'cameraFolder': {
       'isCollapsed': true,
       'isDropDisabled': true,
@@ -40,8 +41,8 @@ const initialState = {
       'description': 'A Folder'
     }
   },
-  'mathSymbols': {},
-  'mathGraphics': {
+  mathSymbols: {},
+  mathGraphics: {
     'camera': {
       type: 'CAMERA'
     },
@@ -74,7 +75,8 @@ const initialState = {
       'visible': false,
       'axes': 'zx'
     }
-  }
+  },
+  sliders: {}
 }
 
 export { sortableTreeFixedPortion }

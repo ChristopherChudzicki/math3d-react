@@ -5,11 +5,14 @@ import UserControls from './UserControls'
 import Scene from './Scene'
 import Examples from './Examples'
 import Header from './Header'
-import { loadGraph } from './actions'
+import { loadGraphFromDb } from './actions'
+import { loadDehydratedState } from 'store/actions'
+import initialState from 'store/initialState'
 import { connect } from 'react-redux'
 
 type Props = {
-  loadGraph: (id: string) => Function,
+  loadGraphFromDb: (id: string) => Function,
+  loadDehydratedState: (dehydrated: {} ) => void,
   graphId?: string
 }
 
@@ -17,7 +20,16 @@ class MainView extends PureComponent<Props> {
 
   componentDidMount() {
     if (this.props.graphId) {
-      this.props.loadGraph(this.props.graphId)
+      this.props.loadGraphFromDb(this.props.graphId)
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.graphId) {
+      this.props.loadGraphFromDb(this.props.graphId)
+    }
+    else {
+      this.props.loadDehydratedState(initialState)
     }
   }
 
@@ -35,7 +47,8 @@ class MainView extends PureComponent<Props> {
 }
 
 const mapDispatchToProps = {
-  loadGraph: loadGraph
+  loadGraphFromDb,
+  loadDehydratedState
 }
 
 export default connect(null, mapDispatchToProps)(MainView)
