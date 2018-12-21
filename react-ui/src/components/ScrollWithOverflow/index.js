@@ -45,6 +45,10 @@ const ScrollingDivInner = styled.div`
   flex-shrink: 0;
   flex-basis: 1;
   width:100%;
+  /* The z-index means that elements overflowing from ScrollingDivInner into
+  PaddingCover still trigger the current pointer events within their
+  overflowing region */
+  z-index:10;
 `
 
 const PaddingCover = styled.div`
