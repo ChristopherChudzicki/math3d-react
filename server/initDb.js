@@ -49,7 +49,7 @@ mongodb.MongoClient.connect(DATABASE_URI, options, async (err, client) => {
   examples.forEach((data, index) => {
     const extension = '.json'
     const _id = files[index].slice(0, -extension.length)
-    bulk.find( { _id } ).upsert().update( { $set: data } );
+    bulk.find( { _id } ).upsert().update( { $set: { dehydrated: data } } );
   } )
   bulk.execute();
 

@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "title": "Untitled",
+    "versionAtCreation": "0.2.0",
+    "creationDate": "\"2018-12-21T18:14:34.347Z\""
+  },
+  "sortableTree": {
+    "mainFolder": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "folders": {},
+  "mathSymbols": {
+    "1": {
+      "type": "VARIABLE_SLIDER",
+      "name": "A",
+      "min": "-20",
+      "max": "20"
+    },
+    "2": {
+      "type": "VARIABLE_SLIDER",
+      "name": "b",
+      "min": "0.5",
+      "max": "3",
+      "description": "Another Slider!"
+    }
+  },
+  "mathGraphics": {
+    "3": {
+      "type": "EXPLICIT_SURFACE",
+      "description": "We can use the slider variables defined above in defining a surface (or any expression)",
+      "expr": "_f(x,y)=\\frac{A}{b}\\cdot x\\cdot e^{-\\frac{x^2+y^2}{b^2}}",
+      "rangeU": "\\left[-4,4\\right]",
+      "rangeV": "\\left[-4,4\\right]"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [
+        0.792404985909102,
+        -1.1886273284888793,
+        0.6189362866701671
+      ],
+      "relativeLookAt": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "sliderValues": {
+    "1": 10,
+    "2": 2.1
+  }
+}
