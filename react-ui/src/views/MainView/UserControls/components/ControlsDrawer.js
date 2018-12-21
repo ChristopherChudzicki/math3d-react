@@ -26,8 +26,10 @@ const menuItems = [
 } ))
 
 const StyledControlledTabs = styled(ControlledTabs)`
-  overflow: visible;
-  height: 100%;
+  &.ant-tabs {
+    overflow: visible;
+    height: 100%;
+  }
   & .ant-tabs-bar {
     height: 65px;
     margin-bottom: 0px;
