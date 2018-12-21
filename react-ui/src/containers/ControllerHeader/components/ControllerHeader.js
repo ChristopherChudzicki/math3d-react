@@ -76,7 +76,6 @@ export default class ControllerHeader extends React.PureComponent<Props> {
   }
 
   renderMenuItem = ( { type, description, support }: MenuItem) => {
-    console.log(support)
     return (
       <Menu.Item key={type}>
         {description}
