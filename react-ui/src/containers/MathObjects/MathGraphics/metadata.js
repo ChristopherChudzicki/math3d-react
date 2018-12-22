@@ -50,7 +50,7 @@ const labeled: MetaData = {
   labelVisible: {
     inputType: 'boolean',
     defaultValue: false,
-    label: 'label visibile'
+    label: 'label visible'
   }
 }
 
