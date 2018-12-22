@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "title": "Vectors and Vector Tails",
+    "versionAtCreation": "0.2.0",
+    "creationDate": "\"2018-12-22T16:08:02.841Z\""
+  },
+  "sortableTree": {
+    "mainFolder": ["1", "2", "3", "4"]
+  },
+  "folders": {},
+  "mathSymbols": {
+    "4": {
+      "type": "VARIABLE_SLIDER",
+      "name": "X",
+      "value": "-2"
+    }
+  },
+  "mathGraphics": {
+    "1": {
+      "type": "VECTOR",
+      "description": "Vector:\nBy default, vectors have their tails at the origin"
+    },
+    "2": {
+      "type": "VECTOR",
+      "description": "Vector:\nA different tail can be specified in object settings. Open object settings by pressing the gear.",
+      "color": "#f1c40f",
+      "tail": "\\left[-3,2,1\\right]"
+    },
+    "3": {
+      "type": "VECTOR",
+      "description": "Vector:\nThe tail can  position can contain variables  or functions.\nHere the tail has coordinates [X,-2,-1]",
+      "color": "#9b59b6",
+      "components": "\\left[3,\\ 2,\\ 1\\right]",
+      "tail": "\\left[X,\\ -2,\\ -1\\right]"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [-0.47385710974897977, -1.3505688130352802, 0.3727241886392734],
+      "relativeLookAt": [0, 0, 0]
+    }
+  },
+  "sliderValues": {
+    "4": 0
+  }
+}

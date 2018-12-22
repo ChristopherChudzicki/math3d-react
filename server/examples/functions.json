@@ -1,0 +1,48 @@
+{
+  "metadata": {
+    "title": "Using Functions",
+    "versionAtCreation": "0.2.0",
+    "creationDate": "\"2018-12-22T16:21:58.183Z\""
+  },
+  "sortableTree": {
+    "mainFolder": ["1", "2", "3", "4"]
+  },
+  "folders": {},
+  "mathSymbols": {
+    "1": {
+      "type": "VARIABLE",
+      "name": "f\\left(t\\right)",
+      "value": "\\left[t,\\ 3\\cdot\\cos\\left(\\pi\\ t\\right),\\ 2\\sin\\left(\\pi\\ t\\right)\\right]",
+      "description": "Function\nFunctions can be scalar-valued or vector-valued. Here's a vector-valued function."
+    },
+    "4": {
+      "type": "VARIABLE_SLIDER",
+      "min": "-4",
+      "max": "4",
+      "isAnimating": true
+    }
+  },
+  "mathGraphics": {
+    "2": {
+      "type": "PARAMETRIC_CURVE",
+      "description": "Parametric Curve\nOnce a function is defined, we can re-use it for different purposes. Here, we draw a curve.",
+      "expr": "_f(t)=f\\left(t\\right)",
+      "range": "\\left[-4,\\ 4\\right]"
+    },
+    "3": {
+      "type": "POINT",
+      "description": "Point\nAnd here we animate a point. Note that \"T\" is the slider value.",
+      "color": "#e74c3c",
+      "zBias": "1",
+      "coords": "f\\left(T\\right)"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [-0.6128516294248658, -1.5813337531654748, 0.3156182457264015],
+      "relativeLookAt": [0, 0, 0]
+    }
+  },
+  "sliderValues": {
+    "4": -2.900000000000004
+  }
+}

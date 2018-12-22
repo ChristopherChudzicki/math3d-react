@@ -1,0 +1,64 @@
+{
+  "metadata": {
+    "title": "diff: Using Derivatives",
+    "versionAtCreation": "0.2.0",
+    "creationDate": "\"2018-12-22T16:53:47.714Z\""
+  },
+  "sortableTree": {
+    "4": ["3", "5", "6"],
+    "mainFolder": ["1", "2", "7"]
+  },
+  "folders": {
+    "4": {
+      "description": "Graphics"
+    },
+    "mainFolder": {
+      "description": "Controls"
+    }
+  },
+  "mathSymbols": {
+    "1": {
+      "type": "VARIABLE",
+      "name": "f(t)",
+      "value": "\\left[t,t^2,t^3\\right]",
+      "description": "Function"
+    },
+    "2": {
+      "type": "VARIABLE",
+      "name": "df(t)",
+      "value": "\\operatorname{diff}\\left(f,\\ t\\right)",
+      "description": "Function:\n\"diff\" is an operator that differentiates functions using the syntax below.\nIn general, \"diff\" returns the total derivative and may be scalar-valued, vector-valued, or matrix-valued."
+    },
+    "7": {
+      "type": "VARIABLE_SLIDER",
+      "min": "-2",
+      "max": "2"
+    }
+  },
+  "mathGraphics": {
+    "3": {
+      "type": "PARAMETRIC_CURVE",
+      "expr": "_f(t)=f\\left(t\\right)",
+      "range": "\\left[-2,2\\right]"
+    },
+    "5": {
+      "type": "POINT",
+      "color": "#2c3e50",
+      "coords": "f\\left(T\\right)"
+    },
+    "6": {
+      "type": "VECTOR",
+      "color": "#e74c3c",
+      "components": "df\\left(T\\right)",
+      "tail": "f\\left(T\\right)"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [-0.7500000000000001, -1.25, 0.2499999999999999],
+      "relativeLookAt": [0, 0, 0]
+    }
+  },
+  "sliderValues": {
+    "7": -1.04
+  }
+}
