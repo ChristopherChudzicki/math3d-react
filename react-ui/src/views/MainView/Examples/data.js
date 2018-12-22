@@ -8,7 +8,7 @@ export type ExampleItem = {
 
 export type Examples = Array<ExampleItem>
 
-export const neatExamples: Examples = [
+export const featureDemos: Examples = [
   {
     id: 'sliders_intro',
     title: 'Using Variable Sliders'
@@ -55,6 +55,6 @@ export const neatExamples: Examples = [
   }
 ]
 
-export const featureDemos: Examples = [
+export const neatExamples: Examples = [
 
 ]

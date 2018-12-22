@@ -8,11 +8,11 @@ const Examples = (props) => {
   return (
     <Drawer id='examples' slideTo='right'>
       <ControlledTabs id='examples'>
-        <TabPane key='1' tab='Neat Examples'>
-          <ExamplesList data={neatExamples}/>
-        </TabPane>
-        <TabPane key='2' tab='Feature Demos'>
+        <TabPane key='1' tab='Feature Demos'>
           <ExamplesList data={featureDemos}/>
+        </TabPane>
+        <TabPane key='2' tab='Neat Examples'>
+          <ExamplesList data={neatExamples}/>
         </TabPane>
       </ControlledTabs>
     </Drawer>
