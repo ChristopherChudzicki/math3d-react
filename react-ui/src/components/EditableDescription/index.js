@@ -5,9 +5,13 @@ import styled from 'styled-components'
 import Textarea from 'react-textarea-autosize'
 import { getTextWidth } from './getTextWidth'
 
+// NOTE: using maxwidth below instead of maxWidth because TextArea seems to
+//  pass all of its props on textarea, which does does not recognize, hence
+//  React throws a warning
+
 const StyledTextarea = styled(Textarea)`
   width: ${props => props.width};
-  max-width: ${props => props.maxWidth ? `${props.maxWidth}px` : '100%'};
+  max-width: ${props => props.maxwidth ? `${props.maxwidth}px` : '100%'};
   resize: none;
   border-top:none;
   border-left: none;
@@ -30,7 +34,7 @@ type Props = {
   onChange: (text: string) => void,
   style?: Object,
   className?: Array<string>,
-  maxWidth?: number
+  maxwidth?: number
 }
 type State = {
   width: string
@@ -43,12 +47,12 @@ export default class EditableDescription extends React.PureComponent<Props, Stat
     const paddedText = text + ' '
     const textWidth = getTextWidth(paddedText, font)
     const paddingWidth = 4
-
+    console.log(textWidth)
     // Hack: Give a bit of extra width...
     // Phones/Table text width detection was not working.
     // Maybe a font issue?
-    const extra = 10
-    return `${textWidth + extra + paddingWidth}px`
+    const factor = 1.1
+    return `${factor*textWidth + paddingWidth}px`
   }
 
   onChange = (event: SyntheticMouseEvent<HTMLTextAreaElement>) => {
@@ -62,7 +66,7 @@ export default class EditableDescription extends React.PureComponent<Props, Stat
       <StyledTextarea
         rows={1}
         width={width}
-        maxWidth={this.props.maxWidth}
+        maxwidth={this.props.maxwidth}
         value={this.props.value}
         onChange={this.onChange}
         style={this.props.style}
