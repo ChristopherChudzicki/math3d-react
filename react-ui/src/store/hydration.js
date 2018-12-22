@@ -93,8 +93,9 @@ export function dehydrate(state) {
     return acc
   }, { } )
 
+  const keepMeta = new Set( ['versionAtCreation'] )
   const dehydrated = {
-    metadata: simpleDiff(metadata, metadataInitial),
+    metadata: simpleDiff(metadata, metadataInitial, keepMeta),
     sortableTree: sortableTreeWithoutFixed,
     folders: dehydrateMathObjects(folders, initialState.folders, true),
     mathSymbols: dehydrateMathObjects(mathSymbols, initialState.mathSymbols),
