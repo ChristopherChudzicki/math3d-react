@@ -47,7 +47,6 @@ export default class EditableDescription extends React.PureComponent<Props, Stat
     const paddedText = text + ' '
     const textWidth = getTextWidth(paddedText, font)
     const paddingWidth = 4
-    console.log(textWidth)
     // Hack: Give a bit of extra width...
     // Phones/Table text width detection was not working.
     // Maybe a font issue?
