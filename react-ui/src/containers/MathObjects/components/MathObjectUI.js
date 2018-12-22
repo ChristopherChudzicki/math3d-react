@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react'
+import React, { Fragment, PureComponent, createRef } from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import EditableDescription from 'components/EditableDescription'
@@ -111,13 +111,35 @@ export default class MathObjectUI extends PureComponent {
   }
 
   state = {
-    isDeleting: false
+    isDeleting: false,
+    parentMaxWidth: null
   }
 
   constructor(props) {
     super(props)
     this.setProperty = this.setProperty.bind(this)
     this.onEditDescription = this.onEditDescription.bind(this)
+    this.containerRef = createRef()
+  }
+
+  componentDidMount() {
+    this.setState( { parentMaxWidth: this.getParentMaxWidth() } )
+  }
+
+  getParentMaxWidth() {
+    // I want the EditableDescription Element's max width to be fixed, not
+    // influenced by MathObject's overflow into the scene.
+    // containerElement's parent element is the most recent ancestor
+    // of EditableDescription that does not grow during overflow
+    const { current: containerElement } = this.containerRef
+    if (containerElement) {
+      const parentWidth = containerElement.parentElement.offsetWidth
+      // subtract 30 for the DeleteButton, 40 for the sidePanel
+      return parentWidth
+    }
+    else {
+      return undefined
+    }
   }
 
   setProperty(property, value) {
@@ -159,6 +181,7 @@ export default class MathObjectUI extends PureComponent {
       <Fragment
       >
         <OuterContainer
+          ref={this.containerRef}
           onFocus={this.onFocus}
           isActive={isActive}
           isFolder={isFolder}
@@ -173,6 +196,8 @@ export default class MathObjectUI extends PureComponent {
           <MainContainer isActive={isActive}>
             <HeaderContainer>
               <EditableDescription
+                // subtracting 70 for sidepanel and delebutton
+                maxWidth={this.state.parentMaxWidth - 70}
                 value={description}
                 onChange={this.onEditDescription}
                 isFolder={isFolder}

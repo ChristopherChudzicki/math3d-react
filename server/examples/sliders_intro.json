@@ -1,15 +1,11 @@
 {
   "metadata": {
-    "title": "Untitled",
-    "versionAtCreation": "0.2.0",
+    "title": "Using Variable Sliders",
+    "versionAtCreation": "1.0.0",
     "creationDate": "\"2018-12-21T18:14:34.347Z\""
   },
   "sortableTree": {
-    "mainFolder": [
-      "1",
-      "2",
-      "3"
-    ]
+    "mainFolder": ["1", "2", "3"]
   },
   "folders": {},
   "mathSymbols": {
@@ -30,23 +26,15 @@
   "mathGraphics": {
     "3": {
       "type": "EXPLICIT_SURFACE",
-      "description": "We can use the slider variables defined above in defining a surface (or any expression)",
+      "description": "Explicit Surface: We can use the slider variables defined above in defining a surface (or any expression)",
       "expr": "_f(x,y)=\\frac{A}{b}\\cdot x\\cdot e^{-\\frac{x^2+y^2}{b^2}}",
       "rangeU": "\\left[-4,4\\right]",
       "rangeV": "\\left[-4,4\\right]"
     },
     "camera": {
       "type": "CAMERA",
-      "relativePosition": [
-        0.792404985909102,
-        -1.1886273284888793,
-        0.6189362866701671
-      ],
-      "relativeLookAt": [
-        0,
-        0,
-        0
-      ]
+      "relativePosition": [-0.5471573933914443, -1.6103676673024785, 0.636113597408501],
+      "relativeLookAt": [0, 0, 0]
     }
   },
   "sliderValues": {
