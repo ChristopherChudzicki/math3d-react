@@ -18,8 +18,7 @@
       "type": "VARIABLE_SLIDER",
       "min": "-2",
       "max": "2",
-      "isAnimating": true,
-      "speedMultiplier": 3
+      "isAnimating": true
     }
   },
   "mathGraphics": {
