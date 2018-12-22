@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "title":"Animating the Camera Position",
+    "versionAtCreation": "0.2.0",
+    "creationDate": "\"2018-12-22T17:40:32.554Z\""
+  },
+  "sortableTree": {
+    "mainFolder": ["1", "5", "2", "3", "4"]
+  },
+  "folders": {
+    "cameraFolder": {
+      "isCollapsed": false
+    }
+  },
+  "mathSymbols": {
+    "2": {
+      "type": "VARIABLE",
+      "name": "f(t)",
+      "value": "\\left[R\\left(t\\right)\\cdot\\cos\\left(t\\right),\\ R\\left(t\\right)\\cdot\\sin\\left(t\\right),\\ t\\right]",
+      "description": "Function:\nThis function and the slider above are used to animate the camera position. Activate the \"Axes & Camera\" tab above to see how."
+    },
+    "3": {
+      "type": "VARIABLE",
+      "name": "R\\left(t\\right)",
+      "value": "3+0.25\\cdot t^2",
+      "description": "Function"
+    },
+    "5": {
+      "type": "VARIABLE_SLIDER",
+      "min": "-2\\pi",
+      "max": "2\\pi",
+      "isAnimating": true
+    }
+  },
+  "mathGraphics": {
+    "1": {
+      "type": "VECTOR",
+      "color": "#e74c3c"
+    },
+    "4": {
+      "type": "PARAMETRIC_CURVE",
+      "description": "Parametric Curve: Camera Path",
+      "opacity": "0.25",
+      "expr": "_f(t)=f\\left(t\\right)"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "description": "Camera\nWhile the camera position is animated, rotate, zoom, and pan are automatically turned off.",
+      "isZoomEnabled": false,
+      "isRotateEnabled": false,
+      "relativePosition": [-0.9196249390446015, -0.35301093982086884, -0.2775073510670975],
+      "relativeLookAt": [0, 0, 0],
+      "computedPosition": "f\\left(T\\right)",
+      "useComputed": true
+    }
+  },
+  "sliderValues": {
+    "5": -2.7750735106709747
+  }
+}

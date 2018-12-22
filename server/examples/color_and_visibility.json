@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "title": "Changing Color and Visibility",
+    "versionAtCreation": "0.2.0",
+    "creationDate": "\"2018-12-22T15:59:38.144Z\""
+  },
+  "sortableTree": {
+    "mainFolder": ["1"]
+  },
+  "folders": {},
+  "mathSymbols": {},
+  "mathGraphics": {
+    "1": {
+      "type": "EXPLICIT_SURFACE_POLAR",
+      "description": "Explicit Surface (Polar)\nPress the colored dot next to a graphics object to toggle visibility; press and hold to change color.",
+      "color": "#e67e22"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [1.0195314560707958, -1.0045557671355836, 0.3727241886392763],
+      "relativeLookAt": [0, 0, 0]
+    }
+  },
+  "sliderValues": {}
+}

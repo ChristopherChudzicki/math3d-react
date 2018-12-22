@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "versionAtCreation": "0.2.0",
+    "creationDate": "\"2018-12-22T16:16:49.247Z\""
+  },
+  "sortableTree": {
+    "mainFolder": ["1", "2", "3"]
+  },
+  "folders": {},
+  "mathSymbols": {},
+  "mathGraphics": {
+    "1": {
+      "type": "POINT",
+      "description": "Point:\nOpen object settings (press the gear) to add a label to a point. Make sure to also set \"labelVisible\".",
+      "label": "My Point",
+      "labelVisible": true,
+      "coords": "\\left[3,-2,4\\right]"
+    },
+    "2": {
+      "type": "VECTOR",
+      "description": "Vector\nVectors and lines can be labeled, too. Vector and line labels appear at the end.",
+      "color": "#e74c3c",
+      "label": "Your Vector",
+      "labelVisible": true
+    },
+    "3": {
+      "type": "LINE",
+      "color": "#8e44ad",
+      "label": "A Line!",
+      "labelVisible": true,
+      "coords": "\\left[\\left[0,-4,\\ 0\\right],\\ \\left[-3,-1,2\\right]\\right]"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [1.012829030692171, -1.9719352172426445, 0.23623915126975092],
+      "relativeLookAt": [0, 0, 0]
+    }
+  },
+  "sliderValues": {}
+}

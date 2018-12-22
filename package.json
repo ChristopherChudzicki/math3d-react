@@ -6,7 +6,7 @@
     "node": "8.9.x"
   },
   "scripts": {
-    "start": "node server",
+    "start": "node server/initDb.js && node server",
     "heroku-postbuild": "node server/initDb.js && cd react-ui/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
     "start-db": "mongod --dbpath data/db"
   },

@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "title": "The TNB Vectors for Parametric Curves",
+    "versionAtCreation": "0.2.0",
+    "creationDate": "\"2018-12-22T17:21:31.242Z\""
+  },
+  "sortableTree": {
+    "mainFolder": ["1", "2", "3", "4", "5", "6"]
+  },
+  "folders": {},
+  "mathSymbols": {
+    "1": {
+      "type": "VARIABLE",
+      "name": "f\\left(t\\right)",
+      "value": "\\left[t^3,t^2,t\\right]"
+    },
+    "2": {
+      "type": "VARIABLE_SLIDER",
+      "min": "-2",
+      "max": "2",
+      "isAnimating": true,
+      "speedMultiplier": 3
+    }
+  },
+  "mathGraphics": {
+    "3": {
+      "type": "PARAMETRIC_CURVE",
+      "expr": "_f(t)=f\\left(t\\right)",
+      "range": "\\left[-2,2\\right]"
+    },
+    "4": {
+      "type": "VECTOR",
+      "color": "#e74c3c",
+      "components": "\\operatorname{unitT}\\left(f,\\ T\\right)",
+      "tail": "f\\left(T\\right)"
+    },
+    "5": {
+      "type": "VECTOR",
+      "color": "#9b59b6",
+      "components": "\\operatorname{unitN}\\left(f,\\ T\\right)",
+      "tail": "f\\left(T\\right)"
+    },
+    "6": {
+      "type": "VECTOR",
+      "color": "#e67e22",
+      "components": "\\operatorname{unitB}\\left(f,\\ T\\right)",
+      "tail": "f\\left(T\\right)"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [-0.5865871668594441, -0.6193625968949049, 0.23768345443481234],
+      "relativeLookAt": [0, 0, 0]
+    },
+    "axis-z": {
+      "type": "AXIS",
+      "scale": "1"
+    }
+  },
+  "sliderValues": {
+    "2": -0.6666666666666637
+  }
+}

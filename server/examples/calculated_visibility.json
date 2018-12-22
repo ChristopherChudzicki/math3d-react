@@ -1,0 +1,73 @@
+{
+  "metadata": {
+    "title": "Controlling Multiple Object Visibility with Toggles",
+    "versionAtCreation": "0.2.0",
+    "creationDate": "\"2018-12-22T16:58:25.822Z\""
+  },
+  "sortableTree": {
+    "mainFolder": ["1", "6", "2", "3"]
+  },
+  "folders": {},
+  "mathSymbols": {
+    "1": {
+      "type": "BOOLEAN_VARIABLE",
+      "name": "dragon",
+      "description": "Toggle Switch:\nA toggle switch is a boolean variable (true/false). Toggles can be used to control the  visibility of multiple graphics objects at once.\n\nThis toggle has the silly name \"dragon\"."
+    }
+  },
+  "mathGraphics": {
+    "2": {
+      "type": "POINT",
+      "useCalculatedVisibility": true,
+      "color": "#e74c3c",
+      "calculatedVisibility": "dragon",
+      "coords": "\\left[-3,0,2\\right]"
+    },
+    "3": {
+      "type": "POINT",
+      "useCalculatedVisibility": true,
+      "color": "#9b59b6",
+      "calculatedVisibility": "dragon",
+      "label": "A Point",
+      "labelVisible": true,
+      "coords": "\\left[2,\\ 0,\\ 4\\right]"
+    },
+    "6": {
+      "type": "EXPLICIT_SURFACE_POLAR",
+      "description": "Explicit Surface (Polar)\nTo control visibility with a toggle, set the value of \"calculated visibility\" in object settings (press the gear).",
+      "useCalculatedVisibility": true,
+      "calculatedVisibility": "dragon"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "useCalculatedVisibility": true,
+      "relativePosition": [0.5005541532507943, -1.7359500680788371, 0.6240571071041611],
+      "relativeLookAt": [0, 0, 0]
+    },
+    "axis-x": {
+      "type": "AXIS",
+      "useCalculatedVisibility": true
+    },
+    "axis-y": {
+      "type": "AXIS",
+      "useCalculatedVisibility": true
+    },
+    "axis-z": {
+      "type": "AXIS",
+      "useCalculatedVisibility": true
+    },
+    "grid-xy": {
+      "type": "GRID",
+      "useCalculatedVisibility": true
+    },
+    "grid-yz": {
+      "type": "GRID",
+      "useCalculatedVisibility": true
+    },
+    "grid-zx": {
+      "type": "GRID",
+      "useCalculatedVisibility": true
+    }
+  },
+  "sliderValues": {}
+}

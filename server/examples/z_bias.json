@@ -1,0 +1,50 @@
+{
+  "metadata": {
+    "title": "Fine-tuning Visibility with z-bias",
+    "versionAtCreation": "0.2.0",
+    "creationDate": "\"2018-12-22T17:12:37.750Z\""
+  },
+  "sortableTree": {
+    "mainFolder": ["4", "5", "2", "3"]
+  },
+  "folders": {},
+  "mathSymbols": {
+    "4": {
+      "type": "VARIABLE",
+      "name": "f\\left(x,\\ y\\right)",
+      "value": "\\frac{1}{2}y^2-x^2"
+    }
+  },
+  "mathGraphics": {
+    "2": {
+      "type": "PARAMETRIC_CURVE",
+      "description": "ParametricCurve\nThis red curve is hard to see because it has the same 3D-position as the blue surface. The renderer can't decide which object to draw on top.",
+      "color": "#e74c3c",
+      "width": "6",
+      "expr": "_f(t)=\\left[t,\\ 2,\\ f\\left(t,\\ 2\\right)\\right]",
+      "range": "\\left[-3,3\\right]"
+    },
+    "3": {
+      "type": "PARAMETRIC_CURVE",
+      "description": "Parametric Curve\nSetting the z-bias in object settings (click the gear) is a nice way to solve this problem. Try viewing the yellow line from different angle: it will always appear closer to the camera.\nThe z-bias of an object is a positional bias toward the camera (\"z\" in the context refers to an axis pointing toward the camera, not the mathematical z axis.)",
+      "color": "#f1c40f",
+      "zBias": "1",
+      "width": "6",
+      "expr": "_f(t)=\\left[t,\\ 2.1,\\ f\\left(t,2.1\\right)\\right]",
+      "range": "\\left[-3,3\\right]"
+    },
+    "5": {
+      "type": "EXPLICIT_SURFACE",
+      "opacity": "1",
+      "expr": "_f(x,y)=f\\left(x,\\ y\\right)",
+      "rangeU": "\\left[-2,2\\right]",
+      "rangeV": "\\left[-3,3\\right]"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [1.588086401796261, -1.1559540607206158, 0.7920361512245293],
+      "relativeLookAt": [0, 0, 0]
+    }
+  },
+  "sliderValues": {}
+}
