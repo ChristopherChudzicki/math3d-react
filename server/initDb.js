@@ -41,8 +41,7 @@ mongodb.MongoClient.connect(DATABASE_URI, options, async (err, client) => {
     const _id = files[index].slice(0, -extension.length)
     bulk.find( { _id } ).upsert().update( { $set: { dehydrated: data } } );
   } )
-  bulk.execute();
+  await bulk.execute()
+  process.exit()
 
 } )
-
-process.exit()
