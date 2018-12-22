@@ -7,7 +7,7 @@ import { getTextWidth } from './getTextWidth'
 
 const StyledTextarea = styled(Textarea)`
   width: ${props => props.width};
-  max-width: calc(100% - 35px);
+  max-width: ${props => props.maxWidth ? `${props.maxWidth}px` : '100%'};
   resize: none;
   border-top:none;
   border-left: none;
@@ -29,7 +29,8 @@ type Props = {
   value: string,
   onChange: (text: string) => void,
   style?: Object,
-  className?: Array<string>
+  className?: Array<string>,
+  maxWidth?: number
 }
 type State = {
   width: string
@@ -61,6 +62,7 @@ export default class EditableDescription extends React.PureComponent<Props, Stat
       <StyledTextarea
         rows={1}
         width={width}
+        maxWidth={this.props.maxWidth}
         value={this.props.value}
         onChange={this.onChange}
         style={this.props.style}
