@@ -54,3 +54,5 @@ mongodb.MongoClient.connect(DATABASE_URI, options, async (err, client) => {
   bulk.execute();
 
 } )
+
+process.exit()
