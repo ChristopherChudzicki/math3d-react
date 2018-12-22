@@ -79,15 +79,27 @@ else {
      * DELETE: delete graph by id
      */
 
-     app.get("/api/graph/:id", function(req, res) {
-       db.collection(GRAPH_COLLECTION).findOne({ _id: req.params.id }, function(err, doc) {
-         if (err) {
-           handleError(res, err.message, "Failed to get graph");
-         } else {
-           res.status(200).json(doc);
-         }
-       });
-     });
+    app.get("/api/graph/:id", function(req, res) {
+      db.collection(GRAPH_COLLECTION).findOne({ _id: req.params.id }, function(err, doc) {
+        if (err) {
+          handleError(res, err.message, "Failed to get graph");
+        }
+        else {
+          res.status(200).json(doc);
+        }
+      } );
+    } );
+
+    app.put("/api/graph/:id", function(req, res) {
+      const update = req.body
+      db.collection(GRAPH_COLLECTION).update({ _id: req.params.id }, { $set: update }, function(err, doc) {
+        if (err) {
+          handleError(res, err.message, "Failed to put data");
+        } else {
+          res.status(200).json(doc);
+        }
+      });
+    } )
 
     // All remaining requests return the React app, so it can handle routing.
     app.get('*', function(request, response) {
