@@ -197,7 +197,7 @@ export default class MathObjectUI extends PureComponent {
             <HeaderContainer>
               <EditableDescription
                 // subtracting 70 for sidepanel and delebutton
-                maxWidth={this.state.parentMaxWidth - 70}
+                maxwidth={this.state.parentMaxWidth - 70}
                 value={description}
                 onChange={this.onEditDescription}
                 isFolder={isFolder}

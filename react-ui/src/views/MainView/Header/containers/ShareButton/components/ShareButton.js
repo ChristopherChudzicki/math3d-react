@@ -6,6 +6,7 @@ import { dehydrate } from 'store/hydration'
 import randomstring from 'randomstring'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import typeof { setProperty as SetProperty } from 'containers/MathObjects/actions'
+import typeof { setCreationDate as SetCreationDate } from 'services/metadata/actions'
 import getCameraData from 'services/getCameraData'
 import { CAMERA } from 'containers/MathObjects'
 import styled, { keyframes } from 'styled-components'
@@ -43,7 +44,8 @@ type Props = {
   // We need access to state, but no need to rerender on ever state change.
   // So pass getState instead.
   getState: () => {},
-  setProperty: SetProperty
+  setProperty: SetProperty,
+  setCreationDate: SetCreationDate
 }
 type State = {
   id: ?string,
@@ -78,6 +80,7 @@ export default class ShareButton extends PureComponent<Props, State> {
 
   saveGraph = () => {
     this.saveCameraData()
+    this.props.setCreationDate()
     const state = this.props.getState()
     const dehydrated = dehydrate(state)
     const id = this.getId()

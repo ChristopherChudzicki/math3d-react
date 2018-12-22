@@ -12,6 +12,10 @@ export const neatExamples: Examples = [
   {
     id: 'sliders_intro',
     title: 'Using Variable Sliders'
+  },
+  {
+    id: 'sliders_plotrange',
+    title: 'Using Sliders to Animate Plot Range'
   }
 ]
 
