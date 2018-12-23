@@ -27,6 +27,7 @@ const StyledTextarea = styled(Textarea)`
     outline: none;
     border-bottom: 2px solid ${props => props.theme.primary[4]};
   };
+  overflow:hidden;
 `
 
 type Props = {
@@ -51,7 +52,8 @@ export default class EditableDescription extends React.PureComponent<Props, Stat
     // Phones/Table text width detection was not working.
     // Maybe a font issue?
     const factor = 1.1
-    return `${factor*textWidth + paddingWidth}px`
+    const extra = 5
+    return `${factor*textWidth + extra + paddingWidth}px`
   }
 
   onChange = (event: SyntheticMouseEvent<HTMLTextAreaElement>) => {
