@@ -112,12 +112,6 @@ export default class ShareButton extends PureComponent<Props, State> {
             Copied!
           </CopyStatus>
         </CopyContainer>
-
-        <p>
-          <Icon type="warning" theme="outlined" /> This updated version of math3d is in <strong>beta</strong>.
-          Graphs saved now may not work in the future.
-        </p>
-
         {
           process.env.NODE_ENV === 'development' && (
             <CopyToClipboard text={this.dehydratedJson}>
