@@ -50,7 +50,7 @@ export default class MathQuill extends PureComponent
 
   mathField: MQMathField
   span: ?HTMLSpanElement
-  preventOnEdit: bool
+  preventOnEdit: boolean
 
   state = {
     isFocused: false
