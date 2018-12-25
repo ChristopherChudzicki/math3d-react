@@ -7,7 +7,8 @@
   "sortableTree": {
     "1": ["3", "4", "5"],
     "2": ["6", "7", "8", "10", "11"],
-    "mainFolder": ["9"]
+    "mainFolder": ["9"],
+    "root": ["mainFolder", "1", "2"]
   },
   "folders": {
     "1": {
