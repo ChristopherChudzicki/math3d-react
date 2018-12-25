@@ -56,5 +56,8 @@ export const featureDemos: Examples = [
 ]
 
 export const neatExamples: Examples = [
-
+  {
+    id: 'ruled_hyperboloid',
+    title: 'Ruled Hyperboloid'
+  }
 ]
