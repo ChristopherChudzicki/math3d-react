@@ -36,6 +36,7 @@
   "mathSymbols": {
     "4": {
       "type": "VARIABLE_SLIDER",
+      "speedMultiplier": 0.125,
       "isAnimating": true
     },
     "5": {
