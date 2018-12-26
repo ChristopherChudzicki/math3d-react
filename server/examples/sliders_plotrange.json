@@ -4,6 +4,7 @@
     "versionAtCreation": "0.2.0"
   },
   "sortableTree": {
+    "root": ["mainFolder"],
     "mainFolder": ["1", "3"]
   },
   "folders": {},

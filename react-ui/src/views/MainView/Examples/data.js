@@ -56,5 +56,16 @@ export const featureDemos: Examples = [
 ]
 
 export const neatExamples: Examples = [
-
+  {
+    id: 'motion',
+    title: 'Motion: Velocity and Acceleration'
+  },
+  {
+    id: 'ruled_hyperboloid',
+    title: 'Ruled Hyperboloid'
+  },
+  {
+    id: 'horizontal_revolution_washer',
+    title: 'Surface of Revolution: Washer Method (Horizontal Axis)'
+  }
 ]

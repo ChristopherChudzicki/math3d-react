@@ -1,0 +1,92 @@
+{
+  "metadata": {
+    "title": "Ruled Hyperboloid",
+    "versionAtCreation": "1.0.0",
+    "creationDate": "\"2018-12-25T22:42:51.960Z\""
+  },
+  "sortableTree": {
+    "1": ["3", "4", "5"],
+    "2": ["6", "7", "8", "10", "11"],
+    "mainFolder": ["9"],
+    "root": ["mainFolder", "1", "2"]
+  },
+  "folders": {
+    "1": {
+      "isCollapsed": true,
+      "description": "Functions"
+    },
+    "2": {
+      "isCollapsed": true,
+      "description": "Graphics"
+    },
+    "mainFolder": {
+      "description": "Controls"
+    }
+  },
+  "mathSymbols": {
+    "3": {
+      "type": "VARIABLE",
+      "name": "r_1\\left(t\\right)",
+      "value": "\\left[3\\cdot\\cos\\left(t\\right),\\ 3\\cdot\\sin\\left(t\\right),\\ -3\\right]",
+      "description": "Bottom Circle"
+    },
+    "4": {
+      "type": "VARIABLE",
+      "name": "r_2\\left(t\\right)",
+      "value": "\\left[3\\cdot\\cos\\left(t+\\frac{\\pi}{2}\\right),\\ 3\\cdot\\sin\\left(t+\\frac{\\pi}{2}\\right),\\ +3\\right]",
+      "description": "Top Function"
+    },
+    "5": {
+      "type": "VARIABLE",
+      "name": "r\\left(u,\\ v\\right)",
+      "value": "r_1\\left(u\\right)+v\\cdot\\left(r_2\\left(u\\right)-r_1\\left(u\\right)\\right)",
+      "description": "Surface Function"
+    },
+    "9": {
+      "type": "VARIABLE_SLIDER",
+      "min": "0",
+      "max": "2\\pi",
+      "isAnimating": true
+    }
+  },
+  "mathGraphics": {
+    "6": {
+      "type": "PARAMETRIC_CURVE",
+      "description": "Top Curve",
+      "expr": "_f(t)=r_1\\left(t\\right)",
+      "range": "\\left[0,2\\pi\\right]"
+    },
+    "7": {
+      "type": "PARAMETRIC_CURVE",
+      "description": "Bottom Curve",
+      "expr": "_f(t)=r_2\\left(t\\right)",
+      "range": "\\left[0,2\\pi\\right]"
+    },
+    "8": {
+      "type": "LINE",
+      "color": "#e67e22",
+      "coords": "\\left[r_1\\left(T\\right),\\ r_2\\left(T\\right)\\right]"
+    },
+    "10": {
+      "type": "POINT",
+      "color": "#e74c3c",
+      "coords": "\\left[r_1\\left(T\\right),\\ r_2\\left(T\\right)\\right]"
+    },
+    "11": {
+      "type": "PARAMETRIC_SURFACE",
+      "color": "#e67e22",
+      "opacity": "0.5",
+      "expr": "_f(u,v)=r\\left(u,\\ v\\right)",
+      "rangeU": "\\left[0,T\\right]",
+      "rangeV": "\\left[0,1\\right]"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [-1.0586904067895606, -1.1539343733251453, 0.9191930322161299],
+      "relativeLookAt": [0, 0, 0]
+    }
+  },
+  "sliderValues": {
+    "9": 4.466297555853501
+  }
+}

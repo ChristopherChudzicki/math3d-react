@@ -1,0 +1,238 @@
+{
+  "metadata": {
+    "title": "Surface of Revolution: Washer Method (Horizontal Axis)",
+    "versionAtCreation": "1.0.0",
+    "creationDate": "\"2018-12-26T01:54:14.293Z\""
+  },
+  "sortableTree": {
+    "1": ["14", "15", "16"],
+    "2": ["18"],
+    "3": ["22", "23", "24"],
+    "4": ["25", "26"],
+    "5": ["28", "29"],
+    "6": ["21", "30", "31"],
+    "7": ["19", "20"],
+    "root": ["mainFolder", "1", "2", "3", "4", "5", "6", "7"],
+    "mainFolder": ["8", "9", "10", "11", "12", "13"]
+  },
+  "folders": {
+    "1": {
+      "description": "Slider Controls"
+    },
+    "2": {
+      "isCollapsed": true,
+      "description": "Rotation Axis"
+    },
+    "3": {
+      "isCollapsed": true,
+      "description": "Washer"
+    },
+    "4": {
+      "isCollapsed": true,
+      "description": "Inner Surface"
+    },
+    "5": {
+      "isCollapsed": true,
+      "description": "Outer Surface"
+    },
+    "6": {
+      "isCollapsed": true,
+      "description": "Caps"
+    },
+    "7": {
+      "isCollapsed": true,
+      "description": "Helper Functions"
+    },
+    "mainFolder": {
+      "isCollapsed": true,
+      "description": "Settings"
+    }
+  },
+  "mathSymbols": {
+    "8": {
+      "type": "VARIABLE",
+      "name": "a",
+      "value": "1",
+      "description": "Left Limit"
+    },
+    "9": {
+      "type": "VARIABLE",
+      "name": "b",
+      "value": "4",
+      "description": "Right Limit"
+    },
+    "10": {
+      "type": "VARIABLE",
+      "value": "3+e^{-x}",
+      "description": "Outer Radius"
+    },
+    "11": {
+      "type": "VARIABLE",
+      "name": "g\\left(x\\right)",
+      "value": "\\sqrt{x}",
+      "description": "Inner Radius"
+    },
+    "12": {
+      "type": "VARIABLE",
+      "name": "y",
+      "value": "1",
+      "description": "Axis"
+    },
+    "13": {
+      "type": "VARIABLE",
+      "name": "dX",
+      "value": "0.125",
+      "description": "Washer Width"
+    },
+    "14": {
+      "type": "VARIABLE_SLIDER",
+      "name": "\\theta",
+      "min": "0",
+      "max": "2\\pi",
+      "description": "Rotation Angle"
+    },
+    "15": {
+      "type": "VARIABLE_SLIDER",
+      "name": "X",
+      "min": "a",
+      "max": "b",
+      "description": "Washer Position"
+    },
+    "16": {
+      "type": "BOOLEAN_VARIABLE",
+      "name": "washer",
+      "description": "Washer Visibility"
+    },
+    "19": {
+      "type": "VARIABLE",
+      "name": "r_f\\left(t,\\ \\theta\\right)",
+      "value": "\\left[\\ t,\\ -\\left(f\\left(t\\right)-y\\right)\\cdot\\sin\\left(\\theta\\right),\\ \\left(f\\left(t\\right)-y\\right)\\cos\\left(\\theta\\right)\\right]+\\left[\\ 0,\\ 0,\\ y\\right]",
+      "description": "Outer Radius Surface Function"
+    },
+    "20": {
+      "type": "VARIABLE",
+      "name": "r_g\\left(t,\\theta\\right)",
+      "value": "\\left[\\ t,\\ -\\left(g\\left(t\\right)-y\\right)\\cdot\\sin\\left(\\theta\\right),\\ \\left(g\\left(t\\right)-y\\right)\\cos\\left(\\theta\\right)\\right]+\\left[\\ 0,\\ 0,\\ y\\right]",
+      "description": "Inner Radius Surface Function"
+    },
+    "21": {
+      "type": "VARIABLE",
+      "name": "r_c(t,u,v)",
+      "value": "r_f\\left(t,v\\right)+u\\cdot\\left(r_g\\left(t,v\\right)-r_f\\left(t,v\\right)\\right)",
+      "description": "Cap Function"
+    }
+  },
+  "mathGraphics": {
+    "18": {
+      "type": "LINE",
+      "useCalculatedVisibility": true,
+      "color": "#2c3e50",
+      "coords": "\\left[\\left[\\ a-1,\\ 0,\\ y\\right],\\ \\left[\\ b+1,\\ 0,\\ y\\right]\\right]"
+    },
+    "22": {
+      "type": "PARAMETRIC_SURFACE",
+      "useCalculatedVisibility": true,
+      "color": "#e74c3c",
+      "calculatedVisibility": "washer",
+      "expr": "_f(u,v)=r_c\\left(X-0.5\\cdot dX,u,v\\right)",
+      "rangeU": "\\left[0,\\ 1\\right]",
+      "rangeV": "\\left[0,\\theta\\right]"
+    },
+    "23": {
+      "type": "PARAMETRIC_SURFACE",
+      "useCalculatedVisibility": true,
+      "color": "#e74c3c",
+      "calculatedVisibility": "washer",
+      "expr": "_f(u,v)=r_f\\left(u,v\\right)",
+      "rangeU": "\\left[X-0.5\\cdot dX,\\ X+0.5\\cdot dX\\right]",
+      "rangeV": "\\left[0,\\theta\\right]"
+    },
+    "24": {
+      "type": "PARAMETRIC_SURFACE",
+      "useCalculatedVisibility": true,
+      "color": "#e74c3c",
+      "calculatedVisibility": "washer",
+      "expr": "_f(u,v)=r_c\\left(X+0.5\\cdot dX,u,v\\right)",
+      "rangeU": "\\left[0,1\\right]",
+      "rangeV": "\\left[0,\\theta\\right]"
+    },
+    "25": {
+      "type": "PARAMETRIC_CURVE",
+      "useCalculatedVisibility": true,
+      "color": "#e67e22",
+      "expr": "_f(t)=r_g\\left(t,\\theta\\right)",
+      "range": "\\left[a,b\\right]"
+    },
+    "26": {
+      "type": "PARAMETRIC_SURFACE",
+      "useCalculatedVisibility": true,
+      "expr": "_f(u,v)=r_g\\left(u,v\\right)",
+      "rangeU": "\\left[a,b\\right]",
+      "rangeV": "\\left[0,\\theta\\right]"
+    },
+    "28": {
+      "type": "PARAMETRIC_CURVE",
+      "useCalculatedVisibility": true,
+      "color": "#e67e22",
+      "expr": "_f(t)=r_f\\left(t,\\theta\\right)",
+      "range": "\\left[a,b\\right]"
+    },
+    "29": {
+      "type": "PARAMETRIC_SURFACE",
+      "useCalculatedVisibility": true,
+      "expr": "_f(u,v)=r_f\\left(u,v\\right)",
+      "rangeU": "\\left[a,b\\right]",
+      "rangeV": "\\left[0,\\theta\\right]"
+    },
+    "30": {
+      "type": "PARAMETRIC_SURFACE",
+      "useCalculatedVisibility": true,
+      "expr": "_f(u,v)=r_c\\left(a,u,v\\right)",
+      "rangeU": "\\left[0,1\\right]",
+      "rangeV": "\\left[0,\\theta\\right]"
+    },
+    "31": {
+      "type": "PARAMETRIC_SURFACE",
+      "useCalculatedVisibility": true,
+      "expr": "_f(u,v)=r_c\\left(b,u,v\\right)",
+      "rangeU": "\\left[0,1\\right]",
+      "rangeV": "\\left[0,\\theta\\right]"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "useCalculatedVisibility": true,
+      "relativePosition": [1.5428824647657484, -2.200500605086736, 1.038453430949712],
+      "relativeLookAt": [0, 0, 0]
+    },
+    "axis-x": {
+      "type": "AXIS",
+      "useCalculatedVisibility": true
+    },
+    "axis-y": {
+      "type": "AXIS",
+      "visible": false,
+      "ticksVisible": false
+    },
+    "axis-z": {
+      "type": "AXIS",
+      "useCalculatedVisibility": true,
+      "scale": "1"
+    },
+    "grid-xy": {
+      "type": "GRID",
+      "visible": false
+    },
+    "grid-yz": {
+      "type": "GRID",
+      "useCalculatedVisibility": true
+    },
+    "grid-zx": {
+      "type": "GRID",
+      "visible": true
+    }
+  },
+  "sliderValues": {
+    "14": 4.523893421169302,
+    "15": 2.86
+  }
+}

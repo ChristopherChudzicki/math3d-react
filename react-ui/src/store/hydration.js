@@ -151,6 +151,7 @@ export function rehydrate(dehydrated) {
 }
 
 function getMaxId(sortableTree) {
+  console.log(sortableTree)
   let maxId = 0
   sortableTree.root.forEach(folderId => {
     sortableTree[folderId].forEach(id => {

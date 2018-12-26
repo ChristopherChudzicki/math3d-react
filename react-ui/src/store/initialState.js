@@ -1,8 +1,5 @@
 // These are "fixed" in the sense that they cannot be sorted (dragged/dropped)
 const sortableTreeFixedPortion = {
-  'root': [
-    'mainFolder'
-  ],
   'setup': [
     'cameraFolder',
     'axes'
@@ -22,7 +19,8 @@ const initialState = {
   metaData: {},
   sortableTree: {
     ...sortableTreeFixedPortion,
-    'mainFolder': []
+    root: ['mainFolder'],
+    mainFolder: []
   },
   folders: {
     'cameraFolder': {

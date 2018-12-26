@@ -5,6 +5,7 @@
     "creationDate": "\"2018-12-22T16:21:58.183Z\""
   },
   "sortableTree": {
+    "root": ["mainFolder"],
     "mainFolder": ["1", "2", "3", "4"]
   },
   "folders": {},

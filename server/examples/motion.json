@@ -1,0 +1,117 @@
+{
+  "metadata": {
+    "title": "Motion: Velocity and Acceleration",
+    "versionAtCreation": "1.0.0",
+    "creationDate": "\"2018-12-26T00:08:19.607Z\""
+  },
+  "sortableTree": {
+    "1": ["6", "7", "8"],
+    "2": ["10", "9"],
+    "3": ["11", "12"],
+    "13": ["15", "16"],
+    "root": ["mainFolder", "13", "1", "2", "3"],
+    "mainFolder": ["4", "5"]
+  },
+  "folders": {
+    "1": {
+      "isCollapsed": true,
+      "description": "Position"
+    },
+    "2": {
+      "isCollapsed": true,
+      "description": "Velocity"
+    },
+    "3": {
+      "isCollapsed": true,
+      "description": "Acceleration"
+    },
+    "13": {
+      "isCollapsed": true,
+      "description": "Scale Factors"
+    },
+    "mainFolder": {
+      "description": "Controls"
+    }
+  },
+  "mathSymbols": {
+    "4": {
+      "type": "VARIABLE_SLIDER",
+      "speedMultiplier": 0.125,
+      "isAnimating": true
+    },
+    "5": {
+      "type": "VARIABLE",
+      "name": "r\\left(t\\right)",
+      "value": "\\left[4\\cos\\left(\\pi\\ t\\right),\\ 2\\sin\\left(\\pi\\ t\\right),\\ t\\right]"
+    },
+    "10": {
+      "type": "VARIABLE",
+      "name": "v\\left(t\\right)",
+      "value": "\\operatorname{diff}\\left(r,\\ t\\right)",
+      "description": "Velocity Function"
+    },
+    "11": {
+      "type": "VARIABLE",
+      "name": "a\\left(t\\right)",
+      "value": "\\operatorname{diff}\\left(v,\\ t\\right)"
+    },
+    "15": {
+      "type": "VARIABLE",
+      "name": "s_v",
+      "value": "0.25",
+      "description": "Velocity Scale"
+    },
+    "16": {
+      "type": "VARIABLE",
+      "name": "s_a",
+      "value": "0.04",
+      "description": "Acceleration Scale"
+    }
+  },
+  "mathGraphics": {
+    "6": {
+      "type": "PARAMETRIC_CURVE",
+      "opacity": "0.25",
+      "expr": "_f(t)=r\\left(t\\right)",
+      "range": "\\left[-5,5\\right]",
+      "samples": "1024"
+    },
+    "7": {
+      "type": "PARAMETRIC_CURVE",
+      "zBias": "1",
+      "expr": "_f(t)=r\\left(t\\right)",
+      "range": "\\left[-5,T\\right]",
+      "samples": "1024"
+    },
+    "8": {
+      "type": "POINT",
+      "coords": "r\\left(T\\right)"
+    },
+    "9": {
+      "type": "VECTOR",
+      "description": "Vector (scaled)",
+      "color": "#e74c3c",
+      "label": "v",
+      "labelVisible": true,
+      "components": "s_v\\cdot v\\left(T\\right)",
+      "tail": "r\\left(T\\right)"
+    },
+    "12": {
+      "type": "VECTOR",
+      "color": "#e67e22",
+      "label": "a",
+      "labelVisible": true,
+      "components": "s_a\\cdot a\\left(T\\right)",
+      "tail": "r\\left(T\\right)"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [-0.22064255041142608, -1.109298552532105, 0.9530338851783211],
+      "relativeLookAt": [0, 0, 0]
+    }
+  },
+  "sliderValues": {
+    "4": -3.249999999999996,
+    "14": 0
+  }
+}
