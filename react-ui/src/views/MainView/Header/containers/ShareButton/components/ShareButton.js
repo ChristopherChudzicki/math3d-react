@@ -54,7 +54,7 @@ type State = {
 
 const URL_FRONT = process.env.NODE_ENV === 'development'
   ? 'http://localhost:3000'
-  : 'https://math3d-react.herokuapp.com'
+  : 'https://www.math3d.org'
 
 export default class ShareButton extends PureComponent<Props, State> {
 
