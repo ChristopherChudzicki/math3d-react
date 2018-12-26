@@ -55,7 +55,7 @@ class AbstractMBC extends React.Component<Props> {
   mathbox: MathBoxNode // root node
   mathboxNode: MathBoxNode // node for this component
   oldProps = {}
-  diffProps : {
+  diffProps: {
     added: Set<string>,
     deleted: Set<string>,
     unchanged: Set<string>,
@@ -318,7 +318,7 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
     // output box:
     //  [-scale.x, +scale.x] by [-scale.y, +scale.y] by [-scale.z, +scale.z]
 
-    const range: Array<{ x: number, y:number }> = cartesian.get('range')
+    const range: Array<{ x: number, y: number }> = cartesian.get('range')
     const scale: Array<number> = cartesian.get('scale').toArray()
 
     return coords.map((coord, index) => {
