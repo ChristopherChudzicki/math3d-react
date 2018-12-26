@@ -781,7 +781,13 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   // Handlers are structured this way because range properties can be functions.
   handleRange = (nodes: HandlerNodes, handledProps: HandledProps) => {
     const { rangeU, rangeV, expr } = handledProps
-    const transformedExpr = this.constructor.validateAndTransformExpr(expr)
+    let transformedExpr
+    try {
+      transformedExpr = this.constructor.validateAndTransformExpr(expr)
+    }
+    catch (error) {
+      return
+    }
     const { dataNodes: area } = nodes
 
     const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV)
