@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Surface of Revolution: Washer Method (Horizontal Axis)",
     "versionAtCreation": "1.0.0",
-    "creationDate": "\"2018-12-26T00:47:48.079Z\""
+    "creationDate": "\"2018-12-26T01:54:14.293Z\""
   },
   "sortableTree": {
     "1": ["14", "15", "16"],
@@ -210,7 +210,6 @@
     },
     "axis-y": {
       "type": "AXIS",
-      "useCalculatedVisibility": true,
       "visible": false,
       "ticksVisible": false
     },
@@ -221,7 +220,6 @@
     },
     "grid-xy": {
       "type": "GRID",
-      "useCalculatedVisibility": true,
       "visible": false
     },
     "grid-yz": {
@@ -230,7 +228,6 @@
     },
     "grid-zx": {
       "type": "GRID",
-      "useCalculatedVisibility": true,
       "visible": true
     }
   },
