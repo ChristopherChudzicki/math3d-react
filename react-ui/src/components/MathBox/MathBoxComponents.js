@@ -55,7 +55,7 @@ class AbstractMBC extends React.Component<Props> {
   mathbox: MathBoxNode // root node
   mathboxNode: MathBoxNode // node for this component
   oldProps = {}
-  diffProps : {
+  diffProps: {
     added: Set<string>,
     deleted: Set<string>,
     unchanged: Set<string>,
@@ -318,7 +318,7 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
     // output box:
     //  [-scale.x, +scale.x] by [-scale.y, +scale.y] by [-scale.z, +scale.z]
 
-    const range: Array<{ x: number, y:number }> = cartesian.get('range')
+    const range: Array<{ x: number, y: number }> = cartesian.get('range')
     const scale: Array<number> = cartesian.get('scale').toArray()
 
     return coords.map((coord, index) => {
@@ -781,7 +781,13 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   // Handlers are structured this way because range properties can be functions.
   handleRange = (nodes: HandlerNodes, handledProps: HandledProps) => {
     const { rangeU, rangeV, expr } = handledProps
-    const transformedExpr = this.constructor.validateAndTransformExpr(expr)
+    let transformedExpr
+    try {
+      transformedExpr = this.constructor.validateAndTransformExpr(expr)
+    }
+    catch (error) {
+      return
+    }
     const { dataNodes: area } = nodes
 
     const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV)
