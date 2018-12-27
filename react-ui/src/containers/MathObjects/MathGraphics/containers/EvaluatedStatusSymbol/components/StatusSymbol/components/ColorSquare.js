@@ -1,6 +1,6 @@
+// @flow
 import React from 'react'
 import styled from 'styled-components'
-import PropType from 'prop-types'
 
 const Color = styled.div`
   background-color: ${props => props.color};
@@ -13,12 +13,14 @@ const Color = styled.div`
   }
 `
 
-export default class ColorSquare extends React.PureComponent {
+type Props = {
+  color: string,
+  style?: string,
+  className?: string,
+  onPickColor: (color: string) => void
+}
 
-  static propTypes = {
-    color: PropType.string.isRequired,
-    onPickColor: PropType.func.isRequired
-  }
+export default class ColorSquare extends React.PureComponent<Props> {
 
   pickColor = () => {
     this.props.onPickColor(this.props.color)
@@ -27,6 +29,8 @@ export default class ColorSquare extends React.PureComponent {
   render() {
     return (
       <Color
+        style={this.props.style}
+        className={this.props.className}
         color={this.props.color}
         onClick={this.pickColor}
       />

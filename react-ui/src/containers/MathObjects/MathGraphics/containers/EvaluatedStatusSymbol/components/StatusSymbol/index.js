@@ -1,6 +1,6 @@
+// @flow
 import React from 'react'
 import styled from 'styled-components'
-import PropTypes from 'prop-types'
 import LongPressable from 'components/LongPressable'
 import ColorPickerPopover from './components/ColorPickerPopover'
 
@@ -13,17 +13,22 @@ const Circle = styled.div`
   cursor: pointer;
 `
 
-export default class StatusSymbol extends React.PureComponent {
+type Props = {
+  isFilled: boolean,
+  onToggleVisibility: () => void,
+  color: string,
+  onPickColor: (color: string) => void,
+  colors?: Array<string>
+}
+
+type State = {
+  displayColorPicker: boolean
+}
+
+export default class StatusSymbol extends React.PureComponent<Props, State> {
 
   state = {
     displayColorPicker: false
-  }
-
-  static propTypes = {
-    isFilled: PropTypes.bool.isRequired,
-    onToggleVisibility: PropTypes.func.isRequired,
-    color: PropTypes.string.isRequired,
-    onPickColor: PropTypes.func.isRequired
   }
 
   showColorPicker = () => {
@@ -37,6 +42,7 @@ export default class StatusSymbol extends React.PureComponent {
   render() {
     return (
       <ColorPickerPopover
+        colors={this.props.colors}
         color={this.props.color}
         visible={this.state.displayColorPicker}
         onPickColor={this.props.onPickColor}

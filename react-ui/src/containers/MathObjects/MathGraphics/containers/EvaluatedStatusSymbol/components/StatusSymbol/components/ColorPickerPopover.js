@@ -1,44 +1,34 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+// @flow
+import * as React from 'react'
 import { Popover } from 'antd'
 import ColorPicker from './ColorPicker'
 
-const colors = [
-  '#33FF00',
-  '#2ecc71',
-  '#3498db',
-  '#9b59b6',
-  '#8e44ad',
-  '#2c3e50',
-  '#f1c40f',
-  '#e67e22',
-  '#e74c3c',
-  '#808080'
-]
+type Props = {
+  colors?: Array<string>,
+  visible: boolean,
+  onPickColor: (color: string) => void,
+  onHideColorPicker: () => void,
+  children: React.Node
+}
 
-export default class ColorPickerPopover extends React.Component {
+export default class ColorPickerPopover extends React.Component<Props> {
 
-  static propTypes = {
-    visible: PropTypes.bool.isRequired,
-    onPickColor: PropTypes.func.isRequired,
-    onHideColorPicker: PropTypes.func.isRequired,
-    children: PropTypes.element.isRequired
-  }
+  ref: ?HTMLElement
 
   colorPicker = (
     <ColorPicker
-      colors={colors}
+      colors={this.props.colors}
       onPickColor={this.props.onPickColor}
     />
   )
 
-  assignContainerRef = (ref) => {
+  assignContainerRef = (ref: ?HTMLElement) => {
     this.ref = ref
   }
 
   getContainerRef = () => this.ref
 
-  handleVisibleChange = (visible) => {
+  handleVisibleChange = (visible: boolean) => {
     if (!visible) {
       this.props.onHideColorPicker()
     }

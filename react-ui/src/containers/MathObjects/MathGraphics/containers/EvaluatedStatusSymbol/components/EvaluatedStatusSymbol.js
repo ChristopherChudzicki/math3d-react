@@ -15,6 +15,7 @@ type Props = {
   useCalculatedVisibility: boolean,
   calculatedVisibility: string,
   color: string,
+  colors?: Array<string>,
   toggleProperty: toggleProperty,
   setProperty: setProperty,
   parser: Parser
@@ -53,6 +54,7 @@ export default class EvaluatedStatusSymbol extends PureComponent<Props> {
     }
     return (
       <StatusSymbol
+        colors={this.props.colors}
         color={this.props.color}
         isFilled={trueVisibility}
         onToggleVisibility={this.onToggleVisibility}
