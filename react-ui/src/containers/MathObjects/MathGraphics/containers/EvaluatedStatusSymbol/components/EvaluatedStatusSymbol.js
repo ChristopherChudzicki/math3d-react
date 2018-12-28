@@ -7,6 +7,8 @@ import typeof {
   toggleProperty,
   setProperty
 } from 'containers/MathObjects/actions'
+import { parser } from 'constants/parsing'
+
 
 type Props = {
   id: string,
@@ -22,6 +24,8 @@ type Props = {
 }
 
 export default class EvaluatedStatusSymbol extends PureComponent<Props> {
+
+  static defaultProps = { parser }
 
   onToggleVisibility = () => {
     const { id, type } = this.props
