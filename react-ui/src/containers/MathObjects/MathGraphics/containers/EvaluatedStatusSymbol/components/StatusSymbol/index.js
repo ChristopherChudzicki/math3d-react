@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import * as React from 'react'
 import styled from 'styled-components'
 import LongPressable from 'components/LongPressable'
 import ColorPickerPopover from './components/ColorPickerPopover'
@@ -18,7 +18,8 @@ type Props = {
   onToggleVisibility: () => void,
   color: string,
   onPickColor: (color: string) => void,
-  colors?: Array<string>
+  colors?: Array<string>,
+  extraTabs?: React.Node
 }
 
 type State = {
@@ -42,6 +43,7 @@ export default class StatusSymbol extends React.PureComponent<Props, State> {
   render() {
     return (
       <ColorPickerPopover
+        extraTabs={this.props.extraTabs}
         colors={this.props.colors}
         color={this.props.color}
         visible={this.state.displayColorPicker}

@@ -1,26 +1,43 @@
 // @flow
 import * as React from 'react'
-import { Popover } from 'antd'
+import { Popover, Tabs } from 'antd'
 import ColorPicker from './ColorPicker'
+
+const TabPane = Tabs.TabPane
 
 type Props = {
   colors?: Array<string>,
   visible: boolean,
   onPickColor: (color: string) => void,
   onHideColorPicker: () => void,
-  children: React.Node
+  children: React.Node,
+  extraTabs?: React.Node
 }
 
 export default class ColorPickerPopover extends React.Component<Props> {
 
   ref: ?HTMLElement
 
-  colorPicker = (
-    <ColorPicker
-      colors={this.props.colors}
-      onPickColor={this.props.onPickColor}
-    />
-  )
+  getContent() {
+    return this.props.extraTabs
+      ? (
+        <Tabs>
+          <TabPane tab='Colors' key='colors'>
+            <ColorPicker
+              colors={this.props.colors}
+              onPickColor={this.props.onPickColor}
+            />
+          </TabPane>
+          {this.props.extraTabs}
+        </Tabs>
+      )
+      : (
+        <ColorPicker
+          colors={this.props.colors}
+          onPickColor={this.props.onPickColor}
+        />
+      )
+  }
 
   assignContainerRef = (ref: ?HTMLElement) => {
     this.ref = ref
@@ -43,7 +60,7 @@ export default class ColorPickerPopover extends React.Component<Props> {
         <Popover
           placement='right'
           trigger='click'
-          content={this.colorPicker}
+          content={this.getContent()}
           visible={this.props.visible}
           onVisibleChange={this.handleVisibleChange}
           getPopupContainer={this.getContainerRef}

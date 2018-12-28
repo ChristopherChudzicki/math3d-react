@@ -7,6 +7,7 @@ import {
 } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from '../containers/MathGraphicUI'
+import ParametricSurfaceStatus from './ParametricSurfaceStatus'
 import {
   parametricSurfacaMeta,
   explicitSurfaceMeta,
@@ -58,23 +59,26 @@ function makeSurfaceComponent(type: string, meta: MetaData, labelU: string, labe
   return class ParametricSurfaceUI extends PureComponent<Props> {
 
     render() {
+      const { id } = this.props
       return (
         <MathGraphicUI
           type={type}
-          id={this.props.id}
-          metadata={meta}>
+          id={id}
+          metadata={meta}
+          sidePanelContent={<ParametricSurfaceStatus id={id}/>}
+        >
           <MainRow>
             <MathInputRHS
               field='expr'
               prefix={`_f(${labelU},${labelV})=`}
-              parentId={this.props.id}
+              parentId={id}
             />
           </MainRow>
           <MainRow style={justifyRight}>
             <StaticMathStyled latex={`${labelU}\\in`} size='small'/>
             <MathInputRHS
               size='small'
-              parentId={this.props.id}
+              parentId={id}
               prefix={`_f(${labelV})=`}
               postProcessLaTeX={stripFuncPrefixIfPossibleV}
               field='rangeU'
@@ -85,7 +89,7 @@ function makeSurfaceComponent(type: string, meta: MetaData, labelU: string, labe
             <StaticMathStyled latex={`${labelV}\\in`} size='small'/>
             <MathInputRHS
               size='small'
-              parentId={this.props.id}
+              parentId={id}
               prefix={`_f(${labelU})=`}
               postProcessLaTeX={stripFuncPrefixIfPossibleU}
               field='rangeV'

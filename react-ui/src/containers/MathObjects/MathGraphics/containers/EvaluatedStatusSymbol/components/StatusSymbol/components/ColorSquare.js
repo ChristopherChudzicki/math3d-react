@@ -1,8 +1,13 @@
 // @flow
 import React from 'react'
 import styled from 'styled-components'
+import { colorMaps } from 'constants/colors'
 
 const Color = styled.div`
+  ${props => colorMaps[props.color]
+    ? colorMaps[props.color].css
+    : `background-color: ${props.color}`
+};
   background-color: ${props => props.color};
   border-radius: 5px;
   width: 30px;
