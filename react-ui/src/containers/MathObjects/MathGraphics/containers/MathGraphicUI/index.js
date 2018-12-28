@@ -8,8 +8,8 @@ import {
 const mapStateToProps = ( { activeObject, mathGraphics, parseErrors, evalErrors }, ownProps) => {
   const { id } = ownProps
   return {
-    color: mathGraphics[id].color,
-    visible: mathGraphics[id].visible,
+    color: mathGraphics[id].color, // I do not think this is used, since EvalautedStatusSymbol is connected
+    visible: mathGraphics[id].visible, // I do not think this is used, since EvalautedStatusSymbol is connected
     isActive: activeObject === id
   }
 }

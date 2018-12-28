@@ -7,7 +7,7 @@ import {
 } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from '../containers/MathGraphicUI'
-import ParametricSurfaceStatus from './ParametricSurfaceStatus'
+import ParametricSurfaceStatus from './containers/ParametricSurfaceStatus'
 import {
   parametricSurfacaMeta,
   explicitSurfaceMeta,
@@ -65,7 +65,13 @@ function makeSurfaceComponent(type: string, meta: MetaData, labelU: string, labe
           type={type}
           id={id}
           metadata={meta}
-          sidePanelContent={<ParametricSurfaceStatus id={id}/>}
+          sidePanelContent={
+            <ParametricSurfaceStatus
+              id={id}
+              labelU={labelU}
+              labelV={labelV}
+            />
+          }
         >
           <MainRow>
             <MathInputRHS

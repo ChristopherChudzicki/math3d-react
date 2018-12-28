@@ -15,17 +15,18 @@ export const colors = [
 export const colorMaps = {
   'rainbow': {
     css: `background: linear-gradient(
-      hsl(360, 100%, 50%),
-      hsl(300, 100%, 50%),
-      hsl(240, 100%, 50%),
-      hsl(180, 100%, 50%),
-      hsl(120, 100%, 50%),
+      to right,
+      hsl(0, 100%, 50%),
       hsl(60, 100%, 50%),
-      hsl(0, 100%, 50%)
+      hsl(120, 100%, 50%),
+      hsl(180, 100%, 50%),
+      hsl(240, 100%, 50%),
+      hsl(300, 100%, 50%),
+      hsl(360, 100%, 50%)
     )
     `
   },
   'bluered': {
-    css: 'background: linear-gradient(red, blue)'
+    css: 'background: linear-gradient(to right, blue, red)'
   }
 }

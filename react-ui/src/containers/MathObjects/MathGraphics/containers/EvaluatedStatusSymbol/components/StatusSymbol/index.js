@@ -3,6 +3,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import LongPressable from 'components/LongPressable'
 import ColorPickerPopover from './components/ColorPickerPopover'
+import { colorMaps } from 'constants/colors'
 
 const Circle = styled.div`
   width: 28px;
@@ -11,6 +12,7 @@ const Circle = styled.div`
   border: 1px solid ${props => props.color};
   background-color: ${props => props.isFilled ? props.color : 'white'};
   cursor: pointer;
+  ${props => props.gradient};
 `
 
 type Props = {
@@ -41,11 +43,14 @@ export default class StatusSymbol extends React.PureComponent<Props, State> {
   }
 
   render() {
+    const { color } = this.props
+    const gradient = colorMaps[color] && colorMaps[color].css
+
     return (
       <ColorPickerPopover
         extraTabs={this.props.extraTabs}
         colors={this.props.colors}
-        color={this.props.color}
+        color={color}
         visible={this.state.displayColorPicker}
         onPickColor={this.props.onPickColor}
         onHideColorPicker={this.hideColorPicker}
@@ -56,7 +61,8 @@ export default class StatusSymbol extends React.PureComponent<Props, State> {
         >
           <Circle
             isFilled={this.props.isFilled}
-            color={this.props.color}
+            color={color}
+            gradient={gradient}
           />
         </LongPressable>
       </ColorPickerPopover>
