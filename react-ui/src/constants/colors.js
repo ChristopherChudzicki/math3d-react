@@ -37,9 +37,7 @@ export const colorMaps = {
   'bluered': {
     css: 'background: linear-gradient(to right, blue, red)',
     func: (frac: number) => {
-      const color = new THREE.Color(0xffffff)
-      color.setHSL(1 - frac, 1, 0)
-      return [color.r, color.g, color.b, 1.0]
+      return [frac, 0, 1 - frac, 1]
     }
   }
 }
