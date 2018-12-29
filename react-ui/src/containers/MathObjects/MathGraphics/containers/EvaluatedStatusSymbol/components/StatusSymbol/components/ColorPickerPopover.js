@@ -1,44 +1,51 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Popover } from 'antd'
+// @flow
+import * as React from 'react'
+import { Popover, Tabs } from 'antd'
 import ColorPicker from './ColorPicker'
 
-const colors = [
-  '#33FF00',
-  '#2ecc71',
-  '#3498db',
-  '#9b59b6',
-  '#8e44ad',
-  '#2c3e50',
-  '#f1c40f',
-  '#e67e22',
-  '#e74c3c',
-  '#808080'
-]
+const TabPane = Tabs.TabPane
 
-export default class ColorPickerPopover extends React.Component {
+type Props = {
+  colors?: Array<string>,
+  visible: boolean,
+  onPickColor: (color: string) => void,
+  onHideColorPicker: () => void,
+  children: React.Node,
+  extraTabs?: React.Node
+}
 
-  static propTypes = {
-    visible: PropTypes.bool.isRequired,
-    onPickColor: PropTypes.func.isRequired,
-    onHideColorPicker: PropTypes.func.isRequired,
-    children: PropTypes.element.isRequired
+export default class ColorPickerPopover extends React.Component<Props> {
+
+  ref: ?HTMLElement
+
+  getContent() {
+    return this.props.extraTabs
+      ? (
+        <Tabs>
+          <TabPane tab='Colors' key='colors'>
+            <ColorPicker
+              colors={this.props.colors}
+              onPickColor={this.props.onPickColor}
+            />
+          </TabPane>
+          {this.props.extraTabs}
+        </Tabs>
+      )
+      : (
+        <ColorPicker
+          colors={this.props.colors}
+          onPickColor={this.props.onPickColor}
+        />
+      )
   }
 
-  colorPicker = (
-    <ColorPicker
-      colors={colors}
-      onPickColor={this.props.onPickColor}
-    />
-  )
-
-  assignContainerRef = (ref) => {
+  assignContainerRef = (ref: ?HTMLElement) => {
     this.ref = ref
   }
 
   getContainerRef = () => this.ref
 
-  handleVisibleChange = (visible) => {
+  handleVisibleChange = (visible: boolean) => {
     if (!visible) {
       this.props.onHideColorPicker()
     }
@@ -53,7 +60,7 @@ export default class ColorPickerPopover extends React.Component {
         <Popover
           placement='right'
           trigger='click'
-          content={this.colorPicker}
+          content={this.getContent()}
           visible={this.props.visible}
           onVisibleChange={this.handleVisibleChange}
           getPopupContainer={this.getContainerRef}

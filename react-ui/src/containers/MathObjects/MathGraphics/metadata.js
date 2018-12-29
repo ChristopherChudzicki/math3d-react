@@ -294,6 +294,11 @@ const parametricSurfacaSpecific: MetaData = {
     defaultValue: '\\left[-3, 3\\right]',
     isPrimary: true
   },
+  colorExpr: {
+    isPrimary: true,
+    inputType: 'math',
+    defaultValue: '_f(X, Y, Z, u, v)=mod(Z, 1)'
+  },
   gridOpacity: {
     inputType: 'math',
     defaultValue: '0.5'
@@ -330,6 +335,11 @@ export const explicitSurfaceMeta: MetaData = {
     inputType: 'math',
     defaultValue: '\\left[-2,\\ 2\\right]',
     isPrimary: true
+  },
+  colorExpr: {
+    isPrimary: true,
+    inputType: 'math',
+    defaultValue: '_f(X, Y, Z, x, y)=mod(Z, 1)'
   }
 }
 
@@ -352,6 +362,11 @@ export const explicitSurfacePolarMeta: MetaData = {
     inputType: 'math',
     defaultValue: '\\left[-\\pi,\\ \\pi\\right]',
     isPrimary: true
+  },
+  colorExpr: {
+    isPrimary: true,
+    inputType: 'math',
+    defaultValue: '_f(X, Y, Z, r, \\theta)=mod(Z, 1)'
   }
 }
 

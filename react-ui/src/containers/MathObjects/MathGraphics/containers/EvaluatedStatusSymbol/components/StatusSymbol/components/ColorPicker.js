@@ -1,7 +1,8 @@
+// @flow
 import React from 'react'
-import PropType from 'prop-types'
 import styled from 'styled-components'
 import ColorSquare from './ColorSquare'
+import { colors } from 'constants/colors'
 
 const Container = styled.div`
   display: grid;
@@ -10,27 +11,32 @@ const Container = styled.div`
   grid-gap: 5px;
 `
 
-export default class ColorPicker extends React.Component {
+type Props = {
+  colors: Array<string>,
+  onPickColor: (color: string) => void
+}
 
-  static propTypes = {
-    colors: PropType.arrayOf(PropType.string).isRequired,
-    onPickColor: PropType.func.isRequired
+export default class ColorPicker extends React.Component<Props> {
+
+  static defaultProps = {
+    colors: colors
   }
 
-  onPickColor = (color) => {
+  onPickColor = (color: string) => {
     this.props.onPickColor(color)
   }
 
   render() {
     return (
       <Container>
-        {this.props.colors.map(color =>
-          <ColorSquare
-            color={color}
-            onPickColor={this.onPickColor}
-            key={color}
-          />
-        )}
+        {
+          this.props.colors.map(color =>
+            <ColorSquare
+              color={color}
+              onPickColor={this.onPickColor}
+              key={color}
+            />
+          )}
       </Container>
     )
   }

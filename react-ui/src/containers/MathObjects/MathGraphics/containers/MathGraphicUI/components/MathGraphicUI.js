@@ -4,7 +4,6 @@ import MathObjectUI from 'containers/MathObjects/MathObjectUI'
 import { MainRow } from 'containers/MathObjects/components'
 import EvaluatedStatusSymbol from 'containers/MathObjects/MathGraphics/containers/EvaluatedStatusSymbol'
 import Settings from 'containers/MathObjects/containers/Settings'
-import { parser } from 'constants/parsing'
 import { capitalize } from 'utils/helpers'
 import type { MetaData } from 'containers/MathObjects/MathGraphics/types'
 import styled from 'styled-components'
@@ -15,8 +14,9 @@ type Props = {
   children: React.Node,
   metadata: MetaData,
   settingsTitle?: string,
-  isActive: bool,
-  isDeleteable?: bool
+  isActive: boolean,
+  isDeleteable?: boolean,
+  sidePanelContent?: React.Node
 }
 
 function getSettingsFormSpec(metadata: MetaData) {
@@ -42,14 +42,17 @@ export default class MathGraphicUI extends React.PureComponent<Props> {
     const settingsTitle = this.props.settingsTitle === undefined
       ? `${capitalize(this.props.type)} Settings`
       : this.props.settingsTitle
+
+    const sidePanelContent = this.props.sidePanelContent || (
+      <EvaluatedStatusSymbol id={this.props.id} />
+    )
+
     return (
       <MathObjectUI
         isDeleteable={this.props.isDeleteable}
         id={this.props.id}
         type={this.props.type}
-        sidePanelContent={
-          <EvaluatedStatusSymbol id={this.props.id} parser={parser} />
-        }
+        sidePanelContent={sidePanelContent}
       >
         <MainRow>
           <LeftOfSettings showOverflow={this.props.isActive}>
