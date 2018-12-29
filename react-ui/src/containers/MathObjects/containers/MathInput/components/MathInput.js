@@ -200,7 +200,7 @@ export default class MathInput extends PureComponent {
           onEdit={this.onEdit}
           size={this.props.size}
           autoCommands='sqrt pi theta phi'
-          autoOperatorNames='diff unitT unitN unitB cos sin tan sec csc cot log ln exp'
+          autoOperatorNames='diff unitT unitN unitB cos sin tan sec csc cot log ln exp mod'
         />
       </MathInputContainer>
     )
