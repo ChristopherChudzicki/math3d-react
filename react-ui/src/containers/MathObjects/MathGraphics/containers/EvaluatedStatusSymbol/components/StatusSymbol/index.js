@@ -6,13 +6,26 @@ import ColorPickerPopover from './components/ColorPickerPopover'
 import { colorMaps } from 'constants/colors'
 
 const Circle = styled.div`
-  width: 28px;
-  height: 28px;
-  border-radius:28px;
-  border: 1px solid ${props => props.color};
-  background-color: ${props => props.isFilled ? props.color : 'white'};
+  width: 30px;
+  height: 30px;
+  border-radius:30px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  cursor: pointer;
+  background-color: ${props => props.color};
   ${props => props.gradient};
+`
+const InnerCircle = styled.div`
+  width: 26px;
+  height: 26px;
+  border-radius: 26px;
+  background-color: ${props => props.isFilled ? 'rgba(0, 0, 0, 0)' : 'white'};
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  pointer-events:none;
 `
 
 type Props = {
@@ -60,10 +73,11 @@ export default class StatusSymbol extends React.PureComponent<Props, State> {
           onShortPress={this.props.onToggleVisibility}
         >
           <Circle
-            isFilled={this.props.isFilled}
             color={color}
             gradient={gradient}
-          />
+          >
+            <InnerCircle isFilled={this.props.isFilled}/>
+          </Circle>
         </LongPressable>
       </ColorPickerPopover>
     )
