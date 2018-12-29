@@ -781,6 +781,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     const trueExpr = ParametricSurface.getTrueExpr(rangeU, rangeV, transformedExpr)
 
     const rgbaEmitter = (emit, u: number, v: number) => {
+      // TODO this is using the u, v in [0, 1] values right now
       const [x, y, z] = trueExpr(u, v)
       const X = scaleToUnit(x, xMin, xMax)
       const Y = scaleToUnit(y, yMin, yMax)
