@@ -14,6 +14,9 @@ import {
 import diffWithSets from 'utils/shallowDiffWithSets'
 import { lighten } from 'utils/colors'
 import marchingCubes from 'utils/marchingCubes'
+import { colorMaps } from 'constants/colors'
+
+const THREE = window.THREE
 
 type MathBoxNode = any
 
@@ -230,6 +233,10 @@ function handleLabelVisible(nodes: HandlerNodes, handledProps: HandledProps) {
   nodes.groupNode.select('label.label').set('visible', handledProps.labelVisible)
 }
 
+function scaleToUnit(x: number, xMin: number, xMax: number) {
+  return (x - xMin)/(xMax - xMin)
+}
+
 export class Camera extends AbstractMBC implements MathBoxComponent {
 
   dataNodeNames = ['camera']
@@ -423,7 +430,7 @@ export class Axis extends AbstractMBC implements MathBoxComponent {
     nodes.groupNode.select('.label > array').set('data', [labelPosition] )
   }
 
-  static copyCartesianRange(cartesian: MathBoxNode) {
+  static copyCartesianRange(cartesian: MathBoxNode): Array<Array<number>> {
     const range = cartesian.props.range // this is a THREE.vec4 object
     return [
       [range[0].x, range[0].y],
@@ -693,7 +700,7 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
 
 export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
-  dataNodeNames = ['area']
+  dataNodeNames = ['area.data']
   renderNodeNames = ['surface']
   handlers: Handlers
 
@@ -703,7 +710,8 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     this.handlers = {
       ...universalHandlers,
       ...surfaceHandlers,
-      color: ParametricSurface.handleColor,
+      color: this.handleColor,
+      colorExpr: this.handleColorExpr,
       expr: this.handleExpr,
       rangeU: this.handleRange,
       rangeV: this.handleRange,
@@ -717,13 +725,76 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     }
   }
 
-  static handleColor(nodes: HandlerNodes, handledProps: HandledProps) {
+  handleColor = (nodes: HandlerNodes, handledProps: HandledProps) => {
     const { color } = handledProps
-    const { renderNodes, groupNode } = nodes
-    renderNodes.set('color', color)
+    const { groupNode } = nodes
+    const lines = groupNode.select('line')
+    const colorsNode = groupNode.select('.colors')
+    // delegate to colorMap
+    if (colorMaps.hasOwnProperty(color)) {
+      this.handleColorExpr(nodes, handledProps)
+      lines.set('color', 'gray')
+      return
+    }
+
+    const colorExpr = (emit) => {
+      const { r, g, b } = new THREE.Color(color)
+      emit(r, g, b, 1.0)
+    }
+
+    colorsNode.set('expr', colorExpr)
 
     const lineColor = lighten(color, -0.75)
-    groupNode.select('line').set('color', lineColor)
+    lines.set('color', lineColor)
+  }
+
+  handleColorExpr = (nodes: HandlerNodes, handledProps: HandledProps) => {
+    const { colorExpr, color, expr, uSamples, vSamples, rangeU, rangeV } = handledProps
+    if (!colorMaps[color] ) { return }
+    const { root, groupNode } = nodes
+    const colorsNode = groupNode.select('.colors')
+
+    validateFunctionSignature(colorExpr, 5, 1)
+    if (!colorMaps[color] ) { return }
+    if (!isNumeric(uSamples) || !isNumeric(vSamples)) { return }
+
+    // TODO: separate validation (into isValid...) and transformation
+    let transformedExpr
+    try {
+      transformedExpr = this.constructor.validateAndTransformExpr(expr)
+    }
+    catch (err) {
+      console.warn(err)
+      return
+    }
+
+    const { func: valueToColor } = colorMaps[color]
+
+    const cartesian = root.select('cartesian')[0]
+
+    const [
+      [xMin, xMax],
+      [yMin, yMax],
+      [zMin, zMax]
+    ] = Axis.copyCartesianRange(cartesian)
+
+    const trueExpr = ParametricSurface.getTrueExpr(rangeU, rangeV, transformedExpr)
+
+    const rgbaEmitter = (emit, u: number, v: number) => {
+      const [x, y, z] = trueExpr(u, v)
+      const X = scaleToUnit(x, xMin, xMax)
+      const Y = scaleToUnit(y, yMin, yMax)
+      const Z = scaleToUnit(z, zMin, zMax)
+      const frac = colorExpr(X, Y, Z, u, v)
+      emit(...valueToColor(frac))
+    }
+
+    colorsNode.set( {
+      expr: rgbaEmitter,
+      width: uSamples,
+      height: vSamples
+    } )
+
   }
 
   static handleGridOpacity(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -756,8 +827,10 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     const { uSamples } = handledProps
     validateNumeric(uSamples)
     const area = groupNode.select('area')
+    const colorsNode = groupNode.select('.colors')
     if (area.get('width') === null) {
       area.set('width', uSamples)
+      colorsNode.set('width', uSamples)
     }
     else {
       ParametricSurface.rerender(nodes, handledProps, handlers)
@@ -769,8 +842,10 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     const { vSamples } = handledProps
     validateNumeric(vSamples)
     const area = groupNode.select('area')
+    const colorsNode = groupNode.select('.colors')
     if (area.get('height') === null) {
       area.set('height', vSamples)
+      colorsNode.set('height', vSamples)
     }
     else {
       ParametricSurface.rerender(nodes, handledProps, handlers)
@@ -804,6 +879,15 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       }
     }
 
+    // TODO: move the next bit into updateExpr
+    // Updating range changes expr, so need to update colorExpr
+    try {
+      this.handleColorExpr(nodes, handledProps)
+    }
+    catch (err) {
+      console.warn(err)
+    }
+
   }
 
   static isRangeValid(rangeU: mixed, rangeV: mixed) {
@@ -834,56 +918,78 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     const { expr, rangeU, rangeV } = handledProps
     const transformedExpr = this.constructor.validateAndTransformExpr(expr)
     const { dataNodes: area } = nodes
+
     const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV)
 
     // Already know expr is valid
     if (isRangeValid) {
       ParametricSurface.updateExpr(area, rangeU, rangeV, transformedExpr)
     }
+
+    // changing expr changes colorExpr, so update it
+    try {
+      this.handleColorExpr(nodes, handledProps)
+    }
+    catch (err) {
+      console.warn(err)
+    }
+
   }
 
   // assumes expr, rangeU, rangeV all valid
-  static updateExpr(
-    area: MathBoxNode,
+  static getTrueExpr(
     rangeU: [number, number] | (number) => [number, number],
     rangeV: [number, number] | (number) => [number, number],
-    expr: (number, number) => [number, number, number]
+    transformedExpr: (number, number) => [number, number, number]
   ) {
     // Cases
     if (Array.isArray(rangeU) && Array.isArray(rangeV)) {
-      area.set('expr', (emit, u, v) => {
+      return (u: number, v: number) => {
         const du = rangeU
         const dv = rangeV
         const trueU = du[0] + u*(du[1] - du[0] )
         const trueV = dv[0] + v*(dv[1] - dv[0] )
-        return emit(...expr(trueU, trueV))
-      } )
+        return transformedExpr(trueU, trueV)
+      }
     }
     else if (Array.isArray(rangeU) && typeof rangeV === 'function') {
-      area.set('expr', (emit, u, v) => {
+      return (u: number, v: number) => {
         const du = rangeU
         const trueU = du[0] + u*(du[1] - du[0] )
         // $FlowFixMe
         const dv = rangeV(trueU)
         const trueV = dv[0] + v*(dv[1] - dv[0] )
-        return emit(...expr(trueU, trueV))
-      } )
+        return transformedExpr(trueU, trueV)
+      }
     }
     else if (Array.isArray(rangeV) && typeof rangeU === 'function') {
-      area.set('expr', (emit, u, v) => {
+      return (u: number, v: number) => {
         const dv = rangeV
         const trueV = dv[0] + v*(dv[1] - dv[0] )
         // $FlowFixMe
         const du = rangeU(trueV)
         const trueU = du[0] + u*(du[1] - du[0] )
-        return emit(...expr(trueU, trueV))
-      } )
+        return transformedExpr(trueU, trueV)
+      }
     }
     else {
       throw new Error(`Expected rangeV and rangeU to be (1) array, array (2)
                        array, function, or (3) function array. Instead, found
                        ${typeof rangeU} and ${typeof rangeV}`)
     }
+
+  }
+
+  static updateExpr(
+    area: MathBoxNode,
+    rangeU: [number, number] | (number) => [number, number],
+    rangeV: [number, number] | (number) => [number, number],
+    transformedExpr: (number, number) => [number, number, number]
+  ) {
+    const trueExpr = ParametricSurface.getTrueExpr(rangeU, rangeV, transformedExpr)
+    area.set('expr', (emit, u, v) => {
+      emit(...trueExpr(u, v))
+    } )
 
   }
 
@@ -896,6 +1002,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
 
   static renderParametricSurface(group: MathBoxNode) {
     const data = group.area( {
+      classes: ['data'],
       channels: 3,
       axes: [1, 2],
       live: false,
@@ -903,8 +1010,24 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       rangeY: [0, 1]
     } )
 
+    const colors = group.area( {
+      classes: ['colors'],
+      channels: 4,
+      items: 1,
+      axes: [1, 2],
+      live: false,
+      rangeX: [0, 1],
+      rangeY: [0, 1],
+      width: 2,
+      height: 2
+    } )
+
     group
-      .surface( { points: data } )
+      .surface( {
+        points: data,
+        colors: colors,
+        color: '#FFFFFF'
+      } )
       .group( { classes: ['gridV'] } )
       .resample( { source: data } )
       .line()

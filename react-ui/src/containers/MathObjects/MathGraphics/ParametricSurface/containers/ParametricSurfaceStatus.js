@@ -35,7 +35,7 @@ function _ParametricSurfaceStatus(props: StatusProps) {
           </p>
           <MathInputRHS
             parentId={id}
-            field='colorMap'
+            field='colorExpr'
             prefix={`_f(X, Y, Z, ${labelU}, ${labelV})=`}
           />
           <p>Note: The values X, Y, Z represent scaled axis coordinates, and range from 0 to 1.</p>

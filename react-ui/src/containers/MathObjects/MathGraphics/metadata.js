@@ -294,7 +294,7 @@ const parametricSurfacaSpecific: MetaData = {
     defaultValue: '\\left[-3, 3\\right]',
     isPrimary: true
   },
-  colorMap: {
+  colorExpr: {
     inputType: 'math',
     defaultValue: '_f(X, Y, Z, u, v)=Z'
   },
@@ -335,7 +335,7 @@ export const explicitSurfaceMeta: MetaData = {
     defaultValue: '\\left[-2,\\ 2\\right]',
     isPrimary: true
   },
-  colorMap: {
+  colorExpr: {
     inputType: 'math',
     defaultValue: '_f(X, Y, Z, x, y)=Z'
   }
@@ -361,7 +361,7 @@ export const explicitSurfacePolarMeta: MetaData = {
     defaultValue: '\\left[-\\pi,\\ \\pi\\right]',
     isPrimary: true
   },
-  colorMap: {
+  colorExpr: {
     inputType: 'math',
     defaultValue: '_f(X, Y, Z, r, \\theta)=Z'
   }
