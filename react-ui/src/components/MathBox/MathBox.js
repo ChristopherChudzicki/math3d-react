@@ -1,15 +1,34 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+// @flow
+import * as React from 'react'
+import { timeout } from 'utils/functions'
 
 // TODO: Reorganize this
 
-export class MathBox extends PureComponent {
+type Props = {
+  mathbox: any,
+  children: React.Node
+}
 
-  static propTypes = {
-    mathbox: PropTypes.object.isRequired
-  }
+export class MathBox extends React.PureComponent<Props> {
 
   mathboxNode = this.props.mathbox
+
+  updateSymbol = Symbol('update marker')
+
+  async componentDidUpdate() {
+    const updateSymbol = Symbol('update marker')
+    const Loop = this.mathboxNode.three.Loop
+    this.updateSymbol = updateSymbol
+
+    if (!Loop.running) {
+      Loop.start()
+    }
+    await timeout(1000)
+    if (this.updateSymbol === updateSymbol) {
+      Loop.stop()
+    }
+
+  }
 
   render() {
     if (!this.props.children) {
