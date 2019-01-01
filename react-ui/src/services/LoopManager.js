@@ -19,9 +19,10 @@ export default class LoopManager {
   slowOffTime: number
   canvas: HTMLCanvasElement
 
-  constructor(threestrap: ThreeStrap, slowOffTime: number = 10, slowOnTime: number = 300) {
+  constructor(threestrap: ThreeStrap, slowOnTime: number = 10, slowOffTime: number = 500) {
     this.Loop = threestrap.Loop
     this.canvas = threestrap.canvas
+    this.isInSlowMode = false
     this.slowOffTime = slowOffTime
     this.slowOnTime = slowOnTime
 
