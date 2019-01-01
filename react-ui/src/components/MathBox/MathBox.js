@@ -1,15 +1,39 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+// @flow
+import * as React from 'react'
+import { timeout } from 'utils/functions'
+import LoopManager from 'services/LoopManager'
 
-// TODO: Reorganize this
+type Props = {
+  mathbox: any,
+  children: React.Node
+}
 
-export class MathBox extends PureComponent {
-
-  static propTypes = {
-    mathbox: PropTypes.object.isRequired
-  }
+export class MathBox extends React.PureComponent<Props> {
 
   mathboxNode = this.props.mathbox
+  loopManager: LoopManager
+  updateSymbol = Symbol('update marker')
+
+  componentDidMount() {
+    this.loopManager = new LoopManager(this.mathboxNode.three)
+  }
+
+  componentWillUnmount() {
+    this.loopManager.unbindEventListeners()
+  }
+
+  // handles entering/exiting slow mode
+  async componentDidUpdate() {
+    const updateSymbol = Symbol('update marker')
+    this.updateSymbol = updateSymbol
+    this.loopManager.exitSlowMode()
+
+    await timeout(100)
+    if (this.updateSymbol === updateSymbol) {
+      this.loopManager.enterSlowMode()
+    }
+
+  }
 
   render() {
     if (!this.props.children) {
