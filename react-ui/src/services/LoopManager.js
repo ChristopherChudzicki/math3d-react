@@ -13,11 +13,22 @@ type ThreeStrap = {
 
 export default class LoopManager {
 
-  Loop: LoopAPI
+  /**
+   * For managing the animation loop. Let's us enter/exit a 'slow mode' which
+   * is useful when to reduce CPU consumption when no updates are expected.
+   *
+   * Note: we use 'slow mode' rather than turning the loop off entirely because
+   * I don't know how to detect exactly when the scene has finished rendering
+   */
+
+  enterSlowMode: () => void
+  exitSlowMode: () => void
   isInSlowMode: boolean
+  Loop: LoopAPI
   slowOnTime: number
   slowOffTime: number
   canvas: HTMLCanvasElement
+
 
   constructor(threestrap: ThreeStrap, slowOnTime: number = 10, slowOffTime: number = 500) {
     this.Loop = threestrap.Loop
