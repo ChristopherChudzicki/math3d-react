@@ -3,8 +3,6 @@ import * as React from 'react'
 import { timeout } from 'utils/functions'
 import { loopManager } from 'constants/animation'
 
-// TODO: Reorganize this
-
 type Props = {
   mathbox: any,
   children: React.Node
@@ -16,12 +14,13 @@ export class MathBox extends React.PureComponent<Props> {
 
   updateSymbol = Symbol('update marker')
 
+  // handles entering/exiting slow mode
   async componentDidUpdate() {
     const updateSymbol = Symbol('update marker')
     this.updateSymbol = updateSymbol
     loopManager.exitSlowMode()
 
-    await timeout(10)
+    await timeout(100)
     if (this.updateSymbol === updateSymbol) {
       loopManager.enterSlowMode()
     }
