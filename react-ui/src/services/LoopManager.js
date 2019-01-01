@@ -62,7 +62,8 @@ export default class LoopManager {
     if (this.isInSlowMode) { this.slowModeCycle() }
   }
 
-  touchExitHandler = async () => {
+  touchExitHandler = async (event: Event) => {
+    if (event.touches.length > 0) { return }
     await timeout(LoopManager.scrollTime)
     this.enterSlowMode()
   }
