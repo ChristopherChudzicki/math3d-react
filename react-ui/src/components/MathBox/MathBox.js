@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react'
 import { timeout } from 'utils/functions'
+import { loopManager } from 'constants/animation'
 
 // TODO: Reorganize this
 
@@ -17,15 +18,12 @@ export class MathBox extends React.PureComponent<Props> {
 
   async componentDidUpdate() {
     const updateSymbol = Symbol('update marker')
-    const Loop = this.mathboxNode.three.Loop
     this.updateSymbol = updateSymbol
+    loopManager.exitSlowMode()
 
-    if (!Loop.running) {
-      Loop.start()
-    }
-    await timeout(1000)
+    await timeout(10)
     if (this.updateSymbol === updateSymbol) {
-      Loop.stop()
+      loopManager.enterSlowMode()
     }
 
   }
