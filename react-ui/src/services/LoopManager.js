@@ -24,6 +24,7 @@ export default class LoopManager {
   enterSlowMode: () => void
   exitSlowMode: () => void
   isInSlowMode: boolean
+  isSlowModeBlocked: boolean
   Loop: LoopAPI
   slowOnTime: number
   slowOffTime: number
@@ -37,17 +38,17 @@ export default class LoopManager {
     this.slowOffTime = slowOffTime
     this.slowOnTime = slowOnTime
 
-    this.canvas.addEventListener('mousedown', this.exitSlowMode)
-    this.canvas.addEventListener('touchstart', this.exitSlowMode)
-    this.canvas.addEventListener('mouseup', this.enterSlowMode)
+    this.canvas.addEventListener('mousedown', this.downHandler)
+    this.canvas.addEventListener('touchstart', this.downHandler)
+    this.canvas.addEventListener('mouseup', this.upHandler)
     this.canvas.addEventListener('touchend', this.touchExitHandler)
     this.canvas.addEventListener('mousewheel', this.wheelHandler)
     this.canvas.addEventListener('wheel', this.wheelHandler)
   }
 
   unbindEventListeners = () => {
-    this.canvas.removeEventListener('mousedown', this.exitSlowMode)
-    this.canvas.removeEventListener('touchstart', this.exitSlowMode)
+    this.canvas.removeEventListener('mousedown', this.downHandler)
+    this.canvas.removeEventListener('touchstart', this.downHandler)
     this.canvas.removeEventListener('mouseup', this.enterSlowMode)
     this.canvas.removeEventListener('touchend', this.touchExitHandler)
     this.canvas.removeEventListener('mousewheel', this.wheelHandler)
@@ -62,20 +63,33 @@ export default class LoopManager {
     if (this.isInSlowMode) { this.slowModeCycle() }
   }
 
-  touchExitHandler = async (event: Event) => {
+  downHandler = () => {
+    this.isSlowModeBlocked = true
+    this.exitSlowMode()
+  }
+
+  upHandler = () => {
+    this.isSlowModeBlocked = false
+    this.enterSlowMode()
+  }
+
+  touchExitHandler = async (event: TouchEvent) => {
     if (event.touches.length > 0) { return }
+    this.isSlowModeBlocked = false
     await timeout(LoopManager.scrollTime)
     this.enterSlowMode()
   }
 
   wheelHandler = async () => {
     this.exitSlowMode()
+    this.isSlowModeBlocked = true
     await timeout(LoopManager.scrollTime)
     this.enterSlowMode()
+    this.isSlowModeBlocked = false
   }
 
   enterSlowMode = () => {
-    if (this.isInSlowMode) { return }
+    if (this.isInSlowMode || this.isSlowModeBlocked) { return }
     this.isInSlowMode = true
     this.slowModeCycle()
   }
