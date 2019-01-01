@@ -77,5 +77,12 @@ const initialState = {
   sliders: {}
 }
 
-export { sortableTreeFixedPortion }
+const demoState = JSON.parse(JSON.stringify(initialState))
+demoState.mathGraphics['1'] = {
+  'type': 'EXPLICIT_SURFACE',
+  'color': 'rainbow'
+}
+demoState.sortableTree.mainFolder.push('1')
+
+export { sortableTreeFixedPortion, demoState }
 export default initialState

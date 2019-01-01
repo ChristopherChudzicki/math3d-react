@@ -468,7 +468,7 @@ export const cameraMeta: MetaData = {
   },
   relativePosition: {
     inputType: 'numericArray',
-    defaultValue: [-0.75, -1.25, 0.25],
+    defaultValue: [0.5, -2.0, 0.5],
     isPrimary: true
   },
   relativeLookAt: {
