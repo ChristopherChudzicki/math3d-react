@@ -29,7 +29,6 @@ export default class LoopManager {
   slowOffTime: number
   canvas: HTMLCanvasElement
 
-
   constructor(threestrap: ThreeStrap, slowOnTime: number = 10, slowOffTime: number = 500) {
     this.Loop = threestrap.Loop
     this.canvas = threestrap.canvas
@@ -37,19 +36,17 @@ export default class LoopManager {
     this.slowOffTime = slowOffTime
     this.slowOnTime = slowOnTime
 
-    this.canvas.addEventListener('mousedown', () => {
-      this.exitSlowMode()
-    } )
-    this.canvas.addEventListener('touchstart', () => {
-      this.exitSlowMode()
-    } )
-    this.canvas.addEventListener('mouseup', () => {
-      this.enterSlowMode()
-    } )
-    this.canvas.addEventListener('touchend', () => {
-      this.enterSlowMode()
-    } )
+    this.canvas.addEventListener('mousedown', this.exitSlowMode)
+    this.canvas.addEventListener('touchstart', this.exitSlowMode)
+    this.canvas.addEventListener('mouseup', this.enterSlowMode)
+    this.canvas.addEventListener('touchend', this.enterSlowMode)
+  }
 
+  unbindEventListeners = () => {
+    this.canvas.removeEventListener('mousedown', this.exitSlowMode)
+    this.canvas.removeEventListener('touchstart', this.exitSlowMode)
+    this.canvas.removeEventListener('mouseup', this.enterSlowMode)
+    this.canvas.removeEventListener('touchend', this.enterSlowMode)
   }
 
   slowModeCycle = async () => {
