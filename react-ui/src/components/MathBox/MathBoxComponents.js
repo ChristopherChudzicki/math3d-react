@@ -812,7 +812,6 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     handledProps: HandledProps,
     trueParamsFunc: TrueParamsFunc,
     transformedExpr: ParametricSurfaceFunc) {
-
     // These should already have been validated
     const { color, colorExpr, uSamples, vSamples } = handledProps
 
@@ -857,9 +856,8 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   }
 
   handleColorExpr = (nodes: HandlerNodes, handledProps: HandledProps) => {
-    const { colorExpr, color, expr, rangeU, rangeV } = handledProps
+    const { colorExpr, expr, rangeU, rangeV } = handledProps
     validateFunctionSignature(colorExpr, 5, 1)
-    if (!colorMaps[color] ) { return }
     if (!this.canUpdateColorExpr(handledProps)) { return }
 
     const trueParamsFunc = ParametricSurface.getTrueParamsFunc(rangeU, rangeV)
@@ -1050,7 +1048,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     const newNodes = {
       groupNode,
       root,
-      dataNodes: groupNode.select('area'),
+      dataNodes: groupNode.select('area.data'),
       renderNodes: groupNode.select('surface')
     }
     Object.keys(handlers).forEach(key => {

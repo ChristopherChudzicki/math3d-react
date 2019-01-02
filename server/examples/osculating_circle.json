@@ -1,0 +1,90 @@
+{
+  "metadata": {
+    "versionAtCreation": "1.0.0",
+    "creationDate": "\"2019-01-02T15:24:36.343Z\""
+  },
+  "sortableTree": {
+    "4": ["7", "10", "8", "9"],
+    "5": ["6", "11", "12"],
+    "root": ["mainFolder", "4", "5"],
+    "mainFolder": ["3", "2"]
+  },
+  "folders": {
+    "4": {
+      "isCollapsed": true,
+      "description": "Helper Functions:"
+    },
+    "5": {
+      "isCollapsed": true,
+      "description": "Graphics"
+    }
+  },
+  "mathSymbols": {
+    "2": {
+      "type": "VARIABLE_SLIDER",
+      "name": "S",
+      "min": "-2\\pi",
+      "max": "2\\pi",
+      "isAnimating": true
+    },
+    "3": {
+      "type": "VARIABLE",
+      "name": "r(t)",
+      "value": "\\left[\\ 2\\cos\\left(t\\right),\\ \\sin\\left(t\\right),\\ \\frac{t}{2}\\right]"
+    },
+    "7": {
+      "type": "VARIABLE",
+      "name": "T\\left(t\\right)",
+      "value": "\\operatorname{unitT}\\left(r,\\ t\\right)",
+      "description": "Unit Tangent Vector"
+    },
+    "8": {
+      "type": "VARIABLE",
+      "name": "R\\left(t\\right)",
+      "value": "\\sqrt{\\frac{\\operatorname{diff}\\left(r,t\\right)|\\operatorname{diff}\\left(r,t\\right)}{\\operatorname{diff}\\left(T,t\\right)|\\operatorname{diff}\\left(T,t\\right)}}",
+      "description": "Radius of Curvature"
+    },
+    "9": {
+      "type": "VARIABLE",
+      "name": "f\\left(u,\\ t\\right)",
+      "value": "r\\left(u\\right)+R\\left(u\\right)\\cdot\\left(N\\left(u\\right)+\\cos\\left(t\\right)T\\left(u\\right)+\\sin\\left(t\\right)N\\left(u\\right)\\right)",
+      "description": "Osculating Circle: u is the point of tangency, t is the parameter"
+    },
+    "10": {
+      "type": "VARIABLE",
+      "name": "N\\left(t\\right)",
+      "value": "\\operatorname{unitN}\\left(r,\\ t\\right)"
+    }
+  },
+  "mathGraphics": {
+    "6": {
+      "type": "PARAMETRIC_CURVE",
+      "expr": "_f(t)=r(t)"
+    },
+    "11": {
+      "type": "PARAMETRIC_CURVE",
+      "color": "#e67e22",
+      "zBias": "1",
+      "expr": "_f(t)=f\\left(S,t\\right)"
+    },
+    "12": {
+      "type": "PARAMETRIC_SURFACE",
+      "opacity": "0.25",
+      "expr": "_f(u,v)=r\\left(S\\right)+u\\cdot N\\left(S\\right)+v\\cdot T\\left(S\\right)",
+      "rangeU": "\\left[-1,1\\right]",
+      "rangeV": "\\left[-1,1\\right]",
+      "uSamples": "3",
+      "vSamples": "3",
+      "gridU": "2",
+      "gridV": "2"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [0.6067593786637313, -0.6829761161243588, 0.4853943395387388],
+      "relativeLookAt": [0, 0, 0]
+    }
+  },
+  "sliderValues": {
+    "2": -0.12566370614358988
+  }
+}
