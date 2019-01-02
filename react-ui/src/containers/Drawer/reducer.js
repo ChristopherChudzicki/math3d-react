@@ -1,13 +1,17 @@
-import { SET_VISIBILITY, SET_ANIMATION_STATUS } from './actions'
+import { SET_VISIBILITY, SET_ANIMATION_STATUS, SET_WIDTH } from './actions'
+
+export const DEFAULT_WIDTH = '400px'
 
 export const initialState = {
   main: {
     isVisible: true,
-    isAnimating: false
+    isAnimating: false,
+    width: DEFAULT_WIDTH
   },
   examples: {
     isVisible: false,
-    isAnimating: false
+    isAnimating: false,
+    width: DEFAULT_WIDTH
   }
 }
 
@@ -24,6 +28,13 @@ export default (state = initialState, { type, payload } ) => {
         ...state,
         [payload.id]: { ...state[payload.id], isAnimating: payload.isAnimating }
       }
+    case SET_WIDTH: {
+      const { id, width } = payload
+      return {
+        ...state,
+        [id]: { ...state[id], width }
+      }
+    }
     default:
       return state
 
