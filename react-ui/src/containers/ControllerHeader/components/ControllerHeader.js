@@ -12,8 +12,8 @@ import type { Support } from 'containers/MathObjects/MathObject'
 const NewObjectButton = styled(Button)`
   font-weight: bold;
   &.ant-btn, &.ant-btn:hover, &.ant-btn:focus {
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 20px;
+    padding-right:20px;
     background-color:rgba(0,0,0,0);
   }
 `
@@ -30,7 +30,7 @@ const GradientDiv = styled.div`
     margin-top:16px;
     margin-bottom:16px;
     margin-right:16px;
-  }
+  };
 `
 
 const WarningSpan = styled.span`
@@ -105,7 +105,7 @@ export default class ControllerHeader extends React.PureComponent<Props> {
         <GradientDiv>
           <NewObjectButton>
             <Icon type="plus" />
-            New Object
+            Add Object
           </NewObjectButton>
         </GradientDiv>
       </Dropdown>
