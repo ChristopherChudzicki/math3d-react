@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "title": "Color Maps on a Sphere",
+    "versionAtCreation": "1.0.0",
+    "creationDate": "\"2019-01-02T15:11:05.430Z\""
+  },
+  "sortableTree": {
+    "root": ["mainFolder"],
+    "mainFolder": ["6", "3", "4", "5"]
+  },
+  "folders": {},
+  "mathSymbols": {
+    "4": {
+      "type": "VARIABLE",
+      "name": "f\\left(\\phi,\\ \\theta\\right)",
+      "value": "\\left[\\cos\\left(\\phi\\right)\\cdot\\sin\\left(\\theta\\right),\\ \\sin\\left(\\phi\\right)\\cdot\\sin\\left(\\theta\\right),\\cos\\left(\\theta\\right)\\right]",
+      "description": "Parametric description of sphere:"
+    },
+    "5": {
+      "type": "VARIABLE",
+      "name": "g\\left(\\phi,\\ \\theta\\right)",
+      "value": "\\frac{1+\\cos\\left(3\\phi\\right)}{2}\\cdot\\sin\\left(2\\theta\\right)^2",
+      "description": "Color function on Sphere"
+    },
+    "6": {
+      "type": "VARIABLE_SLIDER",
+      "min": "0",
+      "max": "2\\pi",
+      "description": "Variable Slider: Angle Shift",
+      "isAnimating": true,
+      "speedMultiplier": 2
+    }
+  },
+  "mathGraphics": {
+    "3": {
+      "type": "PARAMETRIC_SURFACE",
+      "description": "Parametric Surface:\nThis sphere uses g(u - T, v) as its color map.\nHold-press the rainbow, then switch to \"Color Map\" for details.",
+      "color": "temperature",
+      "shaded": false,
+      "expr": "_f(u,v)=3f\\left(u,v\\right)",
+      "rangeU": "\\left[0,2\\pi\\right]",
+      "rangeV": "\\left[0,\\pi\\right]",
+      "colorExpr": "_f(X, Y, Z, u, v)=g\\left(u-T,v\\right)",
+      "uSamples": "128",
+      "vSamples": "128"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "relativePosition": [-2.9080376238585313, 1.9807994129981867, 1.21822050953895],
+      "relativeLookAt": [0, 0, 0]
+    },
+    "axis-z": {
+      "type": "AXIS",
+      "scale": "1"
+    }
+  },
+  "sliderValues": {
+    "6": 5.864306286700953
+  }
+}

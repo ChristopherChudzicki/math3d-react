@@ -67,5 +67,13 @@ export const neatExamples: Examples = [
   {
     id: 'horizontal_revolution_washer',
     title: 'Surface of Revolution: Washer Method (Horizontal Axis)'
+  },
+  {
+    id: 'sphere_colormap',
+    title: 'Color Maps on a Sphere'
+  },
+  {
+    id: 'osculating_circle',
+    title: 'Osculating Circle'
   }
 ]
