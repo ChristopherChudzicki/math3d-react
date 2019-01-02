@@ -7,10 +7,16 @@ export const SET_VISIBILITY = 'SET_VISIBILITY'
 export const SET_ANIMATION_STATUS = 'SET_ANIMATION_STATUS'
 export const OPEN_DRAWER = 'OPEN_DRAWER'
 export const CLOSE_DRAWER = 'CLOSE_DRAWER'
+export const SET_WIDTH = 'SET_WIDTH'
 
 export const setVisibility = (id, isVisible) => ( {
   type: SET_VISIBILITY,
   payload: { id, isVisible }
+} )
+
+export const setWidth = (id, width) => ( {
+  type: SET_WIDTH,
+  payload: { id, width }
 } )
 
 export const setAnimationStatus = (id, isAnimating) => ( {

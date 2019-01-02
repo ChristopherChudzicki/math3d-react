@@ -44,7 +44,7 @@ const StyledControlledTabs = styled(ControlledTabs)`
 
 const ControlsDrawer = () => {
   return (
-    <Drawer id='main' width='400px'>
+    <Drawer id='main'>
       <StyledControlledTabs
         id='controls'
         tabBarExtraContent={<ControllerHeader menuItems={menuItems}/>}

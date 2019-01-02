@@ -65,7 +65,6 @@ export default class Drawer extends React.PureComponent {
   }
 
   static defaultProps = {
-    width: '300px',
     slideTo: 'left',
     animationSpeed: '1000ms'
   }

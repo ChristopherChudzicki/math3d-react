@@ -4,7 +4,8 @@ import { openDrawer, closeDrawer } from './actions'
 
 const mapStateToProps = ( { drawers }, ownProps) => ( {
   isOpen: drawers[ownProps.id].isVisible,
-  isAnimating: drawers[ownProps.id].isAnimating
+  isAnimating: drawers[ownProps.id].isAnimating,
+  width: drawers[ownProps.id].width
 } )
 
 const mapDispatchToProps = {
