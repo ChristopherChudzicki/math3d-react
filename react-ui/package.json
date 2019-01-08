@@ -21,6 +21,7 @@
     "react-color": "^2.14.1",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.6.3",
+    "react-ga": "^2.5.6",
     "react-redux": "^6.0.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.1",
