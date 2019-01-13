@@ -23,8 +23,9 @@ export default class LoopManager {
 
   enterSlowMode: () => void
   exitSlowMode: () => void
-  isInSlowMode: boolean
-  isSlowModeBlocked: boolean
+  isInSlowMode = false
+  isPointerDown = false
+  isScrolling = false
   Loop: LoopAPI
   slowOnTime: number
   slowOffTime: number
@@ -34,13 +35,12 @@ export default class LoopManager {
   constructor(threestrap: ThreeStrap, slowOnTime: number = 10, slowOffTime: number = 500) {
     this.Loop = threestrap.Loop
     this.canvas = threestrap.canvas
-    this.isInSlowMode = false
     this.slowOffTime = slowOffTime
     this.slowOnTime = slowOnTime
 
     this.canvas.addEventListener('mousedown', this.downHandler)
     this.canvas.addEventListener('touchstart', this.downHandler)
-    this.canvas.addEventListener('mouseup', this.upHandler)
+    this.canvas.addEventListener('mouseup', this.mouseUpHandler)
     this.canvas.addEventListener('touchend', this.touchExitHandler)
     this.canvas.addEventListener('mousewheel', this.wheelHandler)
     this.canvas.addEventListener('wheel', this.wheelHandler)
@@ -64,32 +64,32 @@ export default class LoopManager {
   }
 
   downHandler = () => {
-    this.isSlowModeBlocked = true
+    this.isPointerDown = true
     this.exitSlowMode()
   }
 
-  upHandler = () => {
-    this.isSlowModeBlocked = false
+  mouseUpHandler = () => {
+    this.isPointerDown = false
     this.enterSlowMode()
   }
 
   touchExitHandler = async (event: TouchEvent) => {
     if (event.touches.length > 0) { return }
-    this.isSlowModeBlocked = false
+    this.isPointerDown = false
     await timeout(LoopManager.scrollTime)
     this.enterSlowMode()
   }
 
   wheelHandler = async () => {
     this.exitSlowMode()
-    this.isSlowModeBlocked = true
+    this.isScrolling = true
     await timeout(LoopManager.scrollTime)
     this.enterSlowMode()
-    this.isSlowModeBlocked = false
+    this.isScrolling = false
   }
 
   enterSlowMode = () => {
-    if (this.isInSlowMode || this.isSlowModeBlocked) { return }
+    if (this.isInSlowMode || this.isPointerDown || this.isScrolling) { return }
     this.isInSlowMode = true
     this.slowModeCycle()
   }
