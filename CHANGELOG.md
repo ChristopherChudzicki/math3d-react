@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.1.1
+
+  - Updated MathQuill to latest version. This fixes a bug where Android virtual keyboard would not type correctly in MathQuill fields.
+  - Fixed a bug where app would crash if last folder was deleted.
+
 ## Version 1.1.0
 
   - Added color maps for Explicit Surfaces and Parametric Surfaces
