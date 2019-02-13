@@ -26,23 +26,29 @@ function getMathObjectData(state, id) {
   return value
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { id, type } = ownProps
-  const mathObjectData = getMathObjectData(state, id)
-  const parentId = getParent(state.sortableTree, id)
-
-  const isDeleteable = ownProps.isDeleteable !== undefined
-    ? ownProps.isDeleteable
+function getIsDeletable(ownProps, sortableTree) {
+  const { id, type, isDeleteable } = ownProps
+  return isDeleteable !== undefined
+    ? isDeleteable
     // otherwise, infer the value
     : type === FOLDER
-      ? state.sortableTree[id].length === 0
+      ? sortableTree[id].length === 0 && sortableTree.root.length !== 1
       : true
+}
+
+const mapStateToProps = (state, ownProps) => {
+  const { id } = ownProps
+  const { sortableTree } = state
+  const mathObjectData = getMathObjectData(state, id)
+  const isDeleteable = getIsDeletable(ownProps, sortableTree)
+
+  const parentId = getParent(sortableTree, id)
 
   return {
     isActive: state.activeObject === id,
     parentId,
     isDeleteable,
-    positionInParent: state.sortableTree[parentId].indexOf(id),
+    positionInParent: sortableTree[parentId].indexOf(id),
     description: mathObjectData.description
   }
 }
