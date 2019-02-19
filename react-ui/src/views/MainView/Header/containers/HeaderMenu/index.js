@@ -3,6 +3,7 @@ import * as React from 'react'
 import { Dropdown, Menu, Icon } from 'antd'
 import theme from 'constants/theme'
 import styled from 'styled-components'
+import withSizes from 'react-sizes'
 
 const IconHolder = styled.span`
   display:flex;
@@ -26,7 +27,7 @@ type Props = {
   collapsed: boolean
 }
 
-const HeaderMenu = (props: Props) => {
+const _HeaderMenu = (props: Props) => {
 
   return props.collapsed
     ? (
@@ -50,4 +51,6 @@ const HeaderMenu = (props: Props) => {
     )
 }
 
-export default HeaderMenu
+const mapSizesToProps = ( { width } ) => ( { collapsed: width < 570 } )
+
+export default withSizes(mapSizesToProps)(_HeaderMenu)

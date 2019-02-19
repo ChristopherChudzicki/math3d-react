@@ -35,7 +35,7 @@ const Header = () => {
         <TitleInput />
       </HeaderGroup>
       <HeaderGroup>
-        <HeaderMenu collapsed={true}>
+        <HeaderMenu>
           <Item><ExamplesButton /></Item>
           <Item><ShareButton getState={store.getState}/></Item>
           <Item><HelpButton/></Item>
