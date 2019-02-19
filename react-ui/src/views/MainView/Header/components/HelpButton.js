@@ -53,13 +53,10 @@ function renderContent() {
 export default function HelpButton() {
   return (
     <Popover placement="bottomRight" title={'Help/Contact'} content={renderContent()} trigger="click">
-      <Button
-        size='small'
-        type='ghost'
-      >
+      <span>
         <Icon type="question-circle" />
         Help/Contact
-      </Button>
+      </span>
     </Popover>
   )
 }

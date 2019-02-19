@@ -133,15 +133,13 @@ export default class ShareButton extends PureComponent<Props, State> {
         onVisibleChange={this.onVisibleChange}
         trigger="click"
       >
-        <Button
-          size='small'
-          type='ghost'
+        <span
           onPointerDown={this.saveCameraData}
           onClick={this.saveGraph}
         >
           <Icon type='cloud' />
           Share
-        </Button>
+        </span>
       </Popover>
     )
   }

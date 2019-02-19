@@ -1,6 +1,6 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { Button, Icon } from 'antd'
+import { Icon } from 'antd'
 import { connect } from 'react-redux'
 import { openDrawer, closeDrawer } from 'containers/Drawer/actions'
 
@@ -23,10 +23,10 @@ class _ExamplesButton extends PureComponent<Props> {
 
   render() {
     return (
-      <Button onClick={this.onClick} size='small'>
+      <span onClick={this.onClick}>
         <Icon type="bulb" />
         Examples
-      </Button>
+      </span>
     )
   }
 
