@@ -1,6 +1,7 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { Button, Popover, Icon, Input } from 'antd'
+import { Button, Icon, Input } from 'antd'
+import PopModal from 'components/PopModal'
 import { saveGraph } from 'services/api'
 import { dehydrate } from 'store/hydration'
 import randomstring from 'randomstring'
@@ -126,21 +127,21 @@ export default class ShareButton extends PureComponent<Props, State> {
 
   render() {
     return (
-      <Popover
-        placement="bottomRight"
+      <PopModal
         title={'Share your scene'}
-        content={this.renderContent()}
         onVisibleChange={this.onVisibleChange}
-        trigger="click"
+        source={
+          <span
+            onPointerDown={this.saveCameraData}
+            onClick={this.saveGraph}
+          >
+            <Icon type='cloud' />
+            Share
+          </span>
+        }
       >
-        <span
-          onPointerDown={this.saveCameraData}
-          onClick={this.saveGraph}
-        >
-          <Icon type='cloud' />
-          Share
-        </span>
-      </Popover>
+        {this.renderContent()}
+      </PopModal>
     )
   }
 
