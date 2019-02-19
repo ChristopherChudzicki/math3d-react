@@ -7,9 +7,11 @@ import TitleInput from './containers/TitleInput'
 import HelpButton from './components/HelpButton'
 import ExamplesButton from './containers/ExamplesButton'
 import store from 'store/index'
+import HeaderMenu from './containers/HeaderMenu'
+import { Menu } from 'antd'
+const Item = Menu.Item
 
 const HeaderContainer = styled.div`
-  height:40px;
   background-color: ${props => props.theme.gray[1]};
   display:flex;
   width:100%;
@@ -33,9 +35,11 @@ const Header = () => {
         <TitleInput />
       </HeaderGroup>
       <HeaderGroup>
-        <ExamplesButton />
-        <ShareButton getState={store.getState}/>
-        <HelpButton/>
+        <HeaderMenu collapsed={true}>
+          <Item><ExamplesButton /></Item>
+          <Item><ShareButton getState={store.getState}/></Item>
+          <Item><HelpButton/></Item>
+        </HeaderMenu>
       </HeaderGroup>
     </HeaderContainer>
   )
