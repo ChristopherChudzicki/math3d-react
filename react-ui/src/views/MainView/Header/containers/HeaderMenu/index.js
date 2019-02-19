@@ -34,11 +34,9 @@ const _HeaderMenu = (props: Props) => {
       <Dropdown overlay={(
         <Menu>{props.children}</Menu>
       )}>
-        <a className="ant-dropdown-link" href="#">
-          <IconHolder>
-            <Icon type="menu-unfold" />
-          </IconHolder>
-        </a>
+        <IconHolder>
+          <Icon type="menu-unfold" />
+        </IconHolder>
       </Dropdown>
     )
     : (
