@@ -12,6 +12,7 @@ import { getTextWidth } from './getTextWidth'
 const StyledTextarea = styled(Textarea)`
   width: ${props => props.width};
   max-width: ${props => props.maxwidth ? `${props.maxwidth}px` : '100%'};
+  min-height:24px;
   resize: none;
   border-top:none;
   border-left: none;
