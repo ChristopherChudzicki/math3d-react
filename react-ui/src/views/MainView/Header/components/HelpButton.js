@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { Button, Popover, Icon } from 'antd'
+import { Popover, Icon } from 'antd'
 import styled from 'styled-components'
 
 const ContactList = styled.ul`
