@@ -33,4 +33,6 @@ export const theme = {
   ]
 }
 
+export const MOBILE_BREAKPOINT = 480
+
 export default theme

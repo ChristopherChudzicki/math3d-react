@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import withSizes from 'react-sizes'
 import { closeDrawer, openDrawer, setWidth } from './actions'
 import { DEFAULT_WIDTH } from './reducer'
+import { MOBILE_BREAKPOINT } from 'constants/theme'
 
 type Props = {
   isSmall: boolean,
@@ -41,7 +42,7 @@ class ScreenSizeDrawerManager extends React.PureComponent<Props> {
 
 }
 
-const mapSizesToProps = ( { width } ) => ( { isSmall: width < 480 } )
+const mapSizesToProps = ( { width } ) => ( { isSmall: width < MOBILE_BREAKPOINT } )
 const mapDispatchToProps = { openDrawer, closeDrawer, setWidth }
 
 export default connect(null, mapDispatchToProps)(
