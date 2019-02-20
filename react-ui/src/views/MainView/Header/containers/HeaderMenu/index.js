@@ -9,7 +9,8 @@ const IconHolder = styled.span`
   display:flex;
   justify-content: center;
   align-items: center;
-  width: 48px;
+  width: 32px;
+  font-size: 150%;
 `
 
 const style = {
@@ -27,9 +28,10 @@ const _HeaderMenu = (props: Props) => {
 
   return props.collapsed
     ? (
-      <Dropdown overlay={(
-        <Menu>{props.children}</Menu>
-      )}>
+      <Dropdown
+        overlay={<Menu>{props.children}</Menu>}
+        trigger={['click']}
+      >
         <Button>
           <IconHolder>
             <Icon type="menu-unfold" />
