@@ -13,6 +13,7 @@ const Item = Menu.Item
 
 const HeaderContainer = styled.div`
   background-color: ${props => props.theme.gray[1]};
+  height: 48px;
   display:flex;
   width:100%;
   align-items:center;
