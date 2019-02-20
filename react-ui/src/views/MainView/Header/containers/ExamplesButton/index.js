@@ -24,7 +24,7 @@ class _ExamplesButton extends PureComponent<Props> {
   render() {
     return (
       <span onClick={this.onClick}>
-        <Icon type="bulb" />
+        <Icon type="bulb" style={ { paddingRight: '6px' } } />
         Examples
       </span>
     )

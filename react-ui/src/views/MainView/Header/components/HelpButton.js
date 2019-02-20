@@ -31,7 +31,7 @@ export default function HelpButton() {
       title='Help/Contact'
       source={
         <span>
-          <Icon type="question-circle" />
+          <Icon type="question-circle" style={ { paddingRight: '6px' } } />
           Help/Contact
         </span>
       }
