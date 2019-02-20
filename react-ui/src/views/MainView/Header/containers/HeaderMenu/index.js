@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react'
-import { Dropdown, Menu, Icon } from 'antd'
+import { Dropdown, Button, Menu, Icon } from 'antd'
 import theme from 'constants/theme'
 import styled from 'styled-components'
 import withSizes from 'react-sizes'
@@ -10,10 +10,6 @@ const IconHolder = styled.span`
   justify-content: center;
   align-items: center;
   width: 48px;
-  height:48px;
-  & i {
-    font-size: 150%;
-  }
 `
 
 const style = {
@@ -34,9 +30,11 @@ const _HeaderMenu = (props: Props) => {
       <Dropdown overlay={(
         <Menu>{props.children}</Menu>
       )}>
-        <IconHolder>
-          <Icon type="menu-unfold" />
-        </IconHolder>
+        <Button>
+          <IconHolder>
+            <Icon type="menu-unfold" />
+          </IconHolder>
+        </Button>
       </Dropdown>
     )
     : (
