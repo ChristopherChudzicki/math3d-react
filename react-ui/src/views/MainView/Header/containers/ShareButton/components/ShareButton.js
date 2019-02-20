@@ -135,7 +135,7 @@ export default class ShareButton extends PureComponent<Props, State> {
             onPointerDown={this.saveCameraData}
             onClick={this.saveGraph}
           >
-            <Icon type='cloud' style={ { paddingRight: '6px' } } />
+            <Icon type='cloud' style={ { paddingRight: '4px' } } />
             Share
           </span>
         }
