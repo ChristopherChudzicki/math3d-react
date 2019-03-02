@@ -31,7 +31,7 @@ export type HandledProps = {
   [string]: any,
 }
 
-type ErrorMap = {
+export type ErrorMap = {
   [string]: Error
 }
 
@@ -40,7 +40,7 @@ export type Props = HandledProps & {
   children?: React.Node,
   mathbox?: MathBoxNode, // supplied by parent during render
   mathboxParent?: MathBoxNode, // supplied by parent during render
-  handleErrors: (errors: ErrorMap, props: Props, updatedProps: HandledProps) => void
+  handleErrors: (errors: ErrorMap, id: string, updatedProps: HandledProps) => void
 }
 
 type Handler = (nodes: HandlerNodes, props: Props, handlers: { [string]: Handler } ) => void
@@ -157,11 +157,11 @@ class AbstractMBC extends React.Component<Props> {
       }
     } )
 
-    this.props.handleErrors(errors, this.props, propsToUpdate)
+    this.props.handleErrors(errors, this.props.id, propsToUpdate)
 
   }
 
-  static defaultHandleErrors(errors: ErrorMap, props: Props, updatedProps: HandledProps) {
+  static defaultHandleErrors(errors: ErrorMap, id: string, updatedProps: HandledProps) {
     if (Object.keys(errors).length === 0) {
       return
     }
