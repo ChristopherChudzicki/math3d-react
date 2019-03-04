@@ -6,7 +6,7 @@ export const RENDER_ERROR = 'RENDER_ERROR'
 
 export class ErrorData {
 
-  type : string
+  type: string
   errorMsg: ?string
   isError: boolean
 

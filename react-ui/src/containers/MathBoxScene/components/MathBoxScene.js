@@ -1,7 +1,7 @@
 // @flow
 import type {
   HandledProps as GraphicHandledProps,
-  Props as GraphicProps
+  ErrorMap
 } from 'components/MathBox/MathBoxComponents'
 import React, { PureComponent } from 'react'
 import { MathBox, Cartesian } from 'components/MathBox'
@@ -17,7 +17,9 @@ import {
 } from 'services/evalData'
 type SetError = typeof setError
 
-type ErrorState = { [id: string]: { [propName: string]: string } }
+type ErrorState = {
+  [id: string]: { [propName: string]: string }
+}
 type Props = {
   order: Array<string>,
   mathGraphics: { [id: string]: Object },
@@ -41,27 +43,40 @@ export default class MathBoxScene extends PureComponent<Props> {
     this.handleRenderErrors = this.handleRenderErrors.bind(this)
   }
 
-  handleRenderErrors(errors: ErrorState, graphicProps: GraphicProps, updatedProps: GraphicHandledProps) {
-    const id = graphicProps.id
+  handleRenderErrors(errors: ErrorMap, id: string, updatedProps: GraphicHandledProps) {
     const setError = this.props.setError
-    // dispatch errors
+    // dispatch new errors
     Object.keys(errors)
+      // error[prop] === null represents errors that should be removed. We
+      // deal with this case separately below so as not to dispatch error
+      // removal unless the error previously existed
+      .filter(prop => errors[prop] !== null)
       .forEach(prop => {
-        const errorData = new RenderErrorData(errors[prop].message)
-        setError(id, prop, errorData)
+        // $FlowFixMe Flow is having trouble with object filter refinements
+        const errMsg: string = errors[prop].message
+        setError(id, prop, new RenderErrorData(errMsg))
       } )
-    // clear old errors if no longer present
+
     const oldErrors = this.props.renderErrors
+    // clear old errors that are no longer present
     Object.keys(oldErrors[id] )
       .filter(prop => updatedProps.hasOwnProperty(prop)) // make sure the prop was updated
-      .filter(prop => !errors[prop] ) // make sure updated prop does not have error
+      .filter(prop => !errors.hasOwnProperty(prop)) // make sure updated prop does not have error
+      .forEach(prop => { // clear the error
+        setError(id, prop, new RenderErrorData())
+      } )
+
+    // clear old errors that were explicitly removed
+    Object.keys(errors)
+      .filter(prop => oldErrors[id].hasOwnProperty(prop)) // prop previously had error
+      .filter(prop => errors[prop] === null) // prop no longer has error
       .forEach(prop => { // clear the error
         setError(id, prop, new RenderErrorData())
       } )
   }
 
   // TODO: this causes some unnecessary re-renders when tryEval returns an array
-  // that is double= but not triple=
+  // that is numerically equal but not triple=
   renderGraphic(id: string, data: Object) {
     const Graphic = MathGraphics[data.type].mathboxComponent
     return (

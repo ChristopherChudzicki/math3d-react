@@ -31,8 +31,8 @@ export type HandledProps = {
   [string]: any,
 }
 
-type ErrorMap = {
-  [string]: Error
+export type ErrorMap = {
+  [string]: Error | null
 }
 
 export type Props = HandledProps & {
@@ -40,10 +40,14 @@ export type Props = HandledProps & {
   children?: React.Node,
   mathbox?: MathBoxNode, // supplied by parent during render
   mathboxParent?: MathBoxNode, // supplied by parent during render
-  handleErrors: (errors: ErrorMap, props: Props, updatedProps: HandledProps) => void
+  handleErrors: (errors: ErrorMap, id: string, updatedProps: HandledProps) => void
 }
 
-type Handler = (nodes: HandlerNodes, props: Props, handlers: { [string]: Handler } ) => void
+type Handler = (
+  nodes: HandlerNodes,
+  props: Props,
+  handlers: { [string]: Handler }
+) => void | ErrorMap
 type Handlers = { [string]: Handler }
 
 interface MathBoxComponent {
@@ -147,9 +151,13 @@ class AbstractMBC extends React.Component<Props> {
       // $FlowFixMe: this.handlers is abstract
       if (this.handlers.hasOwnProperty(prop)) {
         try {
-          // console.log(`Running handler ${handler.name}`)
           // $FlowFixMe: this.handlers is abstract
-          this.handlers[prop](nodes, this.props, this.handlers)
+          const extraErrors = this.handlers[prop](nodes, this.props, this.handlers)
+          if (extraErrors) {
+            Object.keys(extraErrors).forEach(key => {
+              errors[key] = extraErrors[key]
+            } )
+          }
         }
         catch (error) {
           errors[prop] = error
@@ -157,11 +165,11 @@ class AbstractMBC extends React.Component<Props> {
       }
     } )
 
-    this.props.handleErrors(errors, this.props, propsToUpdate)
+    this.props.handleErrors(errors, this.props.id, propsToUpdate)
 
   }
 
-  static defaultHandleErrors(errors: ErrorMap, props: Props, updatedProps: HandledProps) {
+  static defaultHandleErrors(errors: ErrorMap, id: string, updatedProps: HandledProps) {
     if (Object.keys(errors).length === 0) {
       return
     }
@@ -892,6 +900,11 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     if (!this.canUpdateColorExpr(handledProps)) { return }
     ParametricSurface.updateColorExpr(nodes, handledProps, trueParamsFunc, transformedExpr)
 
+    // If handleRange finishes, then both rangeU and rangeV are valid.
+    // (i.e., have null error)
+    // We announce this manually because range validation is correlated:
+    // updating rangeU can validate a previously invalid rangeV value
+    return { rangeU: null, rangeV: null }
   }
 
   static isRangeValid(rangeU: mixed, rangeV: mixed) {
