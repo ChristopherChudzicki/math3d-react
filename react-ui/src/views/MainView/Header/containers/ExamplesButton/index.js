@@ -4,11 +4,15 @@ import { Icon } from 'antd'
 import { connect } from 'react-redux'
 import { openDrawer, closeDrawer } from 'containers/Drawer/actions'
 
-type Props = {
+type OwnProps = {||}
+type StateProps = {|
   isVisible: boolean,
+|}
+type DispatchProps = {|
   closeDrawer: (id: string, animationSpeed?: string) => void,
   openDrawer: (id: string, animationSpeed?: string) => void
-}
+|}
+type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |}
 
 class _ExamplesButton extends PureComponent<Props> {
 
@@ -41,4 +45,4 @@ const mapDispatchToProps = {
   closeDrawer
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(_ExamplesButton)
+export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(_ExamplesButton)
