@@ -45,7 +45,6 @@ export default class MathBoxScene extends PureComponent<Props> {
 
   handleRenderErrors(errors: ErrorMap, id: string, updatedProps: GraphicHandledProps) {
     const setError = this.props.setError
-    console.log(errors)
     // dispatch new errors
     Object.keys(errors)
       // error[prop] === null represents errors that should be removed. We
@@ -55,7 +54,6 @@ export default class MathBoxScene extends PureComponent<Props> {
       .forEach(prop => {
         // $FlowFixMe Flow is having trouble with object filter refinements
         const errMsg: string = errors[prop].message
-        console.log(prop, errMsg)
         setError(id, prop, new RenderErrorData(errMsg))
       } )
 
