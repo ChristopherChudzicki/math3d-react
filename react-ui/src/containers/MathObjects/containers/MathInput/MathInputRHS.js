@@ -16,8 +16,8 @@ import { getMathObjectProp } from './selectors'
 export type OwnProps = {|
   field: string,
   parentId: string,
-  latex: ?string,
-  prefix: ?string,
+  latex?: string,
+  prefix?: string,
   postProcessLaTeX: (string) => string
 |}
 export type StateProps = {|

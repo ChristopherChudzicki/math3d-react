@@ -22,8 +22,8 @@ import { getValidateNameAgainst, getMathObjectProp } from './selectors'
 export type OwnProps = {|
   parentId: string,
   field: string,
-  latex: ?string,
-  prefix: ?string,
+  latex?: string,
+  prefix?: string,
   postProcessLaTeX: (string) => string
 |}
 export type StateProps = {|
