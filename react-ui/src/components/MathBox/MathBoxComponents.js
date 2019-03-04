@@ -900,6 +900,10 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     if (!this.canUpdateColorExpr(handledProps)) { return }
     ParametricSurface.updateColorExpr(nodes, handledProps, trueParamsFunc, transformedExpr)
 
+    // If handleRange finishes, then both rangeU and rangeV are valid.
+    // (i.e., have null error)
+    // We announce this manually because range validation is correlated:
+    // updating rangeU can validate a previously invalid rangeV value
     return { rangeU: null, rangeV: null }
   }
 
