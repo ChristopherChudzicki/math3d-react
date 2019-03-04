@@ -32,7 +32,7 @@ export type HandledProps = {
 }
 
 export type ErrorMap = {
-  [string]: Error
+  [string]: Error | null
 }
 
 export type Props = HandledProps & {
@@ -43,7 +43,11 @@ export type Props = HandledProps & {
   handleErrors: (errors: ErrorMap, id: string, updatedProps: HandledProps) => void
 }
 
-type Handler = (nodes: HandlerNodes, props: Props, handlers: { [string]: Handler } ) => void
+type Handler = (
+  nodes: HandlerNodes,
+  props: Props,
+  handlers: { [string]: Handler }
+) => void | ErrorMap
 type Handlers = { [string]: Handler }
 
 interface MathBoxComponent {
@@ -147,9 +151,13 @@ class AbstractMBC extends React.Component<Props> {
       // $FlowFixMe: this.handlers is abstract
       if (this.handlers.hasOwnProperty(prop)) {
         try {
-          // console.log(`Running handler ${handler.name}`)
           // $FlowFixMe: this.handlers is abstract
-          this.handlers[prop](nodes, this.props, this.handlers)
+          const extraErrors = this.handlers[prop](nodes, this.props, this.handlers)
+          if (extraErrors) {
+            Object.keys(extraErrors).forEach(key => {
+              errors[key] = extraErrors[key]
+            } )
+          }
         }
         catch (error) {
           errors[prop] = error
@@ -892,6 +900,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     if (!this.canUpdateColorExpr(handledProps)) { return }
     ParametricSurface.updateColorExpr(nodes, handledProps, trueParamsFunc, transformedExpr)
 
+    return { rangeU: null, rangeV: null }
   }
 
   static isRangeValid(rangeU: mixed, rangeV: mixed) {
