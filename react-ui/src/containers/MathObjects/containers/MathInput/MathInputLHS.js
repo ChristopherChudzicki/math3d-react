@@ -10,6 +10,7 @@ import {
   isValidName
 } from './components/validators'
 import { setError } from 'services/errors'
+import type { ErrorData } from 'services/errors'
 import { getErrorMsg } from 'services/errors/selectors'
 import { getValidateNameAgainst, getMathObjectProp } from './selectors'
 
@@ -18,13 +19,31 @@ import { getValidateNameAgainst, getMathObjectProp } from './selectors'
  * side expressions.
  */
 
-export type Props = {
+export type OwnProps = {|
   parentId: string,
-  type: string,
-  onValidatedTextChange: typeof setPropertyAndError,
-  onValidatorAndErrorChange: typeof setError,
+  field: string,
+  latex: ?string,
+  prefix: ?string,
   postProcessLaTeX: (string) => string
-}
+|}
+export type StateProps = {|
+  type: string,
+  validateAgainst: {|
+    usedNames: Set<string>,
+    latexRHS: string
+  |},
+  errorMsg: ?string
+|}
+export type DispatchProps = {|
+  onValidatedTextChange: typeof setPropertyAndError,
+  onValidatorAndErrorChange: typeof setError
+|}
+
+export type Props = {|
+  ...OwnProps,
+  ...StateProps,
+  ...DispatchProps
+|}
 
 class MathInputLHS extends PureComponent<Props> {
 
@@ -37,10 +56,10 @@ class MathInputLHS extends PureComponent<Props> {
   ]
 
   static defaultProps = {
-    postProcessLaTeX: latex => latex
+    postProcessLaTeX: (latex: string) => latex
   }
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     // $FlowFixMe
     this.onValidatedTextChange = this.onValidatedTextChange.bind(this)
@@ -48,13 +67,13 @@ class MathInputLHS extends PureComponent<Props> {
     this.onValidatorAndErrorChange = this.onValidatorAndErrorChange.bind(this)
   }
 
-  onValidatedTextChange(prop, latex, error) {
+  onValidatedTextChange(prop: string, latex: string, error: ErrorData) {
     const { parentId, type, postProcessLaTeX } = this.props
     const processedLaTeX = postProcessLaTeX(latex)
     this.props.onValidatedTextChange(parentId, type, prop, processedLaTeX, error)
   }
 
-  onValidatorAndErrorChange(prop, error) {
+  onValidatorAndErrorChange(prop: string, error: ErrorData) {
     const { parentId } = this.props
     this.props.onValidatorAndErrorChange(parentId, prop, error)
   }
@@ -100,4 +119,4 @@ const mapDispatchToProps = {
   onValidatorAndErrorChange: setError
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MathInputLHS)
+export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(MathInputLHS)
