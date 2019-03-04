@@ -6,7 +6,7 @@ type NumericFunction = (...args: Array<Numeric>) => Numeric
 
 const EPS = 0.0008
 
-export const diff = (f: NumericFunction, ...values: []|Array<Numeric>) => {
+export const diff = (f: NumericFunction, ...values: [] | Array<Numeric>) => {
 
   const derivative = (...args: Array<Numeric>): Numeric => {
     const derivComponents = args.map((arg, j) => {
