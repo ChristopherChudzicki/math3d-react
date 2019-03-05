@@ -41,7 +41,7 @@
     "test": "react-scripts test --env=jsdom",
     "coverage": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
-    "flow": "flow"
+    "flow": "flow --max-warnings 0"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-beta.41",
