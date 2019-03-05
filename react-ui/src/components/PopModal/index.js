@@ -36,7 +36,6 @@ _PopModal.defaultProps = {
  * Threshhold is currently 570px.
  */
 function _PopModal(props: Props) {
-  // $FlowFixMe
   const [visible, _setVisible] = React.useState(false)
   function setVisible(visible: boolean) {
     _setVisible(visible)
