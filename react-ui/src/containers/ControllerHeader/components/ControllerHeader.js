@@ -43,16 +43,24 @@ type MenuItem = {
   support: Support
 }
 
-type Props = {
-  height: string,
+export type OwnProps = {|
+  menuItems: Array<MenuItem>
+|}
+type StateProps = {|
   targetFolder: string,
   newFolderIndex: number,
   newItemIndex: number,
+|}
+type DispatchProps = {|
   setActiveObject: (string) => void,
   setContentCollapsed: (string, boolean) => void,
-  menuItems: Array<MenuItem>,
   createMathObject: CreateMathObject
-}
+|}
+export type Props = {|
+  ...OwnProps,
+  ...StateProps,
+  ...DispatchProps
+|}
 
 export default class ControllerHeader extends React.PureComponent<Props> {
 

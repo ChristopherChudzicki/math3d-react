@@ -1,17 +1,24 @@
 // @flow
-import React, { PureComponent } from 'react'
+import * as React from 'react'
 import { Switch } from 'antd'
 import { connect } from 'react-redux'
 import { setProperty } from 'containers/MathObjects/actions'
 
-type Props = {
-  checked: boolean,
+type OwnProps = {|
   parentId: string,
-  type: string,
-  setProperty: typeof setProperty
+|}
+type StateProps = {|
+  checked: boolean,
+  type: string
+|}
+type DispatchProps = {|setProperty: typeof setProperty|}
+type Props = {
+  ...OwnProps,
+  ...StateProps,
+  ...DispatchProps
 }
 
-class _UseComputedToggle extends PureComponent<Props> {
+class _UseComputedToggle extends React.PureComponent<Props> {
 
   onChange = (value: boolean) => {
     const { parentId, type } = this.props
@@ -33,7 +40,7 @@ class _UseComputedToggle extends PureComponent<Props> {
 
 }
 
-const mapStateToProps = ( { mathGraphics }: any, ownProps: Props) => {
+const mapStateToProps = ( { mathGraphics }: any, ownProps: OwnProps) => {
   const { parentId, ...otherProps } = ownProps
   return ( {
     checked: mathGraphics[parentId].useComputed,
@@ -44,6 +51,4 @@ const mapStateToProps = ( { mathGraphics }: any, ownProps: Props) => {
 
 const mapDispatchToProps = { setProperty }
 
-const UseComputedToggle = connect(mapStateToProps, mapDispatchToProps)(_UseComputedToggle)
-
-export default UseComputedToggle
+export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(_UseComputedToggle)

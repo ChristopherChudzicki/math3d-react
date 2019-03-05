@@ -1,22 +1,39 @@
 // @flow
-import React, { PureComponent } from 'react'
+import * as React from 'react'
 import { Switch } from 'antd'
 import { connect } from 'react-redux'
 import { setProperty } from 'containers/MathObjects/actions'
 import type { ExtractReturn } from 'utils/flow'
 
 type SetProperty = typeof setProperty
-type Props = {
-  checked: boolean,
-  disabled: boolean,
+// SwitchProps is missing some props
+type SwitchProps = {|
+  checkedChildren?: string | React.Node,
+  unCheckedChildren?: string | React.Node,
+  disabled?: boolean,
+  size?: 'default' | 'small'
+|}
+type OwnProps = {|
   field: string,
-  disabledField: ?string,
+  disabledField?: string,
   parentId: string,
-  type: string,
+  // Switch OwnProps
+  ...SwitchProps
+|}
+type StateProps = {|
+  checked: boolean,
+  type: string
+|}
+type DispatchProps = {|
   setProperty: SetProperty
-}
+|}
+type Props = {|
+  ...OwnProps,
+  ...StateProps,
+  ...DispatchProps
+|}
 
-class _ToggleSwitch extends PureComponent<Props> {
+class _ToggleSwitch extends React.PureComponent<Props> {
 
   static defaultProps = {
     disabled: false
@@ -42,7 +59,7 @@ class _ToggleSwitch extends PureComponent<Props> {
 
 }
 
-const mapStateToProps = ( { mathGraphics }: any, ownProps: Props) => {
+const mapStateToProps = ( { mathGraphics }: any, ownProps: OwnProps) => {
   const { field, parentId, disabledField, disabled, ...otherProps } = ownProps
   const inferDisabled = (typeof disabled === 'boolean')
     ? disabled
@@ -58,6 +75,4 @@ const mapStateToProps = ( { mathGraphics }: any, ownProps: Props) => {
 
 const mapDispatchToProps = { setProperty }
 
-const ToggleSwitch = connect(mapStateToProps, mapDispatchToProps)(_ToggleSwitch)
-
-export default ToggleSwitch
+export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(_ToggleSwitch)

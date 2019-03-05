@@ -18,7 +18,7 @@ export type OwnProps = {|
   parentId: string,
   latex?: string,
   prefix?: string,
-  postProcessLaTeX: (string) => string
+  postProcessLaTeX: (string) => string,
 |}
 export type StateProps = {|
   type: string,

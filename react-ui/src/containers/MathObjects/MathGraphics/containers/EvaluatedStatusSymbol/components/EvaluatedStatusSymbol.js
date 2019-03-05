@@ -9,19 +9,31 @@ import typeof {
 } from 'containers/MathObjects/actions'
 import { parser } from 'constants/parsing'
 
-type Props = {
+export type DefaultProps = {|
+  parser: Parser
+|}
+export type OwnProps = {|
+  ...DefaultProps,
   id: string,
-  type: string,
+  extraTabs?: React.Node,
+  colors?: Array<string>,
+|}
+type StateProps = {|
+  color: string,
   visible: boolean,
   useCalculatedVisibility: boolean,
-  calculatedVisibility: string,
-  color: string,
-  colors?: Array<string>,
+  type: string,
+  calculatedVisibility: string
+|}
+type DispatchProps = {|
   toggleProperty: toggleProperty,
   setProperty: setProperty,
-  parser: Parser,
-  extraTabs?: React.Node
-}
+|}
+export type Props = {|
+  ...OwnProps,
+  ...StateProps,
+  ...DispatchProps,
+|}
 
 export default class EvaluatedStatusSymbol extends React.PureComponent<Props> {
 

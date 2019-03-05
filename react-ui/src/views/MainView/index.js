@@ -10,11 +10,19 @@ import { loadDehydratedState } from 'store/actions'
 import initialState from 'store/initialState'
 import { connect } from 'react-redux'
 
-type Props = {
-  loadGraphFromDb: (id: string) => Function,
-  loadDehydratedState: (dehydrated: {} ) => void,
+type OwnProps = {|
   graphId?: string
-}
+|}
+
+type DispatchProps = {|
+  loadGraphFromDb: (id: string) => Function,
+  loadDehydratedState: (dehydrated: {} ) => void
+|}
+
+type Props = {|
+  ...DispatchProps,
+  ...OwnProps
+|}
 
 class MainView extends PureComponent<Props> {
 
@@ -51,4 +59,4 @@ const mapDispatchToProps = {
   loadDehydratedState
 }
 
-export default connect(null, mapDispatchToProps)(MainView)
+export default connect<Props, OwnProps, _, _, _, _>(null, mapDispatchToProps)(MainView)

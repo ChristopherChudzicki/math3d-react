@@ -7,12 +7,25 @@ import typeof {
   setProperty
 } from 'containers/MathObjects/actions'
 
-type Props = {
+// MathObjectData is heavily inexact; missing many props that vary by type
+type MathObjectData = {
+  type: string
+}
+export type OwnProps = {|
   title: string,
   parentId: string,
-  setProperty: setProperty,
-  data: {type: string},
   settingsList: Array<FormRow>
+|}
+type StateProps = {|
+  data: MathObjectData
+|}
+type DispatchProps = {|
+  setProperty: setProperty,
+|}
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  ...DispatchProps
 }
 
 export default class Settings extends React.PureComponent<Props> {

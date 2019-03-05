@@ -1,6 +1,7 @@
 // @flow
 import { connect } from 'react-redux'
 import Settings from './components/Settings'
+import type { OwnProps, Props } from './components/Settings'
 import {
   setProperty
 } from 'containers/MathObjects/actions'
@@ -15,4 +16,4 @@ const mapDispatchToProps = {
   setProperty
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings)
+export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(Settings)

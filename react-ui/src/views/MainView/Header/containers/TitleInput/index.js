@@ -12,10 +12,18 @@ const StyledInput = styled(EditableDescription)`
   padding-top:4px;
 `
 
-type Props = {
-  title: string,
-  setTitle: (title: string) => any
-}
+type OwnProps = {||}
+type StateProps = {|
+  title: string
+|}
+type DispatchProps = {|
+  setTitle: (title: string) => void
+|}
+type Props = {|
+  ...OwnProps,
+  ...StateProps,
+  ...DispatchProps
+|}
 
 function _TitleInput(props: Props) {
   return (
@@ -32,4 +40,4 @@ const mapStateToProps = ( { metadata } ) => ( {
 
 const mapDispatchToProps = { setTitle }
 
-export default connect(mapStateToProps, mapDispatchToProps)(_TitleInput)
+export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(_TitleInput)

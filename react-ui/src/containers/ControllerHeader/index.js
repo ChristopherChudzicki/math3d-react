@@ -1,5 +1,6 @@
 // @flow
 import ControllerHeader from './components/ControllerHeader'
+import type { Props, OwnProps } from './components/ControllerHeader'
 import { connect } from 'react-redux'
 import { getActiveFolder } from './selectors'
 import { createMathObject } from 'containers/MathObjects/actions'
@@ -35,4 +36,6 @@ const mapDispatchToProps = ( {
   setContentCollapsed
 } )
 
-export default connect(mapStateToProps, mapDispatchToProps)(ControllerHeader)
+export default connect<Props, OwnProps, _, _, _, _>(
+  mapStateToProps, mapDispatchToProps
+)(ControllerHeader)

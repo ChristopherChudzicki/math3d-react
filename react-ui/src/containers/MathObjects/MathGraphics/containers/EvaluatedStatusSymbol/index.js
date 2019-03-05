@@ -1,5 +1,7 @@
 // @flow
+import type { OptionalizeSome } from 'utils/flow'
 import EvaluatedStatusSymbol from './components/EvaluatedStatusSymbol'
+import type { Props, OwnProps, DefaultProps } from './components/EvaluatedStatusSymbol'
 import {
   toggleProperty,
   setProperty
@@ -31,4 +33,9 @@ const mapDispatchToProps = {
   setProperty
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EvaluatedStatusSymbol)
+type ConnectedProps = OptionalizeSome<Props, DefaultProps>
+type ConnectedOwnProps = OptionalizeSome<OwnProps, DefaultProps>
+
+export default connect<ConnectedProps, ConnectedOwnProps, _, _, _, _>(
+  mapStateToProps, mapDispatchToProps
+)(EvaluatedStatusSymbol)
