@@ -84,28 +84,29 @@ export default class MathInput extends React.PureComponent<Props, State> {
 
   // Internal Storage
   _errorId: ?Symbol
+  _containerRef: { current: null | HTMLDivElement }
 
   // Defined below
+  getContainerRef: Function
   onEdit: Function
   onFocus: Function
   onBlur: Function
 
   constructor(props: Props) {
     super(props)
-    this.assignContainerRef = this.assignContainerRef.bind(this)
+    this._containerRef = React.createRef()
+
     this.getContainerRef = this.getContainerRef.bind(this)
     this.onEdit = this.onEdit.bind(this)
     this.onFocus = this.onFocus.bind(this)
     this.onBlur = this.onBlur.bind(this)
   }
 
-  assignContainerRef(ref) {
-    this._ref = ref
-  }
   getContainerRef() {
     // return body as default in case containing div hasn't rendered yet
-    return this._ref ? this._ref : document.body
+    return this._containerRef ? this._containerRef : document.body
   }
+
   onEdit(mq: MQMathField) {
     const { prefix } = this.props
     const latex = mq.latex()
@@ -198,7 +199,7 @@ export default class MathInput extends React.PureComponent<Props, State> {
       <MathInputContainer
         className={this.props.className}
         style={this.props.style}
-        ref={this.assignContainerRef}
+        ref={this._containerRef}
       >
         <Tooltip
           getPopupContainer={this.getContainerRef}
