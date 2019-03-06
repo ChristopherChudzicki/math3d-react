@@ -22,8 +22,8 @@ export type OwnProps = {|
 |}
 export type StateProps = {|
   type: string,
-  latex: ?string,
-  errorMsg: ?string
+  latex?: string,
+  errorMsg?: string
 |}
 export type DispatchProps = {|
   onValidatedTextChange: typeof setPropertyAndError,
@@ -33,10 +33,15 @@ export type DispatchProps = {|
 export type Props = {|
   ...OwnProps,
   ...StateProps,
+  latex: string,
   ...DispatchProps
 |}
 
 class MathInputRHS extends PureComponent<Props> {
+
+  static defaultProps = {
+    postProcessLaTeX: (latex: string) => latex
+  }
 
   constructor(props: Props) {
     super(props)
@@ -44,10 +49,6 @@ class MathInputRHS extends PureComponent<Props> {
     this.onValidatedTextChange = this.onValidatedTextChange.bind(this)
     // $FlowFixMe
     this.onValidatorAndErrorChange = this.onValidatorAndErrorChange.bind(this)
-  }
-
-  static defaultProps = {
-    postProcessLaTeX: (latex: string) => latex
   }
 
   onValidatedTextChange(prop: string, latex: string, error: ErrorData) {
@@ -84,7 +85,7 @@ class MathInputRHS extends PureComponent<Props> {
 
 const mapStateToProps = ( { mathGraphics, mathSymbols, parseErrors, evalErrors, renderErrors }, ownProps) => {
   const { parentId, field, prefix } = ownProps
-  const fullLatex = ownProps.latex
+  const fullLatex: string = ownProps.latex
     ? ownProps.latex
     : getMathObjectProp( [mathGraphics, mathSymbols], parentId, field)
   const latex = prefix && fullLatex.startsWith(prefix)

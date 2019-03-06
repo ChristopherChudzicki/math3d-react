@@ -32,7 +32,7 @@ export type StateProps = {|
     usedNames: Set<string>,
     latexRHS: string
   |},
-  errorMsg: ?string
+  errorMsg?: string
 |}
 export type DispatchProps = {|
   onValidatedTextChange: typeof setPropertyAndError,
