@@ -47,27 +47,6 @@ type State = {
 
 export default class MathInput extends React.PureComponent<Props, State> {
 
-  static validate(
-    validators: Array<Validator>,
-    parser: Parser,
-    latex: string,
-    validateAgainst: any,
-    allowEmpty: boolean=false
-  ) {
-    if (allowEmpty && latex.trim() === '') {
-      return new ParseErrorData(null)
-    }
-    for (const validator of validators) {
-      const parseErrorData = validator(parser, latex, validateAgainst)
-      if (parseErrorData.isError) {
-        return parseErrorData
-      }
-    }
-
-    return new ParseErrorData(null)
-
-  }
-
   static defaultProps = {
     parser: parser,
     validators: [isAssignmentRHS],
@@ -100,6 +79,27 @@ export default class MathInput extends React.PureComponent<Props, State> {
     this.onEdit = this.onEdit.bind(this)
     this.onFocus = this.onFocus.bind(this)
     this.onBlur = this.onBlur.bind(this)
+  }
+
+  static validate(
+    validators: Array<Validator>,
+    parser: Parser,
+    latex: string,
+    validateAgainst: any,
+    allowEmpty: boolean=false
+  ) {
+    if (allowEmpty && latex.trim() === '') {
+      return new ParseErrorData(null)
+    }
+    for (const validator of validators) {
+      const parseErrorData = validator(parser, latex, validateAgainst)
+      if (parseErrorData.isError) {
+        return parseErrorData
+      }
+    }
+
+    return new ParseErrorData(null)
+
   }
 
   getContainerRef() {
