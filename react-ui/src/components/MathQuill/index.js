@@ -4,8 +4,9 @@ import classNames from 'classnames'
 
 const MQ = window.MathQuill.getInterface(2)
 
-type MQMathField = {
-  latex: Function
+export type MQMathField = {
+  latex: (string => MQMathField) &
+    (() => string)
 }
 
 type MathQuillProps = {
