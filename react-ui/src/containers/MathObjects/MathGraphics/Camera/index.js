@@ -46,7 +46,6 @@ export class CameraUI extends PureComponent<Props> {
         <IndentedRow>
           <Cell>
             <Label>Rotate:</Label>
-            {/* $FlowFixMe trouble with connect */}
             <ToggleSwitch
               parentId={id}
               field='isRotateEnabled'

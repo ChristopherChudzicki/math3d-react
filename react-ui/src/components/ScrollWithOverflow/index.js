@@ -120,10 +120,6 @@ export default class ScrollWithOverflow extends React.PureComponent<Props, State
         <ScrollingDivInner>
           {this.props.children}
         </ScrollingDivInner>
-        {/* $FlowFixMe I think Flow does not like the ref value.
-          I updated styled components to Version 4 a while ago,
-          but did not update the typedefs. Should do that!
-        */}
         <PaddingCover ref={this.coverRef} />
       </ScrollingDiv>
     )

@@ -14,14 +14,20 @@ const TabPane = Tabs.TabPane
 
 const extendedColors = [...colors, ...Object.keys(colorMaps)]
 
-type StatusProps = {
+type OwnProps = {|
   id: string,
-  color: string,
   labelU: string,
   labelV: string
+|}
+type StateProps = {|
+  color: string
+|}
+type Props = {
+  ...OwnProps,
+  ...StateProps
 }
 
-function _ParametricSurfaceStatus(props: StatusProps) {
+function _ParametricSurfaceStatus(props: Props) {
   const { id, color, labelU, labelV } = props
   return (
     <EvaluatedStatusSymbol
@@ -51,5 +57,4 @@ const mapStateToProps = ( { mathGraphics }, ownProps) => ( {
   color: mathGraphics[ownProps.id].color
 } )
 
-const ParametricSurfaceStatus = connect(mapStateToProps)(_ParametricSurfaceStatus)
-export default ParametricSurfaceStatus
+export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps)(_ParametricSurfaceStatus)

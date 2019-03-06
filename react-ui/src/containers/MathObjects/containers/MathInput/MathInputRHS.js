@@ -4,18 +4,41 @@ import MathInput from './components/MathInput'
 import { connect } from 'react-redux'
 import { setPropertyAndError } from 'containers/MathObjects/actions'
 import { setError } from 'services/errors'
+import type { ErrorData } from 'services/errors'
 import { getErrorMsg } from 'services/errors/selectors'
 import { getMathObjectProp } from './selectors'
-import type { Props } from './MathInputLHS'
 
 /**
  * @module MathInputRHS defines a connected version of MathInput for right-hand-
  * side expressions.
  */
 
+export type OwnProps = {|
+  field: string,
+  parentId: string,
+  latex?: string,
+  prefix?: string,
+  postProcessLaTeX: (string) => string,
+|}
+export type StateProps = {|
+  type: string,
+  latex: ?string,
+  errorMsg: ?string
+|}
+export type DispatchProps = {|
+  onValidatedTextChange: typeof setPropertyAndError,
+  onValidatorAndErrorChange: typeof setError,
+|}
+
+export type Props = {|
+  ...OwnProps,
+  ...StateProps,
+  ...DispatchProps
+|}
+
 class MathInputRHS extends PureComponent<Props> {
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     // $FlowFixMe
     this.onValidatedTextChange = this.onValidatedTextChange.bind(this)
@@ -24,16 +47,16 @@ class MathInputRHS extends PureComponent<Props> {
   }
 
   static defaultProps = {
-    postProcessLaTeX: latex => latex
+    postProcessLaTeX: (latex: string) => latex
   }
 
-  onValidatedTextChange(prop, latex, error) {
+  onValidatedTextChange(prop: string, latex: string, error: ErrorData) {
     const { parentId, type, postProcessLaTeX } = this.props
     const processedLaTeX = postProcessLaTeX(latex)
     this.props.onValidatedTextChange(parentId, type, prop, processedLaTeX, error)
   }
 
-  onValidatorAndErrorChange(prop, error) {
+  onValidatorAndErrorChange(prop: string, error: ErrorData) {
     const { parentId } = this.props
     this.props.onValidatorAndErrorChange(parentId, prop, error)
   }
@@ -79,4 +102,4 @@ const mapDispatchToProps = {
   onValidatorAndErrorChange: setError
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MathInputRHS)
+export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(MathInputRHS)

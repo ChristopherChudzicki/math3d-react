@@ -6,13 +6,19 @@ import { closeDrawer, openDrawer, setWidth } from './actions'
 import { DEFAULT_WIDTH } from './reducer'
 import { MOBILE_BREAKPOINT } from 'constants/theme'
 
-type Props = {
-  isSmall: boolean,
+type DispatchProps = {|
   openDrawer: string => void,
   closeDrawer: string => void,
   setWidth: (id: string, width: string) => void,
+|}
+type OwnProps = {|
+  isSmall: boolean,
   id: string
-}
+|}
+type Props = {|
+  ...DispatchProps,
+  ...OwnProps
+|}
 
 class ScreenSizeDrawerManager extends React.PureComponent<Props> {
 
@@ -45,6 +51,6 @@ class ScreenSizeDrawerManager extends React.PureComponent<Props> {
 const mapSizesToProps = ( { width } ) => ( { isSmall: width < MOBILE_BREAKPOINT } )
 const mapDispatchToProps = { openDrawer, closeDrawer, setWidth }
 
-export default connect(null, mapDispatchToProps)(
+export default connect<Props, OwnProps, _, _, _, _>(null, mapDispatchToProps)(
   withSizes(mapSizesToProps)(ScreenSizeDrawerManager)
 )

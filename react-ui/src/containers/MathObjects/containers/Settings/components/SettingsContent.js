@@ -63,7 +63,7 @@ export default class SettingsContent extends React.PureComponent<Props> {
         return (
           <Input
             value={this.props.data[property]}
-            onChange={event => this.props.setProperty(property, event.target.value)}
+            onChange={event => this.props.setProperty(property, event.currentTarget.value)}
           />
         )
       }

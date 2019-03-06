@@ -5,7 +5,7 @@ import diff from 'shallow-diff'
 export default function diffWithSets(base: Object, compared: Object) {
   const difference = diff(base, compared)
   return Object.keys(difference).reduce((acc, key) => {
-    acc[key] = new Set(difference[key] )
+    acc[key] = new Set<string>(difference[key] )
     return acc
   }, {} )
 }
