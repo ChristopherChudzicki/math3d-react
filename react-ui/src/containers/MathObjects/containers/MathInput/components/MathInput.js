@@ -210,7 +210,6 @@ export default class MathInput extends React.PureComponent<Props, State> {
           }
           trigger='click'
           placement='topLeft'
-          onVisibleChange={this.handleVisibleChange}
         />
         <MathQuillStyled
           onFocus={this.onFocus}
