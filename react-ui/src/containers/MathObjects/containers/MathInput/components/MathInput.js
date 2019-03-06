@@ -24,7 +24,7 @@ type Validator = (parser: Parser, latex: string, validateAgainst: any) => ParseE
 type OnValidatorAndErrorChange = (latex: string, ErrorData: ParseErrorData) => void
 type OnValidatedTextChange = (prop: string, latex: string, ErrorData: ParseErrorData) => void
 type Props = {
-  style?: { [string]: string },
+  style?: InlineStyle,
   className?: string,
   size: 'small' | 'large',
   field: string,
@@ -136,7 +136,7 @@ export default class MathInput extends React.PureComponent<Props, State> {
       this.setState( { isPersistentError: true } )
     }
   }
-  displayErrorNow(errorMsg: string) {
+  displayErrorNow(errorMsg: ?string) {
     const isError = Boolean(errorMsg)
     this._errorId = isError ? Symbol('Error Identifier') : null
     this.setState( { isPersistentError: isError } )
