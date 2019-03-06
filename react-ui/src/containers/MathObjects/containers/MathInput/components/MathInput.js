@@ -1,6 +1,8 @@
-import React, { PureComponent } from 'react'
+// @flow
+import * as React from 'react'
 import { parser } from 'constants/parsing'
-import PropTypes from 'prop-types'
+import type { Parser } from 'utils/mathParsing'
+import type { MQMathField } from 'components/MathQuill'
 import { MathQuillStyled } from './MathQuillStyled'
 import { isAssignmentRHS } from './validators'
 import styled from 'styled-components'
@@ -18,9 +20,40 @@ const ErrorContainer = styled.div`
   width: 250px;
 `
 
-export default class MathInput extends PureComponent {
+type Validator = (parser: Parser, latex: string, validateAgainst: any) => ParseErrorData
+type OnValidatorAndErrorChange = (latex: string, ErrorData: ParseErrorData) => void
+type OnValidatedTextChange = (prop: string, latex: string, ErrorData: ParseErrorData) => void
+type Props = {
+  style?: { [string]: string },
+  className?: string,
+  size: 'small' | 'large',
+  field: string,
+  latex: string,
+  parser: Parser,
+  prefix: string,
+  validators: Array<Validator>,
+  validateAgainst?: any,
+  allowEmpty: boolean,
+  onValidatorAndErrorChange: OnValidatorAndErrorChange,
+  onValidatedTextChange: OnValidatedTextChange,
+  errorMsg?: string,
+  displayErrorDelay: number
+}
 
-  static validate(validators, parser, latex, validateAgainst, allowEmpty=false) {
+type State = {
+  isFocused: boolean,
+  isPersistentError: boolean
+}
+
+export default class MathInput extends React.PureComponent<Props, State> {
+
+  static validate(
+    validators: Array<Validator>,
+    parser: Parser,
+    latex: string,
+    validateAgainst: any,
+    allowEmpty: boolean=false
+  ) {
     if (allowEmpty && latex.trim() === '') {
       return new ParseErrorData(null)
     }
@@ -33,25 +66,6 @@ export default class MathInput extends PureComponent {
 
     return new ParseErrorData(null)
 
-  }
-
-  static propTypes = {
-    style: PropTypes.object,
-    className: PropTypes.string,
-    field: PropTypes.string.isRequired,
-    parser: PropTypes.object.isRequired,
-    validators: PropTypes.arrayOf(PropTypes.func).isRequired,
-    validateAgainst: PropTypes.any,
-    size: PropTypes.oneOf( ['small', 'large'] ).isRequired,
-    allowEmpty: PropTypes.bool.isRequired,
-    // (prop, latex, error) => ...
-    onValidatedTextChange: PropTypes.func.isRequired,
-    prefix: PropTypes.string.isRequired,
-    // (prop, error) => ...
-    onValidatorAndErrorChange: PropTypes.func.isRequired,
-    errorMsg: PropTypes.string,
-    latex: PropTypes.string.isRequired,
-    displayErrorDelay: PropTypes.number.isRequired // ms
   }
 
   static defaultProps = {
@@ -68,7 +82,15 @@ export default class MathInput extends PureComponent {
     isPersistentError: false
   }
 
-  constructor(props) {
+  // Internal Storage
+  _errorId: ?Symbol
+
+  // Defined below
+  onEdit: Function
+  onFocus: Function
+  onBlur: Function
+
+  constructor(props: Props) {
     super(props)
     this.assignContainerRef = this.assignContainerRef.bind(this)
     this.getContainerRef = this.getContainerRef.bind(this)
@@ -84,7 +106,7 @@ export default class MathInput extends PureComponent {
     // return body as default in case containing div hasn't rendered yet
     return this._ref ? this._ref : document.body
   }
-  onEdit(mq) {
+  onEdit(mq: MQMathField) {
     const { prefix } = this.props
     const latex = mq.latex()
     const errorData = this.validateSelf(latex)
@@ -97,7 +119,7 @@ export default class MathInput extends PureComponent {
     this.setState( { isFocused: false } )
   }
 
-  async handleErrorPersistence(errorMsg) {
+  async handleErrorPersistence(errorMsg: ?string) {
     if (!errorMsg) {
       this.setState( { isPersistentError: false } )
       this._errorId = null
@@ -114,15 +136,14 @@ export default class MathInput extends PureComponent {
     if (sameError && this._errorId) {
       this.setState( { isPersistentError: true } )
     }
-
   }
-  displayErrorNow(errorMsg) {
+  displayErrorNow(errorMsg: string) {
     const isError = Boolean(errorMsg)
     this._errorId = isError ? Symbol('Error Identifier') : null
     this.setState( { isPersistentError: isError } )
   }
 
-  validateSelf(latex) {
+  validateSelf(latex: string) {
     const { validators, validateAgainst, parser, allowEmpty } = this.props
     return MathInput.validate(validators, parser, latex, validateAgainst, allowEmpty)
   }
@@ -142,7 +163,7 @@ export default class MathInput extends PureComponent {
     this.forceUpdate()
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
 
     const {
       validators,
