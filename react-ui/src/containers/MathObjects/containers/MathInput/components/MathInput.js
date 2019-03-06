@@ -65,19 +65,17 @@ export default class MathInput extends React.PureComponent<Props, State> {
   _errorId: ?Symbol
   _containerRef: { current: null | HTMLDivElement }
 
-  // Defined below
-  getContainerRef: Function
-  onEdit: Function
-  onFocus: Function
-  onBlur: Function
-
   constructor(props: Props) {
     super(props)
     this._containerRef = React.createRef()
 
+    // $FlowFixMe
     this.getContainerRef = this.getContainerRef.bind(this)
+    // $FlowFixMe
     this.onEdit = this.onEdit.bind(this)
+    // $FlowFixMe
     this.onFocus = this.onFocus.bind(this)
+    // $FlowFixMe
     this.onBlur = this.onBlur.bind(this)
   }
 
