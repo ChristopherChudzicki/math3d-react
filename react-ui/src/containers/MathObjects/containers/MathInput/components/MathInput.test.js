@@ -21,7 +21,6 @@ beforeEach(() => {
 
 const onValidatedTextChange = jest.fn()
 const onValidatorAndErrorChange = jest.fn()
-const field = 'TEST'
 
 const shallowMathInput = (props = {} ) => shallow(
   <MathInput
@@ -29,7 +28,6 @@ const shallowMathInput = (props = {} ) => shallow(
     onValidatorAndErrorChange={onValidatorAndErrorChange}
     onTextChange={() => null}
     onErrorChange={() => null}
-    field={field}
     latex='E=mc^2'
     displayErrorDelay={DISPLAY_ERROR_DELAY}
     validators={[
@@ -217,5 +215,5 @@ test("MathInput's onEdit calls props.onValidatedTextChange", () => {
   const error = new ParseErrorData('errorMsg!')
   wrapper.instance().onEdit(mq)
   expect(wrapper.instance().props.onValidatedTextChange).toHaveBeenCalledTimes(1)
-  expect(wrapper.instance().props.onValidatedTextChange).toHaveBeenCalledWith('TEST', 'testLatex', error)
+  expect(wrapper.instance().props.onValidatedTextChange).toHaveBeenCalledWith('testLatex', error)
 } )

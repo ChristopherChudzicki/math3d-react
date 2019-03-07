@@ -21,8 +21,8 @@ const ErrorContainer = styled.div`
 `
 
 export type Validator = (parser: Parser, latex: string, validateAgainst: any) => ParseErrorData
-type OnValidatorAndErrorChange = (latex: string, ErrorData: ParseErrorData) => void
-type OnValidatedTextChange = (prop: string, latex: string, ErrorData: ParseErrorData) => void
+type OnValidatorAndErrorChange = (ErrorData: ParseErrorData) => void
+type OnValidatedTextChange = (latex: string, ErrorData: ParseErrorData) => void
 
 export type OtherProps = {|
   // These have defaults
@@ -40,7 +40,6 @@ export type OtherProps = {|
 |}
 type Props = {
   ...OtherProps,
-  field: string,
   latex: string,
   onValidatorAndErrorChange: OnValidatorAndErrorChange,
   onValidatedTextChange: OnValidatedTextChange
@@ -115,7 +114,7 @@ export default class MathInput extends React.PureComponent<Props, State> {
     const { prefix } = this.props
     const latex = mq.latex()
     const errorData = this.validateSelf(latex)
-    this.props.onValidatedTextChange(this.props.field, prefix + latex, errorData)
+    this.props.onValidatedTextChange(prefix + latex, errorData)
   }
   onFocus() {
     this.setState( { isFocused: true } )
@@ -154,11 +153,11 @@ export default class MathInput extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { latex, field } = this.props
+    const { latex } = this.props
     const errorData = this.validateSelf(latex)
     const changed = errorData.errorMsg !== this.props.errorMsg
     if (changed) {
-      this.props.onValidatorAndErrorChange(field, errorData)
+      this.props.onValidatorAndErrorChange(errorData)
       this.handleErrorPersistence(errorData.errorMsg)
     }
     if (errorData.errorMsg) {
@@ -174,7 +173,6 @@ export default class MathInput extends React.PureComponent<Props, State> {
       validators,
       validateAgainst,
       latex,
-      field,
       errorMsg
     } = this.props
 
@@ -185,7 +183,7 @@ export default class MathInput extends React.PureComponent<Props, State> {
       const errorData = this.validateSelf(latex)
       const changed = errorData.errorMsg !== this.props.errorMsg
       if (changed) {
-        this.props.onValidatorAndErrorChange(field, errorData)
+        this.props.onValidatorAndErrorChange(errorData)
         this.handleErrorPersistence(errorData.errorMsg)
       }
     }

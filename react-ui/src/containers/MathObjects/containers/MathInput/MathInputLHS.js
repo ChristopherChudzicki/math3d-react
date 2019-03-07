@@ -24,6 +24,7 @@ import type { Optionalize, OptionalizeSome } from 'utils/flow'
 
  type DefaultProps = {|
    postProcessLaTeX: (string) => string,
+   field: string
  |}
  type OwnProps = {|
    parentId: string,
@@ -61,7 +62,8 @@ class MathInputLHS extends PureComponent<Props> {
   ]
 
   static defaultProps = {
-    postProcessLaTeX: (latex: string) => latex
+    postProcessLaTeX: (latex: string) => latex,
+    field: 'name'
   }
 
   constructor(props: Props) {
@@ -72,15 +74,15 @@ class MathInputLHS extends PureComponent<Props> {
     this.onValidatorAndErrorChange = this.onValidatorAndErrorChange.bind(this)
   }
 
-  onValidatedTextChange(prop: string, latex: string, error: ErrorData) {
-    const { parentId, type, postProcessLaTeX } = this.props
+  onValidatedTextChange(latex: string, error: ErrorData) {
+    const { parentId, type, postProcessLaTeX, field } = this.props
     const processedLaTeX = postProcessLaTeX(latex)
-    this.props.onValidatedTextChange(parentId, type, prop, processedLaTeX, error)
+    this.props.onValidatedTextChange(parentId, type, field, processedLaTeX, error)
   }
 
-  onValidatorAndErrorChange(prop: string, error: ErrorData) {
-    const { parentId } = this.props
-    this.props.onValidatorAndErrorChange(parentId, prop, error)
+  onValidatorAndErrorChange(error: ErrorData) {
+    const { parentId, field } = this.props
+    this.props.onValidatorAndErrorChange(parentId, field, error)
   }
 
   render() {
@@ -90,13 +92,14 @@ class MathInputLHS extends PureComponent<Props> {
       onValidatedTextChange,
       parentId,
       type,
+      field,
       ...otherProps
     } = this.props
 
     return (
       <MathInput
         {...otherProps}
-        field='name'
+        field={field}
         style={MathInputLHS.style}
         validators={MathInputLHS.validators}
         onValidatedTextChange={this.onValidatedTextChange}

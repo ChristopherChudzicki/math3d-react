@@ -54,15 +54,15 @@ class MathInputRHS extends React.PureComponent<Props> {
     this.onValidatorAndErrorChange = this.onValidatorAndErrorChange.bind(this)
   }
 
-  onValidatedTextChange(prop: string, latex: string, error: ErrorData) {
-    const { parentId, type, postProcessLaTeX } = this.props
+  onValidatedTextChange(latex: string, error: ErrorData) {
+    const { parentId, type, postProcessLaTeX, field } = this.props
     const processedLaTeX = postProcessLaTeX(latex)
-    this.props.onValidatedTextChange(parentId, type, prop, processedLaTeX, error)
+    this.props.onValidatedTextChange(parentId, type, field, processedLaTeX, error)
   }
 
-  onValidatorAndErrorChange(prop: string, error: ErrorData) {
-    const { parentId } = this.props
-    this.props.onValidatorAndErrorChange(parentId, prop, error)
+  onValidatorAndErrorChange(error: ErrorData) {
+    const { parentId, field } = this.props
+    this.props.onValidatorAndErrorChange(parentId, field, error)
   }
 
   render() {
