@@ -10,33 +10,39 @@ import {
   isValidName
 } from './components/validators'
 import { setError } from 'services/errors'
-import type { ErrorData } from 'services/errors'
 import { getErrorMsg } from 'services/errors/selectors'
 import { getValidateNameAgainst, getMathObjectProp } from './selectors'
+
+import type { ErrorData } from 'services/errors'
+import type { OtherProps } from './components/MathInput'
+import type { Optionalize, OptionalizeSome } from 'utils/flow'
 
 /**
  * @module MathInputLHS defines a connected version of MathInput for left-hand-
  * side expressions.
  */
 
-export type OwnProps = {|
-  parentId: string,
-  field: string,
-  latex?: string,
-  prefix?: string,
-  postProcessLaTeX: (string) => string
-|}
+ type DefaultProps = {|
+   postProcessLaTeX: (string) => string,
+   field: string
+ |}
+ type OwnProps = {|
+   parentId: string,
+   latex?: string,
+   ...DefaultProps,
+   ...Optionalize<OtherProps>
+ |}
 export type StateProps = {|
   type: string,
   validateAgainst: {|
     usedNames: Set<string>,
     latexRHS: string
   |},
-  errorMsg: ?string
+  errorMsg?: string
 |}
 export type DispatchProps = {|
   onValidatedTextChange: typeof setPropertyAndError,
-  onValidatorAndErrorChange: typeof setError
+  onValidatorAndErrorChange: typeof setError,
 |}
 
 export type Props = {|
@@ -56,7 +62,8 @@ class MathInputLHS extends PureComponent<Props> {
   ]
 
   static defaultProps = {
-    postProcessLaTeX: (latex: string) => latex
+    postProcessLaTeX: (latex: string) => latex,
+    field: 'name'
   }
 
   constructor(props: Props) {
@@ -67,15 +74,15 @@ class MathInputLHS extends PureComponent<Props> {
     this.onValidatorAndErrorChange = this.onValidatorAndErrorChange.bind(this)
   }
 
-  onValidatedTextChange(prop: string, latex: string, error: ErrorData) {
-    const { parentId, type, postProcessLaTeX } = this.props
+  onValidatedTextChange(latex: string, error: ErrorData) {
+    const { parentId, type, postProcessLaTeX, field } = this.props
     const processedLaTeX = postProcessLaTeX(latex)
-    this.props.onValidatedTextChange(parentId, type, prop, processedLaTeX, error)
+    this.props.onValidatedTextChange(parentId, type, field, processedLaTeX, error)
   }
 
-  onValidatorAndErrorChange(prop: string, error: ErrorData) {
-    const { parentId } = this.props
-    this.props.onValidatorAndErrorChange(parentId, prop, error)
+  onValidatorAndErrorChange(error: ErrorData) {
+    const { parentId, field } = this.props
+    this.props.onValidatorAndErrorChange(parentId, field, error)
   }
 
   render() {
@@ -85,13 +92,14 @@ class MathInputLHS extends PureComponent<Props> {
       onValidatedTextChange,
       parentId,
       type,
+      field,
       ...otherProps
     } = this.props
 
     return (
       <MathInput
         {...otherProps}
-        field='name'
+        field={field}
         style={MathInputLHS.style}
         validators={MathInputLHS.validators}
         onValidatedTextChange={this.onValidatedTextChange}
@@ -119,4 +127,8 @@ const mapDispatchToProps = {
   onValidatorAndErrorChange: setError
 }
 
-export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(MathInputLHS)
+type ConnectedOwnProps = OptionalizeSome<OwnProps, DefaultProps>
+type ConnectedProps = OptionalizeSome<Props, DefaultProps>
+export default connect<ConnectedProps, ConnectedOwnProps, _, _, _, _>(
+  mapStateToProps, mapDispatchToProps
+)(MathInputLHS)

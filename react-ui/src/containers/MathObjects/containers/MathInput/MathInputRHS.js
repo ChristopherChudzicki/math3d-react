@@ -1,6 +1,8 @@
 // @flow
-import React, { PureComponent } from 'react'
+import * as React from 'react'
 import MathInput from './components/MathInput'
+import type { OtherProps } from './components/MathInput'
+import type { Optionalize, OptionalizeSome } from 'utils/flow'
 import { connect } from 'react-redux'
 import { setPropertyAndError } from 'containers/MathObjects/actions'
 import { setError } from 'services/errors'
@@ -13,30 +15,36 @@ import { getMathObjectProp } from './selectors'
  * side expressions.
  */
 
-export type OwnProps = {|
+type DefaultProps = {|
+  postProcessLaTeX: (string) => string,
+|}
+type OwnProps = {|
   field: string,
   parentId: string,
   latex?: string,
-  prefix?: string,
-  postProcessLaTeX: (string) => string,
+  ...DefaultProps,
+  ...Optionalize<OtherProps>
 |}
-export type StateProps = {|
+type StateProps = {|
   type: string,
-  latex: ?string,
-  errorMsg: ?string
+  latex?: string,
+  errorMsg?: string
 |}
-export type DispatchProps = {|
+type DispatchProps = {|
   onValidatedTextChange: typeof setPropertyAndError,
   onValidatorAndErrorChange: typeof setError,
 |}
-
-export type Props = {|
+type Props = {|
   ...OwnProps,
   ...StateProps,
   ...DispatchProps
 |}
 
-class MathInputRHS extends PureComponent<Props> {
+class MathInputRHS extends React.PureComponent<Props> {
+
+  static defaultProps = {
+    postProcessLaTeX: (latex: string) => latex
+  }
 
   constructor(props: Props) {
     super(props)
@@ -46,19 +54,15 @@ class MathInputRHS extends PureComponent<Props> {
     this.onValidatorAndErrorChange = this.onValidatorAndErrorChange.bind(this)
   }
 
-  static defaultProps = {
-    postProcessLaTeX: (latex: string) => latex
-  }
-
-  onValidatedTextChange(prop: string, latex: string, error: ErrorData) {
-    const { parentId, type, postProcessLaTeX } = this.props
+  onValidatedTextChange(latex: string, error: ErrorData) {
+    const { parentId, type, postProcessLaTeX, field } = this.props
     const processedLaTeX = postProcessLaTeX(latex)
-    this.props.onValidatedTextChange(parentId, type, prop, processedLaTeX, error)
+    this.props.onValidatedTextChange(parentId, type, field, processedLaTeX, error)
   }
 
-  onValidatorAndErrorChange(prop: string, error: ErrorData) {
-    const { parentId } = this.props
-    this.props.onValidatorAndErrorChange(parentId, prop, error)
+  onValidatorAndErrorChange(error: ErrorData) {
+    const { parentId, field } = this.props
+    this.props.onValidatorAndErrorChange(parentId, field, error)
   }
 
   render() {
@@ -84,7 +88,7 @@ class MathInputRHS extends PureComponent<Props> {
 
 const mapStateToProps = ( { mathGraphics, mathSymbols, parseErrors, evalErrors, renderErrors }, ownProps) => {
   const { parentId, field, prefix } = ownProps
-  const fullLatex = ownProps.latex
+  const fullLatex: string = ownProps.latex
     ? ownProps.latex
     : getMathObjectProp( [mathGraphics, mathSymbols], parentId, field)
   const latex = prefix && fullLatex.startsWith(prefix)
@@ -102,4 +106,8 @@ const mapDispatchToProps = {
   onValidatorAndErrorChange: setError
 }
 
-export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(MathInputRHS)
+type ConnectedOwnProps = OptionalizeSome<OwnProps, DefaultProps>
+type ConnectedProps = OptionalizeSome<Props, DefaultProps>
+export default connect<ConnectedProps, ConnectedOwnProps, _, _, _, _>(
+  mapStateToProps, mapDispatchToProps
+)(MathInputRHS)
