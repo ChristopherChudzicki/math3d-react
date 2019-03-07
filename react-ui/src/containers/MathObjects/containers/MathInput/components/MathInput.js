@@ -20,24 +20,30 @@ const ErrorContainer = styled.div`
   width: 250px;
 `
 
-type Validator = (parser: Parser, latex: string, validateAgainst: any) => ParseErrorData
+export type Validator = (parser: Parser, latex: string, validateAgainst: any) => ParseErrorData
 type OnValidatorAndErrorChange = (latex: string, ErrorData: ParseErrorData) => void
 type OnValidatedTextChange = (prop: string, latex: string, ErrorData: ParseErrorData) => void
-type Props = {
+
+export type OtherProps = {|
+  // These have defaults
+  parser: Parser,
+  validators: Array<Validator>,
+  size: 'small' | 'large',
+  prefix: string,
+  displayErrorDelay: number,
+  allowEmpty: boolean,
+  // These are optional
   style?: InlineStyle,
   className?: string,
-  size: 'small' | 'large',
+  validateAgainst?: any,
+  errorMsg?: string,
+|}
+type Props = {
+  ...OtherProps,
   field: string,
   latex: string,
-  parser: Parser,
-  prefix: string,
-  validators: Array<Validator>,
-  validateAgainst?: any,
-  allowEmpty: boolean,
   onValidatorAndErrorChange: OnValidatorAndErrorChange,
-  onValidatedTextChange: OnValidatedTextChange,
-  errorMsg?: string,
-  displayErrorDelay: number
+  onValidatedTextChange: OnValidatedTextChange
 }
 
 type State = {

@@ -10,22 +10,27 @@ import {
   isValidName
 } from './components/validators'
 import { setError } from 'services/errors'
-import type { ErrorData } from 'services/errors'
 import { getErrorMsg } from 'services/errors/selectors'
 import { getValidateNameAgainst, getMathObjectProp } from './selectors'
+
+import type { ErrorData } from 'services/errors'
+import type { OtherProps } from './components/MathInput'
+import type { Optionalize, OptionalizeSome } from 'utils/flow'
 
 /**
  * @module MathInputLHS defines a connected version of MathInput for left-hand-
  * side expressions.
  */
 
-export type OwnProps = {|
-  parentId: string,
-  field: string,
-  latex?: string,
-  prefix?: string,
-  postProcessLaTeX: (string) => string
-|}
+ type DefaultProps = {|
+   postProcessLaTeX: (string) => string,
+ |}
+ type OwnProps = {|
+   parentId: string,
+   latex?: string,
+   ...DefaultProps,
+   ...Optionalize<OtherProps>
+ |}
 export type StateProps = {|
   type: string,
   validateAgainst: {|
@@ -36,7 +41,7 @@ export type StateProps = {|
 |}
 export type DispatchProps = {|
   onValidatedTextChange: typeof setPropertyAndError,
-  onValidatorAndErrorChange: typeof setError
+  onValidatorAndErrorChange: typeof setError,
 |}
 
 export type Props = {|
@@ -119,4 +124,8 @@ const mapDispatchToProps = {
   onValidatorAndErrorChange: setError
 }
 
-export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(MathInputLHS)
+type ConnectedOwnProps = OptionalizeSome<OwnProps, DefaultProps>
+type ConnectedProps = OptionalizeSome<Props, DefaultProps>
+export default connect<ConnectedProps, ConnectedOwnProps, _, _, _, _>(
+  mapStateToProps, mapDispatchToProps
+)(MathInputLHS)

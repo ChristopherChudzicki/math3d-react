@@ -56,7 +56,7 @@ export default class SettingsContent extends React.PureComponent<Props> {
     )
   }
 
-  renderInput(property: string, inputType: InputType, allowEmpty: ?boolean) {
+  renderInput(property: string, inputType: InputType, allowEmpty?: boolean) {
     switch (inputType) {
 
       case 'text': {

@@ -1,6 +1,8 @@
 // @flow
-import React, { PureComponent } from 'react'
+import * as React from 'react'
 import MathInput from './components/MathInput'
+import type { OtherProps } from './components/MathInput'
+import type { Optionalize, OptionalizeSome } from 'utils/flow'
 import { connect } from 'react-redux'
 import { setPropertyAndError } from 'containers/MathObjects/actions'
 import { setError } from 'services/errors'
@@ -13,31 +15,32 @@ import { getMathObjectProp } from './selectors'
  * side expressions.
  */
 
-export type OwnProps = {|
+type DefaultProps = {|
+  postProcessLaTeX: (string) => string,
+|}
+type OwnProps = {|
   field: string,
   parentId: string,
   latex?: string,
-  prefix?: string,
-  postProcessLaTeX: (string) => string,
+  ...DefaultProps,
+  ...Optionalize<OtherProps>
 |}
-export type StateProps = {|
+type StateProps = {|
   type: string,
   latex?: string,
   errorMsg?: string
 |}
-export type DispatchProps = {|
+type DispatchProps = {|
   onValidatedTextChange: typeof setPropertyAndError,
   onValidatorAndErrorChange: typeof setError,
 |}
-
-export type Props = {|
+type Props = {|
   ...OwnProps,
   ...StateProps,
-  latex: string,
   ...DispatchProps
 |}
 
-class MathInputRHS extends PureComponent<Props> {
+class MathInputRHS extends React.PureComponent<Props> {
 
   static defaultProps = {
     postProcessLaTeX: (latex: string) => latex
@@ -103,4 +106,8 @@ const mapDispatchToProps = {
   onValidatorAndErrorChange: setError
 }
 
-export default connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(MathInputRHS)
+type ConnectedOwnProps = OptionalizeSome<OwnProps, DefaultProps>
+type ConnectedProps = OptionalizeSome<Props, DefaultProps>
+export default connect<ConnectedProps, ConnectedOwnProps, _, _, _, _>(
+  mapStateToProps, mapDispatchToProps
+)(MathInputRHS)
