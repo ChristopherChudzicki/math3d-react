@@ -108,7 +108,8 @@ export default class MathInput extends React.PureComponent<Props, State> {
 
   getContainerRef() {
     // return body as default in case containing div hasn't rendered yet
-    return this._containerRef ? this._containerRef : document.body
+    console.log(this._containerRef)
+    return this._containerRef ? this._containerRef.current : document.body
   }
 
   onEdit(mq: MQMathField) {
