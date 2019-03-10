@@ -18,11 +18,8 @@ First, install server dependencies:
 
 Next, install `mongodb`, which is our database. This is not installed by `npm`: you'll need to install it yourself. On a Mac, `brew install mongodb` will do.
 
-Next, create the database directory and `.env` file by running:
-
+Create a `.env` file to set local environment variables:
 ```bash
-> mkdir data
-> mkdir data/db
 > cp dotenv_template .env
 ```
 
