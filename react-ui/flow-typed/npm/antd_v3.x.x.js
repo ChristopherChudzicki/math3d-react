@@ -1,3 +1,6 @@
+// flow-typed signature: 7ea3e2a84916904f577e758892d7d8c3
+// flow-typed version: ff9b65a21d/antd_v3.x.x/flow_>=v0.25.x
+
 declare module "antd" {
   import type { Node, Component } from "react";
 
@@ -398,8 +401,8 @@ declare module "antd" {
     okText?: string,
     okType?: 'primary' | 'dashed' | 'ghost' | 'danger' | 'default',
     title?: 'string' | React$Node,
-    onCancel?: (event: SyntheticEvent<HTMLElement>) => void,
-    onConfirm?: (event: SyntheticEvent<HTMLElement>) => void,
+    onCancel?: (event: SyntheticEvent<>) => void,
+    onConfirm?: (event: SyntheticEvent<>) => void,
     icon?: React$Node
   } & TooltipSharedProps
 
