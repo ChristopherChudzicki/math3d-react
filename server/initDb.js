@@ -13,6 +13,10 @@ dotenv.config()
 
 const DATABASE_URI = process.env.MONGODB_URI || process.env.LOCAL_MONGODB_URI
 
+if (DATABASE_URI === undefined) {
+  throw new Error("Environment variable 'DATABASE_URI' is undefined. See dot_env template for an example .env file.")
+}
+
 const options = { useNewUrlParser: true }
 mongodb.MongoClient.connect(DATABASE_URI, options, async (err, client) => {
 
