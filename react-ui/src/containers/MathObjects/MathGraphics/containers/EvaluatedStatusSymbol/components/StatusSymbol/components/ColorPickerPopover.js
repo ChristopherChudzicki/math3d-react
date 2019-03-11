@@ -16,7 +16,12 @@ type Props = {
 
 export default class ColorPickerPopover extends React.Component<Props> {
 
-  ref: ?HTMLElement
+  _containerRef: { current: null | HTMLDivElement }
+
+  constructor(props: Props) {
+    super(props)
+    this._containerRef = React.createRef()
+  }
 
   getContent() {
     return this.props.extraTabs
@@ -39,11 +44,14 @@ export default class ColorPickerPopover extends React.Component<Props> {
       )
   }
 
-  assignContainerRef = (ref: ?HTMLElement) => {
-    this.ref = ref
+  getContainerRef() {
+    // in rare cases, body can be null
+    if (document.body === null) {
+      throw new Error('document.body is null.')
+    }
+    // return body as default in case containing div hasn't rendered yet
+    return this._containerRef.current || document.body
   }
-
-  getContainerRef = () => this.ref
 
   handleVisibleChange = (visible: boolean) => {
     if (!visible) {
@@ -55,7 +63,7 @@ export default class ColorPickerPopover extends React.Component<Props> {
     return (
       <div
         style={{ position: 'relative' }}
-        ref={this.assignContainerRef}
+        ref={this._containerRef}
       >
         <Popover
           placement='right'

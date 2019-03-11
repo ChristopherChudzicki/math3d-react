@@ -106,8 +106,12 @@ export default class MathInput extends React.PureComponent<Props, State> {
   }
 
   getContainerRef() {
+    // in rare cases, body can be null
+    if (document.body === null) {
+      throw new Error('document.body is null.')
+    }
     // return body as default in case containing div hasn't rendered yet
-    return this._containerRef ? this._containerRef.current : document.body
+    return this._containerRef.current || document.body
   }
 
   onEdit(mq: MQMathField) {

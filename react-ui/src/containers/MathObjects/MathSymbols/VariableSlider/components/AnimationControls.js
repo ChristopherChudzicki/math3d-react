@@ -31,7 +31,7 @@ const speedDisplay = { cursor: 'default' }
 const groupStyle = { display: 'flex' }
 
 type Props = {
-  isAnimating: bool,
+  isAnimating: boolean,
   baseAnimationDuration: number,
   speedMultiplier: number,
   fps: number,
@@ -123,7 +123,7 @@ export default class AnimationControls extends PureComponent<Props> {
   canDecrement() {
     return this.props.speedMultiplier !== speedValues[0]
   }
-  decrementSpeed(speed: number) {
+  decrementSpeed() {
     const index = speedValues.indexOf(this.props.speedMultiplier)
     const newIndex = Math.max(index - 1, 0)
     const newSpeed = speedValues[newIndex]
@@ -154,7 +154,7 @@ export default class AnimationControls extends PureComponent<Props> {
           value={this.props.isAnimating}
           onClick={e => {
             // e.target.value is a string, so convert to bool:
-            if (e.target.value === 'false') {
+            if (e.currentTarget.value === 'false') {
               this.startAnimation()
             }
             else {
