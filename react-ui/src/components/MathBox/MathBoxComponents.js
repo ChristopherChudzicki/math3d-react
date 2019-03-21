@@ -1043,12 +1043,12 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       } )
       .group( { classes: ['gridV'] } )
       .resample( { source: data } )
-      .line()
+      .line( { zBias: 5 } )
       .end()
       .group( { classes: 'gridU' } )
       .resample( { source: data } )
       .transpose( { order: 'yx' } )
-      .line()
+      .line( { zBias: 5 } )
       .end()
 
     return group

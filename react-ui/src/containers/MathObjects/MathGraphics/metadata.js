@@ -305,7 +305,7 @@ const parametricSurfacaSpecific: MetaData = {
   },
   gridWidth: {
     inputType: 'math',
-    defaultValue: '4'
+    defaultValue: '2'
   },
   ...makeParametricSamplesAndGrid('u', 'v')
 }
