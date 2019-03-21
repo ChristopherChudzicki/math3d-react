@@ -204,6 +204,7 @@ const universalHandlers = {
   opacity: makeSetProperty('opacity', validateNumeric),
   zBias: makeSetProperty('zBias', validateNumeric),
   zIndex: makeSetProperty('zIndex', validateNumeric),
+  zOrder: makeSetProperty('zOrder', validateNumeric),
   color: makeSetProperty('color'),
   calculatedVisibility: function(nodes: HandlerNodes, props: Props) {
     const { calculatedVisibility, useCalculatedVisibility } = props
@@ -722,6 +723,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     this.handlers = {
       ...universalHandlers,
       ...surfaceHandlers,
+      zOrder: ParametricSurface.handleZOrder,
       color: this.handleColor,
       colorExpr: this.handleColorExpr,
       expr: this.handleExpr,
@@ -735,6 +737,14 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       gridU: ParametricSurface.handleGridU,
       gridV: ParametricSurface.handleGridV
     }
+  }
+
+  static handleZOrder(nodes: HandlerNodes, handledProps: HandledProps) {
+    const { zOrder } = handledProps
+    const { groupNode } = nodes
+    groupNode.select('surface').set( { zOrder } )
+    // Make sure to draw gridlines after the surface
+    groupNode.select('line').set( { zOrder: zOrder + 0.001 } )
   }
 
   static handleGridOpacity(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -1043,12 +1053,12 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       } )
       .group( { classes: ['gridV'] } )
       .resample( { source: data } )
-      .line()
+      .line( { zBias: 5 } )
       .end()
       .group( { classes: 'gridU' } )
       .resample( { source: data } )
       .transpose( { order: 'yx' } )
-      .line()
+      .line( { zBias: 5 } )
       .end()
 
     return group

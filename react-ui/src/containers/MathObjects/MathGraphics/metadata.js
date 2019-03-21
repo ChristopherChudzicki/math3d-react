@@ -113,13 +113,9 @@ const gridSpecific: MetaData = {
     defaultValue: '#808080',
     isPrimary: true
   },
-  opacity: {
-    inputType: 'math',
-    defaultValue: '0.5'
-  },
   width: {
     inputType: 'math',
-    defaultValue: '1'
+    defaultValue: '1/2'
   },
   divisions: {
     inputType: 'math',
@@ -305,7 +301,7 @@ const parametricSurfacaSpecific: MetaData = {
   },
   gridWidth: {
     inputType: 'math',
-    defaultValue: '4'
+    defaultValue: '2'
   },
   ...makeParametricSamplesAndGrid('u', 'v')
 }
