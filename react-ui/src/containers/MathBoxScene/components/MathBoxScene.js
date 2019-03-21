@@ -79,8 +79,10 @@ export default class MathBoxScene extends PureComponent<Props> {
   // that is numerically equal but not triple=
   renderGraphic(id: string, data: Object) {
     const Graphic = MathGraphics[data.type].mathboxComponent
+
+    // Fractional zOrder seems to behave strangely sometimes, hence *100
     const zOrder = typeof data.opacity === 'number'
-      ? 1 - data.opacity
+      ? (1 - data.opacity)*100
       : 0
     return (
       <Graphic
