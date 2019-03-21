@@ -21,6 +21,8 @@ export default class ColorPickerPopover extends React.Component<Props> {
   constructor(props: Props) {
     super(props)
     this._containerRef = React.createRef()
+    // $FlowFixMe
+    this.getContainerRef = this.getContainerRef.bind(this)
   }
 
   getContent() {
