@@ -743,6 +743,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     const { zOrder } = handledProps
     const { groupNode } = nodes
     groupNode.select('surface').set( { zOrder } )
+    // Make sure to draw gridlines after the surface
     groupNode.select('line').set( { zOrder: zOrder + 0.001 } )
   }
 
