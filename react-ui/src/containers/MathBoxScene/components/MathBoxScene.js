@@ -79,10 +79,14 @@ export default class MathBoxScene extends PureComponent<Props> {
   // that is numerically equal but not triple=
   renderGraphic(id: string, data: Object) {
     const Graphic = MathGraphics[data.type].mathboxComponent
+    const zOrder = typeof data.opacity === 'number'
+      ? 1 - data.opacity
+      : 0
     return (
       <Graphic
         id={id}
         key={id}
+        zOrder={zOrder}
         {...data}
         handleErrors={this.handleRenderErrors}
       />
