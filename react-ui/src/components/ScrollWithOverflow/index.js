@@ -82,7 +82,7 @@ export default class ScrollWithOverflow extends React.PureComponent<Props, State
   coverRef: { current: null | HTMLDivElement }
 
   eventNames = [
-    'mousedown', 'mousemove', 'mouseup', 'mousewheel',
+    'mousedown', 'mousemove', 'mouseup', 'wheel',
     'touchstart', 'touchmove', 'touchend'
   ]
 
