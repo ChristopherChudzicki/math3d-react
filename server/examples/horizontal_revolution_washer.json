@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Surface of Revolution: Washer Method (Horizontal Axis)",
     "versionAtCreation": "1.0.0",
-    "creationDate": "\"2018-12-26T01:54:14.293Z\""
+    "creationDate": "\"2019-04-02T01:47:29.328Z\""
   },
   "sortableTree": {
     "1": ["14", "15", "16"],
@@ -12,7 +12,8 @@
     "5": ["28", "29"],
     "6": ["21", "30", "31"],
     "7": ["19", "20"],
-    "root": ["mainFolder", "1", "2", "3", "4", "5", "6", "7"],
+    "32": ["33", "34", "35"],
+    "root": ["mainFolder", "1", "2", "3", "4", "5", "6", "32", "7"],
     "mainFolder": ["8", "9", "10", "11", "12", "13"]
   },
   "folders": {
@@ -37,11 +38,18 @@
     },
     "6": {
       "isCollapsed": true,
-      "description": "Caps"
+      "description": "Side Caps"
     },
     "7": {
       "isCollapsed": true,
       "description": "Helper Functions"
+    },
+    "32": {
+      "isCollapsed": true,
+      "description": "Front Cap"
+    },
+    "axes": {
+      "isCollapsed": true
     },
     "mainFolder": {
       "isCollapsed": true,
@@ -106,13 +114,13 @@
     "19": {
       "type": "VARIABLE",
       "name": "r_f\\left(t,\\ \\theta\\right)",
-      "value": "\\left[\\ t,\\ -\\left(f\\left(t\\right)-y\\right)\\cdot\\sin\\left(\\theta\\right),\\ \\left(f\\left(t\\right)-y\\right)\\cos\\left(\\theta\\right)\\right]+\\left[\\ 0,\\ 0,\\ y\\right]",
+      "value": "\\left[\\ t,\\ \\left(f\\left(t\\right)-y\\right)\\cdot\\sin\\left(\\theta\\right),\\ \\left(f\\left(t\\right)-y\\right)\\cos\\left(\\theta\\right)\\right]+\\left[\\ 0,\\ 0,\\ y\\right]",
       "description": "Outer Radius Surface Function"
     },
     "20": {
       "type": "VARIABLE",
       "name": "r_g\\left(t,\\theta\\right)",
-      "value": "\\left[\\ t,\\ -\\left(g\\left(t\\right)-y\\right)\\cdot\\sin\\left(\\theta\\right),\\ \\left(g\\left(t\\right)-y\\right)\\cos\\left(\\theta\\right)\\right]+\\left[\\ 0,\\ 0,\\ y\\right]",
+      "value": "\\left[\\ t,\\ \\left(g\\left(t\\right)-y\\right)\\cdot\\sin\\left(\\theta\\right),\\ \\left(g\\left(t\\right)-y\\right)\\cos\\left(\\theta\\right)\\right]+\\left[\\ 0,\\ 0,\\ y\\right]",
       "description": "Inner Radius Surface Function"
     },
     "21": {
@@ -120,6 +128,11 @@
       "name": "r_c(t,u,v)",
       "value": "r_f\\left(t,v\\right)+u\\cdot\\left(r_g\\left(t,v\\right)-r_f\\left(t,v\\right)\\right)",
       "description": "Cap Function"
+    },
+    "33": {
+      "type": "VARIABLE",
+      "name": "front\\left(u,\\ v\\right)",
+      "value": "v\\cdot r_f\\left(u,\\ \\theta\\right)\\ +\\ \\left(1-v\\right)\\cdot r_g\\left(u,\\ \\theta\\right)"
     }
   },
   "mathGraphics": {
@@ -136,7 +149,9 @@
       "calculatedVisibility": "washer",
       "expr": "_f(u,v)=r_c\\left(X-0.5\\cdot dX,u,v\\right)",
       "rangeU": "\\left[0,\\ 1\\right]",
-      "rangeV": "\\left[0,\\theta\\right]"
+      "rangeV": "\\left[0,\\theta\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
     },
     "23": {
       "type": "PARAMETRIC_SURFACE",
@@ -145,7 +160,9 @@
       "calculatedVisibility": "washer",
       "expr": "_f(u,v)=r_f\\left(u,v\\right)",
       "rangeU": "\\left[X-0.5\\cdot dX,\\ X+0.5\\cdot dX\\right]",
-      "rangeV": "\\left[0,\\theta\\right]"
+      "rangeV": "\\left[0,\\theta\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
     },
     "24": {
       "type": "PARAMETRIC_SURFACE",
@@ -154,7 +171,9 @@
       "calculatedVisibility": "washer",
       "expr": "_f(u,v)=r_c\\left(X+0.5\\cdot dX,u,v\\right)",
       "rangeU": "\\left[0,1\\right]",
-      "rangeV": "\\left[0,\\theta\\right]"
+      "rangeV": "\\left[0,\\theta\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
     },
     "25": {
       "type": "PARAMETRIC_CURVE",
@@ -166,9 +185,12 @@
     "26": {
       "type": "PARAMETRIC_SURFACE",
       "useCalculatedVisibility": true,
+      "opacity": "0.4",
       "expr": "_f(u,v)=r_g\\left(u,v\\right)",
       "rangeU": "\\left[a,b\\right]",
-      "rangeV": "\\left[0,\\theta\\right]"
+      "rangeV": "\\left[0,\\theta\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
     },
     "28": {
       "type": "PARAMETRIC_CURVE",
@@ -180,33 +202,61 @@
     "29": {
       "type": "PARAMETRIC_SURFACE",
       "useCalculatedVisibility": true,
+      "opacity": "0.4",
       "expr": "_f(u,v)=r_f\\left(u,v\\right)",
       "rangeU": "\\left[a,b\\right]",
-      "rangeV": "\\left[0,\\theta\\right]"
+      "rangeV": "\\left[0,\\theta\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
     },
     "30": {
       "type": "PARAMETRIC_SURFACE",
       "useCalculatedVisibility": true,
+      "opacity": "0.4",
       "expr": "_f(u,v)=r_c\\left(a,u,v\\right)",
       "rangeU": "\\left[0,1\\right]",
-      "rangeV": "\\left[0,\\theta\\right]"
+      "rangeV": "\\left[0,\\theta\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
     },
     "31": {
       "type": "PARAMETRIC_SURFACE",
       "useCalculatedVisibility": true,
+      "opacity": "0.4",
       "expr": "_f(u,v)=r_c\\left(b,u,v\\right)",
       "rangeU": "\\left[0,1\\right]",
-      "rangeV": "\\left[0,\\theta\\right]"
+      "rangeV": "\\left[0,\\theta\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
+    },
+    "34": {
+      "type": "PARAMETRIC_SURFACE",
+      "opacity": "0.4",
+      "expr": "_f(u,v)=front\\left(u,\\ v\\right)",
+      "rangeU": "\\left[a,\\ b\\right]",
+      "rangeV": "\\left[0,\\ 1\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
+    },
+    "35": {
+      "type": "PARAMETRIC_SURFACE",
+      "color": "#e74c3c",
+      "expr": "_f(u,v)=front\\left(u,\\ v\\right)",
+      "rangeU": "\\left[X-\\frac{dX}{2},X+\\frac{dX}{2}\\right]",
+      "rangeV": "\\left[0,1\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
     },
     "camera": {
       "type": "CAMERA",
       "useCalculatedVisibility": true,
-      "relativePosition": [1.5428824647657484, -2.200500605086736, 1.038453430949712],
+      "relativePosition": [0.6735280873337601, -2.4825488355605514, 0.3802478838206742],
       "relativeLookAt": [0, 0, 0]
     },
     "axis-x": {
       "type": "AXIS",
-      "useCalculatedVisibility": true
+      "useCalculatedVisibility": true,
+      "min": "-1"
     },
     "axis-y": {
       "type": "AXIS",
@@ -216,6 +266,7 @@
     "axis-z": {
       "type": "AXIS",
       "useCalculatedVisibility": true,
+      "label": "y",
       "scale": "1"
     },
     "grid-xy": {
@@ -232,7 +283,7 @@
     }
   },
   "sliderValues": {
-    "14": 4.523893421169302,
+    "14": 6.283185307179587,
     "15": 2.86
   }
 }
