@@ -1,0 +1,268 @@
+{
+  "metadata": {
+    "title": "Volume of Revolution: Shell Method ",
+    "versionAtCreation": "1.2.0",
+    "creationDate": "\"2019-04-02T02:53:45.911Z\""
+  },
+  "sortableTree": {
+    "2": ["11", "12", "14", "17"],
+    "3": ["15", "16", "25"],
+    "19": ["23", "22"],
+    "20": [],
+    "24": ["26", "27"],
+    "30": ["28", "31", "32", "33"],
+    "34": ["38"],
+    "39": [],
+    "root": ["mainFolder", "2", "34", "19", "24", "30", "3"],
+    "mainFolder": ["6", "7", "9", "10", "37", "29"]
+  },
+  "folders": {
+    "2": {
+      "description": "Controls"
+    },
+    "3": {
+      "isCollapsed": true,
+      "description": "Helper Functions"
+    },
+    "19": {
+      "isCollapsed": true,
+      "description": "Surfaces: Top and Bottom"
+    },
+    "24": {
+      "isCollapsed": true,
+      "description": "Surfaces: Inner, Outer"
+    },
+    "30": {
+      "isCollapsed": true,
+      "description": "Surfaces: Shell"
+    },
+    "34": {
+      "isCollapsed": true,
+      "description": "Axis"
+    },
+    "mainFolder": {
+      "isCollapsed": true,
+      "description": "Settings"
+    }
+  },
+  "mathSymbols": {
+    "6": {
+      "type": "VARIABLE",
+      "value": "6-x^2",
+      "description": "Top Function"
+    },
+    "7": {
+      "type": "VARIABLE",
+      "name": "g\\left(x\\right)",
+      "value": "x",
+      "description": "Bottom Function"
+    },
+    "9": {
+      "type": "VARIABLE",
+      "name": "a",
+      "value": "0",
+      "description": "Inner Radius"
+    },
+    "10": {
+      "type": "VARIABLE",
+      "name": "b",
+      "value": "2",
+      "description": "Outer Radius"
+    },
+    "11": {
+      "type": "VARIABLE",
+      "name": "X",
+      "value": "-1",
+      "description": "Axis"
+    },
+    "12": {
+      "type": "VARIABLE_SLIDER",
+      "name": "\\theta",
+      "min": "0",
+      "max": "2\\pi",
+      "description": "Rotation Angle"
+    },
+    "14": {
+      "type": "VARIABLE_SLIDER",
+      "name": "R",
+      "min": "a",
+      "max": "b",
+      "description": "Shell Radius"
+    },
+    "15": {
+      "type": "VARIABLE",
+      "name": "r_f\\left(t,\\ \\theta\\right)",
+      "value": "\\left[\\left(t-X\\right)\\cdot\\cos\\left(\\theta\\right),\\ \\left(t-X\\right)\\cdot\\sin\\left(\\theta\\right),\\ f\\left(t\\right)\\right]+\\left[X,0,0\\right]",
+      "description": "Top Surface Function"
+    },
+    "16": {
+      "type": "VARIABLE",
+      "name": "r_g\\left(t,\\ \\theta\\right)",
+      "value": "\\left[\\left(t-X\\right)\\cdot\\cos\\left(\\theta\\right),\\ \\left(t-X\\right)\\cdot\\sin\\left(\\theta\\right),\\ g\\left(t\\right)\\right]+\\left[X,0,0\\right]",
+      "description": "Bottom Surface Function"
+    },
+    "17": {
+      "type": "BOOLEAN_VARIABLE",
+      "name": "shell",
+      "description": "Shell Visibility"
+    },
+    "25": {
+      "type": "VARIABLE",
+      "name": "r_I\\left(\\theta,\\ t,\\ r\\right)",
+      "value": "t\\cdot r_f\\left(r,\\ \\theta\\right)+\\left(1-t\\right)\\cdot r_g\\left(r,\\ \\theta\\right)",
+      "description": "Interpolator Function"
+    },
+    "29": {
+      "type": "VARIABLE",
+      "name": "dR",
+      "value": "0.05",
+      "description": "Shell Width"
+    },
+    "37": {
+      "type": "VARIABLE",
+      "name": "axisBounds",
+      "value": "\\left[-3,\\ 7\\right]",
+      "description": "Axis Bounds"
+    }
+  },
+  "mathGraphics": {
+    "22": {
+      "type": "PARAMETRIC_SURFACE",
+      "useCalculatedVisibility": true,
+      "opacity": "0.4",
+      "expr": "_f(u,v)=r_g\\left(u,\\ v\\right)",
+      "rangeU": "\\left[a,\\ b\\right]",
+      "rangeV": "\\left[0,\\ \\theta\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
+    },
+    "23": {
+      "type": "PARAMETRIC_SURFACE",
+      "useCalculatedVisibility": true,
+      "opacity": "0.4",
+      "expr": "_f(u,v)=r_f\\left(u,\\ v\\right)",
+      "rangeU": "\\left[a,\\ b\\right]",
+      "rangeV": "\\left[0,\\ \\theta\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
+    },
+    "26": {
+      "type": "PARAMETRIC_SURFACE",
+      "description": "Inner Surface",
+      "useCalculatedVisibility": true,
+      "opacity": "1",
+      "expr": "_f(u,v)=r_I\\left(u,\\ v,\\ a\\right)",
+      "rangeU": "\\left[0,\\ \\theta\\right]",
+      "rangeV": "\\left[0,\\ 1\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
+    },
+    "27": {
+      "type": "PARAMETRIC_SURFACE",
+      "description": "Outer Surface",
+      "useCalculatedVisibility": true,
+      "opacity": "0.3",
+      "expr": "_f(u,v)=r_I\\left(u,\\ v,\\ b\\right)",
+      "rangeU": "\\left[0,\\ \\theta\\right]",
+      "rangeV": "\\left[0,\\ 1\\right]",
+      "uSamples": "24",
+      "vSamples": "24"
+    },
+    "28": {
+      "type": "PARAMETRIC_SURFACE",
+      "description": "Shell Inner",
+      "useCalculatedVisibility": true,
+      "color": "#e74c3c",
+      "calculatedVisibility": "shell",
+      "expr": "_f(u,v)=r_I\\left(u,\\ v,\\ R-\\frac{dR}{2}\\right)",
+      "rangeU": "\\left[0,\\ \\theta\\right]",
+      "rangeV": "\\left[0,\\ 1\\right]",
+      "uSamples": "24",
+      "vSamples": "4",
+      "gridU": "2",
+      "gridV": "2"
+    },
+    "31": {
+      "type": "PARAMETRIC_SURFACE",
+      "description": "Shell Outer",
+      "useCalculatedVisibility": true,
+      "color": "#e74c3c",
+      "calculatedVisibility": "shell",
+      "expr": "_f(u,v)=r_I\\left(u,\\ v,\\ R+\\frac{dR}{2}\\right)",
+      "rangeU": "\\left[0,\\ \\theta\\right]",
+      "rangeV": "\\left[0,\\ 1\\right]",
+      "uSamples": "24",
+      "vSamples": "4",
+      "gridU": "2",
+      "gridV": "2"
+    },
+    "32": {
+      "type": "PARAMETRIC_SURFACE",
+      "description": "Shell Top",
+      "useCalculatedVisibility": true,
+      "color": "#e74c3c",
+      "calculatedVisibility": "shell",
+      "expr": "_f(u,v)=r_f\\left(u,\\ v\\right)",
+      "rangeU": "\\left[R-\\frac{dR}{2},R+\\frac{dR}{2}\\right]",
+      "rangeV": "\\left[0,\\ \\theta\\right]",
+      "uSamples": "24",
+      "vSamples": "24",
+      "gridU": "2",
+      "gridV": "2"
+    },
+    "33": {
+      "type": "PARAMETRIC_SURFACE",
+      "description": "Shell Bottom",
+      "useCalculatedVisibility": true,
+      "color": "#e74c3c",
+      "calculatedVisibility": "shell",
+      "expr": "_f(u,v)=r_g\\left(u,\\ v\\right)",
+      "rangeU": "\\left[R-\\frac{dR}{2},R+\\frac{dR}{2}\\right]",
+      "rangeV": "\\left[0,\\ \\theta\\right]"
+    },
+    "38": {
+      "type": "LINE",
+      "color": "#2c3e50",
+      "width": "8",
+      "coords": "\\left[\\left[\\left[X,0,axisBounds\\left[1\\right]\\right],\\ \\left[X,\\ 0,\\ axisBounds\\left[2\\right]\\right]\\right]\\right]"
+    },
+    "camera": {
+      "type": "CAMERA",
+      "useCalculatedVisibility": true,
+      "relativePosition": [-0.03348995414468906, -1.266062010915184, 0.09566639078620043],
+      "relativeLookAt": [0, 0, 0]
+    },
+    "axis-x": {
+      "type": "AXIS",
+      "useCalculatedVisibility": true
+    },
+    "axis-y": {
+      "type": "AXIS",
+      "visible": false
+    },
+    "axis-z": {
+      "type": "AXIS",
+      "useCalculatedVisibility": true,
+      "label": "y",
+      "min": "-4",
+      "max": "+8"
+    },
+    "grid-xy": {
+      "type": "GRID",
+      "visible": false
+    },
+    "grid-yz": {
+      "type": "GRID",
+      "useCalculatedVisibility": true
+    },
+    "grid-zx": {
+      "type": "GRID",
+      "visible": true
+    }
+  },
+  "sliderValues": {
+    "5": 0,
+    "12": 0,
+    "14": 1.3
+  }
+}
