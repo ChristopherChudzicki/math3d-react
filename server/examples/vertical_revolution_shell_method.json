@@ -2,10 +2,10 @@
   "metadata": {
     "title": "Volume of Revolution: Shell Method ",
     "versionAtCreation": "1.2.0",
-    "creationDate": "\"2019-04-02T02:53:45.911Z\""
+    "creationDate": "\"2019-04-03T20:28:39.931Z\""
   },
   "sortableTree": {
-    "2": ["11", "12", "14", "17"],
+    "2": ["6", "7", "12", "14", "17", "11", "9", "10", "29", "37", "39"],
     "3": ["15", "16", "25"],
     "19": ["23", "22"],
     "20": [],
@@ -13,8 +13,8 @@
     "30": ["28", "31", "32", "33"],
     "34": ["38"],
     "39": [],
-    "root": ["mainFolder", "2", "34", "19", "24", "30", "3"],
-    "mainFolder": ["6", "7", "9", "10", "37", "29"]
+    "root": ["2", "34", "19", "24", "30", "3"],
+    "mainFolder": []
   },
   "folders": {
     "2": {
@@ -39,10 +39,6 @@
     "34": {
       "isCollapsed": true,
       "description": "Axis"
-    },
-    "mainFolder": {
-      "isCollapsed": true,
-      "description": "Settings"
     }
   },
   "mathSymbols": {
@@ -120,9 +116,15 @@
     },
     "37": {
       "type": "VARIABLE",
-      "name": "axisBounds",
-      "value": "\\left[-3,\\ 7\\right]",
-      "description": "Axis Bounds"
+      "name": "y_1",
+      "value": "-3",
+      "description": "Rotation Axis Bottom"
+    },
+    "39": {
+      "type": "VARIABLE",
+      "name": "y_2",
+      "value": "7",
+      "description": "Rotation Axis Top"
     }
   },
   "mathGraphics": {
@@ -224,12 +226,12 @@
       "type": "LINE",
       "color": "#2c3e50",
       "width": "8",
-      "coords": "\\left[\\left[\\left[X,0,axisBounds\\left[1\\right]\\right],\\ \\left[X,\\ 0,\\ axisBounds\\left[2\\right]\\right]\\right]\\right]"
+      "coords": "\\left[\\left[X,0,y_1\\right],\\left[X,0,y_2\\right]\\right]"
     },
     "camera": {
       "type": "CAMERA",
       "useCalculatedVisibility": true,
-      "relativePosition": [-0.03348995414468906, -1.266062010915184, 0.09566639078620043],
+      "relativePosition": [0.014909559463207885, -1.2388397109310323, 0.2797150809201208],
       "relativeLookAt": [0, 0, 0]
     },
     "axis-x": {
@@ -262,7 +264,7 @@
   },
   "sliderValues": {
     "5": 0,
-    "12": 0,
+    "12": 3.9584067435231396,
     "14": 1.3
   }
 }

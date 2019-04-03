@@ -2,10 +2,10 @@
   "metadata": {
     "title": "Surface of Revolution: Washer Method (Horizontal Axis)",
     "versionAtCreation": "1.0.0",
-    "creationDate": "\"2019-04-02T01:47:29.328Z\""
+    "creationDate": "\"2019-04-03T20:30:37.642Z\""
   },
   "sortableTree": {
-    "1": ["14", "15", "16"],
+    "1": ["10", "11", "14", "15", "16", "8", "9", "12", "13"],
     "2": ["18"],
     "3": ["22", "23", "24"],
     "4": ["25", "26"],
@@ -13,12 +13,12 @@
     "6": ["21", "30", "31"],
     "7": ["19", "20"],
     "32": ["33", "34", "35"],
-    "root": ["mainFolder", "1", "2", "3", "4", "5", "6", "32", "7"],
-    "mainFolder": ["8", "9", "10", "11", "12", "13"]
+    "root": ["1", "2", "3", "4", "5", "6", "32", "7"],
+    "mainFolder": []
   },
   "folders": {
     "1": {
-      "description": "Slider Controls"
+      "description": "Controls"
     },
     "2": {
       "isCollapsed": true,
@@ -50,10 +50,6 @@
     },
     "axes": {
       "isCollapsed": true
-    },
-    "mainFolder": {
-      "isCollapsed": true,
-      "description": "Settings"
     }
   },
   "mathSymbols": {
@@ -250,7 +246,7 @@
     "camera": {
       "type": "CAMERA",
       "useCalculatedVisibility": true,
-      "relativePosition": [0.6735280873337601, -2.4825488355605514, 0.3802478838206742],
+      "relativePosition": [0.5149807781923083, -2.4733700720570853, 0.61523373059784],
       "relativeLookAt": [0, 0, 0]
     },
     "axis-x": {
