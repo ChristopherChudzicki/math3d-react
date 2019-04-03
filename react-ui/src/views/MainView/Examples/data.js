@@ -69,6 +69,10 @@ export const neatExamples: Examples = [
     title: 'Surface of Revolution: Washer Method (Horizontal Axis)'
   },
   {
+    id: 'vertical_revolution_shell_method',
+    title: 'Surface of Revolution: Shell Method (Vertical Axis)'
+  },
+  {
     id: 'sphere_colormap',
     title: 'Color Maps on a Sphere'
   },
