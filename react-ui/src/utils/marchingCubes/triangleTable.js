@@ -1,3 +1,6 @@
+// This Lookup Table is taken from Paul Bourke's page: http://paulbourke.net/geometry/polygonise/
+// but it is originally created by Cory Gene Bloyd.
+
 export const triangleTable = [
   [],
   [[0, 8, 3]],
