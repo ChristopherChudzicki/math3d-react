@@ -124,6 +124,7 @@ export function rehydrate(dehydrated) {
   const sortableTree = { ...sortableTreeFixedPortion, ...sortableTreeWithoutFixed }
 
   const rehydrated = {
+    activeObject: null,
     metadata: { ...metadataInitial, ...metadata },
     sortableTree,
     sliderValues,
