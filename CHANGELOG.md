@@ -1,6 +1,13 @@
 # Change Log
 
-## Version 1.2.0
+## Version 1.2
+
+## Version 1.2.1
+  - fixed a bug that caused some successfully loaded graphs to crash when new object added (#200)
+  - added inverse trig functions `arctan`, `arcsin`, `arccos`. The `arctan` function can be called with 1 or 2 arguments.
+  - fixed a bug that caused some graphs to crash on load (#190)
+
+### Version 1.2.0
 
  - Updated MathBox to use newer version of ThreeJS. This fixes scrolling/zooming issues in Firefox.
  - Objects are now drawn in order of decreasing opacity
