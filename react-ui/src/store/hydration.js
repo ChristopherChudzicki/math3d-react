@@ -154,6 +154,10 @@ export function rehydrate(dehydrated) {
 function getMaxId(sortableTree) {
   let maxId = 0
   sortableTree.root.forEach(folderId => {
+    const folderIdasNumber = parseInt(folderId, 10)
+    if (folderIdasNumber > maxId) {
+      maxId = folderIdasNumber
+    }
     sortableTree[folderId].forEach(id => {
       const asNumber = parseInt(id, 10)
       if (asNumber > maxId) {
