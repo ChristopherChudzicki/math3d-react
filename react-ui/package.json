@@ -1,6 +1,6 @@
 {
   "name": "math3d-react",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
