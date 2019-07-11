@@ -21,8 +21,7 @@ type NodeBase<node> = {
 }
 
 type GenericNode<node> = NodeBase<node> & {
-  type:
-  | "AccessorNode"
+  type: | "AccessorNode"
   | "ArrayNode"
   // | "AssignmentNode" // treated separately, as are others commented out
   | "BlockNode"
@@ -100,5 +99,6 @@ export type Math = {
   acos: (number) => number,
   asin: (number) => number,
   atan: (number) => number,
-  atan2: (y: number, x: number) => number
+  atan2: (y: number, x: number) => number,
+  trace: (Numeric) => number
 }

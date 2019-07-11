@@ -50,3 +50,20 @@ export const curl = (f: NumericFunction, x: number, y: number, z: number) => {
   // $FlowFixMe flow has trouble recognizing that diff() returned a 3 x 3 matrix
   return [ dyf[2] - dzf[1], dzf[0] - dxf[2], dxf[1] - dyf[0] ]
 }
+
+export const div = (f: NumericFunction, x: number, y: number, z: number) => {
+  // $FlowFixMe
+  const fullDeriv: Numeric = diff(f, x, y, z)
+  return math.trace(fullDeriv)
+}
+
+export const pdiff = (f: NumericFunction, argNumber: number, ...values: Array<Numeric>) => {
+  // argNumber is 1-indexed
+  const trueArgNumber = argNumber - 1
+  const original = values[trueArgNumber]
+  values[trueArgNumber] = math.add(original, EPS2)
+  const finalValue = f(...values)
+  values[trueArgNumber] = math.add(original, -EPS2)
+  const initialValue = f(...values)
+  return math.divide(math.subtract(finalValue, initialValue), EPS)
+}
