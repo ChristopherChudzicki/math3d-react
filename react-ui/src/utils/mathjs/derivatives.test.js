@@ -138,13 +138,13 @@ describe('div', () => {
 describe('pdiff', () => {
   it('is correct for scalar functions', () => {
     const f = (x, y, z) => x * y**2 * z**3
-    expect((x, y, z) => pdiff(f, 1, x, y, z))
+    expect((x, y, z) => pdiff(f, x, y, z, 1))
       .toNearlyEqual((x, y, z) => y**2 * z**3)
 
-    expect((x, y, z) => pdiff(f, 2, x, y, z))
+    expect((x, y, z) => pdiff(f, x, y, z, 2))
       .toNearlyEqual((x, y, z) => 2 * x * y * z**3)
 
-    expect((x, y, z) => pdiff(f, 3, x, y, z))
+    expect((x, y, z) => pdiff(f, x, y, z, 3))
       .toNearlyEqual((x, y, z) => 3 * x * y**2 * z**2)
   } )
 } )

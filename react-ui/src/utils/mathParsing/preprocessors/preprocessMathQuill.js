@@ -17,6 +17,10 @@ import { replaceAll, findClosingBrace } from '../../helpers'
 export default function mathquillToMathJS(fromMQ: string) {
   const replacements = [
     { tex: '\\operatorname{diff}', mathjs: 'diff' },
+    { tex: '\\operatorname{pdiff}', mathjs: 'pdiff' },
+    { tex: '\\operatorname{curl}', mathjs: 'curl' },
+    { tex: '\\operatorname{div}', mathjs: 'div' },
+    { tex: '\\operatorname{norm}', mathjs: 'norm' },
     { tex: '\\operatorname{mod}', mathjs: 'mod' },
     { tex: '\\operatorname{abs}', mathjs: 'abs' },
     { tex: '\\operatorname{unitT}', mathjs: 'unitT' },

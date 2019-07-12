@@ -57,13 +57,16 @@ export const div = (f: NumericFunction, x: number, y: number, z: number) => {
   return math.trace(fullDeriv)
 }
 
-export const pdiff = (f: NumericFunction, argNumber: number, ...values: Array<Numeric>) => {
-  // argNumber is 1-indexed
-  const trueArgNumber = argNumber - 1
-  const original = values[trueArgNumber]
-  values[trueArgNumber] = math.add(original, EPS2)
-  const finalValue = f(...values)
-  values[trueArgNumber] = math.add(original, -EPS2)
-  const initialValue = f(...values)
+export const pdiff = (f: NumericFunction, ...args: Array<Numeric>) => {
+  // The last element of args should be the argument number we're differentiating
+  // with respect to. For example, pdiff(f, x, y, 1)
+
+  // $FlowFixMe The last element of args should be a number
+  const diffNumber = args.pop() - 1
+  const original = args[diffNumber]
+  args[diffNumber] = math.add(original, EPS2)
+  const finalValue = f(...args)
+  args[diffNumber] = math.add(original, -EPS2)
+  const initialValue = f(...args)
   return math.divide(math.subtract(finalValue, initialValue), EPS)
 }
