@@ -7,6 +7,12 @@ type NumericFunction = (...args: Array<Numeric>) => Numeric
 const EPS = 0.0008
 const EPS2 = EPS/2
 
+// TODO: diff currently accepts two call signatures:
+//  1. diff(f), returns a function
+//  2. diff(f, x, y...), returns a numeric value
+//  The first signature was used in a very old version of math3d, but is never
+//  used now internally or in examples. Also, it causes a bunch of flow problems
+//  so let's remove it.
 export const diff = (f: NumericFunction, ...values: [] | Array<Numeric>) => {
 
   const derivative = (...args: Array<Numeric>): Numeric => {
@@ -51,9 +57,9 @@ export const curl = (f: NumericFunction, x: number, y: number, z: number) => {
   return [ dyf[2] - dzf[1], dzf[0] - dxf[2], dxf[1] - dyf[0] ]
 }
 
-export const div = (f: NumericFunction, x: number, y: number, z: number) => {
+export const div = (f: NumericFunction, ...values: Array<number>) => {
   // $FlowFixMe
-  const fullDeriv: Numeric = diff(f, x, y, z)
+  const fullDeriv: Numeric = diff(f, ...values)
   return math.trace(fullDeriv)
 }
 
