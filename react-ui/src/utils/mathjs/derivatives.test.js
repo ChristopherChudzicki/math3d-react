@@ -1,4 +1,4 @@
-import { diff, unitT, unitN, unitB } from './derivatives'
+import { diff, unitT, unitN, unitB, curl, div, pdiff } from './derivatives'
 import math from './custom'
 import { toNearlyEqual } from 'utils/testing/matchers'
 
@@ -109,5 +109,42 @@ describe('unitB', () => {
     ]
     expect(t => unitB(f, t)).toNearlyEqual(manualUnitB)
 
+  } )
+} )
+
+describe('curl', () => {
+  it('is correct in special case', () => {
+    const f = (x, y, z) => [x*y*z, x**2*y**2*z**2, x**3*y**3*z**3]
+    const manualCurl = (x, y, z) => [
+      -2*x**2*y**2*z + 3*x**3*y**2*z**3,
+      x*y - 3*x**2*y**3*z**3,
+      -x*z + 2*x*y**2*z**2
+    ]
+    const calcCurl = (x, y, z) => curl(f, x, y, z)
+    expect(calcCurl).toNearlyEqual(manualCurl)
+
+  } )
+} )
+
+describe('div', () => {
+  it('is correct in special case', () => {
+    const f = (x, y, z) => [x*y*z, x**2*y**2*z**2, x**3*y**3*z**3]
+    const manualDiv = (x, y, z) => y*z + 2*x**2*y*z**2 + 3*x**3*y**3*z**2
+    const calcDiv = (x, y, z) => div(f, x, y, z)
+    expect(calcDiv).toNearlyEqual(manualDiv)
+  } )
+} )
+
+describe('pdiff', () => {
+  it('is correct for scalar functions', () => {
+    const f = (x, y, z) => x * y**2 * z**3
+    expect((x, y, z) => pdiff(f, x, y, z, 1))
+      .toNearlyEqual((x, y, z) => y**2 * z**3)
+
+    expect((x, y, z) => pdiff(f, x, y, z, 2))
+      .toNearlyEqual((x, y, z) => 2 * x * y * z**3)
+
+    expect((x, y, z) => pdiff(f, x, y, z, 3))
+      .toNearlyEqual((x, y, z) => 3 * x * y**2 * z**2)
   } )
 } )
