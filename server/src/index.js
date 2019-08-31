@@ -2,6 +2,8 @@
 import 'source-map-support/register'
 import express from 'express'
 import { seedDb } from './initDb'
+import { attachDb } from './middleware'
+import { saveNewGraph, loadGraph, updateGraph } from './graph'
 const bodyParser = require("body-parser");
 const path = require('path')
 const cluster = require('cluster')
@@ -10,7 +12,7 @@ const numCPUs = require('os').cpus().length
 
 const PORT = process.env.PORT || 5000
 const DATABASE_URI = process.env.MONGODB_URI || process.env.LOCAL_MONGODB_URI
-const GRAPH_COLLECTION = 'graph'
+
 
 const STATIC_DIR = path.resolve(__dirname, '../../client/build')
 
@@ -57,52 +59,13 @@ else {
       console.error(`Node cluster worker ${process.pid}: listening on port ${PORT}`)
     })
 
-    // Implement database API
-   /**
-    * "api/graph"
-    * POST: post a new graph
-    */
-    app.post("/api/graph", function(req, res) {
-      const newGraph = req.body;
+    app.use(attachDb(db))
 
-      db.collection(GRAPH_COLLECTION).insertOne(newGraph, function(err, doc) {
-        if (err) {
-          handleError(res, err.message, "Failed to save new graph.");
-        }
-        else {
-          res.status(201).json(doc.ops[0]);
-        }
-      });
+    app.post("/api/graph", saveNewGraph)
 
-    });
-    /**
-     * "api/graph:id"
-     * GET: get graph by id
-     * PUT: update graph by id
-     * DELETE: delete graph by id
-     */
+    app.get("/api/graph/:id", loadGraph)
 
-    app.get("/api/graph/:id", function(req, res) {
-      db.collection(GRAPH_COLLECTION).findOne({ _id: req.params.id }, function(err, doc) {
-        if (err) {
-          handleError(res, err.message, "Failed to get graph");
-        }
-        else {
-          res.status(200).json(doc);
-        }
-      } );
-    } );
-
-    app.put("/api/graph/:id", function(req, res) {
-      const update = req.body
-      db.collection(GRAPH_COLLECTION).update({ _id: req.params.id }, { $set: update }, function(err, doc) {
-        if (err) {
-          handleError(res, err.message, "Failed to put data");
-        } else {
-          res.status(200).json(doc);
-        }
-      });
-    } )
+    app.put("/api/graph/:id", updateGraph)
 
     // All remaining requests return the React app, so it can handle routing.
     app.get('*', function(request, response) {
