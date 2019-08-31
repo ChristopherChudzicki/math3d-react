@@ -1,18 +1,18 @@
 // From https://github.com/mars/heroku-cra-node
-const express = require('express')
-const dotenv = require('dotenv')
+import 'source-map-support/register'
+import express from 'express'
+import { seedDb } from './initDb'
 const bodyParser = require("body-parser");
 const path = require('path')
 const cluster = require('cluster')
 const mongodb = require('mongodb')
 const numCPUs = require('os').cpus().length
 
-dotenv.config()
-
 const PORT = process.env.PORT || 5000
 const DATABASE_URI = process.env.MONGODB_URI || process.env.LOCAL_MONGODB_URI
 const GRAPH_COLLECTION = 'graph'
 
+const STATIC_DIR = path.resolve(__dirname, '../../client/build')
 
 // Multi-process to utilize all CPU cores.
 if (cluster.isMaster) {
@@ -37,14 +37,17 @@ else {
   app.use(bodyParser.json());
 
   // Priority serve any static files.
-  app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
+  app.use(express.static(STATIC_DIR));
 
   // Connect to the database before starting the application server.
-  mongodb.MongoClient.connect(DATABASE_URI, function (err, client) {
+  mongodb.MongoClient.connect(DATABASE_URI, async function (err, client) {
     if (err) {
       console.log(err);
       process.exit(1);
     }
+
+    // This is silly. Currently seeding the db from each cluster.
+    await seedDb(err, client)
 
     // Save database object from the callback for reuse.
     db = client.db()
@@ -103,7 +106,7 @@ else {
 
     // All remaining requests return the React app, so it can handle routing.
     app.get('*', function(request, response) {
-      response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
+      response.sendFile(path.resolve(STATIC_DIR, 'index.html'));
     });
 
   })

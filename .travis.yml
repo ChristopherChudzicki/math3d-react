@@ -5,8 +5,7 @@ cache:
   directories:
     - node_modules
 before_install:
-    - "cd react-ui"
+    - "cd web"
 script:
   - npm test
   - npm run build
-  
