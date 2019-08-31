@@ -12,8 +12,6 @@ const numCPUs = require('os').cpus().length
 
 const PORT = process.env.PORT || 5000
 const DATABASE_URI = process.env.MONGODB_URI || process.env.LOCAL_MONGODB_URI
-
-
 const STATIC_DIR = path.resolve(__dirname, '../../client/build')
 
 // Multi-process to utilize all CPU cores.
