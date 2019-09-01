@@ -1,17 +1,17 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # sensitive stuff
-.env
+server/.env
 
 # dependencies
-/node_modules
-react-ui/node_modules
+*node_modules
 
 # testing
 /coverage
 
 # production
-react-ui/build
+server/build
+client/build
 
 # misc
 .DS_Store

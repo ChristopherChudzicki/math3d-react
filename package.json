@@ -1,36 +1,33 @@
 {
-  "name": "math3d-server",
+  "name": "math3d",
   "version": "1.2.2",
   "description": "Express server for math3d-react app.",
   "engines": {
     "node": "8.9.x"
   },
   "scripts": {
-    "start": "node server/initDb.js && node server",
-    "heroku-postbuild": "node server/initDb.js && cd react-ui/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
+    "postinstall": "npm-run-all --parallel install:server install:client",
+    "install:server": "npm --prefix ./server install",
+    "install:client": "npm --prefix ./client install",
+    "install:dev": "npm-run-all --parallel install:dev:server install:dev:client",
+    "install:dev:server": "npm --prefix ./server --only=dev install",
+    "install:dev:client": "npm --prefix ./client --only=dev install",
+    "build": "npm-run-all --parallel build:server build:client",
+    "build:server": "npm --prefix ./server run build",
+    "build:client": "npm --prefix ./client run build",
+    "heroku-postbuild": "npm run install:dev && npm run build",
+    "start": "npm --prefix ./server start",
     "start-db": "mongod --dbpath data/db"
   },
   "cacheDirectories": [
-    "node_modules",
-    "react-ui/node_modules"
+    "api/node_modules",
+    "web/node_modules"
   ],
-  "dependencies": {
-    "body-parser": "^1.18.3",
-    "dotenv": "^6.0.0",
-    "express": "^4.16.3",
-    "fs": "0.0.1-security",
-    "minimist": "^1.2.0",
-    "mongodb": "^3.1.6"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/mars/heroku-cra-node.git"
   },
-  "keywords": [
-    "node",
-    "heroku",
-    "create-react-app",
-    "react"
-  ],
-  "devDependencies": {}
+  "dependencies": {
+    "npm-run-all": "^4.1.5"
+  }
 }
