@@ -1,0 +1,26 @@
+{
+	"env": {
+		"node": true
+	},
+  "plugins": [],
+	"extends": [
+    "standard"
+  ],
+	"parser": "babel-eslint",
+	"rules": {
+    "no-unused-expressions": "error",
+    "space-infix-ops": "off",
+    "multiline-ternary": ["error", "always-multiline"],
+		"space-in-parens": ["error", "never", { "exceptions": ["{}", "[]"] }],
+		"object-curly-spacing": ["error", "always"],
+		"no-use-before-define": ["error", { "functions": false }],
+		"complexity": [1, 10],
+    "space-before-function-paren": ["error", {
+      "anonymous": "never",
+      "named": "never",
+      "asyncArrow": "always"
+    }],
+    "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+    "padded-blocks": ["error", {"classes": "always", "switches": "always"}]
+	}
+}

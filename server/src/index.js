@@ -3,11 +3,13 @@ import 'source-map-support/register'
 import express from 'express'
 import { seedDb } from './initDb'
 import { attachDb } from './middleware'
-import { saveNewGraph, loadGraph, updateGraph } from './graph'
-const bodyParser = require("body-parser");
-const path = require('path')
-const cluster = require('cluster')
-const mongodb = require('mongodb')
+import { saveNewGraph, loadGraph } from './graph'
+import mongoose from 'mongoose'
+import bodyParser from 'body-parser'
+import path from 'path'
+import cluster from 'cluster'
+import mongodb from 'mongodb'
+import { wrapAsync } from './utils'
 const numCPUs = require('os').cpus().length
 
 const PORT = process.env.PORT || 5000
@@ -30,14 +32,15 @@ if (cluster.isMaster) {
 }
 else {
   // will hold the db object
-  let db;
-  const app = express();
+  const app = express()
 
   // get json from request bodies
-  app.use(bodyParser.json());
+  app.use(bodyParser.json())
 
   // Priority serve any static files.
-  app.use(express.static(STATIC_DIR));
+  app.use(express.static(STATIC_DIR))
+
+  mongoose.connect(DATABASE_URI, { useNewUrlParser: true } )
 
   // Connect to the database before starting the application server.
   mongodb.MongoClient.connect(DATABASE_URI, async function (err, client) {
@@ -50,7 +53,7 @@ else {
     await seedDb(err, client)
 
     // Save database object from the callback for reuse.
-    db = client.db()
+    const db = client.db()
     console.log("Database connection ready")
 
     app.listen(PORT, function () {
@@ -61,23 +64,21 @@ else {
 
     app.post("/api/graph", saveNewGraph)
 
-    app.get("/api/graph/:id", loadGraph)
+    app.get("/api/graph/:id", wrapAsync(loadGraph))
 
-    app.put("/api/graph/:id", updateGraph)
+    app.use(function(error, req, res, next) {
+      console.group()
+      console.warn('Server Error!')
+      console.warn(error)
+      console.groupEnd()
+      res.status(500).json({ error: error.message });
+    })
 
     // All remaining requests return the React app, so it can handle routing.
     app.get('*', function(request, response) {
+      console.log("BACKUP ROUTE:")
       response.sendFile(path.resolve(STATIC_DIR, 'index.html'));
     });
 
   })
-}
-
-// Generic error handler used by all api endpoints.
-function handleError(res, reason, message, code) {
-  console.group()
-  console.warn('Database Error')
-  console.warn(reason)
-  console.groupEnd()
-  res.status(code || 500).json({"error": message});
 }
