@@ -1,12 +1,19 @@
-import { getGraph, updateGraph } from 'services/api'
+import { getGraph } from 'services/api'
 import { loadDehydratedState } from 'store/actions'
 
 export function loadGraphFromDb(id) {
 
   return async dispatch => {
-    const { dehydrated, timesAccessed = 0 } = await getGraph(id)
-    updateGraph(id, { timesAccessed: timesAccessed + 1 } )
-    const action = loadDehydratedState(dehydrated)
-    return dispatch(action)
+    const { dehydrated } = await getGraph(id)
+    if (dehydrated) {
+      const action = loadDehydratedState(dehydrated)
+      return dispatch(action)
+    }
+    else {
+      console.group()
+      console.warn(`Graph ${id} not found`)
+      // TODO: Better error handling on client
+      console.groupEnd()
+    }
   }
 }
