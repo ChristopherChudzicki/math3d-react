@@ -1,4 +1,4 @@
 # Rename to .env and change MONGODB_URI
-LOCAL_MONGODB_URI=mongodb://127.0.0.1:27017
+MONGODB_URI=mongodb://127.0.0.1:27017
 # something like...
 # MONGODB_URI=mongodb://<dbuser>:<dbpassword>@ds121753.mlab.com:21753/heroku_4h8rcbtf
