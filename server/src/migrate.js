@@ -27,8 +27,12 @@ async function migrateOne(graph, status) {
   const { _id, dehydrated } = graph
   console.log(`Working on ${_id}`)
   const numChanges = normalizePrefixes(dehydrated)
-  const update = { $set: { dehydrated } }
-  await Graph.updateOne( { _id }, update)
+  try {
+    const update = { $set: { dehydrated } }
+    await Graph.updateOne( { _id }, update)
+  } catch (error) {
+    console.log(error)
+  }
   console.log(`Finished ${_id}, made ${numChanges} changes`)
   status.finished++
   if (status.allStarted && status.finished === status.started) {
