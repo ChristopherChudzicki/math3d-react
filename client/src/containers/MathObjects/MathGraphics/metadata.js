@@ -370,12 +370,12 @@ export const explicitSurfacePolarMeta: MetaData = {
 const implicitSurfaceSpecific: MetaData = {
   lhs: {
     inputType: 'math',
-    defaultValue: 'f(x,y,z)=x^2+y^2',
+    defaultValue: '_f(x,y,z)=x^2+y^2',
     isPrimary: true
   },
   rhs: {
     inputType: 'math',
-    defaultValue: 'f(x,y,z)=z^2+1',
+    defaultValue: '_f(x,y,z)=z^2+1',
     isPrimary: true
   },
   samples: {
@@ -417,7 +417,7 @@ export const implicitSurfaceMeta: MetaData = {
 const vectorFieldSpecific: MetaData = {
   expr: {
     inputType: 'math',
-    defaultValue: 'f(x,y,z)=\\frac{[y,\\ -x,\\ 0]}{\\sqrt{x^2+y^2}}',
+    defaultValue: '_f(x,y,z)=\\frac{[y,\\ -x,\\ 0]}{\\sqrt{x^2+y^2}}',
     isPrimary: true
   },
   samples: {
