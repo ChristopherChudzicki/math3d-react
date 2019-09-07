@@ -67,8 +67,7 @@ export default class ShareButton extends PureComponent<Props, State> {
   dehydratedJson: ?string
 
   getId() {
-    return randomstring.generate( { length: 1 } ) +
-      randomstring.generate( { length: 7, charset: 'alphanumeric' } )
+    return randomstring.generate(8)
   }
 
   saveCameraData = () => {

@@ -6,6 +6,7 @@ import {
 import type { ExtractReturn } from 'utils/flow'
 
 type State = {
+  title: string,
   versionAtCreation: ?string,
   creationDate: string
 }
