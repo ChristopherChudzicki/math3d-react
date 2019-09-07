@@ -1,14 +1,16 @@
-import 'source-map-support/register'
-import './database/mongoose.config'
-import { Graph } from './graph'
-import { DATABASE_URI } from './database'
+/**
+ * This script was used to change IMPLICIT_SURFACE & VECTOR_FIELD
+ * expression prefixes from f(x, y, z) to _f(x, y, z).
+ *
+ * No longer needed, but here for posterity.
+ */
+
+import { Graph } from '../graph'
+import { DATABASE_URI } from '../database'
 import mongoose from 'mongoose'
-console.log(DATABASE_URI)
 mongoose.connect(DATABASE_URI)
 
-migrate()
-
-async function migrate() {
+export async function migrate() {
   const cursor = Graph.find( {} ).cursor()
   const status = {
     started: 0,
