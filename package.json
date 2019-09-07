@@ -1,6 +1,6 @@
 {
   "name": "math3d",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Express server for math3d-react app.",
   "engines": {
     "node": "8.9.x"
