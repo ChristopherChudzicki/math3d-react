@@ -60,7 +60,7 @@ function normalizePrefixes(dehydrated) {
       obj.lhs = '_' + obj.lhs
       numChanges++
     }
-    if (obj.hasOwnProperty('rhs') && !obj.lhs.startsWith('_')) {
+    if (obj.hasOwnProperty('rhs') && !obj.rhs.startsWith('_')) {
       obj.rhs = '_' + obj.rhs
       numChanges++
     }
