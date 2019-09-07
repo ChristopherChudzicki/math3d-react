@@ -34,7 +34,7 @@ export class VectorFieldUI extends PureComponent<Props> {
         <MainRow>
           <MathInputRHS
             field='expr'
-            prefix='f(x,y,z)='
+            prefix='_f(x,y,z)='
             parentId={this.props.id}
           />
         </MainRow>

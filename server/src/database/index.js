@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { Graph } from './graph/model'
+import { Graph } from '../graph/model'
 import fs from 'fs'
 import { promisify } from 'util'
 

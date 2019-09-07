@@ -1,6 +1,6 @@
 {
   "name": "math3d-server",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Express server for math3d-react app.",
   "engines": {
     "node": "8.9.x"
@@ -9,8 +9,8 @@
     "build": "webpack --config webpack.config.server.js",
     "dev": "npm-run-all --parallel dev:webpack dev:nodemon",
     "dev:webpack": "webpack --config webpack.config.server.js --watch",
-    "dev:nodemon": "nodemon --require dotenv/config build/index.js",
-    "start": "node --require dotenv/config build/index.js"
+    "dev:nodemon": "nodemon --require dotenv/config build/main.js",
+    "start": "node --require dotenv/config build/main.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",

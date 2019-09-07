@@ -34,7 +34,7 @@ export class ImplicitSurfaceUI extends PureComponent<Props> {
         <MainRow>
           <MathInputRHS
             field='lhs'
-            prefix='f(x,y,z)='
+            prefix='_f(x,y,z)='
             parentId={this.props.id}
           />
           <StaticMathStyled latex='='/>
@@ -42,7 +42,7 @@ export class ImplicitSurfaceUI extends PureComponent<Props> {
             field='rhs'
             // that lhs and rhs have same prefix name is irrelevant.
             // So far we've used f(...) as a function prefix everywhere.
-            prefix='f(x,y,z)='
+            prefix='_f(x,y,z)='
             parentId={this.props.id}
           />
         </MainRow>

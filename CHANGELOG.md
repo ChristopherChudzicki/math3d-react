@@ -2,6 +2,9 @@
 
 ## Version 1.2
 
+## Version 1.2.3
+  - Fix a bug where vector fields and implicit surfaces could would throw errors if an expression named "f(...)" was used as the right-hand-side.
+
 ## Version 1.2.2
   - Add `pdiff` function with signature `pdiff(f, x, y,..., 1)` for the partial derivative of `f(x, y,...)` with respect to first argument, namely `x`.
   - Add `curl` function that accepts 3-dimensional vector fields `F(x, y, z)` with signature `curl(F, x, y, z)`
