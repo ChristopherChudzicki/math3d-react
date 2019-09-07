@@ -3,17 +3,11 @@
 const webpack = require('webpack');
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
-const isProduction = process.env.NODE_ENV !== 'development';
 
 // Common plugins
 const plugins = [
   new webpack.NamedModulesPlugin(),
 ];
-
-const entry =[
-  'core-js/stable',
-  path.resolve(path.join(__dirname, './src/index.js'))
-]
 
 module.exports = {
   mode: 'development',
@@ -21,14 +15,22 @@ module.exports = {
   externals: [
     nodeExternals()
   ],
-  name : 'server',
+  name: 'server',
   plugins: plugins,
   target: 'node',
-  entry: entry,
+  entry: {
+    main: [
+      'core-js/stable',
+      path.resolve(path.join(__dirname, './src/index.js'))
+    ],
+    migrate: [
+      './src/migrate.js'
+    ]
+  },
   output: {
     publicPath: './',
     path: path.resolve(__dirname, './build/'),
-    filename: 'index.js',
+    filename: '[name].js',
     libraryTarget: "commonjs2"
   },
   resolve: {

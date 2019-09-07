@@ -1,6 +1,8 @@
 // From https://github.com/mars/heroku-cra-node
 import 'source-map-support/register'
-import './mongoose.config'
+import './database/mongoose.config'
+
+
 import { seedDb } from './database'
 import cluster from 'cluster'
 import os from 'os'
