@@ -1,13 +1,8 @@
 // Followed https://medium.com/@christossotiriou/speed-up-nodejs-server-side-development-with-webpack-4-hmr-8b99a932bdda
 // with some modifications.
-const webpack = require('webpack');
-const path = require('path');
-const nodeExternals = require('webpack-node-externals');
-
-// Common plugins
-const plugins = [
-  new webpack.NamedModulesPlugin(),
-];
+const webpack = require('webpack')
+const path = require('path')
+const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
   mode: 'development',
@@ -16,22 +11,19 @@ module.exports = {
     nodeExternals()
   ],
   name: 'server',
-  plugins: plugins,
+  plugins: [
+    new webpack.NamedModulesPlugin()
+  ],
   target: 'node',
   entry: {
-    main: [
-      'core-js/stable',
-      path.resolve(path.join(__dirname, './src/index.js'))
-    ],
-    migrate: [
-      './src/migrate.js'
-    ]
+    main: path.resolve(path.join(__dirname, './src/index.js')),
+    script: path.resolve(path.join(__dirname, './src/script.js'))
   },
   output: {
     publicPath: './',
     path: path.resolve(__dirname, './build/'),
     filename: '[name].js',
-    libraryTarget: "commonjs2"
+    libraryTarget: 'commonjs2'
   },
   resolve: {
     extensions: ['.webpack-loader.js', '.web-loader.js', '.loader.js', '.js', '.jsx'],
@@ -39,13 +31,13 @@ module.exports = {
       path.resolve(__dirname, 'node_modules')
     ]
   },
-  module : {
+  module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        loader: "babel-loader",
+        loader: 'babel-loader'
       }
-    ],
+    ]
   },
   node: {
     console: false,
@@ -53,6 +45,6 @@ module.exports = {
     process: false,
     Buffer: false,
     __filename: false,
-    __dirname: false,
+    __dirname: false
   }
 };
