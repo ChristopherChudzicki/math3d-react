@@ -21,7 +21,10 @@ customMath.import( {
   I: imaginaryUnit,
   arcsin: customMath.asin,
   arccos: customMath.acos,
-  arctan: arctan
+  arctan: arctan,
+  arcsinh: customMath.asinh,
+  arccosh: customMath.acosh,
+  arctanh: customMath.atanh
 }, { override: true } )
 
 export default customMath
