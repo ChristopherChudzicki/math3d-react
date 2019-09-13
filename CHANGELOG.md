@@ -2,6 +2,9 @@
 
 ## Version 1.2
 
+## Version 1.2.4
+  - added hyperbolic trig functions and their inverses, `cosh`, `sinh`, `tanh`, `arccosh`, `arcsinh`, `arctanh`.
+
 ## Version 1.2.3
   - Fix a bug where vector fields and implicit surfaces could would throw errors if an expression named "f(...)" was used as the right-hand-side.
 
