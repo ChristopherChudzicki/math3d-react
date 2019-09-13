@@ -100,5 +100,8 @@ export type Math = {
   asin: (number) => number,
   atan: (number) => number,
   atan2: (y: number, x: number) => number,
-  trace: (Numeric) => number
+  trace: (Numeric) => number,
+  acosh: (number) => number,
+  asinh: (number) => number,
+  atanh: (number) => number,
 }
