@@ -19,7 +19,7 @@
     "fs": "0.0.1-security",
     "minimist": "^1.2.0",
     "mongodb": "^3.1.6",
-    "mongoose": "^5.6.11"
+    "mongoose": "^5.7.5"
   },
   "repository": {
     "type": "git",
