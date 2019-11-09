@@ -252,7 +252,7 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
   // mathbox initialization, but sprites are rendered upside-down.
   //
   // As a workaround, I'm using dolly zoom to get an orthographic-like effect.
-
+  // See, for example, https://docs.unity3d.com/Manual/DollyZoom.html
   dataNodeNames = ['camera']
   renderNodeNames = null
   handlers: Handlers
@@ -291,7 +291,9 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
     const d2 = d1 * zoomFactor
     const fov2 = Camera.fovForHeightAndDistance(h, d2)
 
+    // This tells mathBox to account for the zoom when drawing lines/points
     mathboxRoot.set('focus', mathboxRoot.get('focus') * zoomFactor)
+
     Camera.translateForDollyZoom(camera, controls, zoomFactor)
     camera.fov = fov2
   }
