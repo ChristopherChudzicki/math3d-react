@@ -2,6 +2,13 @@
 
 ## Version 1.2
 
+## Version 1.2.5
+ - added an Orthographic option for the camera.
+   
+   Note: Due to a bug in MathBox, this is not a true orthographic camera, but
+   a perspective camera dollied way out, and zoomed way in ("dolly zoom"), which
+   mimicks the effect of an orthographic camera.
+
 ## Version 1.2.4
   - added hyperbolic trig functions and their inverses, `cosh`, `sinh`, `tanh`, `arccosh`, `arcsinh`, `arctanh`.
 
