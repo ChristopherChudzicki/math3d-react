@@ -1,5 +1,6 @@
 // @flow
 import React, { PureComponent } from 'react'
+import { Icon } from 'antd'
 import { Camera as CameraGraphic } from 'components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathObjectUI from 'containers/MathObjects/MathObjectUI'
@@ -102,6 +103,21 @@ export class CameraUI extends PureComponent<Props> {
             <MathInputRHS parentId={this.props.id} field='computedLookAt'/>
           </Cell>
         </IndentedRow>
+        <MainRow>
+          <Cell>
+            <Label>
+              Use Orthographic Projection:
+              <Icon type="experiment" />
+            </Label>
+            <ToggleSwitch
+              parentId={id}
+              field='isOrthographic'
+              size='small'
+              checkedChildren='on'
+              unCheckedChildren='off'
+            />
+          </Cell>
+        </MainRow>
       </MathObjectUI>
     )
   }

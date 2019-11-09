@@ -447,6 +447,11 @@ export const vectorFieldMeta: MetaData = {
 
 // ---------- Camera ---------- //
 export const cameraMeta: MetaData = {
+  isOrthographic: {
+    inputType: 'boolean',
+    defaultValue: false,
+    isPrimary: true
+  },
   isPanEnabled: {
     inputType: 'boolean',
     defaultValue: false,
