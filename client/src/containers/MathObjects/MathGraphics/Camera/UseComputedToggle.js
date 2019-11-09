@@ -11,7 +11,11 @@ type StateProps = {|
   checked: boolean,
   type: string
 |}
-type DispatchProps = {|setProperty: typeof setProperty|}
+
+type DispatchProps = {|
+  setProperty: typeof setProperty
+|}
+
 type Props = {
   ...OwnProps,
   ...StateProps,
