@@ -247,18 +247,73 @@ function scaleToUnit(x: number, xMin: number, xMax: number) {
 }
 
 export class Camera extends AbstractMBC implements MathBoxComponent {
+  // NOTE: MathBox seems to have some issues with orthographic cameras:
+  // A type: "orthographic" key can be provided to the camera config during
+  // mathbox initialization, but sprites are rendered upside-down.
+  //
+  // As a workaround, I'm using dolly zoom to get an orthographic-like effect.
 
   dataNodeNames = ['camera']
   renderNodeNames = null
-  handlers = {
-    relativePosition: Camera.handleRelativePosition,
-    relativeLookAt: Camera.handleRelativeLookAt,
-    isRotateEnabled: Camera.handleIsRotateEnabled,
-    isZoomEnabled: Camera.handleIsZoomEnabled,
-    isPanEnabled: Camera.handlePanIsPanEnabled,
-    computedPosition: Camera.handleComputedPosition,
-    computedLookAt: Camera.handleComputedLookAt,
-    useComputed: Camera.handleUseComputed
+  handlers: Handlers
+  isOrthographic: boolean
+  dollyZoomFactor: number
+
+  constructor(props: Props) {
+    super(props)
+    this.isOrthographic = false
+    this.dollyZoomFactor = 50
+    this.handlers = {
+      relativePosition: Camera.handleRelativePosition,
+      relativeLookAt: Camera.handleRelativeLookAt,
+      isRotateEnabled: Camera.handleIsRotateEnabled,
+      isZoomEnabled: Camera.handleIsZoomEnabled,
+      isPanEnabled: Camera.handlePanIsPanEnabled,
+      computedPosition: this.handleComputedPosition,
+      computedLookAt: Camera.handleComputedLookAt,
+      useComputed: this.handleUseComputed,
+      isOrthographic: this.handleIsOrthographic
+    }
+  }
+
+  static frustrumHeightAtDistance(fovDegrees: number, distance: number) {
+    return 2 * distance * Math.tan(0.5 * fovDegrees * Math.PI/180)
+  }
+  static fovForHeightAndDistance(height: number, distance: number) {
+    return 2 * Math.atan(0.5 * height / distance) * 180/Math.PI
+  }
+
+  static dollyZoom(mathboxRoot: MathBoxNode, zoomFactor: number) {
+    const { camera, controls } = mathboxRoot.three
+    const d1 = camera.position.distanceTo(controls.center)
+    const fov1 = camera.fov
+    const h = Camera.frustrumHeightAtDistance(fov1, d1)
+    const d2 = d1 * zoomFactor
+    const fov2 = Camera.fovForHeightAndDistance(h, d2)
+
+    mathboxRoot.set('focus', mathboxRoot.get('focus') * zoomFactor)
+    Camera.translateForDollyZoom(camera, controls, zoomFactor)
+    camera.fov = fov2
+  }
+
+  static translateForDollyZoom(camera: any, controls: any, zoomFactor: number) {
+    const d = camera.position.distanceTo(controls.center)
+    camera.translateZ(d * (zoomFactor - 1))
+  }
+
+  handleIsOrthographic = (nodes: HandlerNodes, handledProps: HandledProps) => {
+    const { isOrthographic } = handledProps
+    if (this.isOrthographic === isOrthographic) {
+      return
+    }
+    if (isOrthographic) {
+      Camera.dollyZoom(nodes.root, this.dollyZoomFactor)
+      this.isOrthographic = true
+    }
+    else {
+      Camera.dollyZoom(nodes.root, 1/this.dollyZoomFactor)
+      this.isOrthographic = false
+    }
   }
 
   static handlePanIsPanEnabled(nodes: HandlerNodes, handledProps: HandledProps) {
@@ -290,17 +345,17 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
     root.three.controls.center.set(...relativeLookAt)
   }
 
-  static handleUseComputed(nodes: HandlerNodes, handledProps: HandledProps) {
+  handleUseComputed = (nodes: HandlerNodes, handledProps: HandledProps) => {
     const { computedPosition, computedLookAt } = handledProps
     if (isVector(computedPosition, 3)) {
-      Camera.handleComputedPosition(nodes, handledProps)
+      this.handleComputedPosition(nodes, handledProps)
     }
     if (isVector(computedLookAt, 3)) {
       Camera.handleComputedLookAt(nodes, handledProps)
     }
   }
 
-  static handleComputedPosition(nodes: HandlerNodes, handledProps: HandledProps) {
+  handleComputedPosition = (nodes: HandlerNodes, handledProps: HandledProps) => {
     const { computedPosition, useComputed } = handledProps
     validateVector(computedPosition, 3)
     if (!useComputed) { return }
@@ -310,6 +365,11 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
     const relPosition = Camera.toRelativeCoords(computedPosition, cartesian)
     // set position directly on camera object, not in mathBox
     root.three.camera.position.set(...relPosition)
+
+    if (this.isOrthographic) {
+      const { camera, controls } = root.three
+      Camera.translateForDollyZoom(camera, controls, this.dollyZoomFactor)
+    }
   }
 
   static handleComputedLookAt(nodes: HandlerNodes, handledProps: HandledProps) {
