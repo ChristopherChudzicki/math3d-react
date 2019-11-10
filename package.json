@@ -20,8 +20,8 @@
     "start-db": "mongod --dbpath data/db"
   },
   "cacheDirectories": [
-    "api/node_modules",
-    "web/node_modules"
+    "server/node_modules",
+    "client/node_modules"
   ],
   "repository": {
     "type": "git",
