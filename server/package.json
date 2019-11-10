@@ -13,34 +13,34 @@
     "start": "node --require dotenv/config build/main.js"
   },
   "dependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
     "body-parser": "^1.18.3",
+    "core-js": "^3.2.1",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "fs": "0.0.1-security",
     "minimist": "^1.2.0",
     "mongodb": "^3.1.6",
-    "mongoose": "^5.7.5"
+    "mongoose": "^5.7.5",
+    "nodemon": "^1.19.1",
+    "npm-run-all": "^4.1.5",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7",
+    "webpack-node-externals": "^1.7.2"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/mars/heroku-cra-node.git"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "babel-eslint": "^10.0.3",
-    "babel-loader": "^8.0.6",
-    "core-js": "^3.2.1",
     "eslint": "^6.3.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^9.2.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "nodemon": "^1.19.1",
-    "npm-run-all": "^4.1.5",
-    "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7",
-    "webpack-node-externals": "^1.7.2"
+    "eslint-plugin-standard": "^4.0.1"
   }
 }
