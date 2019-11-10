@@ -3,7 +3,7 @@
   "version": "1.2.5",
   "description": "Express server for math3d-react app.",
   "engines": {
-    "node": "8.9.x"
+    "node": "13.1.x"
   },
   "scripts": {
     "postinstall": "npm-run-all --parallel install:server install:client",
