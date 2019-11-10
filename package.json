@@ -15,7 +15,6 @@
     "build": "npm-run-all --parallel build:server build:client",
     "build:server": "npm --prefix ./server run build",
     "build:client": "npm --prefix ./client run build",
-    "heroku-postbuild": "npm run install:dev && npm run build",
     "start": "npm --prefix ./server start",
     "start-db": "mongod --dbpath data/db"
   },
