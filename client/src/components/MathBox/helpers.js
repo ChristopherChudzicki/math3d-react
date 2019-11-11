@@ -67,7 +67,7 @@ export function validateFunctionSignature(func: mixed, numInputs: number, numOut
     if (isVector(result, numOutputs)) {
       return
     }
-    throw TypeError(`Expected function to return a vector of lengh ${numOutputs}, but it did not.`)
+    throw TypeError(`Expected function to return a vector of length ${numOutputs}, but it did not.`)
   }
 }
 
