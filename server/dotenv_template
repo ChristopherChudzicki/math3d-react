@@ -1,5 +1,3 @@
+# Rename this file to .env
 NODE_ENV=development
-# Rename to .env and change MONGODB_URI
-MONGODB_URI=mongodb://localhost:27017
-# something like...
-# MONGODB_URI=mongodb://<dbuser>:<dbpassword>@ds121753.mlab.com:21753/<dbname>
+MONGODB_URI=mongodb://localhost:27017/math3d

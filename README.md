@@ -8,38 +8,43 @@ This repository has three `package.json` files:
 
 - `math3d-react/server/package.json` server dependencies and scripts
 - `math3d-react/client/package.json` client dependencies and scripts
-- `math3d-react/package.json` deployment scripts
+- `math3d-react/package.json` deployment & development scripts
 
 
-## To Install
+## To Install for Local Development:
 
-First, `cd` to package root and install server and client dependencies.
+1. **Install Mongodb:** If it is not already installed, you'll need to install `mongodb` as our database. On a Mac, we recommend installing `mongodb` with Homebrew:
 
-```bash
-> npm install
-```
+        ```bash
+        > brew tap mongodb/brew
+        > brew install mongodb-community
+        ```
+    (Works with `mongodb` v4.2.1; probably others, too.)
 
-Next, install `mongodb`, which is our database. This is not installed by `npm`: you'll need to install it yourself. On a Mac, `brew install mongodb` will do.
+1. **Install Dependencies:** Clone the git repo and `cd` to package root, then run:
 
-Create a `.env` file in the `server/` directory to set local environment variables. For local development, just copy the template:
-```bash
-> cp server/dotenv_template server/.env
-```
+        ```bash
+        > npm install
+        ```
+    which installs both client and server dependencies.
 
-Now start the database:
-```bash
-> npm run start-db
-```
+1. **Set Database Connection:** Create a `.env` file in the `server/` directory to set `MONGO_URI` database connection environment variable. For local development, just copy the template:
+        ```bash
+        > cp server/dotenv_template server/.env
+        ```
 
-then in a new terminal window, start the server:
-```bash
-> npm start
-```
+1. **Start the Database:**:
+        ```bash
+        > npm run start-db
+        ```
 
-Finally, in a third terminal window, start the client app:
-```bash
-> cd react-ui
-> npm start
-```
+1. **Start Server & Client:** In a new terminal window, start the server:
+        ```bash
+        > npm start:dev:server
+        ```
+    and, in a third terminal window, start the client app:
+        ```bash
+        > npm start:dev:client
+        ```
 
 The math3d-react app is now being served on `http://localhost:3000/`.

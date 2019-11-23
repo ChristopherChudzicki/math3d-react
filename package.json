@@ -16,6 +16,8 @@
     "build:server": "npm --prefix ./server run build",
     "build:client": "npm --prefix ./client run build",
     "start": "npm --prefix ./server start",
+    "start:dev:server": "npm --prefix ./server run dev",
+    "start:dev:client": "npm --prefix ./client run start",
     "start-db": "mongod --dbpath data/db"
   },
   "cacheDirectories": [
