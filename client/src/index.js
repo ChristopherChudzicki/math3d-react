@@ -24,6 +24,12 @@ ReactGA.pageview(window.location.pathname + window.location.search)
 // run all the code in mockState
 // import './store/mockState'
 
+// User confirmation for unload
+window.addEventListener('beforeunload', (e) => {
+  e.preventDefault()
+  e.returnValue = ''
+})
+
 const target = document.querySelector('#root')
 
 render(
