@@ -11,7 +11,6 @@ function setLastSavedStateAs(state) {
 export function setLastSavedState() {
   return (dispatch, getStore) => {
     const clonedStore = cloneDeep(getStore());
-    console.log(clonedStore)
     return dispatch(setLastSavedStateAs(clonedStore))
   }
 }
