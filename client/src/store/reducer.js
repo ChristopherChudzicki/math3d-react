@@ -12,7 +12,7 @@ import {
   mathSymbols
 } from 'containers/MathObjects/reducer'
 import { LOAD_STATE } from './actions'
-import lastSavedState from 'store/lastSavedState/reducer'
+import lastSavedState from 'services/lastSavedState/reducer'
 
 import {
   parseErrors,

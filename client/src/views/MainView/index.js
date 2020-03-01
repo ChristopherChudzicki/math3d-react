@@ -9,7 +9,7 @@ import { loadGraphFromDb } from './actions'
 import { loadDehydratedState } from 'store/actions'
 import initialState from 'store/initialState'
 import { connect } from 'react-redux'
-import { setLastSavedState } from 'store/lastSavedState/actions'
+import { setLastSavedState } from 'services/lastSavedState/actions'
 
 type OwnProps = {|
   graphId?: string
