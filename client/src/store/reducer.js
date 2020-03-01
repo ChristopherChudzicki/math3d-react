@@ -1,3 +1,4 @@
+import cloneDeep from 'clone-deep'
 import { combineReducers } from 'redux'
 import drawers from 'containers/Drawer/reducer'
 import tabs from 'containers/ControlledTabs/reducer'
@@ -11,6 +12,7 @@ import {
   mathSymbols
 } from 'containers/MathObjects/reducer'
 import { LOAD_STATE } from './actions'
+import lastSavedState from 'services/lastSavedState/reducer'
 
 import {
   parseErrors,
@@ -30,12 +32,16 @@ const combinedReducer = combineReducers( {
   evalErrors,
   renderErrors,
   sliderValues,
-  activeObject
+  activeObject,
+  lastSavedState
 } )
 
 export default function rootReducer(state, action) {
   if (action.type === LOAD_STATE) {
-    return { ...state, ...action.payload.state }
+    const { lastSavedState: previousLastSavedState, ...oldState } = state
+    const newState = { ...oldState, ...action.payload.state }
+    const lastSavedState = cloneDeep(newState)
+    return { ...newState, lastSavedState }
   }
   return combinedReducer(state, action)
 }

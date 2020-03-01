@@ -2,6 +2,11 @@
 
 ## Version 1.2
 
+## Version 1.2.6
+ - Math3d.org will now prompt users to confirm when leaving the site if their
+   visualization has not been saved, or if they have loaded a previously saved
+   visualization and have made meaningful changes to it.
+
 ## Version 1.2.5
  - added an Orthographic option for the camera.
    

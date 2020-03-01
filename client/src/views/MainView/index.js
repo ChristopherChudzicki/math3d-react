@@ -9,6 +9,7 @@ import { loadGraphFromDb } from './actions'
 import { loadDehydratedState } from 'store/actions'
 import initialState from 'store/initialState'
 import { connect } from 'react-redux'
+import { setLastSavedState } from 'services/lastSavedState/actions'
 
 type OwnProps = {|
   graphId?: string
@@ -16,6 +17,7 @@ type OwnProps = {|
 
 type DispatchProps = {|
   loadGraphFromDb: (id: string) => Function,
+  setLastSavedState: typeof setLastSavedState,
   loadDehydratedState: (dehydrated: {} ) => void
 |}
 
@@ -30,6 +32,7 @@ class MainView extends PureComponent<Props> {
     if (this.props.graphId) {
       this.props.loadGraphFromDb(this.props.graphId)
     }
+    this.props.setLastSavedState()
   }
 
   componentDidUpdate() {
@@ -56,7 +59,8 @@ class MainView extends PureComponent<Props> {
 
 const mapDispatchToProps = {
   loadGraphFromDb,
-  loadDehydratedState
+  loadDehydratedState,
+  setLastSavedState
 }
 
 export default connect<Props, OwnProps, _, _, _, _>(null, mapDispatchToProps)(MainView)

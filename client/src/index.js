@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import './index.css'
 import App from './App'
 import { unregister } from './registerServiceWorker'
+import { hasMeaningfulChangeOccured } from './services/lastSavedState/index'
 
 import MathScopeProvider from './containers/MathScopeContext'
 import { scopeEvaluator, parser } from './constants/parsing'
@@ -21,8 +22,16 @@ ReactGA.initialize('UA-131928751-1', {
 } )
 ReactGA.pageview(window.location.pathname + window.location.search)
 
-// run all the code in mockState
-// import './store/mockState'
+// User confirmation for unload
+window.addEventListener('beforeunload', event => {
+  const newState = store.getState()
+  const oldState = newState.lastSavedState
+  const shouldWarn = hasMeaningfulChangeOccured(newState, oldState)
+  if (shouldWarn) {
+    event.preventDefault()
+    event.returnValue = ''
+  }
+})
 
 const target = document.querySelector('#root')
 
