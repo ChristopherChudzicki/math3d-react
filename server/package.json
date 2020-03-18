@@ -19,7 +19,7 @@
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "fs": "0.0.1-security",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.2",
     "mongodb": "^3.1.6",
     "mongoose": "^5.7.5",
     "nodemon": "^1.19.1",
