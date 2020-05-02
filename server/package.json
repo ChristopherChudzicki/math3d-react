@@ -1,6 +1,6 @@
 {
   "name": "math3d-server",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Express server for math3d-react app.",
   "scripts": {
     "build": "webpack --config webpack.config.server.js",
