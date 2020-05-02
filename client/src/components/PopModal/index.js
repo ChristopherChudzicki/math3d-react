@@ -72,6 +72,7 @@ function _PopModal(props: Props) {
         overlayStyle={ { maxWidth: props.popoverMaxWidth } }
         title={props.title}
         content={props.children}
+        onVisibleChange={() => setVisible(!visible)}
         trigger='click'
       >
         {props.source}
