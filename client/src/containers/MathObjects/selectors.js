@@ -30,7 +30,6 @@ export function getParent(tree, nodeId) {
     throw Error(`${nodeId} does not have parent`)
   }
   else if (parentFolders.size > 1) {
-    console.log(parentFolders)
     throw Error(`${nodeId} has multiple parents`)
   }
   return Array.from(parentFolders)[0]

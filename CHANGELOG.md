@@ -2,6 +2,11 @@
 
 ## Version 1.2
 
+## Versin 1.2.7
+ - Fixed a bug where newly created folders, if saved in their default state
+   (default title and open) would prevent the saved graph from loading properly.
+ - Fixed a bug where Share button's "Copied!" status was not resetting properly.
+
 ## Version 1.2.6
  - Math3d.org will now prompt users to confirm when leaving the site if their
    visualization has not been saved, or if they have loaded a previously saved

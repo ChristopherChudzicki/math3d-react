@@ -3,6 +3,10 @@ import idGenerator from 'constants/idGenerator'
 import initialState, { sortableTreeFixedPortion } from './initialState'
 import { initialState as metadataInitial } from 'services/metadata/reducer'
 
+function isEmpty(obj) {
+  return Object.keys(obj).length === 0 && obj.constructor === Object
+}
+
 // difference in obj1 and obj2
 // ASSUMING obj1 keys are superset of obj2
 // GOAL: { ...obj2, ...simpleDiff(obj1, obj2) } == obj1
@@ -63,6 +67,20 @@ function rehydrateMathObjects(dehydrated, initialStore, isFolders=false) {
   }, {} )
 }
 
+function dehydrateFolders(folders, initialFolders) {
+  const partial = dehydrateMathObjects(folders, initialState.folders, true)
+  return Object.fromEntries(
+    Object.entries(partial).filter(([key, value]) => !isEmpty(value))
+  )
+}
+
+function rehydrateFolders(sortableTree, folders, initialFolders) {
+  const { root } = sortableTree
+  const emptyFolders = Object.fromEntries(root.map(id => [id, {}]))
+  const toRehydrate = { ...emptyFolders, ...folders }
+  return rehydrateMathObjects(toRehydrate, initialState.folders, true)
+}
+
 /**
  * Take current state and:
  *  - drop drawers
@@ -97,13 +115,17 @@ export function dehydrate(state) {
   const dehydrated = {
     metadata: simpleDiff(metadata, metadataInitial, keepMeta),
     sortableTree: sortableTreeWithoutFixed,
-    folders: dehydrateMathObjects(folders, initialState.folders, true),
+    folders: dehydrateFolders(folders, initialState.folders),
     mathSymbols: dehydrateMathObjects(mathSymbols, initialState.mathSymbols),
     mathGraphics: dehydrateMathObjects(mathGraphics, initialState.mathGraphics),
     sliderValues
   }
 
-  return dehydrated
+  const withoutEmpty = Object.fromEntries(
+    Object.entries(dehydrated).filter(([key, value]) => !isEmpty(value))
+  )
+
+  return withoutEmpty
 
 }
 
@@ -117,11 +139,10 @@ export function rehydrate(dehydrated) {
     sliderValues
   } = dehydrated
 
-  const rehydratedFolders = rehydrateMathObjects(folders, initialState.folders, true)
+  const sortableTree = { ...sortableTreeFixedPortion, ...sortableTreeWithoutFixed }
+  const rehydratedFolders = rehydrateFolders(sortableTree, folders, initialState.folders)
   const rehydratedSymbols = rehydrateMathObjects(mathSymbols, initialState.mathSymbols)
   const rehydratedGraphics = rehydrateMathObjects(mathGraphics, initialState.mathGraphics)
-
-  const sortableTree = { ...sortableTreeFixedPortion, ...sortableTreeWithoutFixed }
 
   const rehydrated = {
     activeObject: null,

@@ -1377,7 +1377,7 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
       renderNodes: groupNode.select('vector')
     }
     Object.keys(handlers).forEach(key => {
-      console.log(`rerrunning ${key}`)
+
       handlers[key](newNodes, handledProps, handlers)
     } )
   }
