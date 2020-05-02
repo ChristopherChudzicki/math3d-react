@@ -20,12 +20,14 @@ export default class MathExpression {
   dependencies: Set<string> // direct dependencies!
   tree: Node
   eval: ((scope:Scope) => Array<Evaluated>) | ((scope:Scope) => Evaluated)
+  preprocessors: Array<PreProcessor>
+  postprocessors: Array<PostProcessor>
   name = null
 
   /**
   * @param {string} expression to be parsed
-  * @param {array<function>} preprocessors array of functions mapping strings to strings. These functions are applied to expression before being parsed by mathjs.
-  * @param {array<function>} postprocessors array of functions called on the part tree's nodes. These functions are applied to expression before being parsed by mathjs.
+  * @param {array<PreProcessor>} preprocessors array of functions mapping strings to strings. These functions are applied to expression before being parsed by mathjs.
+  * @param {array<PostProcessor>} postprocessors array of functions called on the part tree's nodes. These functions are applied to expression before being parsed by mathjs.
   *  - preprocessors is an array of function mapping strings to strings.
   */
   constructor(
@@ -33,24 +35,37 @@ export default class MathExpression {
     preprocessors: Array<PreProcessor> = [],
     postprocessors: Array<PostProcessor> = []
   ) {
+    this.preprocessors = preprocessors
+    this.postprocessors = postprocessors
     this.string = expression
-    this.tree = math.parse(this._preprocess(preprocessors))
+    this.tree = this.parse(expression)
     this.name = this.tree.name ? this.tree.name : null
-    this._postprocess(postprocessors)
 
     this.dependencies = this._getDependencies()
 
-    // $FlowFixMe memoizeOne expects itsequality function arguments to be of type mixed, but we specify that they are of type Scope
+    // $FlowFixMe memoizeOne expects its equality function arguments to be of type mixed, but we specify that they are of type Scope
     this.eval = memoizeOne(this._getEval(), this._getSubscopeEquality())
   }
 
-  _preprocess(preprocessors: Array<PreProcessor>) {
-    return preprocessors.reduce((acc, f) => f(acc), this.string)
+  parse(expression: string) {
+    try {
+      const preprocessed = this._preprocess(expression, this.preprocessors)
+      const tree = math.parse(preprocessed)
+      this._postprocess(tree, this.postprocessors)
+      return math.parse(preprocessed)
+    } catch (error) {
+      modifyParseError(error)
+      throw error
+    }
   }
 
-  _postprocess(postprocessors: Array<PostProcessor>) {
+  _preprocess(expression: string, preprocessors: Array<PreProcessor>) {
+    return preprocessors.reduce((acc, f) => f(acc), expression)
+  }
+
+  _postprocess(tree: Node, postprocessors: Array<PostProcessor>) {
     postprocessors.forEach(f => {
-      this.tree.traverse(node => f(node))
+      tree.traverse(node => f(node))
     } )
   }
 
@@ -103,15 +118,23 @@ export default class MathExpression {
         return raw.toArray()
       }
       if (raw instanceof Function) {
-        const temp = (...args) => {
+        const temp1 = (...args) => {
+          try {
+            return raw(...args)
+          } catch (error) {
+            modifyEvalError(error)
+            throw error
+          }
+        }
+        const temp2 = (...args) => {
           let result
 
           if (raw.length > 1 && args.length === 1 && Array.isArray(args[0] )) {
             // This allways for inputing a vector expression into a multivariable function
-            result = raw(...args[0] )
+            result = temp1(...args[0])
           }
           else {
-            result = raw(...args)
+            result = temp1(...args)
           }
 
           if (result instanceof math.type.DenseMatrix) {
@@ -119,9 +142,9 @@ export default class MathExpression {
           }
           return result
         }
-        Object.defineProperty(temp, 'length', { value: raw.length } )
-        Object.defineProperty(temp, 'name', { value: raw.name } )
-        return temp
+        Object.defineProperty(temp2, 'length', { value: raw.length } )
+        Object.defineProperty(temp2, 'name', { value: raw.name } )
+        return temp2
       }
       return raw
     }
@@ -142,4 +165,23 @@ export default class MathExpression {
     return subscopeEquality
   }
 
+}
+
+function appendExplicitMultiplicationHint(error) {
+  if (!error.message.endsWith('.')) {
+    error.message += '. ';
+  }
+  error.message += "If multiplication is intended, an explicit * symbol is required."
+}
+
+function modifyParseError(error) {
+  if (error.message.includes('Unexpected operator [')) {
+    appendExplicitMultiplicationHint(error)
+  }
+}
+
+function modifyEvalError(error) {
+  if (error.message.startsWith('Cannot apply index')) {
+    appendExplicitMultiplicationHint(error)
+  }
 }
