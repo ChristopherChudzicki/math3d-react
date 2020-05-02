@@ -9,7 +9,7 @@ const dehydratedSchema = new Schema( {
   mathSymbols: Object,
   mathGraphics: Object,
   sliderValues: Object
-}, { _id: false } )
+}, { _id: false, minimize: false } )
 
 const graphSchema = Schema( {
   dehydrated: dehydratedSchema,
