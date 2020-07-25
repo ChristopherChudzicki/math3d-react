@@ -11,6 +11,7 @@ export class MathScopeProvider extends PureComponent {
     parser: PropTypes.instanceOf(Parser).isRequired,
     scopeEvaluator: PropTypes.instanceOf(ScopeEvaluator).isRequired,
     idsByName: PropTypes.objectOf(PropTypes.string).isRequired,
+    allSymbolIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     scope: PropTypes.object.isRequired,
     scopeDiff: PropTypes.object.isRequired,
     errors: PropTypes.object.isRequired,
@@ -23,14 +24,19 @@ export class MathScopeProvider extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { errors, idsByName, setError, errorsDiff } = this.props
-
+    const { errors, idsByName, setError, errorsDiff, allSymbolIds } = this.props
+    const symbolIds = new Set(allSymbolIds);
     // delete old errors if no longer present
     // Need to use previous idsByName prop in case
     // the variable got deleted or its name has changed
     // Note: if name changed, we might be re-adding the error below
+    // Note: idsByName only includes uniquely named symbol ids.
     const prevIdsByName = prevProps.idsByName
     errorsDiff.deleted
+      .filter(name => {
+        // check that the symbol still exists; if it was deleted, we do not need to unset the error
+        return symbolIds.has(prevIdsByName[name])
+      })
       .forEach(name => {
         const errorData = new EvalErrorData(null)
         setError(prevIdsByName[name], 'value', errorData)
