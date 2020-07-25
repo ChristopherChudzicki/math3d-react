@@ -4,8 +4,8 @@ import math from 'utils/mathjs'
 import {
   validateBoolean,
   isEqualNumerically,
-  isNumeric,
-  validateNumeric,
+  isReal,
+  validateReal,
   validateVector,
   isVector,
   validateFunctionSignature,
@@ -201,10 +201,10 @@ function makeSetProperty(propName, validator: ?Function) {
 }
 
 const universalHandlers = {
-  opacity: makeSetProperty('opacity', validateNumeric),
-  zBias: makeSetProperty('zBias', validateNumeric),
-  zIndex: makeSetProperty('zIndex', validateNumeric),
-  zOrder: makeSetProperty('zOrder', validateNumeric),
+  opacity: makeSetProperty('opacity', validateReal),
+  zBias: makeSetProperty('zBias', validateReal),
+  zIndex: makeSetProperty('zIndex', validateReal),
+  zOrder: makeSetProperty('zOrder', validateReal),
   color: makeSetProperty('color'),
   calculatedVisibility: function(nodes: HandlerNodes, props: Props) {
     const { calculatedVisibility, useCalculatedVisibility } = props
@@ -221,8 +221,8 @@ const universalHandlers = {
 }
 
 const lineLikeHandlers = {
-  size: makeSetProperty('size', validateNumeric),
-  width: makeSetProperty('width', validateNumeric),
+  size: makeSetProperty('size', validateReal),
+  width: makeSetProperty('width', validateReal),
   start: makeSetProperty('start'),
   end: makeSetProperty('end')
 }
@@ -468,7 +468,7 @@ export class Axis extends AbstractMBC implements MathBoxComponent {
 
   static handleScale(nodes: HandlerNodes, handledProps: HandledProps) {
     const { scale, axis } = handledProps
-    validateNumeric(scale)
+    validateReal(scale)
     const cartesian = Axis.getCartesian(nodes.renderNodes)
     const scaleCopy = { ...cartesian.props.scale }
     scaleCopy[axis] = scale
@@ -486,14 +486,14 @@ export class Axis extends AbstractMBC implements MathBoxComponent {
 
   static handleMin(nodes: HandlerNodes, handledProps: HandledProps) {
     const { min, axis } = handledProps
-    validateNumeric(min)
+    validateReal(min)
     const cartesian = Axis.getCartesian(nodes.renderNodes)
     Axis.setAxisEnd(cartesian, axis, min, 0)
   }
 
   static handleMax(nodes: HandlerNodes, handledProps: HandledProps) {
     const { max, axis } = handledProps
-    validateNumeric(max)
+    validateReal(max)
     const cartesian = Axis.getCartesian(nodes.renderNodes)
     Axis.setAxisEnd(cartesian, axis, max, 1)
 
@@ -732,7 +732,7 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
 
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
     const { samples } = handledProps
-    validateNumeric(samples)
+    validateReal(samples)
     nodes.dataNodes.set('width', samples)
   }
 
@@ -812,32 +812,32 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   static handleGridOpacity(nodes: HandlerNodes, handledProps: HandledProps) {
     const { gridOpacity } = handledProps
     const { groupNode } = nodes
-    validateNumeric(gridOpacity)
+    validateReal(gridOpacity)
     groupNode.select('line').set('opacity', gridOpacity)
   }
 
   static handleGridWidth(nodes: HandlerNodes, handledProps: HandledProps) {
     const { gridWidth } = handledProps
     const { groupNode } = nodes
-    validateNumeric(gridWidth)
+    validateReal(gridWidth)
     groupNode.select('line').set('width', gridWidth)
   }
 
   static handleGridU(nodes: HandlerNodes, handledProps: HandledProps) {
     const { gridU } = handledProps
-    validateNumeric(gridU)
+    validateReal(gridU)
     nodes.groupNode.select('.gridU resample').set('width', gridU)
   }
   static handleGridV(nodes: HandlerNodes, handledProps: HandledProps) {
     const { gridV } = handledProps
-    validateNumeric(gridV)
+    validateReal(gridV)
     nodes.groupNode.select('.gridV resample').set('height', gridV)
   }
 
   static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
     const { groupNode } = nodes
     const { uSamples } = handledProps
-    validateNumeric(uSamples)
+    validateReal(uSamples)
     const area = groupNode.select('area')
     const colorsNode = groupNode.select('.colors')
     if (area.get('width') === null) {
@@ -852,7 +852,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   static handleVSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
     const { groupNode } = nodes
     const { vSamples } = handledProps
-    validateNumeric(vSamples)
+    validateReal(vSamples)
     const area = groupNode.select('area')
     const colorsNode = groupNode.select('.colors')
     if (area.get('height') === null) {
@@ -929,7 +929,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     const { colorExpr, color, expr, uSamples, vSamples, rangeU, rangeV } = handledProps
     if (!hasFunctionSignature(colorExpr, 5, 1)) { return false }
     if (!colorMaps[color] ) { return false }
-    if (!isNumeric(uSamples) || !isNumeric(vSamples)) { return false }
+    if (!isReal(uSamples) || !isReal(vSamples)) { return false }
     if (!this.constructor.isExprValid(expr)) { return false }
     if (!ParametricSurface.isRangeValid(rangeU, rangeV)) { return false }
     return true
@@ -1211,7 +1211,7 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
 
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
     const { samples } = handledProps
-    validateNumeric(samples)
+    validateReal(samples)
     ImplicitSurface.updateData(nodes, handledProps)
   }
 
@@ -1223,7 +1223,7 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
       isVector(rangeZ, 2) &&
       hasFunctionSignature(lhs, 3, 1) &&
       hasFunctionSignature(rhs, 3, 1) &&
-      isNumeric(samples)
+      isReal(samples)
     )
   }
 
@@ -1312,7 +1312,7 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
 
   static handleScale(nodes: HandlerNodes, handledProps: HandledProps) {
     const { scale } = handledProps
-    isNumeric(scale)
+    isReal(scale)
     VectorField.updateRangeAndExpr(nodes, handledProps)
   }
 
@@ -1322,7 +1322,7 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
       isVector(rangeY, 2) &&
       isVector(rangeZ, 2) &&
       isVector(samples, 3) &&
-      isNumeric(scale) &&
+      isReal(scale) &&
       hasFunctionSignature(expr, 3, 3)
     )
   }

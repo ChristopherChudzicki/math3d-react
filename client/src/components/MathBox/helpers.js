@@ -22,19 +22,19 @@ export function isEqualNumerically(obj1: mixed, obj2: mixed): bool {
 
 }
 
-export function isNumeric(value: mixed) {
+export function isReal(value: mixed) {
   return typeof value === 'number'
 }
 
-export function validateNumeric(value: mixed) {
-  if (isNumeric(value)) { return }
-  throw TypeError(`Expected value to be a number, but it was an ${typeof value}`)
+export function validateReal(value: mixed) {
+  if (isReal(value)) { return }
+  throw TypeError(`Expected value to be a real number, but it was an ${typeof value}`)
 }
 
 export function isVector(value: mixed, numComponents: number) {
   if (value instanceof Array) {
     if (value.length !== numComponents) { return false }
-    return value.every(x => isNumeric(x))
+    return value.every(x => isReal(x))
   }
   return false
 }
@@ -45,7 +45,7 @@ export function validateVector(value: mixed, numComponents: number) {
 }
 
 // Validate that func is a function from R^numInputs to R^numpOutputs
-export function validateFunctionSignature(func: mixed, numInputs: number, numOutputs: number) {
+export function validateFunctionSignature(func: mixed, numInputs: number, numOutputs: number,) {
   if (!(typeof func === 'function')) {
     throw TypeError(`Expected a function, but received a ${typeof func}`)
   }
@@ -58,7 +58,7 @@ export function validateFunctionSignature(func: mixed, numInputs: number, numOut
   const result = func(...theArgs) // if func throws, well... then that's the error!
 
   if (numOutputs === 1) {
-    if (isNumeric(result) || result instanceof math.type.Complex) {
+    if (isReal(result) || result instanceof math.type.Complex) {
       return
     }
     throw TypeError('Expected function to return a number, but it did not.')

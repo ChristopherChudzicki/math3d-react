@@ -2,7 +2,7 @@ import {
   isAssignmentRHS,
   isAssignmentLHS,
   isValidName,
-  isNumeric
+  isReal
 } from './validators'
 import { Parser } from 'utils/mathParsing'
 import { ParseErrorData } from 'services/errors'
@@ -94,15 +94,15 @@ describe('isNameValid', () => {
   } )
 } )
 
-describe('isNumeric', () => {
+describe('isReal', () => {
   it('should mark numbers as valid', () => {
     const parser = null
-    expect(isNumeric(parser, '4.3')).toEqual(new ParseErrorData(null))
+    expect(isReal(parser, '4.3')).toEqual(new ParseErrorData(null))
   } )
 
   it('should mark non-numbers as invalid', () => {
     const parser = null
-    expect(isNumeric(parser, '4.3.1')).toEqual(
+    expect(isReal(parser, '4.3.1')).toEqual(
       new ParseErrorData('Value Error: 4.3.1 is not a plain number')
     )
   } )

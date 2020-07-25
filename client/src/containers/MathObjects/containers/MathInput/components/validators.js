@@ -65,7 +65,7 @@ export function isAssignment(parser, latexLHS, { latexRHS } ) {
   }
 }
 
-export function isNumeric(parser, latex) {
+export function isReal(parser, latex) {
   if (isNaN(latex)) {
     return new ParseErrorData(`Value Error: ${latex} is not a plain number`)
   }
