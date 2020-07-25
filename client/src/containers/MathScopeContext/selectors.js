@@ -2,7 +2,11 @@ import VariableSlider from 'containers/MathObjects/MathSymbols/VariableSlider'
 import memoizeOne from 'memoize-one'
 
 function _getParseableSymbols(parser, mathSymbols, sliderValues) {
-  const initial = { symbols: {}, idsByName: {} }
+  const initial = {
+    symbols: {},
+    idsByName: {},
+    allSymbolIds: Object.keys(mathSymbols),
+  }
   const seen = new Set()
   return Object.keys(mathSymbols).reduce((acc, id) => {
     const { name: lhs, value, type } = mathSymbols[id]
