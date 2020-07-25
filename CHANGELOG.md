@@ -3,6 +3,10 @@
 ## Version 1.2
 
 ## Versin 1.2.7
+ - Fixed https://github.com/ChristopherChudzicki/math3d-react/issues/250
+ - Fixed a bug where vector-valued functions sometimes erroneously displayed errors that they had the incorrect number of outputs. This happened with functions that sometimes sampled to complex values, and could cause problems loading graphs.
+
+## Versin 1.2.7
  - Fixed a bug where newly created folders, if saved in their default state
    (default title and open) would prevent the saved graph from loading properly.
  - Fixed a bug where Share button's "Copied!" status was not resetting properly.
