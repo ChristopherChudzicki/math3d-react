@@ -40,9 +40,30 @@ export default function mathquillToMathJS(fromMQ: string) {
 
   // remove fractions, then apply replacements
   const noFrac = fracToDivision(fromMQ)
+  const noBraceSub = convertSubscript(noFrac)
   return replacements.reduce(
     (acc, r) => replaceAll(acc, r['tex'], r['mathjs'] ),
-    noFrac)
+    noBraceSub)
+}
+
+/**
+ * Recursively removes braces from LaTeX subscripts
+ *   - example: x_{12foo_{bar123_{evenlower}}} --> x_12foo_bar123_evenlower
+ */
+export function convertSubscript(expr: string) {
+  const sub = '_{'
+  const subStart = expr.indexOf(sub)
+
+  if (subStart < 0) { return expr }
+
+  const numStart = subStart + sub.length
+  const closingBrace = expr.indexOf('}', numStart)
+  const newExpr = expr.slice(0, subStart) +
+    '_' +
+    expr.slice(numStart, closingBrace) +
+    expr.slice(closingBrace + 1)
+
+  return convertSubscript(newExpr)
 }
 
 /**
