@@ -2,6 +2,8 @@ import mongoose from 'mongoose'
 import { Graph } from '../graph/model'
 import fs from 'fs'
 import { promisify } from 'util'
+import { getDb } from './getDb';
+import { attachDb } from './attachDb';
 
 const readdir = promisify(fs.readdir)
 const readFile = promisify(fs.readFile)
@@ -38,3 +40,5 @@ export async function seedDb() {
   console.log('Database connection closed.')
   console.groupEnd()
 }
+
+export { getDb, attachDb };
