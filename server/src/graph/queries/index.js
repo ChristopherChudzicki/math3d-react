@@ -1,6 +1,6 @@
-import path from 'path';
-import saveGraph from './save_graph.sql';
-import loadGraph from './load_graph.sql';
+import getGraph from './get_graph.sql';
+import insertGraph from './insert_graph.sql';
+import upsertGraph from './upsert_graph.sql';
 
 /**
  * TODO: Probably would be better to turn these queries into pg-promise
@@ -8,4 +8,4 @@ import loadGraph from './load_graph.sql';
  * Probably should not have used webpack on the backend =/.
  */
 
-export { saveGraph, loadGraph }; 
+export { insertGraph, getGraph, upsertGraph }; 

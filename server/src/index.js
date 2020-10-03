@@ -1,9 +1,7 @@
 // From https://github.com/mars/heroku-cra-node
 import 'source-map-support/register'
 import './database/mongoose.config'
-
-
-import { seedDb } from './database'
+import { seedDb, getDb } from './database'
 import cluster from 'cluster'
 import os from 'os'
 import { startServer } from './server'
@@ -11,7 +9,7 @@ import { startServer } from './server'
 // Multi-process to utilize all CPU cores.
 if (cluster.isMaster) {
   console.error(`Node cluster master ${process.pid} is running`)
-  seedDb()
+  seedDb(getDb())
 
   // Fork workers.
   for (let i = 0; i < os.cpus().length; i++) {
