@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { promisify } from 'util'
-import * as queries from '../graph/queries';
+import * as queries from '../graph/queries'
 
 const readdir = promisify(fs.readdir)
 const readFile = promisify(fs.readFile)
