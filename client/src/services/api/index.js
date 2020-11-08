@@ -7,7 +7,7 @@ export const getGraph = async (id) => fetch(`api/graph/${id}`, {
 
 export const saveGraph = async (id, dehydrated) => {
   const body = {
-    '_id': id,
+    urlKey: id,
     dehydrated
   }
   return fetch(`/api/graph`, {

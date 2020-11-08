@@ -32,7 +32,8 @@ async function migrateOne(graph, status) {
   try {
     const update = { $set: { dehydrated } }
     await Graph.updateOne( { _id }, update)
-  } catch (error) {
+  }
+  catch (error) {
     console.log(error)
   }
   console.log(`Finished ${_id}, made ${numChanges} changes`)

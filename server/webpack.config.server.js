@@ -26,7 +26,7 @@ module.exports = {
     libraryTarget: 'commonjs2'
   },
   resolve: {
-    extensions: ['.webpack-loader.js', '.web-loader.js', '.loader.js', '.js', '.jsx'],
+    extensions: ['.webpack-loader.js', '.web-loader.js', '.loader.js', '.js'],
     modules: [
       path.resolve(__dirname, 'node_modules')
     ]
@@ -34,9 +34,13 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js)$/,
         loader: 'babel-loader'
-      }
+      },
+      {
+        test: /\.sql$/i,
+        use: 'raw-loader',
+      },
     ]
   },
   node: {

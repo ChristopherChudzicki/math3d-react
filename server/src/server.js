@@ -2,9 +2,8 @@ import express from 'express'
 import { saveNewGraph, loadGraph } from './graph'
 import { wrapAsync } from './utils'
 import bodyParser from 'body-parser'
-import mongoose from 'mongoose'
 import path from 'path'
-import { DATABASE_URI } from './database'
+import { getDb, attachDb } from './database'
 
 const STATIC_DIR = path.resolve(__dirname, '../../client/build')
 const PORT = process.env.PORT || 5000
@@ -19,11 +18,12 @@ export function startServer() {
   // Priority serve any static files.
   app.use(express.static(STATIC_DIR))
 
+  const db = getDb();
+  app.use(attachDb(db));
+
   app.listen(PORT, () => {
     console.error(`Node cluster worker ${process.pid}: listening on port ${PORT}`)
   } )
-
-  mongoose.connect(DATABASE_URI)
 
   app.post('/api/graph', saveNewGraph)
 
