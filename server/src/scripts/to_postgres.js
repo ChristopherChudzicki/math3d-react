@@ -28,15 +28,21 @@ mongoose.connect(MONGODB_URI)
 const migrateOne = async (tx, graph, status) => {
   status.started++
   const { _id: urlKey, dehydrated } = graph;
-  if (status.started % 100 === 0) {
+  if (status.started % 100 === 0 ) {
     console.log(status);
   }
   await tx.none(queries.upsertGraph, { urlKey, dehydrated });
+  if (status.finished % 100 === 0) {
+    console.log(status);
+  }
   status.finished++
 }
 
 export async function migrate() {
-  const db = getDb();
+  const db = getDb({
+    ssl: { sslmode: 'require', rejectUnauthorized: false }
+  });
+
   const cursor = Graph.find( {} ).cursor()
   const status = {
     started: 0,
