@@ -13,13 +13,30 @@ This repository has three `package.json` files:
 
 ## To Install for Local Development:
 
-1. **Install Mongodb:** If it is not already installed, you'll need to install `mongodb` as our database. On a Mac, we recommend installing `mongodb` with Homebrew:
+1. **Install Postgresql:** If it is not already installed, you'll need to install `postgres` as our database. On a Mac, we recommend installing `postgres` with Homebrew:
 
         ```bash
-        > brew tap mongodb/brew
-        > brew install mongodb-community
+        brew update
+        brew install postgresql
         ```
-    (Works with `mongodb` v4.2.1; probably others, too.)
+
+1. **Bootstrapping the database:** Create a database cluster and start Postgres 
+
+        ```bash
+        # creates a new database cluster
+        initdb /usr/local/var/postgres
+        # starts postgres
+        pg_ctl -D /usr/local/var/postgres start
+        # create user math3d_user and database math3d
+        psql -d postgres -f server/migrations/create_database.sql
+        # create schema
+        psql -U math3d_user -d math3d -f server/migrations/create_database.sql
+        ```
+
+1. **Set Database Connection:** Create a `.env` file in the `server/` directory to set `MONGO_URI` database connection environment variable. For local development, just copy the template:
+        ```bash
+        > cp server/dotenv_template server/.env
+        ```
 
 1. **Install Dependencies:** Clone the git repo and `cd` to package root, then run:
 
@@ -28,15 +45,6 @@ This repository has three `package.json` files:
         ```
     which installs both client and server dependencies.
 
-1. **Set Database Connection:** Create a `.env` file in the `server/` directory to set `MONGO_URI` database connection environment variable. For local development, just copy the template:
-        ```bash
-        > cp server/dotenv_template server/.env
-        ```
-
-1. **Start the Database:**:
-        ```bash
-        > npm run start-db
-        ```
 
 1. **Start Server & Client:** In a new terminal window, start the server:
         ```bash

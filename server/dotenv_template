@@ -1,3 +1,7 @@
-# Rename this file to .env
-NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/math3d
+# rename this to .env and update the DATABASE_URL
+# Something of form:
+#
+DATABASE_URL=postgres://[user[:password]@][netloc][:port][,...][/dbname]
+#
+# like:
+DATABASE_URL=postgres://math3d_user:abc-123@localhost:5432/math3d
