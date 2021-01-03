@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import styled from 'styled-components'
+import { HEADER_HEIGHT_PX } from '../../../constants'
 import ShareButton from './containers/ShareButton'
 import HeaderButton from './components/HeaderButton'
 import TitleInput from './containers/TitleInput'
@@ -13,7 +14,7 @@ const Item = Menu.Item
 
 const HeaderContainer = styled.div`
   background-color: ${props => props.theme.gray[1]};
-  height: 48px;
+  height: ${ HEADER_HEIGHT_PX }px;
   display:flex;
   width:100%;
   align-items:center;

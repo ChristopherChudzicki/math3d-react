@@ -3,6 +3,7 @@ import Drawer from 'containers/Drawer'
 import SortableTree from 'containers/SortableTree'
 import ControllerHeader from 'containers/ControllerHeader'
 import ScrollWithOverflow from 'components/ScrollWithOverflow'
+import { HEADER_HEIGHT_PX } from '../../../../constants'
 import MathObjects, {
   Folder,
   MathSymbols,
@@ -28,7 +29,7 @@ const menuItems = [
 const StyledControlledTabs = styled(ControlledTabs)`
   &.ant-tabs {
     overflow: visible;
-    height: 100%;
+    height: calc(100% - ${ HEADER_HEIGHT_PX }px);
   }
   & .ant-tabs-bar {
     height: 65px;
