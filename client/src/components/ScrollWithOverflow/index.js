@@ -51,11 +51,6 @@ const ScrollingDivInner = styled.div`
   z-index:10;
 `
 
-/**
- * This is absolutely positioned so that when the left control panel scrolls,
- * the padding cover stays in place.
- * Ruins the generality of this component, but works fine for our use case =/
- */
 const PaddingCover = styled.div`
   flex-grow: 0;
   flex-shrink: 0;
@@ -63,9 +58,7 @@ const PaddingCover = styled.div`
   max-width:0px;
   padding-right: 100vw;
   margin-right: -100vw;
-  position: absolute;
-  bottom:0;
-  top:0;
+  position: relative;
 `
 
 function forwardEventToElement(domElement: HTMLElement, event: Event) {
