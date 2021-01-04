@@ -65,7 +65,7 @@ const PaddingCover = styled.div`
   margin-right: -100vw;
   position: absolute;
   bottom:0;
-  top:0;
+  top: 65px;
 `
 
 function forwardEventToElement(domElement: HTMLElement, event: Event) {
