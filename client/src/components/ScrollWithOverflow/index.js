@@ -55,13 +55,17 @@ const ScrollingDivInner = styled.div`
  * This is absolutely positioned so that when the left control panel scrolls,
  * the padding cover stays in place.
  * Ruins the generality of this component, but works fine for our use case =/
+ * 
+ * + 400px is for the sidebar width, so padding cover covers the whole screen
+ * when sidebar is slide left.
+ * 
  */
 const PaddingCover = styled.div`
   flex-grow: 0;
   flex-shrink: 0;
   flex-basis: 0;
   max-width:0px;
-  padding-right: 100vw;
+  padding-right: calc(100vw + 400px);
   margin-right: -100vw;
   position: absolute;
   bottom:0;
