@@ -276,7 +276,7 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
     }
   }
 
-  static frustrumHeightAtDistance(fovDegrees: number, distance: number) {
+  static frustumHeightAtDistance(fovDegrees: number, distance: number) {
     return 2 * distance * Math.tan(0.5 * fovDegrees * Math.PI/180)
   }
   static fovForHeightAndDistance(height: number, distance: number) {
@@ -287,7 +287,7 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
     const { camera, controls } = mathboxRoot.three
     const d1 = camera.position.distanceTo(controls.center)
     const fov1 = camera.fov
-    const h = Camera.frustrumHeightAtDistance(fov1, d1)
+    const h = Camera.frustumHeightAtDistance(fov1, d1)
     const d2 = d1 * zoomFactor
     const fov2 = Camera.fovForHeightAndDistance(h, d2)
 
