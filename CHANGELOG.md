@@ -4,6 +4,7 @@
 
 ## Version 1.2.9
 - Made axis "Scale" more visible. It's been moved from the gear settings to main Axis objects.
+- Added functions `re`, `im`, `conj`, and `arg` for complex number manipulation
 - Fixed https://github.com/ChristopherChudzicki/math3d-react/issues/290
 
     Grid snapping is now turned off by default. Snapping attempts to snap gridlines to "nice" numbers, but can result in incorrect number of gridlines
