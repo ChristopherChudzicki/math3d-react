@@ -13,7 +13,7 @@
     "deep-equal": "^2.0.1",
     "immutability-helper": "^2.9.1",
     "lodash": "^4.17.19",
-    "mathjs": "^3.18.1",
+    "mathjs": "^7.5.1",
     "memoize-one": "^4.0.3",
     "randomstring": "^1.1.5",
     "re-reselect": "^2.3.0",
