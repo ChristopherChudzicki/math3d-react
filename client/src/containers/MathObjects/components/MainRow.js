@@ -4,11 +4,12 @@ export default styled.div`
   position:relative;
   display:flex;
   align-items:stretch;
+  justify-content:space-between;
 `
 
 export const Cell = styled.div`
   display: flex;
-  flex: 1;
+
   align-items:center;
 `
 export const Label = styled.span`
