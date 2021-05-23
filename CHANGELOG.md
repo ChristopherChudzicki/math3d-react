@@ -2,6 +2,13 @@
 
 ## Version 1.2
 
+## Version 1.2.9
+- Made axis "Scale" more visible. It's been moved from the gear settings to main Axis objects.
+- Fixed https://github.com/ChristopherChudzicki/math3d-react/issues/290
+
+    Grid snapping is now turned off by default. Snapping attempts to snap gridlines to "nice" numbers, but can result in incorrect number of gridlines
+- Some README documentation fixes and other fixes, Thanks @nicegamer7
+
 ## Version 1.2.8
  - Fixed https://github.com/ChristopherChudzicki/math3d-react/issues/250
  - Fixed a bug where vector-valued functions sometimes erroneously displayed errors that they had the incorrect number of outputs. This happened with functions that sometimes sampled to complex values, and could cause problems loading graphs.
