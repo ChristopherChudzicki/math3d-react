@@ -36,19 +36,6 @@ This repository has three `package.json` files:
 1. **Set Database Connection:** Create a `.env` file in the `server/` directory to set `DATABASE_URL` database connection environment variable. For local development, just copy the template:
 
     ```bash
-    # creates a new database cluster
-    > initdb /usr/local/var/postgres
-    # starts postgres
-    > pg_ctl -D /usr/local/var/postgres start
-    # create user math3d_user and database math3d
-    > psql -d postgres -f server/migrations/create_database.sql
-    # create schema
-    > psql -U math3d_user -d math3d -f server/migrations/database_setup.sql
-    ```
-
-1. **Set Database Connection:** Create a `.env` file in the `server/` directory to set `DATABASE_URL` database connection environment variable. For local development, just copy the template:
-
-    ```bash
     > cp server/dotenv_template server/.env
     ```
 
