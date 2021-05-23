@@ -124,7 +124,7 @@ const gridSpecific: MetaData = {
   },
   snap: {
     inputType: 'boolean',
-    defaultValue: true
+    defaultValue: false
   }
 }
 
