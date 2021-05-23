@@ -32,7 +32,7 @@ export class AxisUI extends PureComponent<Props> {
       >
         <MainRow>
           <Cell>
-            <Label>Direction:</Label>
+            <Label>Axis:</Label>
             <ConnectedStaticMath parentId={this.props.id} field='axis' />
           </Cell>
           <Cell>
@@ -42,6 +42,10 @@ export class AxisUI extends PureComponent<Props> {
           <Cell>
             <Label>Max:</Label>
             <MathInputRHS field='max' parentId={this.props.id} style={noFlex} />
+          </Cell>
+          <Cell>
+            <Label>Scale:</Label>
+            <MathInputRHS field='scale' parentId={this.props.id} style={noFlex} />
           </Cell>
         </MainRow>
       </MathGraphicUI>
