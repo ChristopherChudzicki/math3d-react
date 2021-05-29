@@ -8,10 +8,16 @@ const DraggableItemContainer = styled.div`
   box-shadow: ${props => props.isDragging ? '0 0 5px gray' : ''}
 `
 
-const EmptyListIndicator = styled.div`
-  text-align: center;
-  user-select: none;
-  padding: 1em;
+const InnerDroppable = styled.div`
+  &:empty {
+    ::before {
+      content: "Drag an object here to add it to this folder...";
+      // use line-height instead of padding to ensure Draggables stay aligned
+      line-height: 333%;
+    }
+    text-align: center;
+    user-select: none;
+  }
 `
 
 /**
@@ -55,20 +61,20 @@ export default function SortableList(props) {
       {
         // eslint-disable-next-line no-unused-vars
         (provided, snapshot) => (
-          <div
+          <InnerDroppable
             ref={provided.innerRef}
             className={className}
             style={style}
           >
-            {props.items.length ? props.items.map((item, index) => (
+            {props.items.map((item, index) => (
               renderDraggableItem(
                 item,
                 renderItem,
                 { index, type: draggableType }
               )
-            )) : <EmptyListIndicator>Drag an object here to add it to this folder...</EmptyListIndicator>}
+            ))}
             {provided.placeholder}
-          </div>
+          </InnerDroppable>
         )
       }
     </Droppable>
