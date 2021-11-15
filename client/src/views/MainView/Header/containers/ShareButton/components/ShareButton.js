@@ -12,6 +12,12 @@ import getCameraData from 'services/getCameraData'
 import { CAMERA } from 'containers/MathObjects'
 import styled, { keyframes } from 'styled-components'
 
+const URL_CHAR_ST = [
+  '123456789',
+  'abcdefghijklmnopqrstuvwxyz',
+  'ABCDEFGHIJKLMNPQRSTUVWXYZ'
+].join('')
+
 const SharePopoverContainer = styled.div`
   max-width: 300px;
   display: flex;
@@ -83,7 +89,7 @@ export default class ShareButton extends PureComponent<Props, State> {
     this.props.setCreationDate()
     const state = this.props.getState()
     const dehydrated = dehydrate(state)
-    const id = this.getId()
+    const id = this.getId({ charset: URL_CHAR_ST })
     saveGraph(id, dehydrated)
     this.setState( { id } )
     this.dehydratedJson = JSON.stringify(dehydrated)
