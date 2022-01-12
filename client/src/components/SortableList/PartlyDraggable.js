@@ -22,8 +22,8 @@ export default class PartlyDraggable extends React.PureComponent {
   }
 
   static isElementDraggable(element) {
-    // Detects MathQuill editable fields
-    if (element.classList.contains('mq-editable-field')) {
+    // Detects MathQuill fields
+    if (element.classList.contains('mq-math-mode')) {
       return false
     }
     // Detects MathQuill editable fields
