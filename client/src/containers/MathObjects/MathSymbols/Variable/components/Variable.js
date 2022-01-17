@@ -5,9 +5,14 @@ import { MainRow } from 'containers/MathObjects/components'
 import {
   MathInputLHS,
   MathInputRHS,
+  MathTextOutput,
   StaticMathStyled
 } from 'containers/MathObjects/containers/MathInput'
 import { VARIABLE } from '../metadata'
+
+const justifyRight = {
+  justifyContent: 'flex-end'
+}
 
 export default class Variable extends PureComponent {
 
@@ -31,6 +36,12 @@ export default class Variable extends PureComponent {
           <MathInputRHS
             field='value'
             parentId={this.props.id}
+          />
+        </MainRow>
+        <MainRow style={justifyRight}>
+          <MathTextOutput
+            parentId={this.props.id}
+            field='value'
           />
         </MainRow>
       </MathObjectUI>

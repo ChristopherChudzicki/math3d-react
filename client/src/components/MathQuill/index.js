@@ -178,6 +178,7 @@ export class StaticMath extends PureComponent<StaticMathProps> {
 
   componentDidMount() {
     this.staticMath = MQ.StaticMath(this.span)
+    this.staticMath.latex(this.props.latex)
   }
 
   componentDidUpdate() {
@@ -195,7 +196,6 @@ export class StaticMath extends PureComponent<StaticMathProps> {
         style={this.props.style}
         className={mqClasses}
         ref={ ref => { this.span = ref } }>
-        {this.props.latex}
       </span>
     )
   }

@@ -72,8 +72,8 @@ export default class ShareButton extends PureComponent<Props, State> {
 
   dehydratedJson: ?string;
 
-  getId() {
-    return randomstring.generate(9);
+  getId(charset: { length: number, charset: string}) {
+    return randomstring.generate(charset);
   }
 
   saveCameraData = () => {
@@ -89,7 +89,7 @@ export default class ShareButton extends PureComponent<Props, State> {
     this.props.setCreationDate();
     const state = this.props.getState();
     const dehydrated = dehydrate(state);
-    const id = this.getId({ charset: URL_CHAR_ST });
+    const id = this.getId({ length: 9, charset: URL_CHAR_ST });
     saveGraph(id, dehydrated);
     this.setState({ id });
     this.dehydratedJson = JSON.stringify(dehydrated);
