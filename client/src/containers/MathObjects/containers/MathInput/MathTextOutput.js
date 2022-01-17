@@ -19,6 +19,7 @@ class MathTextOutput extends React.PureComponent {
     this.renderTextOutput = this.renderTextOutput.bind(this)
     this.convertExponentNotation = this.convertExponentNotation.bind(this)
     this.deepConvert = this.deepConvert.bind(this)
+    this.convertComplexExponentNotation = this.convertComplexExponentNotation.bind(this)
   }
 
   render() {
@@ -33,8 +34,8 @@ class MathTextOutput extends React.PureComponent {
 
   // convert exponent notation to latex
   // example: '123e+12' => '123 \cdot 10^{12}' 
-  convertExponentNotation(raw) {
-    const string = Number.parseFloat(raw).toPrecision(12)
+  convertExponentNotation(number) {
+    const string = Number.parseFloat(number).toPrecision(12)
     const index = string.search(/e[+-]/)
     if(index < 0){
       return Number(string)
@@ -43,6 +44,16 @@ class MathTextOutput extends React.PureComponent {
     const exponent = Number(string.slice(index+1))
     if(exponent < -12)
     return `${Number(mantissa)} \\cdot 10^{${exponent}}`
+  }
+
+  convertComplexExponentNotation(complex) {
+      const real = this.convertExponentNotation(complex.re)
+      const imag = this.convertExponentNotation(complex.im)
+      const output = Math.abs(complex.re) < Math.abs(complex.im)/(10**12) ? `${imag}i` :
+        Math.abs(complex.im) < Math.abs(complex.re)/(10**12)? `${real}` : 
+        complex.im < 0 ? `${real}${imag}i` : `${real}+${imag}i`
+
+      return output
   }
 
   // convert every member of an array to latex exponent
@@ -55,10 +66,7 @@ class MathTextOutput extends React.PureComponent {
     }
 
     if(array instanceof math.type.Complex) {
-      const real = this.convertExponentNotation(array.re)
-      const imag = this.convertExponentNotation(array.im)
-      const output = real === '0' || Math.abs(array.re) < Math.abs(array.im)/(10**12) ? `${imag}i` :
-        Math.abs(array.im) < Math.abs(array.re)/(10**12)? `${real}` : `${real}+${imag}i`
+      const output = this.convertComplexExponentNotation(array)
       return output
     }
     return this.convertExponentNotation(array)
@@ -84,10 +92,7 @@ class MathTextOutput extends React.PureComponent {
     }
 
     else if(evaluatedValue instanceof math.type.Complex) {
-      const real = this.convertExponentNotation(evaluatedValue.re)
-      const imag = this.convertExponentNotation(evaluatedValue.im)
-      outputText = real === '0' || Math.abs(evaluatedValue.re) < Math.abs(evaluatedValue.im)/(10**12) ? `${imag}i` :
-        Math.abs(evaluatedValue.im) < Math.abs(evaluatedValue.re)/(10**12)? `${real}` : `${real}+${imag}i`
+      outputText = this.convertComplexExponentNotation(evaluatedValue)
     }
 
     else {
