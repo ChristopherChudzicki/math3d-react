@@ -86,6 +86,7 @@ export type Math = {
   },
   eval: (string, ?Object) => Numeric | Function,
   import: (Object, ?Object) => void,
+  integral: (Node | string, SymbolNode<Node> | string) => Node,
   // TODO: The types below are too loose; e.g., add/subtract should both be
   // length-preserving polymorphic types; cross only works
   // with 3-component vectors, norm does not accept matrices

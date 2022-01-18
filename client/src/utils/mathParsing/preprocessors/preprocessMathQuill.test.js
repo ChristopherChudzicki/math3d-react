@@ -64,4 +64,34 @@ describe('preprocessMathQuill', () => {
     const expected = 'x_12foo_bar123_evenlower'
     expect(preprocessMathQuill(input)).toBe(expected)
   } )
+
+  test('integral converted', () => {
+    const input = '\\int _0^1xdx'
+    const expected = ' integrate( x, 0, 1, x)'
+    expect(preprocessMathQuill(input)).toBe(expected)
+  })
+
+  test('implicit integrand', () => {
+    const input = '\\int _0^1dx'
+    const expected = ' integrate( 1, 0, 1, x)'
+    expect(preprocessMathQuill(input)).toBe(expected)
+  })
+
+  test('integral with dot symbol converted', () => {
+    const input = '\\int _0^xx\\cdot udu'
+    const expected = ' integrate( 0, x, x* u, u)'
+    expect(preprocessMathQuill(input)).toBe(expected)
+  })
+
+  test('edge case integral ddd converted', () => {
+    const input = '\\int _0^1ddd'
+    const expected = ' integrate( d, 0, 1, d)'
+    expect(preprocessMathQuill(input)).toBe(expected)
+  })
+
+  test('nested integral converted', () => {
+    const input = '5 + \\int_0^{\\alpha}2\\int_{\\beta}^1xd\\gamma d\\eta'
+    const expected = '5 +  integrate( 2 integrate( x, ( beta), 1,  gamma) , 0, ( alpha),  eta)'
+    expect(preprocessMathQuill(input)).toBe(expected)
+  })
 } )

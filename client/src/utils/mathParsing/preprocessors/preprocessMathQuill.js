@@ -1,5 +1,5 @@
 // @flow
-import { replaceAll, findClosingBrace } from '../../helpers'
+import { replaceAll, findClosingBrace, findIntegralEnd } from '../../helpers'
 
 /**
  * Makes a series of replacements on MathQuill-generated LaTeX strings so that
@@ -33,7 +33,10 @@ export default function mathquillToMathJS(fromMQ: string) {
     { tex: '\\operatorname{arccosh}', mathjs: 'arccosh' },
     { tex: '\\operatorname{arcsinh}', mathjs: 'arcsinh' },
     { tex: '\\operatorname{arctanh}', mathjs: 'arctanh' },
+    { tex: '\\operatorname{join}', mathjs: 'concat' },
     { tex: '\\cdot', mathjs: ' * ' },
+    { tex: '\\left|', mathjs: 'norm(' },
+    { tex: '\\right|', mathjs: ')' },
     { tex: '\\left', mathjs: '' },
     { tex: '\\right', mathjs: '' },
     { tex: '{', mathjs: '(' },
@@ -41,9 +44,12 @@ export default function mathquillToMathJS(fromMQ: string) {
     { tex: '~', mathjs: ' ' },
     { tex: '\\', mathjs: ' ' }
   ]
+  
+  //convert integrals
+  const inted = convertIntegral(fromMQ)
 
   // remove fractions, then apply replacements
-  const noFrac = fracToDivision(fromMQ)
+  const noFrac = fracToDivision(inted)
   const noBraceSub = convertSubscript(noFrac)
   return replacements.reduce(
     (acc, r) => replaceAll(acc, r['tex'], r['mathjs'] ),
@@ -88,4 +94,47 @@ export function fracToDivision(expr: string) {
     expr.slice(divIdx + 1)
 
   return fracToDivision(newExpr)
+}
+
+/**
+ * Recursively convert LaTeX integral to integral function
+ *   - example: \int_{am}^{bn} xy^2dx --> int(xy^2,am,bn,x)
+ */
+export function convertIntegral(expr: string) {
+  const int = '\\int'
+  const intStart = expr.indexOf(int)
+
+  if (intStart < 0) { return expr }
+
+  const intEnd = findIntegralEnd(expr, intStart)
+
+  // Get lower boundary
+  const lowerBoundaryStart = 1 + expr.indexOf('_', intStart)
+  const lowerBoundaryEnd = expr.indexOf('^', lowerBoundaryStart)
+  const lowerBoundary = expr.slice(lowerBoundaryStart, lowerBoundaryEnd)
+
+  // Get upper boundary
+  const upperBoundaryStart = lowerBoundaryEnd + 1
+  const upperBoundaryEnd  = expr[upperBoundaryStart] === '{' ? findClosingBrace(expr, upperBoundaryStart) + 1 : upperBoundaryStart + 1
+  const upperBoundary = expr.slice(upperBoundaryStart, upperBoundaryEnd)
+
+  // Get integrand
+  const integrandStart = upperBoundaryEnd
+  const integrandEnd = intEnd
+  const integrand = expr.slice(integrandStart, integrandEnd) || '1'
+
+  // Get integrating variable
+  const integratingVariableStart = intEnd + 1
+  const integratingVariableEnd = expr[integratingVariableStart] === '\\' ? expr.indexOf(' ', integratingVariableStart) < 0 ?
+    expr.length : expr.indexOf(' ', integratingVariableStart) : integratingVariableStart + 1
+  const integratingVariable = expr.slice(integratingVariableStart, integratingVariableEnd)
+
+
+  // Create int function with the propper arguments
+  const newExpr = expr.slice(0, intStart) + ' integrate( ' + 
+    integrand + ', ' + lowerBoundary + ', ' +
+    upperBoundary + ', ' + integratingVariable + ')' +
+    expr.slice(integratingVariableEnd)
+
+  return convertIntegral(newExpr)
 }

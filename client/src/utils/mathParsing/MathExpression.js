@@ -66,6 +66,7 @@ export default class MathExpression {
 
   _getDependencies() {
     const dependencies: Set<string> = new Set()
+    const integralExceptions : Set<string> = new Set()
     const isAssignmentNode = (this.tree.type === 'AssignmentNode')
     const isFunctionAssignmentNode = (this.tree.type === 'FunctionAssignmentNode')
 
@@ -76,8 +77,15 @@ export default class MathExpression {
       ? this.tree.params
       : []
 
-    rhs.traverse((node: Node) => {
+    rhs.traverse((node: Node, path: string, parent: Node) => {
       if (node.type === 'SymbolNode' || node.type === 'FunctionNode') {
+        // make exceptions for integral variable 
+        if (parent) {
+          if (parent.name === 'integrate' && path === 'args[3]') {
+            integralExceptions.add(node.name)
+          }
+        }
+        
         if (!params.includes(node.name)) {
           dependencies.add(node.name)
         }
@@ -90,7 +98,7 @@ export default class MathExpression {
       }
     } )
 
-    return dependencies
+    return new Set<string>([...dependencies].filter(i => !integralExceptions.has(i)))
   }
 
   _getEval() {
