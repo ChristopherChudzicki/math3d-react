@@ -66,26 +66,61 @@ export function findIntegralEnd(str: string, startIdx: number) {
   let stack = 1
 
   for (let j = start; j < strlen; j++) {
-    /**
-    * TODO: add exceptions to skip operator, default function (sin, cos, tan, ln, etc...)
-    * so that they won't be detected as end of integral
-    * */
+
     if (str.slice(j,j+4) === openingIntegral) {
       stack += 1
       const upperBoundaryStart = str.indexOf('^', j)
       const integrandStart = str[upperBoundaryStart] === '{' ? findClosingBrace(str, upperBoundaryStart) : upperBoundaryStart
-      j = integrandStart
+
+      //if there's a left bracket at the start of integrand, skip all the content of the brackets
+      if (str[integrandStart + 6] === '(') {
+        j = findClosingBrace(str, integrandStart + 6)
+      }
+      else {
+        j = integrandStart
+      }
     }
+
+    /**
+    * TODO: add exceptions to skip operators, default functions (sin, cos, tan, ln, etc...)
+    * so that they won't be detected as the end of an integral
+    * DONE!!
+    * */
+
+    if (str[j] === '\\') {
+      if (str.slice(j, j + 13) === '\\operatorname{') {
+        const operatorNameEnd = findClosingBrace(str, j + 13)
+        const operatorEnd = findClosingBrace(str, operatorNameEnd + 6)
+        j = operatorEnd
+        continue
+      }
+      else {
+        const endBySpace = str.indexOf(' ', j)
+        const endByBrackets = str.slice(j).search(/[({]/) + j
+
+        if (endBySpace > endByBrackets) {
+          j = endBySpace
+          continue
+        }
+        else {
+          j = findClosingBrace(str, endByBrackets)
+          continue
+        }
+
+      }
+    }
+
+
     else if (str[j] === closingIntegral && j + 1 < strlen) {
       stack -= 1
       //edge case for integral ddd
-      if (str.slice(j,j+3) === 'ddd') {
+      if (str.slice(j, j + 3) === 'ddd') {
         j += 1
       }
       if (stack === 0) {
         return j
       }
-      if (str[j+1] === '\\') {
+      if (str[j + 1] === '\\') {
         j = str.indexOf(' ', j)
       }
       else {

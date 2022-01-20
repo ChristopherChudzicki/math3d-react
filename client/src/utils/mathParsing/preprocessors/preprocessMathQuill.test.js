@@ -79,7 +79,7 @@ describe('preprocessMathQuill', () => {
 
   test('integral with dot symbol converted', () => {
     const input = '\\int _0^xx\\cdot udu'
-    const expected = ' integrate( 0, x, x* u, u)'
+    const expected = ' integrate( x *  u, 0, x, u)'
     expect(preprocessMathQuill(input)).toBe(expected)
   })
 

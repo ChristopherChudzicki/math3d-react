@@ -47,6 +47,8 @@ function integrate (f: Function, start: number, end: number) {
  */
 integrate.transform = function (args, math, scope) {
 
+    console.log(args)
+
     // determine the variable name
     if (!args[3].isSymbolNode) {
         throw new Error('Integrating variable must be a symbol')
@@ -73,7 +75,6 @@ integrate.transform = function (args, math, scope) {
         const integrated = math.integral(args[0], args[3]).compile()
         const _F = function (x) {
             fnScope[variable] = x
-            console.log(integrated.eval(fnScope))
             return integrated.eval(fnScope)
         }
 
