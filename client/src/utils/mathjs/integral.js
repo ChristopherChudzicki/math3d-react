@@ -1,7 +1,13 @@
 // @flow
 import type { Node } from './types'
 
-const STEP = 0.004
+const STEP = 0.001
+
+
+// Cash-Karp, Runge-Kutta Family of numerical integration method
+
+const RKC = [0, 3 / 10, 3 / 5, 1, 7 / 8]
+const RKB = [2825/27648, 18575/48384, 13525/55296, 277/14336, 1/4]
 
 /**
  * Calculate the numeric integration of a function
@@ -12,6 +18,7 @@ const STEP = 0.004
 function integrate (f: Function, start: number, end: number) {
     let total = 0
     let sign = 1
+
     if (start > end) {
         const starttemp = start
         start = end
@@ -20,8 +27,15 @@ function integrate (f: Function, start: number, end: number) {
     }
 
     for (let x = start; x < end; x += STEP) {
-        total += STEP*(f(x) + 4*f(x + STEP / 2) + f(x + STEP))/6
+
+        x = STEP * Math.round(x / STEP)
+        
+        total += STEP*RKC.reduce((prevSum, currentCoef, index) => {
+            return prevSum + RKB[index]*f(x + currentCoef*STEP)
+        }, 0)
+
     }
+
     return sign*total
 }
 
@@ -41,13 +55,14 @@ function integrate (f: Function, start: number, end: number) {
  *     math.evaluate('integrate(2*x, 0, 2, x)')
  *
  * @param {Array.<math.Node>} args
- *            Expects the following arguments: [f, start, end, x]
+ *            Expects the following arguments: [expr, start, end, symbol]
  * @param {Object} math
  * @param {Object} [scope]
  */
 integrate.transform = function (args, math, scope) {
 
-    console.log(args)
+    console.log(args.map(arg => arg.toString()))
+
 
     // determine the variable name
     if (!args[3].isSymbolNode) {
@@ -55,10 +70,12 @@ integrate.transform = function (args, math, scope) {
     }
     const variable = args[3].name
 
+
     // check for integration bounds dependencies
     if (getDependencies(args[1]).has(variable) || getDependencies(args[2]).has(variable)) {
         throw Error(`Integration bounds can't depend on integration variable '${variable}'. `)
     }
+
 
     // evaluate start and end
     const start = args[1].compile().eval(scope)
@@ -69,9 +86,10 @@ integrate.transform = function (args, math, scope) {
     // to apply the variable.
     const fnScope = Object.create(scope)
 
+
     let F: Function
     // try to execute integral with mathjs-simple-integral
-    try {        
+    try {      
         const integrated = math.integral(args[0], args[3]).compile()
         const _F = function (x) {
             fnScope[variable] = x
@@ -82,7 +100,7 @@ integrate.transform = function (args, math, scope) {
             return _F(end) - _F(start)
         }
     }
-    catch {
+    catch(e) {
         // construct a function which evaluates the first parameter f after applying
         // a value for parameter x.
         const fnCode = args[0].compile()
@@ -97,7 +115,27 @@ integrate.transform = function (args, math, scope) {
         }
     }
 
-    return F(start, end)
+
+    const result = F(start, end)
+
+    const time0 = window.performance.now()
+    const time1 = window.performance.now()
+    const time2 = window.performance.now()
+    const time3 = window.performance.now()
+    const time4 = window.performance.now()
+    const time5 = window.performance.now()
+    const time6 = window.performance.now()
+
+ /*    console.log(`time 0 to 1: ${time1 - time0} ms`)
+    console.log(`time 1 to 2: ${time2 - time1} ms`)
+    console.log(`time 2 to 3: ${time3 - time2} ms`)
+    console.log(`time 3 to 4: ${time4 - time3} ms`)
+    console.log(`time 4 to 5: ${time5 - time4} ms`)
+    console.log(`time 5 to 6: ${time6 - time5} ms`) */
+
+    console.log(result)
+
+    return result
 
 }
 
