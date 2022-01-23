@@ -82,7 +82,7 @@ export function findIntegralEnd(str: string, startIdx: number) {
     }
 
     /**
-    * TODO: add exceptions to skip operators, default functions (sin, cos, tan, ln, etc...)
+    * Exceptions to skip operators, default functions (sin, cos, tan, ln, etc...)
     * so that they won't be detected as the end of an integral
     * DONE!!
     * */

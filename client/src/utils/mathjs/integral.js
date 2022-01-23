@@ -1,5 +1,6 @@
 // @flow
 import type { Node } from './types'
+import { integrator } from './'
 
 const STEP = 0.001
 
@@ -15,8 +16,9 @@ const RKB = [2825/27648, 18575/48384, 13525/55296, 277/14336, 1/4]
  * @param {number} start
  * @param {number} end
  */
-function integrate (f: Function, start: number, end: number) {
-    let total = 0
+function integrate (f: Function, start: number, end: number, step?: number = STEP): Array<number> {
+
+    let result = [0]
     let sign = 1
 
     if (start > end) {
@@ -26,17 +28,24 @@ function integrate (f: Function, start: number, end: number) {
         sign = -1
     }
 
-    for (let x = start; x < end; x += STEP) {
+    for (let x = start; x < end; x += step) {
 
-        x = STEP * Math.round(x / STEP)
-        
-        total += STEP*RKC.reduce((prevSum, currentCoef, index) => {
-            return prevSum + RKB[index]*f(x + currentCoef*STEP)
+        const intIndex = Math.round((x - start) / step)
+        x = intIndex * step + start
+
+        let dx = step * RKC.reduce((prevSum, currentCoef, index) => {
+            return prevSum + RKB[index]*f(x + currentCoef*step)
         }, 0)
+
+        dx = dx || 0
+        
+        result.push(result[intIndex] + dx)
 
     }
 
-    return sign*total
+    result = result.map(value => sign * value)
+
+    return result
 }
 
 /**
@@ -61,9 +70,6 @@ function integrate (f: Function, start: number, end: number) {
  */
 integrate.transform = function (args, math, scope) {
 
-    console.log(args.map(arg => arg.toString()))
-
-
     // determine the variable name
     if (!args[3].isSymbolNode) {
         throw new Error('Integrating variable must be a symbol')
@@ -82,60 +88,8 @@ integrate.transform = function (args, math, scope) {
     const end = args[2].compile().eval(scope)
 
 
-    // create a new scope, linked to the provided scope. We use this new scope
-    // to apply the variable.
-    const fnScope = Object.create(scope)
-
-
-    let F: Function
-    // try to execute integral with mathjs-simple-integral
-    try {      
-        const integrated = math.integral(args[0], args[3]).compile()
-        const _F = function (x) {
-            fnScope[variable] = x
-            return integrated.eval(fnScope)
-        }
-
-        F = function (start, end) {
-            return _F(end) - _F(start)
-        }
-    }
-    catch(e) {
-        // construct a function which evaluates the first parameter f after applying
-        // a value for parameter x.
-        const fnCode = args[0].compile()
-        const f = function (x) {
-            fnScope[variable] = x
-            return fnCode.eval(fnScope)
-        }
-
-        // execute the integration
-        F = function (start, end) {
-            return integrate(f, start, end)
-        }
-    }
-
-
-    const result = F(start, end)
-
-    const time0 = window.performance.now()
-    const time1 = window.performance.now()
-    const time2 = window.performance.now()
-    const time3 = window.performance.now()
-    const time4 = window.performance.now()
-    const time5 = window.performance.now()
-    const time6 = window.performance.now()
-
- /*    console.log(`time 0 to 1: ${time1 - time0} ms`)
-    console.log(`time 1 to 2: ${time2 - time1} ms`)
-    console.log(`time 2 to 3: ${time3 - time2} ms`)
-    console.log(`time 3 to 4: ${time4 - time3} ms`)
-    console.log(`time 4 to 5: ${time5 - time4} ms`)
-    console.log(`time 5 to 6: ${time6 - time5} ms`) */
-
-    console.log(result)
-
-    return result
+    // pass to the integrator to create or retreve caches
+    return integrator.getInt(args[0], start, end, variable, math, scope, integrate)
 
 }
 
