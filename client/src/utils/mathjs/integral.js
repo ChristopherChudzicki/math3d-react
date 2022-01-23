@@ -1,6 +1,6 @@
 // @flow
 import type { Node } from './types'
-import { Integrator } from './Integrator'
+import { Integrator } from './Integrator.js'
 
 const integrator = new Integrator()
 
