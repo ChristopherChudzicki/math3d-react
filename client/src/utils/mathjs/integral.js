@@ -1,6 +1,8 @@
 // @flow
 import type { Node } from './types'
-import { integrator } from './'
+import Integrator from './Integrator'
+
+const integrator = new Integrator()
 
 const STEP = 0.001
 
