@@ -34,7 +34,7 @@ type IntegratedCaches = {
 
 const STEP = 0.001
 
-export default class Integrator {
+export class Integrator {
 
     _cache: IntegratedCaches = {}
 
