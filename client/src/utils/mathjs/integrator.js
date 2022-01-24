@@ -33,7 +33,7 @@ type IntegratedCaches = {
 * AFAIK DONE!!
 * tho I didn't find a way to cache integral bounds, they only take about 0.1 sec per compilation
 * finding a way to cache integral bounds is especially hard when it comes to variable bounds.
-* TODO: Add scope checker
+* TODO: Add scope checker. done
 */
 
 const STEP = 0.001
@@ -170,6 +170,7 @@ export class Integrator {
         // expand upward if needed
         if (needUpward) {
             let expandedUpper = numericalIntegrator(f, this._cache[name].upperBound, absoluteUpper + 1, STEP)
+            currentArray[currentArray.length - 1] = currentArray[currentArray.length - 1] || 0
             const currentUpperValue = currentArray[currentArray.length - 1]
             expandedUpper = expandedUpper.map(value => value + currentUpperValue)
             expandedUpper.shift()
@@ -180,6 +181,7 @@ export class Integrator {
         if (needDownward) {
             const newLowerBound = this._cache[name].lowerBound - STEP * Math.ceil((this._cache[name].lowerBound - (absoluteLower - 1)) / STEP)
             let expandedLower = numericalIntegrator(f, newLowerBound, this._cache[name].lowerBound, STEP)
+            expandedLower[expandedLower.length - 1] = expandedLower[expandedLower.length - 1] || 0
             const newLowerValue = expandedLower[expandedLower.length - 1]
             currentArray = currentArray.map(value => value + newLowerValue)
             currentArray.shift()
