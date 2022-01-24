@@ -39,8 +39,6 @@ function integrate (f: Function, start: number, end: number, step?: number = STE
             return prevSum + RKB[index]*f(x + currentCoef*step)
         }, 0)
 
-        console.log(`x: ${x}, intIndex: ${intIndex}, dx: ${dx}`)
-
         if(isNaN(result[intIndex])) {
             if(isNaN(dx)) {
                 result.push(NaN)
@@ -55,8 +53,6 @@ function integrate (f: Function, start: number, end: number, step?: number = STE
     }
 
     result = result.map(value => sign * value)
-
-    console.log(result)
 
     return result
 }
