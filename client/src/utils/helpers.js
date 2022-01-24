@@ -116,7 +116,11 @@ export function findIntegralEnd(str: string, startIdx: number) {
           continue
         }
         else {
-          j = findClosingBrace(str, j)
+          if (str.slice(j,j+5) === '\\left') {
+            j = findClosingBrace(str, j)
+          } else {
+            j = findClosingBrace(str, endByBrackets)
+          }
           continue
         }
 

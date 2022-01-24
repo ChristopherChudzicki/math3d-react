@@ -1,6 +1,6 @@
 // @flow
 import type { Node } from './types'
-import { Integrator } from './Integrator.js'
+import { Integrator } from './Integrator'
 
 const integrator = new Integrator()
 
@@ -20,7 +20,7 @@ const RKB = [2825/27648, 18575/48384, 13525/55296, 277/14336, 1/4]
  */
 function integrate (f: Function, start: number, end: number, step?: number = STEP): Array<number> {
 
-    let result = [0]
+    let result = [NaN]
     let sign = 1
 
     if (start > end) {
@@ -39,18 +39,24 @@ function integrate (f: Function, start: number, end: number, step?: number = STE
             return prevSum + RKB[index]*f(x + currentCoef*step)
         }, 0)
 
-        if(isNaN(dx)) {
-            dx = 0
-            result.push(result[intIndex] + dx)
-            result[intIndex] = NaN
-        }
-        else {
+        console.log(`x: ${x}, intIndex: ${intIndex}, dx: ${dx}`)
+
+        if(isNaN(result[intIndex])) {
+            if(isNaN(dx)) {
+                result.push(NaN)
+            } else {
+                result[intIndex] = 0
+                result.push(0 + dx)
+            }
+        } else {
             result.push(result[intIndex] + dx)
         }      
 
     }
 
     result = result.map(value => sign * value)
+
+    console.log(result)
 
     return result
 }
