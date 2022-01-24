@@ -227,7 +227,7 @@ export default class MathInput extends React.PureComponent<Props, State> {
           onEdit={this.onEdit}
           size={this.props.size}
           autoCommands='sqrt pi theta phi int'
-          autoOperatorNames='diff pdiff curl div unitT unitN unitB cosh sinh tanh arccosh arcsinh arctanh cos sin tan sec csc cot arcsin arccos arctan log ln exp mod abs norm max min re im arg conj join'
+          autoOperatorNames='diff pdiff curl div unitT unitN unitB cosh sinh tanh arccosh arcsinh arctanh cos sin tan sec csc cot arcsin arccos arctan log ln exp mod abs norm max min re im arg conj join transpose'
         />
       </MathInputContainer>
     )

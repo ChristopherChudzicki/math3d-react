@@ -20,25 +20,38 @@ export function findClosingBrace(str: string, startIdx: number) {
     '[': ']',
     '<': '>',
     '(': ')',
-    '{': '}'
+    '{': '}',
+    '\\left[': '\\right]',
+    '\\left<': '\\right>',
+    '\\left(': '\\right)',
+    '\\left{': '\\right}',
+    '\\left|': '\\right|'
   }
 
-  const openingBrace = str[startIdx]
+  let openingBrace
 
+  if (str[startIdx] === '\\') {
+    openingBrace = str.slice(startIdx, startIdx + 6)
+  } else {
+    openingBrace = str[startIdx]
+  }
+
+  const openingBraceLength = openingBrace.length
   const closingBrace = braces[openingBrace]
 
   if (closingBrace === undefined) {
     throw Error(`${str} does not contain an opening brace at position ${startIdx}.`)
   }
 
+  const closingBraceLength = closingBrace.length
   let stack = 1
 
   // eslint-disable-next-line no-plusplus
   for (let j = startIdx + 1; j < str.length; j++) {
-    if (str[j] === openingBrace) {
+    if (str.slice(j, j + openingBraceLength) === openingBrace) {
       stack += +1
     }
-    else if (str[j] === closingBrace) {
+    else if (str.slice(j, j + closingBraceLength) === closingBrace) {
       stack += -1
     }
     if (stack === 0) {
@@ -96,14 +109,14 @@ export function findIntegralEnd(str: string, startIdx: number) {
       }
       else {
         const endBySpace = str.indexOf(' ', j)
-        const endByBrackets = str.slice(j).search(/[({]/) + j
+        const endByBrackets = str.slice(j).search(/[({|[<]/) + j
 
         if (endBySpace > endByBrackets) {
           j = endBySpace
           continue
         }
         else {
-          j = findClosingBrace(str, endByBrackets)
+          j = findClosingBrace(str, j)
           continue
         }
 

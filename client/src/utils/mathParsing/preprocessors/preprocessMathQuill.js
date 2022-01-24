@@ -34,6 +34,7 @@ export default function mathquillToMathJS(fromMQ: string) {
     { tex: '\\operatorname{arcsinh}', mathjs: 'arcsinh' },
     { tex: '\\operatorname{arctanh}', mathjs: 'arctanh' },
     { tex: '\\operatorname{join}', mathjs: 'concat' },
+    { tex: '\\operatorname{transpose}', mathjs: 'transpose' },
     { tex: '\\cdot', mathjs: ' * ' },
     { tex: '\\left|', mathjs: 'norm(' },
     { tex: '\\right|', mathjs: ')' },

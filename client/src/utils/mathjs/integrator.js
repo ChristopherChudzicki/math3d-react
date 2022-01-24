@@ -1,14 +1,17 @@
 // @flow
 
 import type { Node } from 'utils/mathjs/types'
+const deepEqual = require('fast-deep-equal')
 
 type IntegratedCacheSimple = {|
     isNumeric: bool,
+    scope: Object,
     integratedFunction: Function    
 |}
 
 type IntegratedCacheNumeric = {|
     isNumeric: bool,
+    scope: Object,
     step: number,
     lowerBound: number,
     upperBound: number,
@@ -30,6 +33,7 @@ type IntegratedCaches = {
 * AFAIK DONE!!
 * tho I didn't find a way to cache integral bounds, they only take about 0.1 sec per compilation
 * finding a way to cache integral bounds is especially hard when it comes to variable bounds.
+* TODO: Add scope checker
 */
 
 const STEP = 0.001
@@ -41,16 +45,20 @@ export class Integrator {
     getInt(expr: Node, lowerBound: number, upperBound: number, variable: string, math: Object, scope: Object, numericalIntegrator: Function) {
 
         // the name of caches use both expression and variable, because both of them can change the undetermined integral
-        const name = `${expr.toString()} d${variable}`
+        const name = `${expr.toString()} d${variable}}`
         
         if (this._cache[name] === undefined) {
+            this.addToCache(expr, lowerBound, upperBound, variable, math, scope, numericalIntegrator)
+        }
+
+        if(!(deepEqual(this._cache[name].scope, scope) || (this._cache[name].scope === undefined))) {
             this.addToCache(expr, lowerBound, upperBound, variable, math, scope, numericalIntegrator)
         }
 
         // if the cached function is a numeric function (an array)
         if (this._cache[name].isNumeric) {
 
-            let cached: IntegratedCacheNumeric = this._cache[name]
+            let cached: IntegratedCache = this._cache[name]
 
             // if the boundaries are wider than current one, expand the cached array
             if (Math.max(lowerBound, upperBound) > cached.upperBound || Math.min(lowerBound, upperBound) < cached.lowerBound) {
@@ -87,7 +95,7 @@ export class Integrator {
         
         // make copy of the scope to be modified
         let fnScope = Object.create(scope)
-        const name = `${expr.toString()} d${variable.toString()}`
+        const name = `${expr.toString()} d${variable}}`
 
         try {
             // try to integrate using mathjs-simple-integral
@@ -105,8 +113,8 @@ export class Integrator {
 
             this._cache[name] = {
                 isNumeric: false,
+                scope: {...scope},
                 integratedFunction: F
-
             }
         } catch (error) {
 
@@ -127,6 +135,7 @@ export class Integrator {
 
             this._cache[name] = {
                 isNumeric: true,
+                scope: {...scope},
                 step: STEP,
                 lowerBound: absoluteLower,
                 upperBound: STEP * Math.ceil((absoluteUpper + 1) / STEP),
@@ -140,7 +149,7 @@ export class Integrator {
     expandNumericInt(expr: Node, lowerBound: number, upperBound: number, variable: string, scope: Object, numericalIntegrator: Function) {
         // construct a function which evaluates the first parameter f after applying
         // a value for parameter x.
-        const name = `${expr.toString()} d${variable.toString()}`
+        const name = `${expr.toString()} d${variable}}`
         const absoluteUpper = Math.max(lowerBound, upperBound)
         const absoluteLower = Math.min(lowerBound, upperBound)
 
@@ -183,6 +192,7 @@ export class Integrator {
 
         this._cache[name] = {
             isNumeric: true,
+            scope: {...scope},
             step: STEP,
             lowerBound: newLowerBound,
             upperBound: newUpperBound,

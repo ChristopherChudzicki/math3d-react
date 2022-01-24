@@ -39,9 +39,14 @@ function integrate (f: Function, start: number, end: number, step?: number = STE
             return prevSum + RKB[index]*f(x + currentCoef*step)
         }, 0)
 
-        dx = dx || 0
-        
-        result.push(result[intIndex] + dx)
+        if(isNaN(dx)) {
+            dx = 0
+            result.push(result[intIndex] + dx)
+            result[intIndex] = NaN
+        }
+        else {
+            result.push(result[intIndex] + dx)
+        }      
 
     }
 
@@ -80,7 +85,7 @@ integrate.transform = function (args, math, scope) {
 
 
     // check for integration bounds dependencies
-    if (getDependencies(args[1]).has(variable) || getDependencies(args[2]).has(variable)) {
+    if (getDependencies(args[1]).includes(variable) || getDependencies(args[2]).includes(variable)) {
         throw Error(`Integration bounds can't depend on integration variable '${variable}'. `)
     }
 
@@ -91,7 +96,16 @@ integrate.transform = function (args, math, scope) {
 
 
     // pass to the integrator to create or retreve caches
-    return integrator.getInt(args[0], start, end, variable, math, scope, integrate)
+    const filteredDep = getDependencies(args[0]).filter(dep => !(dep === variable))
+    let filteredScope = filteredDep.reduce((prev, dep) => {
+        if (scope[dep] === undefined) {
+            return prev
+        }
+        prev[dep] = scope[dep]
+        return prev
+    }, {})
+
+    return integrator.getInt(args[0], start, end, variable, math, filteredScope, integrate)
 
 }
 
@@ -102,11 +116,11 @@ integrate.transform.rawArgs = true
 export const int = { integrate: integrate }
 
 const getDependencies = (expr: Node) => {
-    const dependencies: Set<string> = new Set()
+    const dependencies: Array<string> = []
 
     expr.traverse((node: Node) => {
       if (node.type === 'SymbolNode' || node.type === 'FunctionNode') {
-        dependencies.add(node.name)
+        dependencies.push(node.name)
       }
     } )
 

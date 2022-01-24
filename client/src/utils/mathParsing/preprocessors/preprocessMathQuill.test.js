@@ -83,6 +83,12 @@ describe('preprocessMathQuill', () => {
     expect(preprocessMathQuill(input)).toBe(expected)
   })
 
+  test('integral with norm converted', () => {
+    const input = '\\int _0^1\\left|u\\right|du'
+    const expected = ' integrate( norm(u), 0, 1, u)'
+    expect(preprocessMathQuill(input)).toBe(expected)
+  })
+
   test('edge case integral ddd converted', () => {
     const input = '\\int _0^1ddd'
     const expected = ' integrate( d, 0, 1, d)'
