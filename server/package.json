@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.server.js",
     "dev": "npm-run-all --parallel dev:webpack dev:nodemon",
-    "dev:webpack": "webpack --config webpack.config.server.js --watch",
+    "dev:webpack": "webpack --mode development --config webpack.config.server.js --watch",
     "dev:nodemon": "nodemon --require dotenv/config build/main.js",
     "start": "node --require dotenv/config build/main.js"
   },
