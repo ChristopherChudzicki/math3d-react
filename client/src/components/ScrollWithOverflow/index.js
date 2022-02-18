@@ -96,13 +96,11 @@ export default class ScrollWithOverflow extends React.PureComponent<
   coverRef: { current: null | HTMLDivElement };
 
   eventNames = [
-    "mousedown",
-    "mousemove",
-    "mouseup",
+    "pointerup",
+    "pointercancel",
+    "pointerdown",
+    "pointermove",
     "wheel",
-    "touchstart",
-    "touchmove",
-    "touchend",
   ];
 
   domElement = mathbox.three.controls.domElement;
