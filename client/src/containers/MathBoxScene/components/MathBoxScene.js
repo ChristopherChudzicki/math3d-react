@@ -7,6 +7,7 @@ import type {
 } from "components/MathBox/MathBoxComponents";
 
 import { Color } from "three/src/math/Color.js";
+import { Vector3 } from "three/src/math/Vector3.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import React, { PureComponent } from "react";
 import { MathBox, Cartesian } from "components/MathBox";
@@ -34,6 +35,10 @@ export const mathbox = MB.mathBox({
   plugins: ["core", "controls", "cursor"],
   controls: {
     klass: OrbitControls,
+  },
+  element: document.getElementById("mathbox"),
+  camera: {
+    up: new Vector3(0, 0, 1),
   },
 });
 
