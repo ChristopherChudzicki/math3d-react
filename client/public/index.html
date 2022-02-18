@@ -1,20 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta
-      name="description"
-      content="An interactive 3D graphing calculator in your browser. Draw, animate, and share surfaces, curves, points, lines, and vectors."
-    />
-    <meta
-      name="keywords"
-      content="graphing,3d,math,calculator,threejs,mathbox,multivariable, three dimensional"
-    />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta name="theme-color" content="#000000" />
+    <meta charset="utf-8">
+    <meta name="description" content="An interactive 3D graphing calculator in your browser. Draw, animate, and share surfaces, curves, points, lines, and vectors.">
+    <meta name="keywords" content="graphing,3d,math,calculator,threejs,mathbox,multivariable, three dimensional">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
     <!-- jquerys required by MathQuill  -->
     <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 
@@ -24,11 +15,12 @@
     -->
     <!-- MathQuill -->
     <script src="/mathquill.min.js"></script>
-    <link rel="stylesheet" href="/mathquill.css" />
-    <link rel="stylesheet" href="/mathbox.css" />
+    <link rel="stylesheet" href="/mathquill.css">
+    <!-- MathBox -->
+    <link rel="stylesheet" href="/mathbox.css">
 
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -42,20 +34,23 @@
   </head>
   <body>
     <style>
-      #mathbox {
-        position: fixed;
-        width: 100vw;
-        height: 100%;
-      }
+    #mathbox {
+      position:fixed;
+      width: 100vw;
+      height: 100%;
+    }
 
-      html,
-      body {
-        position: fixed;
-        overflow: hidden;
-      }
+    html,
+    body {
+      position: fixed;
+      overflow: hidden;
+    }
+
     </style>
-    <noscript> You need to enable JavaScript to run this app. </noscript>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
     <div id="root"></div>
-    <div id="mathbox"></div>
+    <div id='mathbox'></div>
   </body>
 </html>

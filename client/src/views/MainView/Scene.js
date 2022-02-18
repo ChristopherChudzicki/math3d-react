@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import MathBoxContainer from "containers/MathBoxContainer";
 import MathBoxScene from "containers/MathBoxScene";
+import { mathboxElement } from "containers/MathBoxScene/components/MathBoxScene";
 import styled from "styled-components";
 
 const SceneBoundary = styled.div`
@@ -9,8 +10,6 @@ const SceneBoundary = styled.div`
   overflow: hidden;
   flex: 1;
 `;
-
-const mathboxElement = document.getElementById("mathbox");
 
 export default class Math3dScene extends PureComponent {
   render() {
