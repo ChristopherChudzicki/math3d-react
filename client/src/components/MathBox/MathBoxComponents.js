@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react'
+import { Color } from "three/src/math/Color.js";
 import math from 'utils/mathjs'
 import {
   validateBoolean,
@@ -15,8 +16,6 @@ import diffWithSets from 'utils/shallowDiffWithSets'
 import { lighten } from 'utils/colors'
 import marchingCubes from 'utils/marchingCubes'
 import { colorMaps } from 'constants/colors'
-
-const THREE = window.THREE
 
 type MathBoxNode = any
 
@@ -877,7 +876,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     }
 
     const colorExpr = (emit) => {
-      const { r, g, b } = new THREE.Color(color)
+      const { r, g, b } = new Color(color)
       emit(r, g, b, 1.0)
     }
 
