@@ -43,7 +43,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test --env=jsdom --transformIgnorePatterns 'node_modules/(?!(three|mathbox|@sicmutils|shadergraph)/)'",
     "coverage": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
     "flow": "flow --max-warnings 0"
