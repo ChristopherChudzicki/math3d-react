@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react'
 import styled from 'styled-components'
+import { mathbox } from "containers/MathBoxScene/components/MathBoxScene.js";
 
 /**
  * ScrollWithOverflow is a component intended to allow scrolling in the
@@ -55,10 +56,10 @@ const ScrollingDivInner = styled.div`
  * This is absolutely positioned so that when the left control panel scrolls,
  * the padding cover stays in place.
  * Ruins the generality of this component, but works fine for our use case =/
- * 
+ *
  * + 400px is for the sidebar width, so padding cover covers the whole screen
  * when sidebar is slide left.
- * 
+ *
  */
 const PaddingCover = styled.div`
   flex-grow: 0;
@@ -93,11 +94,11 @@ export default class ScrollWithOverflow extends React.PureComponent<Props, State
   coverRef: { current: null | HTMLDivElement }
 
   eventNames = [
-    'mousedown', 'mousemove', 'mouseup', 'wheel',
-    'touchstart', 'touchmove', 'touchend'
+    'pointerdown', 'pointermove', 'pointerup',
+    'pointercancel', 'wheel', 'mousewheel'
   ]
 
-  domElement = window.mathbox.three.controls.domElement
+  domElement = mathbox.three.controls.domElement
 
   constructor(props: Props) {
     super(props)

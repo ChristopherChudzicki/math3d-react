@@ -38,19 +38,15 @@ export default class LoopManager {
     this.slowOffTime = slowOffTime
     this.slowOnTime = slowOnTime
 
-    this.canvas.addEventListener('mousedown', this.downHandler)
-    this.canvas.addEventListener('touchstart', this.downHandler)
-    this.canvas.addEventListener('mouseup', this.mouseUpHandler)
-    this.canvas.addEventListener('touchend', this.touchExitHandler)
+    this.canvas.addEventListener('pointerdown', this.downHandler)
+    this.canvas.addEventListener('pointerup', this.pointerUpHandler)
     this.canvas.addEventListener('mousewheel', this.wheelHandler)
     this.canvas.addEventListener('wheel', this.wheelHandler)
   }
 
   unbindEventListeners = () => {
-    this.canvas.removeEventListener('mousedown', this.downHandler)
-    this.canvas.removeEventListener('touchstart', this.downHandler)
-    this.canvas.removeEventListener('mouseup', this.enterSlowMode)
-    this.canvas.removeEventListener('touchend', this.touchExitHandler)
+    this.canvas.removeEventListener('pointerdown', this.downHandler)
+    this.canvas.removeEventListener('pointerup', this.enterSlowMode)
     this.canvas.removeEventListener('mousewheel', this.wheelHandler)
     this.canvas.removeEventListener('wheel', this.wheelHandler)
   }
@@ -68,15 +64,8 @@ export default class LoopManager {
     this.exitSlowMode()
   }
 
-  mouseUpHandler = () => {
+  pointerUpHandler = () => {
     this.isPointerDown = false
-    this.enterSlowMode()
-  }
-
-  touchExitHandler = async (event: TouchEvent) => {
-    if (event.touches.length > 0) { return }
-    this.isPointerDown = false
-    await timeout(LoopManager.scrollTime)
     this.enterSlowMode()
   }
 

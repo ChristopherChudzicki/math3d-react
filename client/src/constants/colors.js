@@ -1,6 +1,6 @@
 // @flow
 
-const THREE = window.THREE
+import { Color } from "three/src/math/Color.js";
 
 export const colors = [
   '#33FF00',
@@ -29,7 +29,7 @@ export const colorMaps = {
     )
     `,
     func: (frac: number) => {
-      const color = new THREE.Color(0xffffff)
+      const color = new Color(0xffffff)
       color.setHSL(1 - frac, 1, 0.5)
       return [color.r, color.g, color.b, 1.0]
     }
@@ -51,7 +51,7 @@ export const colorMaps = {
     )
     `,
     func: (frac: number) => {
-      const color = new THREE.Color(0xffffff)
+      const color = new Color(0xffffff)
       color.setHSL(0.666*(1 - frac), 1, 0.5)
       return [color.r, color.g, color.b, 1.0]
     }

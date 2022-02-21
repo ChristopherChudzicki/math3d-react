@@ -3,6 +3,12 @@ import type {
   HandledProps as GraphicHandledProps,
   ErrorMap
 } from 'components/MathBox/MathBoxComponents'
+
+import * as MB from "mathbox";
+
+import { Color } from "three/src/math/Color.js";
+import { Vector3 } from "three/src/math/Vector3.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import React, { PureComponent } from 'react'
 import { MathBox, Cartesian } from 'components/MathBox'
 import { MathScopeConsumer } from 'containers/MathScopeContext'
@@ -27,6 +33,23 @@ type Props = {
   renderErrors: ErrorState,
   setError: SetError
 }
+
+export const mathboxElement = document.getElementById("mathbox");
+
+export const mathbox = MB.mathBox({
+    plugins: ["core", "controls", "cursor"],
+    controls: {
+      klass: OrbitControls,
+    },
+    element: mathboxElement,
+    camera: {
+      up: new Vector3(0, 0, 1),
+    },
+  });
+
+mathbox.three.camera.position.set(1, 1, 2);
+mathbox.three.renderer.setClearColor(new Color(0xffffff), 1.0);
+
 export default class MathBoxScene extends PureComponent<Props> {
 
   static propTypes = {
@@ -101,7 +124,7 @@ export default class MathBoxScene extends PureComponent<Props> {
       <MathScopeConsumer>
         {( { scope, scopeDiff } ) => {
           return (
-            <MathBox mathbox={window.mathbox}>
+            <MathBox mathbox={mathbox}>
               <Cartesian id='rootCartesian'>
                 {this.props.order.map(id => {
                   const settings = mathGraphics[id]
