@@ -1,7 +1,7 @@
 // @flow
-import * as React from 'react'
+import * as React from "react";
 import { Color } from "three/src/math/Color.js";
-import math from 'utils/mathjs'
+import math from "utils/mathjs";
 import {
   validateBoolean,
   isEqualNumerically,
@@ -10,129 +10,132 @@ import {
   validateVector,
   isVector,
   validateFunctionSignature,
-  hasFunctionSignature
-} from './helpers'
-import diffWithSets from 'utils/shallowDiffWithSets'
-import { lighten } from 'utils/colors'
-import marchingCubes from 'utils/marchingCubes'
-import { colorMaps } from 'constants/colors'
+  hasFunctionSignature,
+} from "./helpers";
+import diffWithSets from "utils/shallowDiffWithSets";
+import { lighten } from "utils/colors";
+import marchingCubes from "utils/marchingCubes";
+import { colorMaps } from "constants/colors";
 
-type MathBoxNode = any
+type MathBoxNode = any;
 
 type HandlerNodes = {
   renderNodes: MathBoxNode,
   dataNodes: MathBoxNode,
   groupNode: MathBoxNode,
-  root: MathBoxNode
-}
+  root: MathBoxNode,
+};
 
 export type HandledProps = {
   [string]: any,
-}
+};
 
 export type ErrorMap = {
-  [string]: Error | null
-}
+  [string]: Error | null,
+};
 
 export type Props = HandledProps & {
   id: string,
   children?: React.Node,
   mathbox?: MathBoxNode, // supplied by parent during render
   mathboxParent?: MathBoxNode, // supplied by parent during render
-  handleErrors: (errors: ErrorMap, id: string, updatedProps: HandledProps) => void
-}
+  handleErrors: (
+    errors: ErrorMap,
+    id: string,
+    updatedProps: HandledProps
+  ) => void,
+};
 
 type Handler = (
   nodes: HandlerNodes,
   props: Props,
   handlers: { [string]: Handler }
-) => void | ErrorMap
-type Handlers = { [string]: Handler }
+) => void | ErrorMap;
+type Handlers = { [string]: Handler };
 
 interface MathBoxComponent {
-  mathboxRender: (MathBoxNode) => MathBoxNode,
-  dataNodeNames: ?Array<string>,
-  renderNodeNames: ?Array<string>,
-  handlers: Handlers
+  mathboxRender: (MathBoxNode) => MathBoxNode;
+  dataNodeNames: ?Array<string>;
+  renderNodeNames: ?Array<string>;
+  handlers: Handlers;
 }
 
 class AbstractMBC extends React.Component<Props> {
-
-  mathbox: MathBoxNode // root node
-  mathboxNode: MathBoxNode // node for this component
-  oldProps = {}
+  mathbox: MathBoxNode; // root node
+  mathboxNode: MathBoxNode; // node for this component
+  oldProps = {};
   diffProps: {
     added: Set<string>,
     deleted: Set<string>,
     unchanged: Set<string>,
-    updated: Set<string>
+    updated: Set<string>,
   } = {
     added: new Set(),
     deleted: new Set(),
     unchanged: new Set(),
-    updated: new Set()
-  }
+    updated: new Set(),
+  };
 
   static defaultProps = {
-    handleErrors: AbstractMBC.defaultHandleErrors
-  }
+    handleErrors: AbstractMBC.defaultHandleErrors,
+  };
 
   shouldComponentUpdate = (nextProps: Props) => {
-    this.oldProps = this.props
-    this.diffProps = diffWithSets(this.props, nextProps)
-    const { added, deleted, updated, unchanged } = this.diffProps
+    this.oldProps = this.props;
+    this.diffProps = diffWithSets(this.props, nextProps);
+    const { added, deleted, updated, unchanged } = this.diffProps;
     for (const prop of updated) {
-      if (isEqualNumerically(this.oldProps[prop], nextProps[prop] )) {
-        updated.delete(prop)
-        unchanged.add(prop)
+      if (isEqualNumerically(this.oldProps[prop], nextProps[prop])) {
+        updated.delete(prop);
+        unchanged.add(prop);
       }
     }
-    return updated.size !== 0 || added.size !== 0 || deleted.size !== 0
-  }
+    return updated.size !== 0 || added.size !== 0 || deleted.size !== 0;
+  };
 
   componentDidMount = () => {
     if (this.props.mathboxParent) {
       // $FlowFixMe: this.mathboxRender is abstract
-      this.mathboxNode = this.mathboxRender(this.props.mathboxParent)
-      this.mathbox = this.props.mathbox
-    }
-    else {
-      throw ReferenceError(`${this.constructor.name} called without a 'mathboxParent' property.`)
+      this.mathboxNode = this.mathboxRender(this.props.mathboxParent);
+      this.mathbox = this.props.mathbox;
+    } else {
+      throw ReferenceError(
+        `${this.constructor.name} called without a 'mathboxParent' property.`
+      );
     }
 
-    this.forceUpdate()
+    this.forceUpdate();
     // render method only updates updated props, need to update all on mount
-    this.updateHandledProps(this.props)
-  }
+    this.updateHandledProps(this.props);
+  };
 
   componentWillUnmount = () => {
-    this.mathboxNode.remove()
-  }
+    this.mathboxNode.remove();
+  };
 
   renderChildren = () => {
     if (!this.props.children) {
-      return null
+      return null;
     }
-    return React.Children.map(
-      this.props.children,
-      child => React.cloneElement(child, {
+    return React.Children.map(this.props.children, (child) =>
+      React.cloneElement(child, {
         mathboxParent: this.mathboxNode,
-        mathbox: this.mathbox
-      } )
-    )
-  }
+        mathbox: this.mathbox,
+      })
+    );
+  };
 
   render() {
     if (this.mathboxNode) {
-      return this.renderChildren()
+      return this.renderChildren();
     }
-    return null
+    return null;
   }
 
   getNodes(nodeNames: ?Array<string>) {
     return nodeNames
-      ? this.mathboxNode.select(nodeNames.join(', '))
-      : undefined
+      ? this.mathboxNode.select(nodeNames.join(", "))
+      : undefined;
   }
 
   updateHandledProps(propsToUpdate: HandledProps) {
@@ -142,107 +145,113 @@ class AbstractMBC extends React.Component<Props> {
       // $FlowFixMe: this.renderNodeNames is abstract
       renderNodes: this.getNodes(this.renderNodeNames),
       groupNode: this.mathboxNode,
-      root: this.mathbox
-    }
+      root: this.mathbox,
+    };
 
-    const errors = {}
-    Object.keys(propsToUpdate).forEach(prop => {
+    const errors = {};
+    Object.keys(propsToUpdate).forEach((prop) => {
       // $FlowFixMe: this.handlers is abstract
       if (this.handlers.hasOwnProperty(prop)) {
         try {
           // $FlowFixMe: this.handlers is abstract
-          const extraErrors = this.handlers[prop](nodes, this.props, this.handlers)
+          const extraErrors = this.handlers[prop](
+            nodes,
+            this.props,
+            this.handlers
+          );
           if (extraErrors) {
-            Object.keys(extraErrors).forEach(key => {
-              errors[key] = extraErrors[key]
-            } )
+            Object.keys(extraErrors).forEach((key) => {
+              errors[key] = extraErrors[key];
+            });
           }
-        }
-        catch (error) {
-          errors[prop] = error
+        } catch (error) {
+          errors[prop] = error;
         }
       }
-    } )
+    });
 
-    this.props.handleErrors(errors, this.props.id, propsToUpdate)
-
+    this.props.handleErrors(errors, this.props.id, propsToUpdate);
   }
 
-  static defaultHandleErrors(errors: ErrorMap, id: string, updatedProps: HandledProps) {
+  static defaultHandleErrors(
+    errors: ErrorMap,
+    id: string,
+    updatedProps: HandledProps
+  ) {
     if (Object.keys(errors).length === 0) {
-      return
+      return;
     }
-    Object.keys(errors).forEach(propName => {
-      console.warn(errors[propName] )
-    } )
+    Object.keys(errors).forEach((propName) => {
+      console.warn(errors[propName]);
+    });
   }
 
   componentDidUpdate() {
     const differing = [
       ...this.diffProps.updated,
-      ...this.diffProps.added
+      ...this.diffProps.added,
     ].reduce((acc, prop) => {
-      acc[prop] = this.props[prop]
-      return acc
-    }, {} )
-    this.updateHandledProps(differing)
+      acc[prop] = this.props[prop];
+      return acc;
+    }, {});
+    this.updateHandledProps(differing);
   }
-
 }
 
 function makeSetProperty(propName, validator: ?Function) {
-  return ( { renderNodes }: HandlerNodes, handledProps: HandledProps) => {
+  return ({ renderNodes }: HandlerNodes, handledProps: HandledProps) => {
     if (validator) {
-      validator(handledProps[propName] )
+      validator(handledProps[propName]);
     }
-    return renderNodes.set(propName, handledProps[propName] )
-  }
+    return renderNodes.set(propName, handledProps[propName]);
+  };
 }
 
 const universalHandlers = {
-  opacity: makeSetProperty('opacity', validateReal),
-  zBias: makeSetProperty('zBias', validateReal),
-  zIndex: makeSetProperty('zIndex', validateReal),
-  zOrder: makeSetProperty('zOrder', validateReal),
-  color: makeSetProperty('color'),
+  opacity: makeSetProperty("opacity", validateReal),
+  zBias: makeSetProperty("zBias", validateReal),
+  zIndex: makeSetProperty("zIndex", validateReal),
+  zOrder: makeSetProperty("zOrder", validateReal),
+  color: makeSetProperty("color"),
   calculatedVisibility: function(nodes: HandlerNodes, props: Props) {
-    const { calculatedVisibility, useCalculatedVisibility } = props
+    const { calculatedVisibility, useCalculatedVisibility } = props;
     if (useCalculatedVisibility) {
-      validateBoolean(calculatedVisibility)
-      nodes.groupNode.set('visible', calculatedVisibility)
+      nodes.groupNode.set("visible", !!calculatedVisibility);
     }
   },
   visible: function(nodes: HandlerNodes, props: Props) {
     if (!props.useCalculatedVisibility) {
-      nodes.groupNode.set('visible', props.visible)
+      nodes.groupNode.set("visible", props.visible);
     }
-  }
-}
+  },
+};
 
 const lineLikeHandlers = {
-  size: makeSetProperty('size', validateReal),
-  width: makeSetProperty('width', validateReal),
-  start: makeSetProperty('start'),
-  end: makeSetProperty('end')
-}
+  size: makeSetProperty("size", validateReal),
+  width: makeSetProperty("width", validateReal),
+  start: makeSetProperty("start"),
+  end: makeSetProperty("end"),
+};
 
 const surfaceHandlers = {
-  shaded: makeSetProperty('shaded')
-}
+  shaded: makeSetProperty("shaded"),
+};
 
 function makeHandleLabel(dataOffset) {
   return (nodes: HandlerNodes, handledProps: HandledProps) => {
-    const data = [...Array(dataOffset).fill(''), handledProps.label]
-    nodes.groupNode.select('format.label').set('data', data)
-  }
+    const data = [...Array(dataOffset).fill(""), handledProps.label];
+    nodes.groupNode.select("format.label").set("data", data);
+  };
 }
 
 function handleLabelVisible(nodes: HandlerNodes, handledProps: HandledProps) {
-  nodes.groupNode.select('label.label').set('visible', handledProps.labelVisible)
+  nodes.groupNode
+    .select("label.label")
+    .set("visible", handledProps.labelVisible);
 }
 
 function scaleToUnit(x: number, xMin: number, xMax: number) {
-  return (x - xMin)/(xMax - xMin)
+  return (x - xMin) / (xMax - xMin);
 }
 
 export class Camera extends AbstractMBC implements MathBoxComponent {
@@ -252,16 +261,16 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
   //
   // As a workaround, I'm using dolly zoom to get an orthographic-like effect.
   // See, for example, https://docs.unity3d.com/Manual/DollyZoom.html
-  dataNodeNames = ['camera']
-  renderNodeNames = null
-  handlers: Handlers
-  isOrthographic: boolean
-  dollyZoomFactor: number
+  dataNodeNames = ["camera"];
+  renderNodeNames = null;
+  handlers: Handlers;
+  isOrthographic: boolean;
+  dollyZoomFactor: number;
 
   constructor(props: Props) {
-    super(props)
-    this.isOrthographic = false
-    this.dollyZoomFactor = 50
+    super(props);
+    this.isOrthographic = false;
+    this.dollyZoomFactor = 50;
     this.handlers = {
       relativePosition: Camera.handleRelativePosition,
       relativeLookAt: Camera.handleRelativeLookAt,
@@ -271,118 +280,133 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
       computedPosition: this.handleComputedPosition,
       computedLookAt: Camera.handleComputedLookAt,
       useComputed: this.handleUseComputed,
-      isOrthographic: this.handleIsOrthographic
-    }
+      isOrthographic: this.handleIsOrthographic,
+    };
   }
 
   static frustumHeightAtDistance(fovDegrees: number, distance: number) {
-    return 2 * distance * Math.tan(0.5 * fovDegrees * Math.PI/180)
+    return 2 * distance * Math.tan((0.5 * fovDegrees * Math.PI) / 180);
   }
   static fovForHeightAndDistance(height: number, distance: number) {
-    return 2 * Math.atan(0.5 * height / distance) * 180/Math.PI
+    return (2 * Math.atan((0.5 * height) / distance) * 180) / Math.PI;
   }
 
   static dollyZoom(mathboxRoot: MathBoxNode, zoomFactor: number) {
-    const { camera, controls } = mathboxRoot.three
-    const d1 = camera.position.distanceTo(controls.target)
-    const fov1 = camera.fov
-    const h = Camera.frustumHeightAtDistance(fov1, d1)
-    const d2 = d1 * zoomFactor
-    const fov2 = Camera.fovForHeightAndDistance(h, d2)
+    const { camera, controls } = mathboxRoot.three;
+    const d1 = camera.position.distanceTo(controls.target);
+    const fov1 = camera.fov;
+    const h = Camera.frustumHeightAtDistance(fov1, d1);
+    const d2 = d1 * zoomFactor;
+    const fov2 = Camera.fovForHeightAndDistance(h, d2);
 
     // This tells mathBox to account for the zoom when drawing lines/points
-    mathboxRoot.set('focus', mathboxRoot.get('focus') * zoomFactor)
+    mathboxRoot.set("focus", mathboxRoot.get("focus") * zoomFactor);
 
-    Camera.translateForDollyZoom(camera, controls, zoomFactor)
-    camera.fov = fov2
+    Camera.translateForDollyZoom(camera, controls, zoomFactor);
+    camera.fov = fov2;
   }
 
   static translateForDollyZoom(camera: any, controls: any, zoomFactor: number) {
-    const d = camera.position.distanceTo(controls.target)
-    camera.translateZ(d * (zoomFactor - 1))
+    const d = camera.position.distanceTo(controls.target);
+    camera.translateZ(d * (zoomFactor - 1));
   }
 
   handleIsOrthographic = (nodes: HandlerNodes, handledProps: HandledProps) => {
-    const { isOrthographic } = handledProps
+    const { isOrthographic } = handledProps;
     if (this.isOrthographic === isOrthographic) {
-      return
+      return;
     }
     if (isOrthographic) {
-      Camera.dollyZoom(nodes.root, this.dollyZoomFactor)
-      this.isOrthographic = true
+      Camera.dollyZoom(nodes.root, this.dollyZoomFactor);
+      this.isOrthographic = true;
+    } else {
+      Camera.dollyZoom(nodes.root, 1 / this.dollyZoomFactor);
+      this.isOrthographic = false;
     }
-    else {
-      Camera.dollyZoom(nodes.root, 1/this.dollyZoomFactor)
-      this.isOrthographic = false
-    }
-  }
+  };
 
-  static handlePanIsPanEnabled(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { root } = nodes
-    root.three.controls.enablePan = handledProps.isPanEnabled
+  static handlePanIsPanEnabled(
+    nodes: HandlerNodes,
+    handledProps: HandledProps
+  ) {
+    const { root } = nodes;
+    root.three.controls.enablePan = handledProps.isPanEnabled;
   }
 
   static handleIsZoomEnabled(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { root } = nodes
-    root.three.controls.enableZoom = handledProps.isZoomEnabled
+    const { root } = nodes;
+    root.three.controls.enableZoom = handledProps.isZoomEnabled;
   }
 
-  static handleIsRotateEnabled(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { root } = nodes
-    root.three.controls.enableRotate = handledProps.isRotateEnabled
+  static handleIsRotateEnabled(
+    nodes: HandlerNodes,
+    handledProps: HandledProps
+  ) {
+    const { root } = nodes;
+    root.three.controls.enableRotate = handledProps.isRotateEnabled;
   }
 
-  static handleRelativePosition(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { dataNodes } = nodes
-    const { relativePosition } = handledProps
-    dataNodes.set('position', relativePosition)
+  static handleRelativePosition(
+    nodes: HandlerNodes,
+    handledProps: HandledProps
+  ) {
+    const { dataNodes } = nodes;
+    const { relativePosition } = handledProps;
+    dataNodes.set("position", relativePosition);
   }
 
   static handleRelativeLookAt(nodes: HandlerNodes, handledProps: HandledProps) {
     // MathBox Camera lookAt prop seems to do nothing. Set the target of threejs
     // OrbitControls object instead
-    const { root } = nodes
-    const { relativeLookAt } = handledProps
-    root.three.controls.target.set(...relativeLookAt)
+    const { root } = nodes;
+    const { relativeLookAt } = handledProps;
+    root.three.controls.target.set(...relativeLookAt);
   }
 
   handleUseComputed = (nodes: HandlerNodes, handledProps: HandledProps) => {
-    const { computedPosition, computedLookAt } = handledProps
+    const { computedPosition, computedLookAt } = handledProps;
     if (isVector(computedPosition, 3)) {
-      this.handleComputedPosition(nodes, handledProps)
+      this.handleComputedPosition(nodes, handledProps);
     }
     if (isVector(computedLookAt, 3)) {
-      Camera.handleComputedLookAt(nodes, handledProps)
+      Camera.handleComputedLookAt(nodes, handledProps);
     }
-  }
+  };
 
-  handleComputedPosition = (nodes: HandlerNodes, handledProps: HandledProps) => {
-    const { computedPosition, useComputed } = handledProps
-    validateVector(computedPosition, 3)
-    if (!useComputed) { return }
-    const { root } = nodes
+  handleComputedPosition = (
+    nodes: HandlerNodes,
+    handledProps: HandledProps
+  ) => {
+    const { computedPosition, useComputed } = handledProps;
+    validateVector(computedPosition, 3);
+    if (!useComputed) {
+      return;
+    }
+    const { root } = nodes;
     // range is an array of 4 THREE.Vector2 objects
-    const cartesian = root.select('cartesian')
-    const relPosition = Camera.toRelativeCoords(computedPosition, cartesian)
+    const cartesian = root.select("cartesian");
+    const relPosition = Camera.toRelativeCoords(computedPosition, cartesian);
     // set position directly on camera object, not in mathBox
-    root.three.camera.position.set(...relPosition)
+    root.three.camera.position.set(...relPosition);
 
     if (this.isOrthographic) {
-      const { camera, controls } = root.three
-      Camera.translateForDollyZoom(camera, controls, this.dollyZoomFactor)
+      const { camera, controls } = root.three;
+      Camera.translateForDollyZoom(camera, controls, this.dollyZoomFactor);
     }
-  }
+  };
 
   static handleComputedLookAt(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { computedLookAt, useComputed } = handledProps
-    validateVector(computedLookAt, 3)
-    if (!useComputed) { return }
-    const { root } = nodes
+    const { computedLookAt, useComputed } = handledProps;
+    validateVector(computedLookAt, 3);
+    if (!useComputed) {
+      return;
+    }
+    const { root } = nodes;
     // range is an array of 4 THREE.Vector2 objects
-    const cartesian = root.select('cartesian')
-    const relLookAt = Camera.toRelativeCoords(computedLookAt, cartesian)
+    const cartesian = root.select("cartesian");
+    const relLookAt = Camera.toRelativeCoords(computedLookAt, cartesian);
     // set position directly on camera object, not in mathBox
-    root.three.controls.target.set(...relLookAt)
+    root.three.controls.target.set(...relLookAt);
   }
 
   static toRelativeCoords(
@@ -395,56 +419,52 @@ export class Camera extends AbstractMBC implements MathBoxComponent {
     // output box:
     //  [-scale.x, +scale.x] by [-scale.y, +scale.y] by [-scale.z, +scale.z]
 
-    const range: Array<{ x: number, y: number }> = cartesian.get('range')
-    const scale: Array<number> = cartesian.get('scale').toArray()
+    const range: Array<{ x: number, y: number }> = cartesian.get("range");
+    const scale: Array<number> = cartesian.get("scale").toArray();
 
     return coords.map((coord, index) => {
-      const { y: max, x: min } = range[index]
-      const b = -(max + min)/(max - min)
-      const a = 2/(max - min)
-      return (a*coord + b)*scale[index]
-    } )
+      const { y: max, x: min } = range[index];
+      const b = -(max + min) / (max - min);
+      const a = 2 / (max - min);
+      return (a * coord + b) * scale[index];
+    });
   }
 
   mathboxRender = (parent) => {
-    const group = parent.group( { classes: ['camera'] } )
+    const group = parent.group({ classes: ["camera"] });
 
-    group.camera( { proxy: true } )
-    return group
-  }
-
+    group.camera({ proxy: true });
+    return group;
+  };
 }
 
 export class Cartesian extends AbstractMBC implements MathBoxComponent {
-
-  dataNodeNames = ['cartesian']
-  renderNodeNames = null
-  handlers = {}
+  dataNodeNames = ["cartesian"];
+  renderNodeNames = null;
+  handlers = {};
 
   mathboxRender = (parent) => {
-    const node = parent.cartesian( {
+    const node = parent.cartesian({
       range: [[-5, 5], [-5, 5], [-5, 5]],
-      scale: [2, 2, 1]
-    } )
-    return node
-  }
-
+      scale: [2, 2, 1],
+    });
+    return node;
+  };
 }
 
-function vec3ToArray(vec3Object: { x?: number, y?: number, z?: number } ) {
-  const { x = 0, y = 0, z = 0 } = vec3Object
-  return [x, y, z]
+function vec3ToArray(vec3Object: { x?: number, y?: number, z?: number }) {
+  const { x = 0, y = 0, z = 0 } = vec3Object;
+  return [x, y, z];
 }
 
 export class Axis extends AbstractMBC implements MathBoxComponent {
-
-  dataNodeNames = null
-  renderNodeNames = ['axis']
+  dataNodeNames = null;
+  renderNodeNames = ["axis"];
   handlers = {
     ...universalHandlers,
     // not using lineLikeHandlers because axis doesn't have start/end.
-    width: makeSetProperty('width'),
-    size: makeSetProperty('size'),
+    width: makeSetProperty("width"),
+    size: makeSetProperty("size"),
     // now the rest
     label: Axis.handleLabel,
     labelVisible: handleLabelVisible,
@@ -452,295 +472,294 @@ export class Axis extends AbstractMBC implements MathBoxComponent {
     max: Axis.handleMax,
     axis: Axis.handleAxis,
     scale: Axis.handleScale,
-    ticksVisible: Axis.handleTicksVisible
-  }
+    ticksVisible: Axis.handleTicksVisible,
+  };
 
   static handleTicksVisible(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { groupNode } = nodes
-    const { ticksVisible } = handledProps
-    groupNode.select('.ticks').set('visible', ticksVisible)
+    const { groupNode } = nodes;
+    const { ticksVisible } = handledProps;
+    groupNode.select(".ticks").set("visible", ticksVisible);
   }
 
   static handleLabel(nodes: HandlerNodes, handledProps: HandledProps) {
-    nodes.groupNode.select('.label text').set('data', [handledProps.label] )
+    nodes.groupNode.select(".label text").set("data", [handledProps.label]);
   }
 
   static handleScale(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { scale, axis } = handledProps
-    validateReal(scale)
-    const cartesian = Axis.getCartesian(nodes.renderNodes)
-    const scaleCopy = { ...cartesian.props.scale }
-    scaleCopy[axis] = scale
-    cartesian.set('scale', scaleCopy)
+    const { scale, axis } = handledProps;
+    validateReal(scale);
+    const cartesian = Axis.getCartesian(nodes.renderNodes);
+    const scaleCopy = { ...cartesian.props.scale };
+    scaleCopy[axis] = scale;
+    cartesian.set("scale", scaleCopy);
   }
 
   static handleAxis(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { axis } = handledProps
-    nodes.renderNodes.set('axis', axis)
-    nodes.groupNode.select('scale').set('axis', axis)
-    if (axis === 'z') {
-      nodes.groupNode.select('.ticks > label').set('offset', [20, 0, 0] )
+    const { axis } = handledProps;
+    nodes.renderNodes.set("axis", axis);
+    nodes.groupNode.select("scale").set("axis", axis);
+    if (axis === "z") {
+      nodes.groupNode.select(".ticks > label").set("offset", [20, 0, 0]);
     }
   }
 
   static handleMin(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { min, axis } = handledProps
-    validateReal(min)
-    const cartesian = Axis.getCartesian(nodes.renderNodes)
-    Axis.setAxisEnd(cartesian, axis, min, 0)
+    const { min, axis } = handledProps;
+    validateReal(min);
+    const cartesian = Axis.getCartesian(nodes.renderNodes);
+    Axis.setAxisEnd(cartesian, axis, min, 0);
   }
 
   static handleMax(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { max, axis } = handledProps
-    validateReal(max)
-    const cartesian = Axis.getCartesian(nodes.renderNodes)
-    Axis.setAxisEnd(cartesian, axis, max, 1)
+    const { max, axis } = handledProps;
+    validateReal(max);
+    const cartesian = Axis.getCartesian(nodes.renderNodes);
+    Axis.setAxisEnd(cartesian, axis, max, 1);
 
-    const labelPosition = vec3ToArray( { [axis]: max } )
-    nodes.groupNode.select('.label > array').set('data', [labelPosition] )
+    const labelPosition = vec3ToArray({ [axis]: max });
+    nodes.groupNode.select(".label > array").set("data", [labelPosition]);
   }
 
   static copyCartesianRange(cartesian: MathBoxNode): Array<Array<number>> {
-    const range = cartesian.props.range // this is a THREE.vec4 object
+    const range = cartesian.props.range; // this is a THREE.vec4 object
     return [
       [range[0].x, range[0].y],
       [range[1].x, range[1].y],
-      [range[2].x, range[2].y]
-    ]
+      [range[2].x, range[2].y],
+    ];
   }
 
-  static axisMap = { 'x': 0, 'y': 1, 'z': 2 }
-  static setAxisEnd(cartesian: MathBoxNode, axis: 'x' | 'y' | 'z', value: number, endIndex: 0 | 1) {
-    const cartesianRange = Axis.copyCartesianRange(cartesian)
-    const axisIndex = Axis.axisMap[axis]
-    cartesianRange[axisIndex][endIndex] = value
-    cartesian.set('range', cartesianRange)
+  static axisMap = { x: 0, y: 1, z: 2 };
+  static setAxisEnd(
+    cartesian: MathBoxNode,
+    axis: "x" | "y" | "z",
+    value: number,
+    endIndex: 0 | 1
+  ) {
+    const cartesianRange = Axis.copyCartesianRange(cartesian);
+    const axisIndex = Axis.axisMap[axis];
+    cartesianRange[axisIndex][endIndex] = value;
+    cartesian.set("range", cartesianRange);
   }
 
   static getCartesian(axisNode: MathBoxNode) {
-    let currentNode = axisNode[0]
-    while (currentNode.type !== 'cartesian') {
-      currentNode = currentNode.parent
-      if (currentNode.type === 'root') {
-        throw Error("Node type 'axis' should have 'cartesian' as an ancestor.")
+    let currentNode = axisNode[0];
+    while (currentNode.type !== "cartesian") {
+      currentNode = currentNode.parent;
+      if (currentNode.type === "root") {
+        throw Error("Node type 'axis' should have 'cartesian' as an ancestor.");
       }
     }
-    return currentNode
+    return currentNode;
   }
 
   mathboxRender = (parent) => {
-    const node = parent.group( { classes: ['axis'] } )
-    node.axis()
-      .scale( {
-        divide: 10,
-        nice: true,
-        zero: false
-      } )
+    const node = parent.group({ classes: ["axis"] });
+    node.axis().scale({
+      divide: 10,
+      nice: true,
+      zero: false,
+    });
 
-    node.group( { classes: ['ticks'] } )
-      .ticks( { width: 2 } )
-      .format( { digits: 2 } )
-      .label( { classes: ['tick-labels'] } )
+    node
+      .group({ classes: ["ticks"] })
+      .ticks({ width: 2 })
+      .format({ digits: 2 })
+      .label({ classes: ["tick-labels"] });
 
-    node.group( { classes: ['label'] } )
-      .array( { channels: 3, live: false } )
-      .text( { weight: 'bold' } )
-      .label( { offset: [0, 40, 0] } )
+    node
+      .group({ classes: ["label"] })
+      .array({ channels: 3, live: false })
+      .text({ weight: "bold" })
+      .label({ offset: [0, 40, 0] });
 
-    return node
-  }
-
+    return node;
+  };
 }
 
 export class Grid extends AbstractMBC implements MathBoxComponent {
-
-  dataNodeNames = null
-  renderNodeNames = ['grid']
+  dataNodeNames = null;
+  renderNodeNames = ["grid"];
   handlers = {
     ...universalHandlers,
     axes: Grid.handleAxes,
     width: Grid.handleWidth,
     divisions: Grid.handleDivisions,
-    snap: Grid.handleSnap
-  }
+    snap: Grid.handleSnap,
+  };
 
-  static handleAxes = makeSetProperty('axes')
-  static handleWidth = makeSetProperty('width')
+  static handleAxes = makeSetProperty("axes");
+  static handleWidth = makeSetProperty("width");
   static handleDivisions(nodes: HandlerNodes, handledProps: HandledProps) {
-    const divisions = handledProps.divisions
-    validateVector(divisions, 2)
-    nodes.renderNodes.set( {
+    const divisions = handledProps.divisions;
+    validateVector(divisions, 2);
+    nodes.renderNodes.set({
       divideX: divisions[0],
-      divideY: divisions[1]
-    } )
+      divideY: divisions[1],
+    });
   }
   static handleSnap(nodes: HandlerNodes, handledProps: HandledProps) {
-    nodes.renderNodes.set( {
+    nodes.renderNodes.set({
       niceX: handledProps.snap,
-      niceY: handledProps.snap
-    } )
+      niceY: handledProps.snap,
+    });
   }
 
   mathboxRender = (parent) => {
-    const node = parent.group()
-    node.grid()
-    return node
-  }
-
+    const node = parent.group();
+    node.grid();
+    return node;
+  };
 }
 
 export class Point extends AbstractMBC implements MathBoxComponent {
-
-  dataNodeNames = ['array']
-  renderNodeNames = ['point']
+  dataNodeNames = ["array"];
+  renderNodeNames = ["point"];
   handlers = {
     ...universalHandlers,
     label: makeHandleLabel(0),
     labelVisible: handleLabelVisible,
-    size: makeSetProperty('size'),
-    coords: Point.handleCoords
-  }
+    size: makeSetProperty("size"),
+    coords: Point.handleCoords,
+  };
 
   static handleCoords(nodes: HandlerNodes, handledProps: HandledProps) {
-    const coords = handledProps.coords
-    const data = (coords instanceof Array) && (coords[0] instanceof Number)
-      ? [coords]
-      : coords
-    nodes.dataNodes.set('data', data)
+    const coords = handledProps.coords;
+    const data =
+      coords instanceof Array && coords[0] instanceof Number
+        ? [coords]
+        : coords;
+    nodes.dataNodes.set("data", data);
   }
 
   mathboxRender = (parent) => {
-    const node = parent.group( { classes: ['point'] } )
-    node.array( { items: 1, channels: 3 } )
+    const node = parent.group({ classes: ["point"] });
+    node
+      .array({ items: 1, channels: 3 })
       .point()
-      .format( { classes: ['label'], weight: 'bold' } )
-      .label( { classes: ['label'], offset: [0, 40, 0] } )
+      .format({ classes: ["label"], weight: "bold" })
+      .label({ classes: ["label"], offset: [0, 40, 0] });
 
-    return node
-  }
-
+    return node;
+  };
 }
 
 export class Line extends AbstractMBC implements MathBoxComponent {
-
-  dataNodeNames = ['array']
-  renderNodeNames = ['line']
+  dataNodeNames = ["array"];
+  renderNodeNames = ["line"];
   handlers = {
     ...universalHandlers,
     ...lineLikeHandlers,
     label: makeHandleLabel(1),
     labelVisible: handleLabelVisible,
-    coords: Line.handleCoords
-  }
+    coords: Line.handleCoords,
+  };
 
   static handleCoords(nodes: HandlerNodes, handledProps: any) {
-    nodes.dataNodes.set('data', handledProps.coords)
+    nodes.dataNodes.set("data", handledProps.coords);
   }
 
   mathboxRender = (parent) => {
-    const node = parent.group( { classes: ['line'] } )
-    node.array( { items: 1, channels: 3 } )
+    const node = parent.group({ classes: ["line"] });
+    node
+      .array({ items: 1, channels: 3 })
       .line()
-      .format( { classes: ['label'], weight: 'bold' } )
-      .label( { classes: ['label'], offset: [0, 40, 0] } )
+      .format({ classes: ["label"], weight: "bold" })
+      .label({ classes: ["label"], offset: [0, 40, 0] });
 
-    return node
-  }
-
+    return node;
+  };
 }
 
 export class Vector extends AbstractMBC implements MathBoxComponent {
-
-  dataNodeNames = ['array']
-  renderNodeNames = ['line']
+  dataNodeNames = ["array"];
+  renderNodeNames = ["line"];
   handlers = {
     ...universalHandlers,
     ...lineLikeHandlers,
     label: makeHandleLabel(1),
     labelVisible: handleLabelVisible,
     components: Vector.handleComponents,
-    tail: Vector.handleTail
-  }
+    tail: Vector.handleTail,
+  };
 
   static handleTail(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { tail, components } = handledProps
-    validateVector(tail, 3) // throws error if tail invalid
+    const { tail, components } = handledProps;
+    validateVector(tail, 3); // throws error if tail invalid
 
     // If head is valid, finish updating. If head is not valid:
     //    1. don't update, but...
     //    2. do not throw error. it's not the tail's fault!
     if (isVector(components, 3)) {
-      Vector.updateData(nodes, handledProps)
+      Vector.updateData(nodes, handledProps);
     }
   }
 
   static handleComponents(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { tail, components } = handledProps
-    validateVector(components, 3)
+    const { tail, components } = handledProps;
+    validateVector(components, 3);
     if (isVector(tail, 3)) {
-      Vector.updateData(nodes, handledProps)
+      Vector.updateData(nodes, handledProps);
     }
   }
 
   static updateData(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { tail, components } = handledProps
-    const head = math.add(tail, components)
-    nodes.dataNodes.set('data', [tail, head] )
+    const { tail, components } = handledProps;
+    const head = math.add(tail, components);
+    nodes.dataNodes.set("data", [tail, head]);
   }
 
   mathboxRender = (parent) => {
-    const node = parent.group( { classes: ['vector'] } )
-    node.array( { items: 1, channels: 3 } )
+    const node = parent.group({ classes: ["vector"] });
+    node
+      .array({ items: 1, channels: 3 })
       .line()
-      .format( { classes: ['label'], weight: 'bold' } )
-      .label( { classes: ['label'], offset: [0, 40, 0] } )
+      .format({ classes: ["label"], weight: "bold" })
+      .label({ classes: ["label"], offset: [0, 40, 0] });
 
-    return node
-  }
-
+    return node;
+  };
 }
 
 export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
-
-  dataNodeNames = ['interval']
-  renderNodeNames = ['line']
+  dataNodeNames = ["interval"];
+  renderNodeNames = ["line"];
   handlers = {
     ...universalHandlers,
     ...lineLikeHandlers,
     range: ParametricCurve.handleRange,
     expr: ParametricCurve.handleExpr,
-    samples: ParametricCurve.handleSamples
-  }
+    samples: ParametricCurve.handleSamples,
+  };
 
   static handleRange(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { range } = handledProps
-    validateVector(range, 2)
-    const cartesian = nodes.groupNode.select('cartesian')
-    cartesian.set('range', [range, [0, 1]] )
+    const { range } = handledProps;
+    validateVector(range, 2);
+    const cartesian = nodes.groupNode.select("cartesian");
+    cartesian.set("range", [range, [0, 1]]);
 
-    ParametricCurve.forceUpdate(nodes, handledProps)
+    ParametricCurve.forceUpdate(nodes, handledProps);
   }
 
   static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { expr } = handledProps
-    validateFunctionSignature(expr, 1, 3)
-    nodes.dataNodes.set('expr', (emit, t) => {
-      return emit(...expr(t))
-    } )
+    const { expr } = handledProps;
+    validateFunctionSignature(expr, 1, 3);
+    nodes.dataNodes.set("expr", (emit, t) => {
+      return emit(...expr(t));
+    });
   }
 
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { samples } = handledProps
-    validateReal(samples)
-    nodes.dataNodes.set('width', samples)
+    const { samples } = handledProps;
+    validateReal(samples);
+    nodes.dataNodes.set("width", samples);
   }
 
   // This method is a hacky way to force the interval data primitive to update.
   static forceUpdate(nodes: HandlerNodes, handledProps: HandledProps) {
     try {
-      ParametricCurve.handleExpr(nodes, handledProps)
-    }
-    catch (err) {
+      ParametricCurve.handleExpr(nodes, handledProps);
+    } catch (err) {
       // don't do anything with the error; it should have been caught when
       // handleExpr was called directly.
     }
@@ -752,34 +771,32 @@ export class ParametricCurve extends AbstractMBC implements MathBoxComponent {
     // \cartesian, and update <cartesian>'s range. See
     // https://groups.google.com/forum/?fromgroups#!topic/mathbox/zLX6WJjTDZk
 
-    const group = parent.group()
-    const data = group.cartesian().interval( {
+    const group = parent.group();
+    const data = group.cartesian().interval({
       channels: 3,
       axis: 1,
-      live: false
-    } )
+      live: false,
+    });
 
-    group.line( {
-      points: data
-    } )
+    group.line({
+      points: data,
+    });
 
-    return group
-  }
-
+    return group;
+  };
 }
 
-type SurfaceRange = [number, number] | (number) => [number, number]
-type TrueParamsFunc = (unitU: number, unitV: number) => [number, number]
-type ParametricSurfaceFunc = (number, number) => [number, number, number]
+type SurfaceRange = [number, number] | ((number) => [number, number]);
+type TrueParamsFunc = (unitU: number, unitV: number) => [number, number];
+type ParametricSurfaceFunc = (number, number) => [number, number, number];
 
 export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
-
-  dataNodeNames = ['area.data']
-  renderNodeNames = ['surface']
-  handlers: Handlers
+  dataNodeNames = ["area.data"];
+  renderNodeNames = ["surface"];
+  handlers: Handlers;
 
   constructor(props: Props) {
-    super(props)
+    super(props);
 
     this.handlers = {
       ...universalHandlers,
@@ -796,270 +813,314 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       gridWidth: ParametricSurface.handleGridWidth,
       gridOpacity: ParametricSurface.handleGridOpacity,
       gridU: ParametricSurface.handleGridU,
-      gridV: ParametricSurface.handleGridV
-    }
+      gridV: ParametricSurface.handleGridV,
+    };
   }
 
   static handleZOrder(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { zOrder } = handledProps
-    const { groupNode } = nodes
-    groupNode.select('surface').set( { zOrder } )
+    const { zOrder } = handledProps;
+    const { groupNode } = nodes;
+    groupNode.select("surface").set({ zOrder });
     // Make sure to draw gridlines after the surface
-    groupNode.select('line').set( { zOrder: zOrder + 0.001 } )
+    groupNode.select("line").set({ zOrder: zOrder + 0.001 });
   }
 
   static handleGridOpacity(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { gridOpacity } = handledProps
-    const { groupNode } = nodes
-    validateReal(gridOpacity)
-    groupNode.select('line').set('opacity', gridOpacity)
+    const { gridOpacity } = handledProps;
+    const { groupNode } = nodes;
+    validateReal(gridOpacity);
+    groupNode.select("line").set("opacity", gridOpacity);
   }
 
   static handleGridWidth(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { gridWidth } = handledProps
-    const { groupNode } = nodes
-    validateReal(gridWidth)
-    groupNode.select('line').set('width', gridWidth)
+    const { gridWidth } = handledProps;
+    const { groupNode } = nodes;
+    validateReal(gridWidth);
+    groupNode.select("line").set("width", gridWidth);
   }
 
   static handleGridU(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { gridU } = handledProps
-    validateReal(gridU)
-    nodes.groupNode.select('.gridU resample').set('width', gridU)
+    const { gridU } = handledProps;
+    validateReal(gridU);
+    nodes.groupNode.select(".gridU resample").set("width", gridU);
   }
   static handleGridV(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { gridV } = handledProps
-    validateReal(gridV)
-    nodes.groupNode.select('.gridV resample').set('height', gridV)
+    const { gridV } = handledProps;
+    validateReal(gridV);
+    nodes.groupNode.select(".gridV resample").set("height", gridV);
   }
 
-  static handleUSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
-    const { groupNode } = nodes
-    const { uSamples } = handledProps
-    validateReal(uSamples)
-    const area = groupNode.select('area')
-    const colorsNode = groupNode.select('.colors')
-    if (area.get('width') === null) {
-      area.set('width', uSamples)
-      colorsNode.set('width', uSamples)
-    }
-    else {
-      ParametricSurface.rerender(nodes, handledProps, handlers)
+  static handleUSamples(
+    nodes: HandlerNodes,
+    handledProps: HandledProps,
+    handlers: Handlers
+  ) {
+    const { groupNode } = nodes;
+    const { uSamples } = handledProps;
+    validateReal(uSamples);
+    const area = groupNode.select("area");
+    const colorsNode = groupNode.select(".colors");
+    if (area.get("width") === null) {
+      area.set("width", uSamples);
+      colorsNode.set("width", uSamples);
+    } else {
+      ParametricSurface.rerender(nodes, handledProps, handlers);
     }
   }
 
-  static handleVSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
-    const { groupNode } = nodes
-    const { vSamples } = handledProps
-    validateReal(vSamples)
-    const area = groupNode.select('area')
-    const colorsNode = groupNode.select('.colors')
-    if (area.get('height') === null) {
-      area.set('height', vSamples)
-      colorsNode.set('height', vSamples)
-    }
-    else {
-      ParametricSurface.rerender(nodes, handledProps, handlers)
+  static handleVSamples(
+    nodes: HandlerNodes,
+    handledProps: HandledProps,
+    handlers: Handlers
+  ) {
+    const { groupNode } = nodes;
+    const { vSamples } = handledProps;
+    validateReal(vSamples);
+    const area = groupNode.select("area");
+    const colorsNode = groupNode.select(".colors");
+    if (area.get("height") === null) {
+      area.set("height", vSamples);
+      colorsNode.set("height", vSamples);
+    } else {
+      ParametricSurface.rerender(nodes, handledProps, handlers);
     }
   }
 
   handleColor = (nodes: HandlerNodes, handledProps: HandledProps) => {
-    const { color } = handledProps
-    const { groupNode } = nodes
-    const lines = groupNode.select('line')
-    const colorsNode = groupNode.select('.colors')
+    const { color } = handledProps;
+    const { groupNode } = nodes;
+    const lines = groupNode.select("line");
+    const colorsNode = groupNode.select(".colors");
     // delegate to colorMap
     if (colorMaps.hasOwnProperty(color)) {
-      this.handleColorExpr(nodes, handledProps)
-      lines.set('color', 'gray')
-      return
+      this.handleColorExpr(nodes, handledProps);
+      lines.set("color", "gray");
+      return;
     }
 
     const colorExpr = (emit) => {
-      const { r, g, b } = new Color(color)
-      emit(r, g, b, 1.0)
-    }
+      const { r, g, b } = new Color(color);
+      emit(r, g, b, 1.0);
+    };
 
-    colorsNode.set('expr', colorExpr)
+    colorsNode.set("expr", colorExpr);
 
-    const lineColor = lighten(color, -0.75)
-    lines.set('color', lineColor)
-  }
+    const lineColor = lighten(color, -0.75);
+    lines.set("color", lineColor);
+  };
 
   static updateColorExpr(
     nodes: HandlerNodes,
     handledProps: HandledProps,
     trueParamsFunc: TrueParamsFunc,
-    transformedExpr: ParametricSurfaceFunc) {
+    transformedExpr: ParametricSurfaceFunc
+  ) {
     // These should already have been validated
-    const { color, colorExpr, uSamples, vSamples } = handledProps
+    const { color, colorExpr, uSamples, vSamples } = handledProps;
 
-    const { root, groupNode } = nodes
-    const colorsArea = groupNode.select('.colors')
-    const cartesian = root.select('cartesian')[0]
+    const { root, groupNode } = nodes;
+    const colorsArea = groupNode.select(".colors");
+    const cartesian = root.select("cartesian")[0];
 
-    const { func: valueToColor } = colorMaps[color]
+    const { func: valueToColor } = colorMaps[color];
 
-    const [
-      [xMin, xMax],
-      [yMin, yMax],
-      [zMin, zMax]
-    ] = Axis.copyCartesianRange(cartesian)
+    const [[xMin, xMax], [yMin, yMax], [zMin, zMax]] = Axis.copyCartesianRange(
+      cartesian
+    );
 
     const rgbaEmitter = (emit, u: number, v: number) => {
-      const [trueU, trueV] = trueParamsFunc(u, v)
-      const [x, y, z] = transformedExpr(trueU, trueV)
-      const X = scaleToUnit(x, xMin, xMax)
-      const Y = scaleToUnit(y, yMin, yMax)
-      const Z = scaleToUnit(z, zMin, zMax)
-      const frac = colorExpr(X, Y, Z, trueU, trueV)
-      emit(...valueToColor(frac))
-    }
+      const [trueU, trueV] = trueParamsFunc(u, v);
+      const [x, y, z] = transformedExpr(trueU, trueV);
+      const X = scaleToUnit(x, xMin, xMax);
+      const Y = scaleToUnit(y, yMin, yMax);
+      const Z = scaleToUnit(z, zMin, zMax);
+      const frac = colorExpr(X, Y, Z, trueU, trueV);
+      emit(...valueToColor(frac));
+    };
 
-    colorsArea.set( {
+    colorsArea.set({
       expr: rgbaEmitter,
       width: uSamples,
-      height: vSamples
-    } )
-
+      height: vSamples,
+    });
   }
 
   canUpdateColorExpr = (handledProps: HandledProps) => {
-    const { colorExpr, color, expr, uSamples, vSamples, rangeU, rangeV } = handledProps
-    if (!hasFunctionSignature(colorExpr, 5, 1)) { return false }
-    if (!colorMaps[color] ) { return false }
-    if (!isReal(uSamples) || !isReal(vSamples)) { return false }
-    if (!this.constructor.isExprValid(expr)) { return false }
-    if (!ParametricSurface.isRangeValid(rangeU, rangeV)) { return false }
-    return true
-  }
+    const {
+      colorExpr,
+      color,
+      expr,
+      uSamples,
+      vSamples,
+      rangeU,
+      rangeV,
+    } = handledProps;
+    if (!hasFunctionSignature(colorExpr, 5, 1)) {
+      return false;
+    }
+    if (!colorMaps[color]) {
+      return false;
+    }
+    if (!isReal(uSamples) || !isReal(vSamples)) {
+      return false;
+    }
+    if (!this.constructor.isExprValid(expr)) {
+      return false;
+    }
+    if (!ParametricSurface.isRangeValid(rangeU, rangeV)) {
+      return false;
+    }
+    return true;
+  };
 
   handleColorExpr = (nodes: HandlerNodes, handledProps: HandledProps) => {
-    const { colorExpr, expr, rangeU, rangeV } = handledProps
-    validateFunctionSignature(colorExpr, 5, 1)
-    if (!this.canUpdateColorExpr(handledProps)) { return }
+    const { colorExpr, expr, rangeU, rangeV } = handledProps;
+    validateFunctionSignature(colorExpr, 5, 1);
+    if (!this.canUpdateColorExpr(handledProps)) {
+      return;
+    }
 
-    const trueParamsFunc = ParametricSurface.getTrueParamsFunc(rangeU, rangeV)
-    const transformedExpr = this.constructor.transformExpr(expr)
-    ParametricSurface.updateColorExpr(nodes, handledProps, trueParamsFunc, transformedExpr)
-
-  }
+    const trueParamsFunc = ParametricSurface.getTrueParamsFunc(rangeU, rangeV);
+    const transformedExpr = this.constructor.transformExpr(expr);
+    ParametricSurface.updateColorExpr(
+      nodes,
+      handledProps,
+      trueParamsFunc,
+      transformedExpr
+    );
+  };
 
   // The next two handlers all perform validation, then delegate to updateExpr
   // Handlers are structured this way because range properties can be functions.
   handleRange = (nodes: HandlerNodes, handledProps: HandledProps) => {
-    const { rangeU, rangeV, expr } = handledProps
-    const { dataNodes: area } = nodes
+    const { rangeU, rangeV, expr } = handledProps;
+    const { dataNodes: area } = nodes;
 
-    const isExprValid = this.constructor.isExprValid(expr)
-    const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV)
+    const isExprValid = this.constructor.isExprValid(expr);
+    const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV);
 
     if (!isRangeValid) {
-      if (typeof rangeU === 'function' && typeof rangeV === 'function') {
-        throw new Error('Either the u-range can depend on v, OR the v-range can dependent on u, but NOT both.')
-      }
-      else {
-        throw new Error(`Parameter ranges must be 2-component arrays.`)
+      if (typeof rangeU === "function" && typeof rangeV === "function") {
+        throw new Error(
+          "Either the u-range can depend on v, OR the v-range can dependent on u, but NOT both."
+        );
+      } else {
+        throw new Error(`Parameter ranges must be 2-component arrays.`);
       }
     }
-    if (!isExprValid) { return }
+    if (!isExprValid) {
+      return;
+    }
 
-    const trueParamsFunc = ParametricSurface.getTrueParamsFunc(rangeU, rangeV)
-    const transformedExpr = this.constructor.transformExpr(expr)
-    ParametricSurface.updateExpr(area, trueParamsFunc, transformedExpr)
+    const trueParamsFunc = ParametricSurface.getTrueParamsFunc(rangeU, rangeV);
+    const transformedExpr = this.constructor.transformExpr(expr);
+    ParametricSurface.updateExpr(area, trueParamsFunc, transformedExpr);
 
-    if (!this.canUpdateColorExpr(handledProps)) { return }
-    ParametricSurface.updateColorExpr(nodes, handledProps, trueParamsFunc, transformedExpr)
+    if (!this.canUpdateColorExpr(handledProps)) {
+      return;
+    }
+    ParametricSurface.updateColorExpr(
+      nodes,
+      handledProps,
+      trueParamsFunc,
+      transformedExpr
+    );
 
     // If handleRange finishes, then both rangeU and rangeV are valid.
     // (i.e., have null error)
     // We announce this manually because range validation is correlated:
     // updating rangeU can validate a previously invalid rangeV value
-    return { rangeU: null, rangeV: null }
-  }
+    return { rangeU: null, rangeV: null };
+  };
 
   static isRangeValid(rangeU: mixed, rangeV: mixed) {
     if (isVector(rangeU, 2) && isVector(rangeV, 2)) {
-      return true
-    }
-    else if (hasFunctionSignature(rangeU, 1, 2) && isVector(rangeV, 2)) {
-      return true
-    }
-    else if (isVector(rangeU, 2) && hasFunctionSignature(rangeV, 1, 2)) {
-      return true
-    }
-    else {
-      return false
+      return true;
+    } else if (hasFunctionSignature(rangeU, 1, 2) && isVector(rangeV, 2)) {
+      return true;
+    } else if (isVector(rangeU, 2) && hasFunctionSignature(rangeV, 1, 2)) {
+      return true;
+    } else {
+      return false;
     }
   }
 
   // Inheriting classes override the next three method to transform scalar
   // functions in rectangular and polar coordinates into parametric surfaces
   static isExprValid(expr: mixed) {
-    return hasFunctionSignature(expr, 2, 3)
+    return hasFunctionSignature(expr, 2, 3);
   }
   static validateExpr(expr: mixed) {
-    validateFunctionSignature(expr, 2, 3)
+    validateFunctionSignature(expr, 2, 3);
   }
-  static transformExpr(expr: mixed): (number, number) => [number, number, number] {
+  static transformExpr(
+    expr: mixed
+  ): (number, number) => [number, number, number] {
     // $FlowFixMe previous line will throw if invalid type
-    return expr
+    return expr;
   }
 
   handleExpr = (nodes: HandlerNodes, handledProps: HandledProps) => {
-    const { expr, rangeU, rangeV } = handledProps
-    this.constructor.validateExpr(expr)
-    const { dataNodes: area } = nodes
+    const { expr, rangeU, rangeV } = handledProps;
+    this.constructor.validateExpr(expr);
+    const { dataNodes: area } = nodes;
 
-    const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV)
+    const isRangeValid = ParametricSurface.isRangeValid(rangeU, rangeV);
 
     // Already know expr is valid
-    if (!isRangeValid) { return }
+    if (!isRangeValid) {
+      return;
+    }
 
-    const trueParamsFunc = ParametricSurface.getTrueParamsFunc(rangeU, rangeV)
-    const transformedExpr = this.constructor.transformExpr(expr)
-    ParametricSurface.updateExpr(area, trueParamsFunc, transformedExpr)
-    if (!this.canUpdateColorExpr(handledProps)) { return }
-    ParametricSurface.updateColorExpr(nodes, handledProps, trueParamsFunc, transformedExpr)
+    const trueParamsFunc = ParametricSurface.getTrueParamsFunc(rangeU, rangeV);
+    const transformedExpr = this.constructor.transformExpr(expr);
+    ParametricSurface.updateExpr(area, trueParamsFunc, transformedExpr);
+    if (!this.canUpdateColorExpr(handledProps)) {
+      return;
+    }
+    ParametricSurface.updateColorExpr(
+      nodes,
+      handledProps,
+      trueParamsFunc,
+      transformedExpr
+    );
+  };
 
-  }
-
-  static getTrueParamsFunc(rangeU: SurfaceRange, rangeV: SurfaceRange): TrueParamsFunc {
+  static getTrueParamsFunc(
+    rangeU: SurfaceRange,
+    rangeV: SurfaceRange
+  ): TrueParamsFunc {
     if (Array.isArray(rangeU) && Array.isArray(rangeV)) {
       return (u: number, v: number) => {
-        const du = rangeU
-        const dv = rangeV
-        const trueU = du[0] + u*(du[1] - du[0] )
-        const trueV = dv[0] + v*(dv[1] - dv[0] )
-        return [trueU, trueV]
-      }
-    }
-    else if (Array.isArray(rangeU) && typeof rangeV === 'function') {
+        const du = rangeU;
+        const dv = rangeV;
+        const trueU = du[0] + u * (du[1] - du[0]);
+        const trueV = dv[0] + v * (dv[1] - dv[0]);
+        return [trueU, trueV];
+      };
+    } else if (Array.isArray(rangeU) && typeof rangeV === "function") {
       return (u: number, v: number) => {
-        const du = rangeU
-        const trueU = du[0] + u*(du[1] - du[0] )
+        const du = rangeU;
+        const trueU = du[0] + u * (du[1] - du[0]);
         // $FlowFixMe
-        const dv = rangeV(trueU)
-        const trueV = dv[0] + v*(dv[1] - dv[0] )
-        return [trueU, trueV]
-      }
-    }
-    else if (Array.isArray(rangeV) && typeof rangeU === 'function') {
+        const dv = rangeV(trueU);
+        const trueV = dv[0] + v * (dv[1] - dv[0]);
+        return [trueU, trueV];
+      };
+    } else if (Array.isArray(rangeV) && typeof rangeU === "function") {
       return (u: number, v: number) => {
-        const dv = rangeV
-        const trueV = dv[0] + v*(dv[1] - dv[0] )
+        const dv = rangeV;
+        const trueV = dv[0] + v * (dv[1] - dv[0]);
         // $FlowFixMe
-        const du = rangeU(trueV)
-        const trueU = du[0] + u*(du[1] - du[0] )
-        return [trueU, trueV]
-      }
-    }
-    else {
+        const du = rangeU(trueV);
+        const trueU = du[0] + u * (du[1] - du[0]);
+        return [trueU, trueV];
+      };
+    } else {
       throw new Error(`Expected rangeV and rangeU to be (1) array, array (2)
                        array, function, or (3) function, array. Instead, found
-                       ${typeof rangeU} and ${typeof rangeV}`)
+                       ${typeof rangeU} and ${typeof rangeV}`);
     }
-
   }
 
   // assumes rangeU, rangeV, expr all validated
@@ -1069,33 +1130,31 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     trueParmasFunc: TrueParamsFunc,
     transformedExpr: (number, number) => [number, number, number]
   ) {
-    area.set('expr', (emit, u, v) => {
-      const [trueU, trueV] = trueParmasFunc(u, v)
-      const [x, y, z] = transformedExpr(trueU, trueV)
-      emit(x, y, z)
-    } )
-
+    area.set("expr", (emit, u, v) => {
+      const [trueU, trueV] = trueParmasFunc(u, v);
+      const [x, y, z] = transformedExpr(trueU, trueV);
+      emit(x, y, z);
+    });
   }
 
   mathboxRender = (parent) => {
+    const group = parent.group();
 
-    const group = parent.group()
-
-    return ParametricSurface.renderParametricSurface(group)
-  }
+    return ParametricSurface.renderParametricSurface(group);
+  };
 
   static renderParametricSurface(group: MathBoxNode) {
-    const data = group.area( {
-      classes: ['data'],
+    const data = group.area({
+      classes: ["data"],
       channels: 3,
       axes: [1, 2],
       live: false,
       rangeX: [0, 1],
-      rangeY: [0, 1]
-    } )
+      rangeY: [0, 1],
+    });
 
-    const colors = group.area( {
-      classes: ['colors'],
+    const colors = group.area({
+      classes: ["colors"],
       channels: 4,
       items: 1,
       axes: [1, 2],
@@ -1103,119 +1162,123 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
       rangeX: [0, 1],
       rangeY: [0, 1],
       width: 2,
-      height: 2
-    } )
+      height: 2,
+    });
 
     group
-      .surface( {
+      .surface({
         points: data,
         colors: colors,
-        color: '#FFFFFF'
-      } )
-      .group( { classes: ['gridV'] } )
-      .resample( { source: data } )
-      .line( { zBias: 5 } )
+        color: "#FFFFFF",
+      })
+      .group({ classes: ["gridV"] })
+      .resample({ source: data })
+      .line({ zBias: 5 })
       .end()
-      .group( { classes: 'gridU' } )
-      .resample( { source: data } )
-      .transpose( { order: 'yx' } )
-      .line( { zBias: 5 } )
-      .end()
+      .group({ classes: "gridU" })
+      .resample({ source: data })
+      .transpose({ order: "yx" })
+      .line({ zBias: 5 })
+      .end();
 
-    return group
+    return group;
   }
 
-  static rerender(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
-    const { groupNode, root } = nodes
-    groupNode.select('area, surface, .gridU, .gridV').remove()
-    ParametricSurface.renderParametricSurface(groupNode)
+  static rerender(
+    nodes: HandlerNodes,
+    handledProps: HandledProps,
+    handlers: Handlers
+  ) {
+    const { groupNode, root } = nodes;
+    groupNode.select("area, surface, .gridU, .gridV").remove();
+    ParametricSurface.renderParametricSurface(groupNode);
     const newNodes = {
       groupNode,
       root,
-      dataNodes: groupNode.select('area.data'),
-      renderNodes: groupNode.select('surface')
-    }
-    Object.keys(handlers).forEach(key => {
-      handlers[key](newNodes, handledProps, handlers)
-    } )
+      dataNodes: groupNode.select("area.data"),
+      renderNodes: groupNode.select("surface"),
+    };
+    Object.keys(handlers).forEach((key) => {
+      handlers[key](newNodes, handledProps, handlers);
+    });
   }
-
 }
 
-export class ExplicitSurface extends ParametricSurface implements MathBoxComponent {
-
+export class ExplicitSurface extends ParametricSurface
+  implements MathBoxComponent {
   static isExprValid(expr: mixed) {
-    return hasFunctionSignature(expr, 2, 1)
+    return hasFunctionSignature(expr, 2, 1);
   }
   static validateExpr(expr: mixed) {
-    validateFunctionSignature(expr, 2, 1)
+    validateFunctionSignature(expr, 2, 1);
   }
-  static transformExpr(expr: mixed): (number, number) => [number, number, number] {
+  static transformExpr(
+    expr: mixed
+  ): (number, number) => [number, number, number] {
     // $FlowFixMe previous line will throw if invalid type
-    return (u, v) => [u, v, expr(u, v)]
+    return (u, v) => [u, v, expr(u, v)];
   }
-
 }
 
-export class ExplicitSurfacePolar extends ParametricSurface implements MathBoxComponent {
-
+export class ExplicitSurfacePolar extends ParametricSurface
+  implements MathBoxComponent {
   static isExprValid(expr: mixed) {
-    return hasFunctionSignature(expr, 2, 1)
+    return hasFunctionSignature(expr, 2, 1);
   }
   static validateExpr(expr: mixed) {
-    validateFunctionSignature(expr, 2, 1)
+    validateFunctionSignature(expr, 2, 1);
   }
-  static transformExpr(expr: mixed): (number, number) => [number, number, number] {
+  static transformExpr(
+    expr: mixed
+  ): (number, number) => [number, number, number] {
     // $FlowFixMe previous line will throw if invalid type
-    return (u, v) => [u*Math.cos(v), u*Math.sin(v), expr(u, v)]
+    return (u, v) => [u * Math.cos(v), u * Math.sin(v), expr(u, v)];
   }
-
 }
 
 export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
-
-  dataNodeNames = ['array']
-  renderNodeNames = ['strip']
+  dataNodeNames = ["array"];
+  renderNodeNames = ["strip"];
   handlers = {
     ...universalHandlers,
-    shaded: makeSetProperty('shaded'),
+    shaded: makeSetProperty("shaded"),
     lhs: ImplicitSurface.handleLHS,
     rhs: ImplicitSurface.handleRHS,
-    rangeX: ImplicitSurface.makeHandleRange('rangeX'),
-    rangeY: ImplicitSurface.makeHandleRange('rangeY'),
-    rangeZ: ImplicitSurface.makeHandleRange('rangeZ'),
-    samples: ImplicitSurface.handleSamples
-  }
+    rangeX: ImplicitSurface.makeHandleRange("rangeX"),
+    rangeY: ImplicitSurface.makeHandleRange("rangeY"),
+    rangeZ: ImplicitSurface.makeHandleRange("rangeZ"),
+    samples: ImplicitSurface.handleSamples,
+  };
 
   // The next several handlers all validate, then delgate to updateData
   static handleLHS(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { lhs } = handledProps
-    validateFunctionSignature(lhs, 3, 1)
-    ImplicitSurface.updateData(nodes, handledProps)
+    const { lhs } = handledProps;
+    validateFunctionSignature(lhs, 3, 1);
+    ImplicitSurface.updateData(nodes, handledProps);
   }
 
   static handleRHS(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { rhs } = handledProps
-    validateFunctionSignature(rhs, 3, 1)
-    ImplicitSurface.updateData(nodes, handledProps)
+    const { rhs } = handledProps;
+    validateFunctionSignature(rhs, 3, 1);
+    ImplicitSurface.updateData(nodes, handledProps);
   }
 
-  static makeHandleRange(rangeName: 'rangeX' | 'rangeY' | 'rangeZ') {
+  static makeHandleRange(rangeName: "rangeX" | "rangeY" | "rangeZ") {
     return (nodes: HandlerNodes, handledProps: HandledProps) => {
-      const range = handledProps[rangeName]
-      validateVector(range, 2)
-      ImplicitSurface.updateData(nodes, handledProps)
-    }
+      const range = handledProps[rangeName];
+      validateVector(range, 2);
+      ImplicitSurface.updateData(nodes, handledProps);
+    };
   }
 
   static handleSamples(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { samples } = handledProps
-    validateReal(samples)
-    ImplicitSurface.updateData(nodes, handledProps)
+    const { samples } = handledProps;
+    validateReal(samples);
+    ImplicitSurface.updateData(nodes, handledProps);
   }
 
   static canUpdate(handledProps: HandledProps) {
-    const { lhs, rhs, rangeX, rangeY, rangeZ, samples } = handledProps
+    const { lhs, rhs, rangeX, rangeY, rangeZ, samples } = handledProps;
     return (
       isVector(rangeX, 2) &&
       isVector(rangeY, 2) &&
@@ -1223,72 +1286,79 @@ export class ImplicitSurface extends AbstractMBC implements MathBoxComponent {
       hasFunctionSignature(lhs, 3, 1) &&
       hasFunctionSignature(rhs, 3, 1) &&
       isReal(samples)
-    )
+    );
   }
 
   static updateData(nodes: HandlerNodes, handledProps: HandledProps) {
     if (!ImplicitSurface.canUpdate(handledProps)) {
-      return
+      return;
     }
-    const { lhs, rhs, rangeX, rangeY, rangeZ, samples } = handledProps
-    const { dataNodes } = nodes
+    const { lhs, rhs, rangeX, rangeY, rangeZ, samples } = handledProps;
+    const { dataNodes } = nodes;
 
-    const implicitFunc = (x, y, z) => lhs(x, y, z) - rhs(x, y, z)
+    const implicitFunc = (x, y, z) => lhs(x, y, z) - rhs(x, y, z);
     const implicitTriangles = marchingCubes(
-      rangeX[0], rangeX[1],
-      rangeY[0], rangeY[1],
-      rangeZ[0], rangeZ[1],
-      implicitFunc, 0, samples)
+      rangeX[0],
+      rangeX[1],
+      rangeY[0],
+      rangeY[1],
+      rangeZ[0],
+      rangeZ[1],
+      implicitFunc,
+      0,
+      samples
+    );
 
     // "samples" really determines the field discretization length
     // true number of samples depends on discretization length and implicitFunc
-    const trueSamplesNum = implicitTriangles.length
+    const trueSamplesNum = implicitTriangles.length;
     // Sample cap of 5400 was found experimentally; I do not really understand
     // what goes wrong when too many samples are generated.
     if (trueSamplesNum > 5400) {
-      throw new Error('Too many data points generated. Please decrease sample size.')
+      throw new Error(
+        "Too many data points generated. Please decrease sample size."
+      );
     }
 
-    dataNodes.set( {
+    dataNodes.set({
       data: implicitTriangles,
-      width: trueSamplesNum
-    } )
+      width: trueSamplesNum,
+    });
   }
 
   mathboxRender = (parent) => {
-
     // @jason put all of the implicit-surface related MathBox code inside a
     // group. This function MUST return the group.
-    const group = parent.group()
+    const group = parent.group();
 
     // Array stores a list of the points of the triangles
     // Use strip to render them
-    group.array( {
-      channels: 3,
-      items: 3,
-      width: 0,
-      live: false
-    } ).strip()
+    group
+      .array({
+        channels: 3,
+        items: 3,
+        width: 0,
+        live: false,
+      })
+      .strip();
 
-    return group
-  }
-
+    return group;
+  };
 }
 
 export class VectorField extends AbstractMBC implements MathBoxComponent {
-
-  dataNodeNames = ['volume']
-  renderNodeNames = ['vector']
+  dataNodeNames = ["volume"];
+  renderNodeNames = ["vector"];
   handlers = {
     ...universalHandlers,
     ...lineLikeHandlers,
-    rangeX: VectorField.makeHandleRange('rangeX'),
-    rangeY: VectorField.makeHandleRange('rangeY'),
-    rangeZ: VectorField.makeHandleRange('rangeZ'),
+    rangeX: VectorField.makeHandleRange("rangeX"),
+    rangeY: VectorField.makeHandleRange("rangeY"),
+    rangeZ: VectorField.makeHandleRange("rangeZ"),
     samples: VectorField.handleSamples,
     scale: VectorField.handleScale,
-    expr: VectorField.handleExpr
-  }
+    expr: VectorField.handleExpr,
+  };
 
   // handleExpr and makeHandleRange both delegate to updateRangeAndExpression.
   // handlers are structured this way because updating the range properties of
@@ -1296,26 +1366,33 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
   // bug, see discussion at
   // https://groups.google.com/forum/?fromgroups#!topic/mathbox/zLX6WJjTDZk
   // for an alternative approach.
-  static makeHandleRange(rangeName: 'rangeX' | 'rangeY' | 'rangeZ') {
+  static makeHandleRange(rangeName: "rangeX" | "rangeY" | "rangeZ") {
     return (nodes: HandlerNodes, handledProps: HandledProps) => {
-      validateVector(handledProps[rangeName], 2)
-      VectorField.updateRangeAndExpr(nodes, handledProps)
-    }
+      validateVector(handledProps[rangeName], 2);
+      VectorField.updateRangeAndExpr(nodes, handledProps);
+    };
   }
 
   static handleExpr(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { expr } = handledProps
-    validateFunctionSignature(expr, 3, 3)
-    VectorField.updateRangeAndExpr(nodes, handledProps)
+    const { expr } = handledProps;
+    validateFunctionSignature(expr, 3, 3);
+    VectorField.updateRangeAndExpr(nodes, handledProps);
   }
 
   static handleScale(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { scale } = handledProps
-    isReal(scale)
-    VectorField.updateRangeAndExpr(nodes, handledProps)
+    const { scale } = handledProps;
+    isReal(scale);
+    VectorField.updateRangeAndExpr(nodes, handledProps);
   }
 
-  static canUpdateRangeAndExpr(rangeX: mixed, rangeY: mixed, rangeZ: mixed, expr: mixed, samples: mixed, scale: mixed) {
+  static canUpdateRangeAndExpr(
+    rangeX: mixed,
+    rangeY: mixed,
+    rangeZ: mixed,
+    expr: mixed,
+    samples: mixed,
+    scale: mixed
+  ) {
     return (
       isVector(rangeX, 2) &&
       isVector(rangeY, 2) &&
@@ -1323,79 +1400,95 @@ export class VectorField extends AbstractMBC implements MathBoxComponent {
       isVector(samples, 3) &&
       isReal(scale) &&
       hasFunctionSignature(expr, 3, 3)
-    )
+    );
   }
 
   static updateRangeAndExpr(nodes: HandlerNodes, handledProps: HandledProps) {
-    const { rangeX, rangeY, rangeZ, expr, samples, scale } = handledProps
-    const { dataNodes: volume } = nodes
-    if (!VectorField.canUpdateRangeAndExpr(rangeX, rangeY, rangeZ, expr, samples, scale)) {
-      return
+    const { rangeX, rangeY, rangeZ, expr, samples, scale } = handledProps;
+    const { dataNodes: volume } = nodes;
+    if (
+      !VectorField.canUpdateRangeAndExpr(
+        rangeX,
+        rangeY,
+        rangeZ,
+        expr,
+        samples,
+        scale
+      )
+    ) {
+      return;
     }
 
-    volume.set('expr', (emit, scaledX, scaledY, scaledZ) => {
-      const percentX = samples[0] === 1 ? 0.5 : scaledX
-      const percentY = samples[1] === 1 ? 0.5 : scaledY
-      const percentZ = samples[2] === 1 ? 0.5 : scaledZ
+    volume.set("expr", (emit, scaledX, scaledY, scaledZ) => {
+      const percentX = samples[0] === 1 ? 0.5 : scaledX;
+      const percentY = samples[1] === 1 ? 0.5 : scaledY;
+      const percentZ = samples[2] === 1 ? 0.5 : scaledZ;
 
-      const x = rangeX[0] + percentX * (rangeX[1] - rangeX[0] )
-      const y = rangeY[0] + percentY * (rangeY[1] - rangeY[0] )
-      const z = rangeZ[0] + percentZ * (rangeZ[1] - rangeZ[0] )
-      emit(x, y, z)
-      const [vx, vy, vz] = expr(x, y, z)
-      emit(x + scale*vx, y + scale*vy, z + scale*vz)
-    } )
+      const x = rangeX[0] + percentX * (rangeX[1] - rangeX[0]);
+      const y = rangeY[0] + percentY * (rangeY[1] - rangeY[0]);
+      const z = rangeZ[0] + percentZ * (rangeZ[1] - rangeZ[0]);
+      emit(x, y, z);
+      const [vx, vy, vz] = expr(x, y, z);
+      emit(x + scale * vx, y + scale * vy, z + scale * vz);
+    });
   }
 
   mathboxRender = (parent) => {
-    const group = parent.group( { classes: ['vector-field'] } )
+    const group = parent.group({ classes: ["vector-field"] });
 
-    return VectorField.renderVectorField(group)
-  }
+    return VectorField.renderVectorField(group);
+  };
 
   static renderVectorField(group: MathBoxNode) {
-    group.volume( {
-      items: 2,
-      channels: 3,
-      rangeX: [0, 1],
-      rangeY: [0, 1],
-      rangeZ: [0, 1]
-    } ).vector()
+    group
+      .volume({
+        items: 2,
+        channels: 3,
+        rangeX: [0, 1],
+        rangeY: [0, 1],
+        rangeZ: [0, 1],
+      })
+      .vector();
 
-    return group
+    return group;
   }
 
-  static rerender(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
-    const { groupNode, root } = nodes
-    groupNode.select('volume, vector').remove()
-    VectorField.renderVectorField(groupNode)
+  static rerender(
+    nodes: HandlerNodes,
+    handledProps: HandledProps,
+    handlers: Handlers
+  ) {
+    const { groupNode, root } = nodes;
+    groupNode.select("volume, vector").remove();
+    VectorField.renderVectorField(groupNode);
     const newNodes = {
       groupNode,
       root,
-      dataNodes: groupNode.select('volume'),
-      renderNodes: groupNode.select('vector')
-    }
-    Object.keys(handlers).forEach(key => {
-
-      handlers[key](newNodes, handledProps, handlers)
-    } )
+      dataNodes: groupNode.select("volume"),
+      renderNodes: groupNode.select("vector"),
+    };
+    Object.keys(handlers).forEach((key) => {
+      handlers[key](newNodes, handledProps, handlers);
+    });
   }
 
-  static handleSamples(nodes: HandlerNodes, handledProps: HandledProps, handlers: Handlers) {
-    const { dataNodes } = nodes
-    const { samples } = handledProps
-    validateVector(samples, 3)
-    const volume = dataNodes
-    if (volume.get('width') === null) {
-      dataNodes.set( {
+  static handleSamples(
+    nodes: HandlerNodes,
+    handledProps: HandledProps,
+    handlers: Handlers
+  ) {
+    const { dataNodes } = nodes;
+    const { samples } = handledProps;
+    validateVector(samples, 3);
+    const volume = dataNodes;
+    if (volume.get("width") === null) {
+      dataNodes.set({
         width: samples[0],
         height: samples[1],
-        depth: samples[2]
-      } )
-    }
-    else {
-      VectorField.rerender(nodes, handledProps, handlers)
+        depth: samples[2],
+      });
+    } else {
+      VectorField.rerender(nodes, handledProps, handlers);
     }
   }
-
 }
