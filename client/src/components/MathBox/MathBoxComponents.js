@@ -3,7 +3,7 @@ import * as React from "react";
 import { Color } from "three/src/math/Color.js";
 import math from "utils/mathjs";
 import {
-  validateBoolean,
+  isBoolean,
   isEqualNumerically,
   isReal,
   validateReal,
@@ -216,7 +216,9 @@ const universalHandlers = {
   calculatedVisibility: function(nodes: HandlerNodes, props: Props) {
     const { calculatedVisibility, useCalculatedVisibility } = props;
     if (useCalculatedVisibility) {
-      nodes.groupNode.set("visible", !!calculatedVisibility);
+      if (isBoolean(calculatedVisibility) || isReal(calculatedVisibility)) {
+        nodes.groupNode.set("visible", !!calculatedVisibility);
+      }
     }
   },
   visible: function(nodes: HandlerNodes, props: Props) {
