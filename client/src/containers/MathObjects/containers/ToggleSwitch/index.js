@@ -2,8 +2,8 @@
 import * as React from 'react'
 import { Switch } from 'antd'
 import { connect } from 'react-redux'
-import { setProperty } from 'containers/MathObjects/actions'
-import type { ExtractReturn } from 'utils/flow'
+import { setProperty } from '../../../../containers/MathObjects/actions'
+import type { ExtractReturn } from '../../../../utils/flow'
 
 type SetProperty = typeof setProperty
 // SwitchProps is missing some props

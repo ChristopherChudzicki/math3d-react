@@ -4,7 +4,7 @@ import {
   ParametricSurface as ParametricSurfaceGraphic,
   ExplicitSurface as ExplicitSurfaceGraphic,
   ExplicitSurfacePolar as ExplicitSurfacePolarGraphic
-} from 'components/MathBox'
+} from '../../../../components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from '../containers/MathGraphicUI'
 import ParametricSurfaceStatus from './containers/ParametricSurfaceStatus'
@@ -14,12 +14,12 @@ import {
   explicitSurfacePolarMeta
 } from '../metadata'
 import type { MetaData } from '../types'
-import { MainRow } from 'containers/MathObjects/components'
+import { MainRow } from '../../../../containers/MathObjects/components'
 import {
   MathInputRHS,
   StaticMathStyled
-} from 'containers/MathObjects/containers/MathInput'
-import { parser } from 'constants/parsing'
+} from '../../../../containers/MathObjects/containers/MathInput'
+import { parser } from '../../../../constants/parsing'
 
 type Props = {
   id: string

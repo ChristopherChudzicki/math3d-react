@@ -1,5 +1,5 @@
 // @flow
-import MathQuill, { StaticMath } from 'components/MathQuill'
+import MathQuill, { StaticMath } from '../../../../../components/MathQuill'
 import styled, { css } from 'styled-components'
 
 const borderStyling = css`

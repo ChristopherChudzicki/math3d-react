@@ -1,14 +1,14 @@
 // @flow
 import * as React from 'react'
-import { parser } from 'constants/parsing'
-import type { Parser } from 'utils/mathParsing'
-import type { MQMathField } from 'components/MathQuill'
+import { parser } from '../../../../../constants/parsing'
+import type { Parser } from '../../../../../utils/mathParsing'
+import type { MQMathField } from '../../../../../components/MathQuill'
 import { MathQuillStyled } from './MathQuillStyled'
 import { isAssignmentRHS } from './validators'
 import styled from 'styled-components'
-import { timeout } from 'utils/functions'
+import { timeout } from '../../../../../utils/functions'
 import { Tooltip } from 'antd'
-import { ParseErrorData } from 'services/errors'
+import { ParseErrorData } from '../../../../../services/errors'
 
 const MathInputContainer = styled.div`
   flex:1;

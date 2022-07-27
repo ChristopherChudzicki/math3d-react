@@ -1,12 +1,12 @@
 // @flow
 import React, { PureComponent } from 'react'
 import { Slider } from 'antd'
-import type { Scope, Parser } from 'utils/mathParsing'
+import type { Scope, Parser } from '../../../../../utils/mathParsing'
 import {
   evalData,
   handleEvalErrors
-} from 'services/evalData'
-import typeof { setError as SetError } from 'services/errors'
+} from '../../../../../services/evalData'
+import typeof { setError as SetError } from '../../../../../services/errors'
 
 type Props = {
   parentId: string,

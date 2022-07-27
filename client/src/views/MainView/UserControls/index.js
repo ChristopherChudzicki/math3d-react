@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import ControlsDrawer from './components/ControlsDrawer'
-import ScreenSizeDrawerManager from 'containers/Drawer/ScreenSizeDrawerManager'
+import ScreenSizeDrawerManager from '../../../containers/Drawer/ScreenSizeDrawerManager'
 
 export default function UserControls() {
   return (

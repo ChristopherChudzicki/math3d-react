@@ -1,5 +1,5 @@
 // @flow
-import math from "utils/mathjs";
+import math from "../../utils/mathjs";
 
 // TODO test this? Maybe Flow is good enough
 

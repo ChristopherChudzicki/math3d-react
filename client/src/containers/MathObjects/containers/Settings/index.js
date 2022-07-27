@@ -4,7 +4,7 @@ import Settings from './components/Settings'
 import type { OwnProps, Props } from './components/Settings'
 import {
   setProperty
-} from 'containers/MathObjects/actions'
+} from '../../../../containers/MathObjects/actions'
 
 const mapStateToProps = ( { mathGraphics, mathSymbols }, ownProps) => {
   const { parentId: id } = ownProps

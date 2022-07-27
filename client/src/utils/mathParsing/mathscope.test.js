@@ -8,7 +8,7 @@ import {
   ScopeEvaluator
 }
   from './mathscope'
-import { toNearlyEqual } from 'utils/testing/matchers'
+import { toNearlyEqual } from '../utils/testing/matchers'
 import Parser from './Parser'
 import diff from 'shallow-diff'
 

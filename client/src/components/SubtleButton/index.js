@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import styled, { css } from 'styled-components'
-import { lighten } from 'utils/colors'
+import { lighten } from '../../utils/colors'
 import PropTypes from 'prop-types'
 
 const buttonEffects = css`
