@@ -1,7 +1,8 @@
 {
   "metadata": {
     "title": "Using Sliders to Animate Plot Range",
-    "versionAtCreation": "0.2.0"
+    "versionAtCreation": "0.2.0",
+    "creationDate": "\"2018-12-21T00:00:00.00Z\""
   },
   "sortableTree": {
     "root": ["mainFolder"],
