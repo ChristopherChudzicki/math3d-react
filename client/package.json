@@ -15,6 +15,7 @@
     "lodash": "^4.17.19",
     "mathbox": "^2.1.0",
     "mathjs": "^3.18.1",
+    "mathjs-simple-integral": "^0.1.1",
     "memoize-one": "^4.0.3",
     "randomstring": "^1.1.5",
     "re-reselect": "^2.3.0",

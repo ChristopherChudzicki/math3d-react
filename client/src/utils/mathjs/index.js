@@ -1,6 +1,7 @@
 // @flow
 import customMath from './custom'
 import { diff, pdiff, unitT, unitN, unitB, curl, div } from './derivatives'
+import { int } from './integral'
 
 function arctan(arg0: number, arg1?: number) {
   return arg1 === undefined ? customMath.atan(arg0) : customMath.atan2(arg0, arg1)
@@ -8,6 +9,7 @@ function arctan(arg0: number, arg1?: number) {
 
 const imaginaryUnit = customMath.i
 customMath.import( {
+  int,
   diff,
   pdiff,
   unitT,

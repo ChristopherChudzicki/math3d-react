@@ -1,7 +1,8 @@
 import {
   escapeRegExp,
   replaceAll,
-  findClosingBrace
+  findClosingBrace,
+  findIntegralEnd
 } from './helpers'
 
 test('escaping regular expressions', () => {
@@ -49,4 +50,43 @@ describe('findClosingBrace', () => {
       `${expression} has a brace that opens at position ${startIdx} but does not close.`
     )
   } )
+} )
+
+describe('findIntegralEnd', () => {
+  test('simple variable of integration with simple boundary', () => {
+    const expression = '10 + \\int_0^1\\int_0^1xdydx'
+    const startIdx = 5
+    expect(findIntegralEnd(expression, startIdx)).toBe(24)
+  } )
+
+  test('skip integration boundary', () => {
+    const expression = '\\int_0^ddx'
+    const startIdx = 0
+    expect(findIntegralEnd(expression, startIdx)).toBe(8)
+  } )
+  test('implicit integrand', () => {
+    const expression = '\\int_0^1\\int_0^1dudv'
+    const startIdx = 0
+    expect(findIntegralEnd(expression, startIdx)).toBe(18)
+  } )
+  
+  test('symbol variable of integration with symbol boundary', () => {
+    const expression = '5 + \\int_0^{\\alpha}2\\int_{\\beta}^1xd\\gammad d\\eta'
+    const startIdx = 4
+    expect(findIntegralEnd(expression, startIdx)).toBe(44)
+  } )
+
+  test('throw an error if starting index is not an integral', () => {
+    const expression = '\\int_0^1xdx'
+    const startIdx = 6
+    const badfunc = () => findIntegralEnd(expression, startIdx)
+    expect(badfunc).toThrow(`${expression} does not contain an opening of integral at position ${startIdx}.`)
+  } )
+
+  test('throw an error if no differentials', () => {
+    const expression = '\\int_0^1x'
+    const startIdx = 0
+    const badfunc = () => findIntegralEnd(expression, startIdx)
+    expect(badfunc).toThrow(`cannot find end of integral.`)
+  })
 } )

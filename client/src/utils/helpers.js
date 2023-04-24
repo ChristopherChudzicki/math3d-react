@@ -20,25 +20,38 @@ export function findClosingBrace(str: string, startIdx: number) {
     '[': ']',
     '<': '>',
     '(': ')',
-    '{': '}'
+    '{': '}',
+    '\\left[': '\\right]',
+    '\\left<': '\\right>',
+    '\\left(': '\\right)',
+    '\\left{': '\\right}',
+    '\\left|': '\\right|'
   }
 
-  const openingBrace = str[startIdx]
+  let openingBrace
 
+  if (str[startIdx] === '\\') {
+    openingBrace = str.slice(startIdx, startIdx + 6)
+  } else {
+    openingBrace = str[startIdx]
+  }
+
+  const openingBraceLength = openingBrace.length
   const closingBrace = braces[openingBrace]
 
   if (closingBrace === undefined) {
     throw Error(`${str} does not contain an opening brace at position ${startIdx}.`)
   }
 
+  const closingBraceLength = closingBrace.length
   let stack = 1
 
   // eslint-disable-next-line no-plusplus
   for (let j = startIdx + 1; j < str.length; j++) {
-    if (str[j] === openingBrace) {
+    if (str.slice(j, j + openingBraceLength) === openingBrace) {
       stack += +1
     }
-    else if (str[j] === closingBrace) {
+    else if (str.slice(j, j + closingBraceLength) === closingBrace) {
       stack += -1
     }
     if (stack === 0) {
@@ -48,4 +61,90 @@ export function findClosingBrace(str: string, startIdx: number) {
 
   // stack !== 0
   throw Error(`${str} has a brace that opens at position ${startIdx} but does not close.`)
+}
+
+export function findIntegralEnd(str: string, startIdx: number) {
+
+  const openingIntegral = '\\int'
+  const closingIntegral = 'd'
+
+  if (str.slice(startIdx, startIdx + 4) !== openingIntegral) {
+    throw Error(`${str} does not contain an opening of integral at position ${startIdx}.`)
+  }
+  const ownUpperBoundaryStart =  str.indexOf('^', startIdx) + 1
+  const start = str[ownUpperBoundaryStart] === '{' ? findClosingBrace(str, ownUpperBoundaryStart) + 1 : ownUpperBoundaryStart + 1
+
+  const strlen = str.length
+
+  let stack = 1
+
+  for (let j = start; j < strlen; j++) {
+
+    if (str.slice(j,j+4) === openingIntegral) {
+      stack += 1
+      const upperBoundaryStart = str.indexOf('^', j)
+      const integrandStart = str[upperBoundaryStart] === '{' ? findClosingBrace(str, upperBoundaryStart) : upperBoundaryStart
+
+      //if there's a left bracket at the start of integrand, skip all the content of the brackets
+      if (str[integrandStart + 6] === '(') {
+        j = findClosingBrace(str, integrandStart + 6)
+      }
+      else {
+        j = integrandStart
+      }
+    }
+
+    /**
+    * Exceptions to skip operators, default functions (sin, cos, tan, ln, etc...)
+    * so that they won't be detected as the end of an integral
+    * DONE!!
+    * */
+
+    if (str[j] === '\\') {
+      if (str.slice(j, j + 13) === '\\operatorname{') {
+        const operatorNameEnd = findClosingBrace(str, j + 13)
+        const operatorEnd = findClosingBrace(str, operatorNameEnd + 6)
+        j = operatorEnd
+        continue
+      }
+      else {
+        const endBySpace = str.indexOf(' ', j)
+        const endByBrackets = str.slice(j).search(/[({|[<]/) + j
+
+        if (endBySpace > endByBrackets) {
+          j = endBySpace
+          continue
+        }
+        else {
+          if (str.slice(j,j+5) === '\\left') {
+            j = findClosingBrace(str, j)
+          } else {
+            j = findClosingBrace(str, endByBrackets)
+          }
+          continue
+        }
+
+      }
+    }
+
+
+    else if (str[j] === closingIntegral && j + 1 < strlen) {
+      stack -= 1
+      //edge case for integral ddd
+      if (str.slice(j, j + 3) === 'ddd') {
+        j += 1
+      }
+      if (stack === 0) {
+        return j
+      }
+      if (str[j + 1] === '\\') {
+        j = str.indexOf(' ', j)
+      }
+      else {
+        j++
+      }
+    }  
+  }
+  //stack !== 0
+  throw Error(`cannot find end of integral.`)
 }
