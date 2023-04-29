@@ -1,7 +1,7 @@
 // @flow
 import customMath from './custom'
 import { diff, pdiff, unitT, unitN, unitB, curl, div } from './derivatives'
-
+import { LegendreP } from "./legendre"
 function arctan(arg0: number, arg1?: number) {
   return arg1 === undefined ? customMath.atan(arg0) : customMath.atan2(arg0, arg1)
 }
@@ -24,7 +24,8 @@ customMath.import( {
   arctan: arctan,
   arcsinh: customMath.asinh,
   arccosh: customMath.acosh,
-  arctanh: customMath.atanh
+  arctanh: customMath.atanh,
+  LegendreP
 }, { override: true } )
 
 export default customMath
