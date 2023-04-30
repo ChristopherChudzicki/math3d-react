@@ -1,4 +1,4 @@
-import VariableSlider from 'containers/MathObjects/MathSymbols/VariableSlider'
+import VariableSlider from '../../containers/MathObjects/MathSymbols/VariableSlider'
 import memoizeOne from 'memoize-one'
 
 function _getParseableSymbols(parser, mathSymbols, sliderValues) {

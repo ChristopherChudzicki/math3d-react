@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react'
 import styled from 'styled-components'
-import { mathbox } from "containers/MathBoxScene/components/MathBoxScene.js";
+import { mathbox } from "../../containers/MathBoxScene/components/MathBoxScene.js";
 
 /**
  * ScrollWithOverflow is a component intended to allow scrolling in the

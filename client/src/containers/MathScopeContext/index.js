@@ -1,7 +1,7 @@
 import { MathScopeProvider } from './components/MathScopeContext'
 import { connect } from 'react-redux'
 import { getParseableSymbols } from './selectors'
-import { setError } from 'services/errors'
+import { setError } from '../../services/errors'
 export { MathScopeConsumer } from './components/MathScopeContext'
 
 // TODO: This updates when it does not need to because of parseErrors

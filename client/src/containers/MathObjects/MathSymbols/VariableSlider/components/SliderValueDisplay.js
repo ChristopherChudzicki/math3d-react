@@ -4,7 +4,7 @@ import {
   MathInputLHS,
   MathInputRHS,
   StaticMathStyled
-} from 'containers/MathObjects/containers/MathInput'
+} from '../../../../../containers/MathObjects/containers/MathInput'
 
 SliderValueDisplay.propTypes = {
   parentId: PropTypes.string.isRequired,

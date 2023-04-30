@@ -1,15 +1,15 @@
 // @flow
 import React, { PureComponent } from "react";
 import { Button, Icon, Input } from "antd";
-import PopModal from "components/PopModal";
-import { saveGraph } from "services/api";
-import { dehydrate } from "store/hydration";
+import PopModal from "../../../../../../components/PopModal";
+import { saveGraph } from "../../../../../../services/api";
+import { dehydrate } from "../../../../../../store/hydration";
 import randomstring from "randomstring";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import typeof { setProperty as SetProperty } from "containers/MathObjects/actions";
-import typeof { setCreationDate as SetCreationDate } from "services/metadata/actions";
-import getCameraData from "services/getCameraData";
-import { CAMERA } from "containers/MathObjects";
+import typeof { setProperty as SetProperty } from "../../../../../../containers/MathObjects/actions";
+import typeof { setCreationDate as SetCreationDate } from "../../../../../../services/metadata/actions";
+import getCameraData from "../../../../../../services/getCameraData";
+import { CAMERA } from "../../../../../../containers/MathObjects";
 import styled, { keyframes } from "styled-components";
 
 const URL_CHAR_ST = [

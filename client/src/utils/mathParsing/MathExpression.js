@@ -1,6 +1,6 @@
 // @flow
-import math from 'utils/mathjs'
-import type { Node } from 'utils/mathjs/types'
+import math from '../../utils/mathjs'
+import type { Node } from '../../utils/mathjs/types'
 import memoizeOne from 'memoize-one'
 
 export type PostProcessor = (Node) => void

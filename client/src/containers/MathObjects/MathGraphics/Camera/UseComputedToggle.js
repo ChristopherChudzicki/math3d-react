@@ -2,7 +2,7 @@
 import * as React from 'react'
 import { Switch } from 'antd'
 import { connect } from 'react-redux'
-import { setProperty } from 'containers/MathObjects/actions'
+import { setProperty } from '../../../../containers/MathObjects/actions'
 
 type OwnProps = {|
   parentId: string,

@@ -48,8 +48,8 @@ import Graph from 'tarjan-graph'
 import diff from 'shallow-diff'
 import {
   setMergeInto
-} from 'utils/sets'
-import math from 'utils/mathjs'
+} from '../../utils/sets'
+import math from '../../utils/mathjs'
 import type Parser from './Parser'
 import type { Scope } from './MathExpression'
 

@@ -1,11 +1,11 @@
 // @flow
-import type { OptionalizeSome } from 'utils/flow'
+import type { OptionalizeSome } from '../../../../../utils/flow'
 import EvaluatedStatusSymbol from './components/EvaluatedStatusSymbol'
 import type { Props, OwnProps, DefaultProps } from './components/EvaluatedStatusSymbol'
 import {
   toggleProperty,
   setProperty
-} from 'containers/MathObjects/actions'
+} from '../../../../../containers/MathObjects/actions'
 
 // For connecting
 import { connect } from 'react-redux'

@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react'
 import { Dropdown, Button, Menu, Icon } from 'antd'
-import theme from 'constants/theme'
+import theme from '../../../../../constants/theme'
 import styled from 'styled-components'
 import withSizes from 'react-sizes'
 

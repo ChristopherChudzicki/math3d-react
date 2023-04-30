@@ -1,7 +1,7 @@
 // @flow
 import { batchActions } from 'redux-batched-actions'
-import { setError } from 'services/errors'
-import type { ErrorData } from 'services/errors/ErrorData'
+import { setError } from '../../services/errors'
+import type { ErrorData } from '../../services/errors/ErrorData'
 
 export const TOGGLE_PROPERTY = 'TOGGLE_PROPERTY'
 export const SET_PROPERTY = 'SET_PROPERTY'

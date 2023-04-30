@@ -1,14 +1,14 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { ImplicitSurface as ImplicitSurfaceGraphic } from 'components/MathBox'
+import { ImplicitSurface as ImplicitSurfaceGraphic } from '../../../../components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from '../containers/MathGraphicUI'
 import { implicitSurfaceMeta } from '../metadata'
-import { MainRow } from 'containers/MathObjects/components'
+import { MainRow } from '../../../../containers/MathObjects/components'
 import {
   MathInputRHS,
   StaticMathStyled
-} from 'containers/MathObjects/containers/MathInput'
+} from '../../../../containers/MathObjects/containers/MathInput'
 
 export const IMPLICIT_SURFACE = 'IMPLICIT_SURFACE'
 

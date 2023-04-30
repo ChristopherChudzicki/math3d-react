@@ -3,8 +3,8 @@ import MathInput from './MathInput'
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import { Tooltip } from 'antd'
-import { timeout } from 'utils/functions'
-import { ParseErrorData } from 'services/errors'
+import { timeout } from '../../../../../utils/functions'
+import { ParseErrorData } from '../../../../../services/errors'
 
 Enzyme.configure( { adapter: new Adapter() } )
 
