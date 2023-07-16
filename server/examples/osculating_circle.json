@@ -41,7 +41,7 @@
     "8": {
       "type": "VARIABLE",
       "name": "R\\left(t\\right)",
-      "value": "\\sqrt{\\frac{\\operatorname{diff}\\left(r,t\\right)|\\operatorname{diff}\\left(r,t\\right)}{\\operatorname{diff}\\left(T,t\\right)|\\operatorname{diff}\\left(T,t\\right)}}",
+      "value": "\\sqrt{\\frac{\\operatorname{diff}\\left(r,t\\right) \\cdot \\operatorname{diff}\\left(r,t\\right)}{\\operatorname{diff}\\left(T,t\\right) \\cdot \\operatorname{diff}\\left(T,t\\right)}}",
       "description": "Radius of Curvature"
     },
     "9": {
