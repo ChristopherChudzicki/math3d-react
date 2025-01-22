@@ -2,12 +2,12 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Menu, Dropdown, Button, Icon } from 'antd'
-import idGenerator from 'constants/idGenerator'
+import idGenerator from '../../../constants/idGenerator'
 import typeof {
   createMathObject as CreateMathObject
-} from 'containers/MathObjects/actions'
-import { FOLDER } from 'containers/MathObjects/Folder/metadata'
-import type { Support } from 'containers/MathObjects/MathObject'
+} from '../../../containers/MathObjects/actions'
+import { FOLDER } from '../../../containers/MathObjects/Folder/metadata'
+import type { Support } from '../../../containers/MathObjects/MathObject'
 
 const NewObjectButton = styled(Button)`
   font-weight: bold;

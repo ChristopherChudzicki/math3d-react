@@ -1,13 +1,13 @@
 // @flow
 import React from 'react'
 import { connect } from 'react-redux'
-import EvaluatedStatusSymbol from 'containers/MathObjects/MathGraphics/containers/EvaluatedStatusSymbol'
-import { colors, colorMaps } from 'constants/colors'
+import EvaluatedStatusSymbol from '../../../../../containers/MathObjects/MathGraphics/containers/EvaluatedStatusSymbol'
+import { colors, colorMaps } from '../../../../../constants/colors'
 import { Tabs } from 'antd'
 import {
   StaticMathStyled,
   MathInputRHS
-} from 'containers/MathObjects/containers/MathInput'
+} from '../../../../../containers/MathObjects/containers/MathInput'
 import { ColorScale } from './components/ColorScale'
 
 const TabPane = Tabs.TabPane

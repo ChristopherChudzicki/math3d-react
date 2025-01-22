@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import MathObjectUI from 'containers/MathObjects/MathObjectUI'
-import { MainRow } from 'containers/MathObjects/components'
+import MathObjectUI from '../../../../../containers/MathObjects/MathObjectUI'
+import { MainRow } from '../../../../../containers/MathObjects/components'
 import {
   MathInputLHS,
   MathInputRHS,
   MathTextOutput,
   StaticMathStyled
-} from 'containers/MathObjects/containers/MathInput'
+} from '../../../../../containers/MathObjects/containers/MathInput'
 import { VARIABLE } from '../metadata'
 
 const justifyRight = {

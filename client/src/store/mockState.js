@@ -1,8 +1,8 @@
 // @flow
 // NOTE: This is just for tinkering and testing ...
-import idGenerator from 'constants/idGenerator'
+import idGenerator from '../constants/idGenerator'
 import store from './index'
-import { createMathObject } from 'containers/MathObjects/actions'
+import { createMathObject } from '../containers/MathObjects/actions'
 import {
   FOLDER,
   VARIABLE,
@@ -14,7 +14,7 @@ import {
   VECTOR,
   PARAMETRIC_CURVE,
   IMPLICIT_SURFACE
-} from 'containers/MathObjects'
+} from '../containers/MathObjects'
 
 // folders 'axes' and 'mainFolder' already exist from initialState
 store.dispatch(

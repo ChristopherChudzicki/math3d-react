@@ -1,9 +1,9 @@
 import React, { Fragment, PureComponent, createRef } from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
-import EditableDescription from 'components/EditableDescription'
+import EditableDescription from '../../../components/EditableDescription'
 import DeleteButton from './DeleteButton'
-import { theme } from 'constants/theme'
+import { theme } from '../../../constants/theme'
 
 const OuterContainer = styled.span`
   display: inline-flex;

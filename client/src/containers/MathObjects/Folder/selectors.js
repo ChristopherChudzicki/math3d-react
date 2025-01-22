@@ -1,7 +1,7 @@
 import {
   AXIS,
   GRID
-} from 'containers/MathObjects/MathGraphics'
+} from '../../../containers/MathObjects/MathGraphics'
 import createCachedSelector from 're-reselect'
 function getType(mathGraphics, mathSymbols, id) {
   if (mathGraphics[id] ) {

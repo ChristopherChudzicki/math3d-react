@@ -2,7 +2,7 @@ import {
   calculateUsedNames,
   getUsedNames
 } from './selectors'
-import { Parser } from 'utils/mathParsing'
+import { Parser } from '../../../../utils/mathParsing'
 
 describe('calculateUsedNames', () => {
 
