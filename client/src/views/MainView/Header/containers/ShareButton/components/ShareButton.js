@@ -90,8 +90,8 @@ export default class ShareButton extends PureComponent<Props, State> {
     const state = this.props.getState();
     const dehydrated = dehydrate(state);
     const id = this.getId({ length: 9, charset: URL_CHAR_ST });
-    saveGraph(id, dehydrated).then((data) => {
-      this.setState({ id: data.key ?? id });
+    saveGraph(id, dehydrated).then((key) => {
+      this.setState({ id: key });
       this.dehydratedJson = JSON.stringify(dehydrated);
     });
   };

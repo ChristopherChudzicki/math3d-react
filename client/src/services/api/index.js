@@ -37,16 +37,19 @@ const newSave = async (dehydrated) => {
   }).then((res) => res.json());
 
   if (process.env.REACT_APP_DISABLE_LEGACY_SAVE) {
-    return data;
+    return data.key;
   }
 
-  return oldSave(data.key, dehydrated);
+  oldSave(data.key, dehydrated);
+
+  return data.key;
 };
 
 export const saveGraph = async (id, dehydrated) => {
   if (process.env.REACT_APP_NEXT_API_CREATE_URL) {
     return newSave(dehydrated);
   } else {
-    return oldSave(id, dehydrated);
+    await oldSave(id, dehydrated);
+    return id;
   }
 };
