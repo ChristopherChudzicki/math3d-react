@@ -1,0 +1,30 @@
+name: Deploy
+
+concurrency: production
+
+on: workflow_dispatch
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+      AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
+      SKIP_YARN_COREPACK_CHECK: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.11.1"
+          cache: "yarn"
+      - run: npm ci
+      - run: npm run build
+        env:
+          REACT_APP_NEXT_API_CREATE_URL: ${{ vars.REACT_APP_NEXT_API_CREATE_URL }}
+          REACT_APP_NEXT_API_RETRIEVE_URL: ${{ vars.REACT_APP_NEXT_API_RETRIEVE_URL }}
+          REACT_APP_DISABLE_LEGACY_SAVE: ${{ vars.REACT_APP_DISABLE_LEGACY_SAVE }}
+      - run: aws s3 cp --recursive packages/app/dist s3://${{ vars.AWS_S3_BUCKET }}/
+      - run: aws cloudfront create-invalidation --distribution-id ${{vars.CLOUDFRONT_DISTRIBUTION_ID}} --paths "/*"
