@@ -1,6 +1,6 @@
 import React from 'react'
-import Drawer from 'containers/Drawer'
-import ControlledTabs, { TabPane } from 'containers/ControlledTabs'
+import Drawer from '../../../containers/Drawer'
+import ControlledTabs, { TabPane } from '../../../containers/ControlledTabs'
 import ExamplesList from './ExamplesList'
 import { neatExamples, featureDemos } from './data'
 

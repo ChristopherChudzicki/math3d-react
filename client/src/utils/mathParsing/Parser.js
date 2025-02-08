@@ -2,7 +2,7 @@
 import MathExpression from './MathExpression'
 import { preprocessHOFs, preprocessMathQuill } from './preprocessors'
 import { reassignOperators } from './postprocessors'
-import { setMergeInto } from 'utils/sets'
+import { setMergeInto } from '../../utils/sets'
 import type {
   PreProcessor,
   PostProcessor

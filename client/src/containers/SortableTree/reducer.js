@@ -4,7 +4,7 @@ import {
 }
   from './actions'
 import { CREATE_MATH_OBJECT, DELETE_MATH_OBJECT } from '../MathObjects/actions'
-import { Folder } from 'containers/MathObjects'
+import { Folder } from '../../containers/MathObjects'
 import update from 'immutability-helper'
 
 export function reOrder(list, sourceIndex, destinationIndex) {

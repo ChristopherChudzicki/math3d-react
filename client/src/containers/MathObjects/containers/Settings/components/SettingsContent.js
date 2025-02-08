@@ -1,9 +1,9 @@
 // @flow
 import * as React from 'react'
 import styled from 'styled-components'
-import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
+import { MathInputRHS } from '../../../../../containers/MathObjects/containers/MathInput'
 import { Input, Switch } from 'antd'
-import type { InputType } from 'containers/MathObjects/MathGraphics/types'
+import type { InputType } from '../../../../../containers/MathObjects/MathGraphics/types'
 
 export type FormRow = {
   inputType: InputType,

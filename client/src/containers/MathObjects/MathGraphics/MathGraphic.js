@@ -1,6 +1,6 @@
 // @flow
 import type { MetaData } from './types'
-import { capitalize } from 'utils/helpers'
+import { capitalize } from '../../../utils/helpers'
 import type { MathObjectWrapper, Settings, Support } from '../MathObject'
 
 /**

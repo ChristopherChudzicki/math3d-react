@@ -3,9 +3,9 @@ import ControllerHeader from './components/ControllerHeader'
 import type { Props, OwnProps } from './components/ControllerHeader'
 import { connect } from 'react-redux'
 import { getActiveFolder } from './selectors'
-import { createMathObject } from 'containers/MathObjects/actions'
-import { setActiveObject } from 'containers/MathObjects/services/activeObject/actions'
-import { setContentCollapsed } from 'containers/MathObjects/Folder/actions'
+import { createMathObject } from '../../containers/MathObjects/actions'
+import { setActiveObject } from '../../containers/MathObjects/services/activeObject/actions'
+import { setContentCollapsed } from '../../containers/MathObjects/Folder/actions'
 
 const mapStateToProps = ( { activeObject, sortableTree } ) => {
   const treeRoot = sortableTree.root

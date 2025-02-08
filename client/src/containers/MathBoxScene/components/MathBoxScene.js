@@ -10,17 +10,17 @@ import { Color } from "three/src/math/Color.js";
 import { Vector3 } from "three/src/math/Vector3.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import React, { PureComponent } from 'react'
-import { MathBox, Cartesian } from 'components/MathBox'
-import { MathScopeConsumer } from 'containers/MathScopeContext'
-import { MathGraphics } from 'containers/MathObjects'
+import { MathBox, Cartesian } from '../../../components/MathBox'
+import { MathScopeConsumer } from '../../../containers/MathScopeContext'
+import { MathGraphics } from '../../../containers/MathObjects'
 import PropTypes from 'prop-types'
-import { parser } from 'constants/parsing'
-import { RenderErrorData, setError } from 'services/errors'
+import { parser } from '../../../constants/parsing'
+import { RenderErrorData, setError } from '../../../services/errors'
 import {
   evalData,
   handleEvalErrors,
   filterObject
-} from 'services/evalData'
+} from '../../../services/evalData'
 type SetError = typeof setError
 
 type ErrorState = {

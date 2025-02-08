@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react'
-import { timeout } from 'utils/functions'
-import LoopManager from 'services/LoopManager'
+import { timeout } from '../../utils/functions'
+import LoopManager from '../../services/LoopManager'
 
 type Props = {
   mathbox: any,

@@ -4,8 +4,8 @@ import {
   isValidName,
   isReal
 } from './validators'
-import { Parser } from 'utils/mathParsing'
-import { ParseErrorData } from 'services/errors'
+import { Parser } from '../../../../../utils/mathParsing'
+import { ParseErrorData } from '../../../../../services/errors'
 
 describe('isAssignmentRHS', () => {
   it('accepts valid right-hand-side of assignments', () => {
