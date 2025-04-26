@@ -1,21 +1,21 @@
 // @flow
-import type { Scope } from 'utils/mathParsing/MathExpression'
-import typeof { setError as SetError } from 'services/errors'
+import type { Scope } from '../../../../../utils/mathParsing/MathExpression'
+import typeof { setError as SetError } from '../../../../../services/errors'
 import React, { PureComponent } from 'react'
-import MathObjectUI from 'containers/MathObjects/MathObjectUI'
+import MathObjectUI from '../../../../../containers/MathObjects/MathObjectUI'
 import {
   MainRow
-} from 'containers/MathObjects/components'
+} from '../../../../../containers/MathObjects/components'
 import { VARIABLE_SLIDER } from '../metadata'
 import SliderValueDisplay from './SliderValueDisplay'
 import EvaluatedSlider from './EvaluatedSlider'
 import AnimationControls from './AnimationControls'
-import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
-import { MathScopeConsumer } from 'containers/MathScopeContext'
-import { parser } from 'constants/parsing'
+import { MathInputRHS } from '../../../../../containers/MathObjects/containers/MathInput'
+import { MathScopeConsumer } from '../../../../../containers/MathScopeContext'
+import { parser } from '../../../../../constants/parsing'
 import typeof {
   setProperty as SetProperty
-} from 'containers/MathObjects/actions'
+} from '../../../../../containers/MathObjects/actions'
 
 const limitStyle = { flex: 0 }
 

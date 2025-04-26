@@ -1,5 +1,5 @@
 import { VARIABLE_SLIDER, defaultValue } from './metadata'
-import { CREATE_MATH_OBJECT } from 'containers/MathObjects/actions'
+import { CREATE_MATH_OBJECT } from '../../../../containers/MathObjects/actions'
 import { SET_SLIDER_VALUE } from './actions'
 const initialState = {}
 

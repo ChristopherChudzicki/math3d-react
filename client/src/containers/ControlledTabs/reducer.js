@@ -1,5 +1,5 @@
 import { SET_ACTIVE_TAB } from './actions'
-import { CREATE_MATH_OBJECT } from 'containers/MathObjects/actions'
+import { CREATE_MATH_OBJECT } from '../../containers/MathObjects/actions'
 const initialState = {
   controls: {
     activeTab: '1'

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import styled from 'styled-components'
-import { colorMaps } from 'constants/colors'
+import { colorMaps } from '../../../../../../../../constants/colors'
 
 const Color = styled.div`
   ${props => colorMaps[props.color]

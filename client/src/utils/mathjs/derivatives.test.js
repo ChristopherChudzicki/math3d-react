@@ -1,6 +1,6 @@
 import { diff, unitT, unitN, unitB, curl, div, pdiff } from './derivatives'
 import math from './custom'
-import { toNearlyEqual } from 'utils/testing/matchers'
+import { toNearlyEqual } from '../utils/testing/matchers'
 
 // For comparing approximate equality of arrays, functions, objects.
 // For numbers, this uses a default tolerance of 1e-4

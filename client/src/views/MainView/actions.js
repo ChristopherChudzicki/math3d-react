@@ -1,5 +1,5 @@
-import { getGraph } from 'services/api'
-import { loadDehydratedState } from 'store/actions'
+import { getGraph } from '../../services/api'
+import { loadDehydratedState } from '../../store/actions'
 
 export function loadGraphFromDb(id) {
 

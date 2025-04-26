@@ -1,11 +1,11 @@
 // @flow
 import * as React from 'react'
-import MathObjectUI from 'containers/MathObjects/MathObjectUI'
-import { MainRow } from 'containers/MathObjects/components'
-import EvaluatedStatusSymbol from 'containers/MathObjects/MathGraphics/containers/EvaluatedStatusSymbol'
-import Settings from 'containers/MathObjects/containers/Settings'
-import { capitalize } from 'utils/helpers'
-import type { MetaData } from 'containers/MathObjects/MathGraphics/types'
+import MathObjectUI from '../../../../../../containers/MathObjects/MathObjectUI'
+import { MainRow } from '../../../../../../containers/MathObjects/components'
+import EvaluatedStatusSymbol from '../../../../../../containers/MathObjects/MathGraphics/containers/EvaluatedStatusSymbol'
+import Settings from '../../../../../../containers/MathObjects/containers/Settings'
+import { capitalize } from '../../../../../../utils/helpers'
+import type { MetaData } from '../../../../../../containers/MathObjects/MathGraphics/types'
 import styled from 'styled-components'
 
 type Props = {

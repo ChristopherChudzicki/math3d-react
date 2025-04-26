@@ -3,7 +3,7 @@ import SettingsButton from './SettingsButton'
 import { Popover, Icon } from 'antd'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import SubtleButton from 'components/SubtleButton'
+import SubtleButton from '../../../../../components/SubtleButton'
 const TitleBar = styled.div`
   display: flex;
   justify-content: space-between;

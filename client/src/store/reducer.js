@@ -1,24 +1,24 @@
 import cloneDeep from 'clone-deep'
 import { combineReducers } from 'redux'
-import drawers from 'containers/Drawer/reducer'
-import tabs from 'containers/ControlledTabs/reducer'
-import sortableTree from 'containers/SortableTree/reducer'
-import sliderValues from 'containers/MathObjects/MathSymbols/VariableSlider/reducer'
-import activeObject from 'containers/MathObjects/services/activeObject/reducer'
-import metadata from 'services/metadata/reducer'
+import drawers from '../containers/Drawer/reducer'
+import tabs from '../containers/ControlledTabs/reducer'
+import sortableTree from '../containers/SortableTree/reducer'
+import sliderValues from '../containers/MathObjects/MathSymbols/VariableSlider/reducer'
+import activeObject from '../containers/MathObjects/services/activeObject/reducer'
+import metadata from '../services/metadata/reducer'
 import {
   folders,
   mathGraphics,
   mathSymbols
-} from 'containers/MathObjects/reducer'
+} from '../containers/MathObjects/reducer'
 import { LOAD_STATE } from './actions'
-import lastSavedState from 'services/lastSavedState/reducer'
+import lastSavedState from '../services/lastSavedState/reducer'
 
 import {
   parseErrors,
   evalErrors,
   renderErrors
-} from 'services/errors/reducer'
+} from '../services/errors/reducer'
 
 const combinedReducer = combineReducers( {
   metadata,

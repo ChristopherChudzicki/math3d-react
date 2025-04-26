@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
-import EditableDescription from 'components/EditableDescription'
-import { setTitle } from 'services/metadata/actions'
+import EditableDescription from '../../../../../components/EditableDescription'
+import { setTitle } from '../../../../../services/metadata/actions'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 

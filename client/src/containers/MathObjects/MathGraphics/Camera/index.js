@@ -1,15 +1,15 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { Camera as CameraGraphic } from 'components/MathBox'
+import { Camera as CameraGraphic } from '../../../../components/MathBox'
 import MathGraphic from '../MathGraphic'
-import MathObjectUI from 'containers/MathObjects/MathObjectUI'
+import MathObjectUI from '../../../../containers/MathObjects/MathObjectUI'
 import { cameraMeta } from '../metadata'
-import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
-import ToggleSwitch from 'containers/MathObjects/containers/ToggleSwitch'
-import { MainRow, Cell, Label } from 'containers/MathObjects/components'
+import { MathInputRHS } from '../../../../containers/MathObjects/containers/MathInput'
+import ToggleSwitch from '../../../../containers/MathObjects/containers/ToggleSwitch'
+import { MainRow, Cell, Label } from '../../../../containers/MathObjects/components'
 import UseComputedToggle from './UseComputedToggle'
 import styled from 'styled-components'
-import typeof { setProperty } from 'containers/MathObjects/actions'
+import typeof { setProperty } from '../../../../containers/MathObjects/actions'
 
 const IndentedRow = styled(MainRow)`
   padding-left:20px;

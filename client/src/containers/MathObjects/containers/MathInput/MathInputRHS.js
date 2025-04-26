@@ -2,12 +2,12 @@
 import * as React from 'react'
 import MathInput from './components/MathInput'
 import type { OtherProps } from './components/MathInput'
-import type { Optionalize, OptionalizeSome } from 'utils/flow'
+import type { Optionalize, OptionalizeSome } from '../../../../utils/flow'
 import { connect } from 'react-redux'
-import { setPropertyAndError } from 'containers/MathObjects/actions'
-import { setError } from 'services/errors'
-import type { ErrorData } from 'services/errors'
-import { getErrorMsg } from 'services/errors/selectors'
+import { setPropertyAndError } from '../../../../containers/MathObjects/actions'
+import { setError } from '../../../../services/errors'
+import type { ErrorData } from '../../../../services/errors'
+import { getErrorMsg } from '../../../../services/errors/selectors'
 import { getMathObjectProp } from './selectors'
 
 /**
