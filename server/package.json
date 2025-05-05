@@ -21,7 +21,7 @@
     "fs": "0.0.1-security",
     "minimist": "^1.2.5",
     "mongodb": "^3.1.6",
-    "mongoose": "^5.7.5",
+    "mongoose": "^5.13.15",
     "nodemon": "^1.19.1",
     "npm-run-all": "^4.1.5",
     "pg-promise": "^10.6.2",
