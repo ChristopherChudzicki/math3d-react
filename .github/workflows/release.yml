@@ -45,18 +45,13 @@ jobs:
       - run: aws cloudfront create-invalidation --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
 
   # Dual-publish: deploy the same build artifact to Cloudflare Workers in
-  # parallel with the S3/CloudFront deploy above. Independent job so a
-  # Cloudflare failure never blocks the proven S3 path (and vice versa)
-  # during the bake period. Once Cloudflare is authoritative, delete the
-  # deploy-s3 job. See math3d-next#1176.
+  # parallel with the S3/CloudFront deploy above. Cloudflare serves the live
+  # custom domains, so a failed Cloudflare deploy fails the release. Once the
+  # dual-publish bake ends, delete the deploy-s3 job. See math3d-next#1176.
   deploy-cloudflare:
     needs: build
     runs-on: ubuntu-latest
     environment: production
-    # S3/CloudFront is the authoritative live origin during the dual-publish
-    # bake. A Cloudflare deploy failure should surface as a red check on THIS
-    # job but must not fail the overall release.
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
