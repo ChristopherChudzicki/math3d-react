@@ -1,0 +1,12 @@
+// Cloudflare Workers config for the legacy math3d-react site.
+// Serves the CRA production build (client/build) via Workers Static Assets.
+// Deployed by .github/workflows/release.yml (wrangler is not a local dependency;
+// CI runs it via npx). See https://github.com/ChristopherChudzicki/math3d-next/issues/1176.
+{
+  "name": "math3d-react",
+  "compatibility_date": "2026-07-04",
+  "assets": {
+    "directory": "./build",
+    "not_found_handling": "single-page-application"
+  }
+}

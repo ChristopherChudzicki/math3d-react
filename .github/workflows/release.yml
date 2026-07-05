@@ -5,18 +5,12 @@ concurrency: production
 on: workflow_dispatch
 
 jobs:
-  deployment:
+  build:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: client
     environment: production
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
-      AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
-      SKIP_YARN_COREPACK_CHECK: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,5 +22,55 @@ jobs:
           REACT_APP_NEXT_API_CREATE_URL: ${{ vars.REACT_APP_NEXT_API_CREATE_URL }}
           REACT_APP_NEXT_API_RETRIEVE_URL: ${{ vars.REACT_APP_NEXT_API_RETRIEVE_URL }}
           REACT_APP_DISABLE_LEGACY_SAVE: ${{ vars.REACT_APP_DISABLE_LEGACY_SAVE }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: client-build
+          path: client/build/
+          retention-days: 1
+
+  deploy-s3:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: client-build
+          path: build/
       - run: aws s3 cp --recursive build s3://${{ vars.AWS_S3_BUCKET }}/
-      - run: aws cloudfront create-invalidation --distribution-id ${{vars.CLOUDFRONT_DISTRIBUTION_ID}} --paths "/*"
+      - run: aws cloudfront create-invalidation --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+  # Dual-publish: deploy the same build artifact to Cloudflare Workers in
+  # parallel with the S3/CloudFront deploy above. Independent job so a
+  # Cloudflare failure never blocks the proven S3 path (and vice versa)
+  # during the bake period. Once Cloudflare is authoritative, delete the
+  # deploy-s3 job. See math3d-next#1176.
+  deploy-cloudflare:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    # S3/CloudFront is the authoritative live origin during the dual-publish
+    # bake. A Cloudflare deploy failure should surface as a red check on THIS
+    # job but must not fail the overall release.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/download-artifact@v4
+        with:
+          name: client-build
+          path: client/build/
+      - name: Deploy to Cloudflare Workers
+        working-directory: client
+        # wrangler is not a dependency of this legacy package (its Node 16
+        # toolchain predates it); run a pinned version via npx instead.
+        run: npx wrangler@4.107.0 deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
