@@ -2,7 +2,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import ColorSquare from './ColorSquare'
-import { colors } from 'constants/colors'
+import { colors } from '../../../../../../../../constants/colors'
 
 const Container = styled.div`
   display: grid;

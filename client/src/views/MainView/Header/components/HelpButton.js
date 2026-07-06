@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import { Icon } from 'antd'
-import PopModal from 'components/PopModal'
+import PopModal from '../../../../components/PopModal'
 import styled from 'styled-components'
 
 const ContactList = styled.ul`

@@ -1,14 +1,14 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { ParametricCurve as ParametricCurveGraphic } from 'components/MathBox'
+import { ParametricCurve as ParametricCurveGraphic } from '../../../../components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from '../containers/MathGraphicUI'
 import { parametricCurveMeta } from '../metadata'
-import { MainRow } from 'containers/MathObjects/components'
+import { MainRow } from '../../../../containers/MathObjects/components'
 import {
   MathInputRHS,
   StaticMathStyled
-} from 'containers/MathObjects/containers/MathInput'
+} from '../../../../containers/MathObjects/containers/MathInput'
 
 export const PARAMETRIC_CURVE = 'PARAMETRIC_CURVE'
 

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import { Icon } from 'antd'
-import SubtleButton from 'components/SubtleButton'
+import SubtleButton from '../../../components/SubtleButton'
 
 const StyledButton = styled(SubtleButton)`
   z-index:200;

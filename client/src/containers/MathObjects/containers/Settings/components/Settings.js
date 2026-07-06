@@ -5,7 +5,7 @@ import SettingsContent from './SettingsContent'
 import type { FormRow } from './SettingsContent'
 import typeof {
   setProperty
-} from 'containers/MathObjects/actions'
+} from '../../../../../containers/MathObjects/actions'
 
 // MathObjectData is heavily inexact; missing many props that vary by type
 type MathObjectData = {

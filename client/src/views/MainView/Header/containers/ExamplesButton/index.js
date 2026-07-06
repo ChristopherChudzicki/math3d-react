@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react'
 import { Icon } from 'antd'
 import { connect } from 'react-redux'
-import { openDrawer, closeDrawer } from 'containers/Drawer/actions'
+import { openDrawer, closeDrawer } from '../../../../../containers/Drawer/actions'
 
 type OwnProps = {||}
 type StateProps = {|

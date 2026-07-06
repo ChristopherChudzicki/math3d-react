@@ -1,14 +1,14 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { Axis as AxisGraphic } from 'components/MathBox'
+import { Axis as AxisGraphic } from '../../../../components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from '../containers/MathGraphicUI'
 import { axisMeta } from '../metadata'
 import {
   MathInputRHS,
   ConnectedStaticMath
-} from 'containers/MathObjects/containers/MathInput'
-import { MainRow, Cell, Label } from 'containers/MathObjects/components'
+} from '../../../../containers/MathObjects/containers/MathInput'
+import { MainRow, Cell, Label } from '../../../../containers/MathObjects/components'
 
 export const AXIS = 'AXIS'
 

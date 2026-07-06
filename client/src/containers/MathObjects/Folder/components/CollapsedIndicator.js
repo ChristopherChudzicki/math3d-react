@@ -2,8 +2,8 @@ import React from 'react'
 import { Icon } from 'antd'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import SubtleButton from 'components/SubtleButton'
-import { theme } from 'constants/theme'
+import SubtleButton from '../../../../components/SubtleButton'
+import { theme } from '../../../../constants/theme'
 
 const CollapseIndicatorButton = styled(SubtleButton)`
   padding-left: 2px;

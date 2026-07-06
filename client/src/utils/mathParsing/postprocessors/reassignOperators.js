@@ -1,6 +1,6 @@
 // @flow
-import math from 'utils/mathjs'
-import type { Node } from 'utils/mathjs/types'
+import math from '../../../utils/mathjs'
+import type { Node } from '../../../utils/mathjs/types'
 
 /**
  * Returns a node hander to be used as a mathjs's ExpressionTree.traverse callback

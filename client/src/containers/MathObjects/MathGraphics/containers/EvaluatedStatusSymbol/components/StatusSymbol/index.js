@@ -1,9 +1,9 @@
 // @flow
 import * as React from 'react'
 import styled from 'styled-components'
-import LongPressable from 'components/LongPressable'
+import LongPressable from '../../../../../../../components/LongPressable'
 import ColorPickerPopover from './components/ColorPickerPopover'
-import { colorMaps } from 'constants/colors'
+import { colorMaps } from '../../../../../../../constants/colors'
 
 const Circle = styled.div`
   width: 30px;

@@ -1,4 +1,4 @@
-import { ParseErrorData } from 'services/errors'
+import { ParseErrorData } from '../../../../../services/errors'
 const charRegexp = /\s\(char.*\)/g
 
 export function isAssignmentRHS(parser, latex) {

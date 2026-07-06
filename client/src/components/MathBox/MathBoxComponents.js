@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { Color } from "three/src/math/Color.js";
-import math from "utils/mathjs";
+import math from "../../utils/mathjs";
 import {
   isBoolean,
   isEqualNumerically,
@@ -12,10 +12,10 @@ import {
   validateFunctionSignature,
   hasFunctionSignature,
 } from "./helpers";
-import diffWithSets from "utils/shallowDiffWithSets";
-import { lighten } from "utils/colors";
-import marchingCubes from "utils/marchingCubes";
-import { colorMaps } from "constants/colors";
+import diffWithSets from "../../utils/shallowDiffWithSets";
+import { lighten } from "../../utils/colors";
+import marchingCubes from "../../utils/marchingCubes";
+import { colorMaps } from "../../constants/colors";
 
 type MathBoxNode = any;
 

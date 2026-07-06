@@ -1,14 +1,14 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { Grid as GridGraphic } from 'components/MathBox'
+import { Grid as GridGraphic } from '../../../../components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from '../containers/MathGraphicUI'
 import { gridMeta } from '../metadata'
 import {
   ConnectedStaticMath
-} from 'containers/MathObjects/containers/MathInput'
+} from '../../../../containers/MathObjects/containers/MathInput'
 import styled from 'styled-components'
-import { MainRow } from 'containers/MathObjects/components'
+import { MainRow } from '../../../../containers/MathObjects/components'
 
 export const GRID = 'GRID'
 

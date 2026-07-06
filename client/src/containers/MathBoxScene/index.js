@@ -1,6 +1,6 @@
 import MathBoxScene from './components/MathBoxScene'
 import { connect } from 'react-redux'
-import { setError } from 'services/errors'
+import { setError } from '../../services/errors'
 
 const mapStateToProps = ( { mathGraphics, evalErrors, renderErrors } ) => ( {
   mathGraphics,

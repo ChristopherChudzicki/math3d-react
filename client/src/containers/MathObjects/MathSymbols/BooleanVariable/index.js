@@ -1,7 +1,7 @@
 import { BOOLEAN_VARIABLE, defaultSettings } from './metadata'
 import { connect } from 'react-redux'
-import { MathSymbol } from 'containers/MathObjects/MathObject'
-import { setProperty } from 'containers/MathObjects/actions'
+import { MathSymbol } from '../../../../containers/MathObjects/MathObject'
+import { setProperty } from '../../../../containers/MathObjects/actions'
 import BooleanVariable from './components/BooleanVariable'
 
 const mapStateToProps = ( { mathSymbols }, ownProps) => ( {

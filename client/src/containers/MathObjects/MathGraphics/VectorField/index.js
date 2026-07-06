@@ -1,14 +1,14 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { VectorField as VectorFieldGraphic } from 'components/MathBox'
+import { VectorField as VectorFieldGraphic } from '../../../../components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from '../containers/MathGraphicUI'
 import { vectorFieldMeta } from '../metadata'
-import { MainRow } from 'containers/MathObjects/components'
+import { MainRow } from '../../../../containers/MathObjects/components'
 import {
   MathInputRHS,
   StaticMathStyled
-} from 'containers/MathObjects/containers/MathInput'
+} from '../../../../containers/MathObjects/containers/MathInput'
 
 export const VECTOR_FIELD = 'VECTOR_FIELD'
 

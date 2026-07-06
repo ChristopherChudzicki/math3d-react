@@ -15,7 +15,7 @@ export default function ExamplesList(props: Props) {
         data.map((example: ExampleItem, index: number) => {
           return (
             <li key={index}>
-              <NavLink to={`/${example.id}`}>
+              <NavLink to={`?${example.id}.json`}>
                 {example.title}
               </NavLink>
               {example.description}

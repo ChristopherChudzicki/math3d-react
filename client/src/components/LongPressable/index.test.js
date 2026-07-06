@@ -2,7 +2,7 @@ import React from 'react'
 import LongPressable from './index'
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import { timeout } from 'utils/functions'
+import { timeout } from '../../utils/functions'
 
 Enzyme.configure( { adapter: new Adapter() } )
 

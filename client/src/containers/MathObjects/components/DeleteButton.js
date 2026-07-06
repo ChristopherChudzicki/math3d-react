@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import SubtleButton from 'components/SubtleButton'
+import SubtleButton from '../../../components/SubtleButton'
 import { Icon } from 'antd'
 
 const StyledDeleteButton = styled(SubtleButton)`

@@ -1,7 +1,7 @@
-import MathObjects, { FOLDER } from 'containers/MathObjects'
-import idGenerator from 'constants/idGenerator'
+import MathObjects, { FOLDER } from '../containers/MathObjects'
+import idGenerator from '../constants/idGenerator'
 import initialState, { sortableTreeFixedPortion } from './initialState'
-import { initialState as metadataInitial } from 'services/metadata/reducer'
+import { initialState as metadataInitial } from '../services/metadata/reducer'
 
 function isEmpty(obj) {
   return Object.keys(obj).length === 0 && obj.constructor === Object

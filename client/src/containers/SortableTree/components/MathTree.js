@@ -1,7 +1,7 @@
 import React from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
-import SortableList from 'components/SortableList'
-import Folder from 'containers/MathObjects/Folder'
+import SortableList from '../../../components/SortableList'
+import Folder from '../../../containers/MathObjects/Folder'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 

@@ -1,13 +1,13 @@
 // @flow
 import * as React from 'react'
 import StatusSymbol from './StatusSymbol'
-import type { Scope, Parser } from 'utils/mathParsing'
-import { MathScopeConsumer } from 'containers/MathScopeContext'
+import type { Scope, Parser } from '../../../../../../utils/mathParsing'
+import { MathScopeConsumer } from '../../../../../../containers/MathScopeContext'
 import typeof {
   toggleProperty,
   setProperty
-} from 'containers/MathObjects/actions'
-import { parser } from 'constants/parsing'
+} from '../../../../../../containers/MathObjects/actions'
+import { parser } from '../../../../../../constants/parsing'
 
 export type DefaultProps = {|
   parser: Parser

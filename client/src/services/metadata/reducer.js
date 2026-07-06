@@ -3,7 +3,7 @@ import {
   SET_CREATION_DATE, typeof setCreationDate,
   SET_TITLE, typeof setTitle
 } from './actions'
-import type { ExtractReturn } from 'utils/flow'
+import type { ExtractReturn } from '../../utils/flow'
 
 type State = {
   title: string,

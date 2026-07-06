@@ -2,10 +2,10 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { getMathObjectProp } from './selectors'
 import { StaticMathStyled } from './'
-import { MathScopeConsumer } from 'containers/MathScopeContext'
-import { parser } from 'constants/parsing'
-import { evalData } from 'services/evalData'
-import math from 'utils/mathjs'
+import { MathScopeConsumer } from '../../../../containers/MathScopeContext'
+import { parser } from '../../../../constants/parsing'
+import { evalData } from '../../../../services/evalData'
+import math from '../../../../utils/mathjs'
 
 /**
  * @module MathTextOutput defines a connected version of StaticMath for dynamic

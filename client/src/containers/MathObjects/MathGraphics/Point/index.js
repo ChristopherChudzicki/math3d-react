@@ -1,11 +1,11 @@
 // @flow
 import React, { PureComponent } from 'react'
-import { Point as PointGraphic } from 'components/MathBox'
+import { Point as PointGraphic } from '../../../../components/MathBox'
 import MathGraphic from '../MathGraphic'
 import MathGraphicUI from '../containers/MathGraphicUI'
 import { pointMeta } from '../metadata'
-import { MainRow } from 'containers/MathObjects/components'
-import { MathInputRHS } from 'containers/MathObjects/containers/MathInput'
+import { MainRow } from '../../../../containers/MathObjects/components'
+import { MathInputRHS } from '../../../../containers/MathObjects/containers/MathInput'
 
 export const POINT = 'POINT'
 

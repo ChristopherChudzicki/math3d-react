@@ -1,6 +1,6 @@
 // @flow
-import { EvalErrorData, setError } from 'services/errors'
-import type { Scope, Parser, Symbols } from 'utils/mathParsing'
+import { EvalErrorData, setError } from '../services/errors'
+import type { Scope, Parser, Symbols } from '../utils/mathParsing'
 type SetError = typeof setError
 
 // TODO test this

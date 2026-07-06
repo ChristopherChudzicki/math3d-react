@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { ScopeEvaluator, Parser } from 'utils/mathParsing'
-import { EvalErrorData } from 'services/errors'
+import { ScopeEvaluator, Parser } from '../../../utils/mathParsing'
+import { EvalErrorData } from '../../../services/errors'
 
 const MathScopeContext = React.createContext()
 

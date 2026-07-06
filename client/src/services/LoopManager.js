@@ -1,5 +1,5 @@
 // @flow
-import { timeout } from 'utils/functions'
+import { timeout } from '../utils/functions'
 
 type LoopAPI = {
   running: boolean,

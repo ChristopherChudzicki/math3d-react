@@ -1,11 +1,11 @@
 // @flow
 import type { Dispatch } from 'redux'
-import { MathSymbol } from 'containers/MathObjects/MathObject'
+import { MathSymbol } from '../../../../containers/MathObjects/MathObject'
 import VariableSlider from './components/VariableSlider'
 import { connect } from 'react-redux'
-import { setPropertyAndError, setProperty } from 'containers/MathObjects/actions'
+import { setPropertyAndError, setProperty } from '../../../../containers/MathObjects/actions'
 import { setSliderValue } from './actions'
-import { ParseErrorData, setError } from 'services/errors'
+import { ParseErrorData, setError } from '../../../../services/errors'
 import { defaultSettings, VARIABLE_SLIDER } from './metadata'
 
 const mapStateToProps = ( { mathSymbols, sliderValues, evalErrors }, ownProps) => {
