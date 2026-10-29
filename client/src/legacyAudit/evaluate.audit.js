@@ -19,30 +19,62 @@ import { getParseableSymbols } from 'containers/MathScopeContext/selectors'
 import { Parser } from 'utils/mathParsing'
 import { evalScope } from 'utils/mathParsing/mathscope'
 import { evalData } from 'services/evalData'
+import EvaluatedSlider from 'containers/MathObjects/MathSymbols/VariableSlider/components/EvaluatedSlider'
+import VariableSlider from 'containers/MathObjects/MathSymbols/VariableSlider/components/VariableSlider'
 import makeFingerprint from './fingerprint'
 
 const ONE_HOUR = 60 * 60 * 1000
 
 const fieldId = (id, field) => `${id}-${field}`
 
+// getParseableSymbols's text for a symbol.
+const symbolExpr = ( { name, value, type }, sliderValue) => (
+  value === null && type === VARIABLE_SLIDER
+    ? `${name}=${sliderValue}`
+    : `${name}=${value}`
+)
+
+// Every symbol's name, including those getParseableSymbols drops, so that
+// deps also point at a duplicate or unparseable symbol.
+function allIdsByName(parser, mathSymbols, sliderValues) {
+  const nameOf = (symbol, id) => {
+    try {
+      return parser.parse(symbolExpr(symbol, sliderValues[id] )).name
+    }
+    catch (error) {
+      try {
+        return parser.parse(`${symbol.name}=0`).name
+      }
+      catch (lhsError) {
+        return symbol.name
+      }
+    }
+  }
+  return Object.keys(mathSymbols).reduce((acc, id) => {
+    const name = nameOf(mathSymbols[id], id)
+    acc[name] = [...(acc[name] || [] ), id]
+    return acc
+  }, {} )
+}
+
 function depsOf(parser, expr, idsByName) {
   try {
     return [...parser.parse(expr).dependencies]
       .filter(name => idsByName[name] !== undefined)
-      .map(name => fieldId(idsByName[name], 'value'))
+      .reduce((acc, name) => [...acc, ...idsByName[name].map(id => fieldId(id, 'value'))], [] )
   }
   catch (error) {
     return []
   }
 }
 
-function evaluateSymbols(parser, scene, fingerprint, out) {
+function evaluateSymbols(parser, scene, sliderValues, fingerprint, out) {
   const { mathSymbols } = scene
-  const sliderValues = scene.sliderValues || {}
-  const { symbols, idsByName } = getParseableSymbols(parser, mathSymbols, sliderValues)
+  const { symbols, idsByName: keptIds } = getParseableSymbols(parser, mathSymbols, sliderValues)
   const { scope, errors } = evalScope(parser, symbols)
-  const nameOf = Object.keys(idsByName).reduce((acc, name) => {
-    acc[idsByName[name]] = name
+  const idsByName = allIdsByName(parser, mathSymbols, sliderValues)
+  const nameOf = Object.keys(keptIds).reduce((acc, name) => {
+    acc[keptIds[name]] = name
     return acc
   }, {} )
 
@@ -51,10 +83,7 @@ function evaluateSymbols(parser, scene, fingerprint, out) {
     const result = {}
     if (name === undefined) {
       // getParseableSymbols dropped it: unparseable, or a duplicate name.
-      const { name: lhs, value, type } = mathSymbols[id]
-      const expr = (value === null && type === VARIABLE_SLIDER)
-        ? `${lhs}=${sliderValues[id]}`
-        : `${lhs}=${value}`
+      const expr = symbolExpr(mathSymbols[id], sliderValues[id] )
       try {
         const parsedName = parser.parse(expr).name
         result.status = 'eval'
@@ -84,54 +113,60 @@ function evaluateSymbols(parser, scene, fingerprint, out) {
   return { scope, idsByName }
 }
 
-// EvaluatedSlider's checks on its evaluated min and max.
-function evaluateSliderRange(parser, symbol, scope, idsByName, fingerprint) {
+/**
+ * A slider's min and max, with the errors EvaluatedSlider reports on its first
+ * render. Those include range errors against its initial state (-10 to -10)
+ * when one bound fails, and a `value` that isn't a number. Parse errors are
+ * the input fields' own.
+ */
+function evaluateSlider(parser, id, symbol, sliderValue, scope, idsByName, fingerprint, item) {
   const fields = { min: symbol.min, max: symbol.max }
   const { evaluated, evalErrors, parseErrors } = evalData(parser, fields, scope)
-  const results = {}
+  const reported = {}
+  EvaluatedSlider.getDerivedStateFromProps( {
+    parser,
+    parentId: id,
+    scope,
+    ownEvalErrors: {},
+    setError: (_id, prop, errorData) => { reported[prop] = errorData.errorMsg },
+    ...fields,
+    value: VariableSlider.getLaTeX(symbol.value, sliderValue)
+  }, { min: -10, max: -10, value: 0 } )
+
   Object.keys(fields).forEach(prop => {
     const deps = depsOf(parser, fields[prop], idsByName)
     if (parseErrors[prop] ) {
-      results[prop] = { status: 'parse', message: parseErrors[prop].message, deps }
+      item[prop] = { status: 'parse', message: parseErrors[prop].message, deps }
     }
-    else if (evalErrors[prop] ) {
-      results[prop] = { status: 'eval', message: evalErrors[prop].message, deps }
-    }
-    else if (typeof evaluated[prop] !== 'number') {
-      results[prop] = {
-        status: 'validate',
-        message: `'${prop}' must be a number.`,
-        deps,
-        value: fingerprint(evaluated[prop] )
-      }
+    else if (reported[prop] ) {
+      item[prop] = { status: evalErrors[prop] ? 'eval' : 'validate', message: reported[prop], deps }
     }
     else {
-      results[prop] = { status: 'ok', deps, value: fingerprint(evaluated[prop] ) }
+      item[prop] = { status: 'ok', deps, value: fingerprint(evaluated[prop] ) }
     }
   } )
-  const { min, max } = results
-  if (min.status === 'ok' && max.status === 'ok' && evaluated.min >= evaluated.max) {
-    [min, max].forEach(r => {
-      r.status = 'validate'
-      r.message = `Range Error: 'min' (${evaluated.min}) must be less than 'max' (${evaluated.max})`
-    } )
+  if (item.value.status === 'ok' && reported.value) {
+    item.value.status = 'validate'
+    item.value.message = reported.value
+    delete item.value.value
   }
-  // A fingerprint is reported only for ok fields.
-  Object.values(results).forEach(r => r.status === 'ok' || delete r.value)
-  return results
 }
 
 function evaluateGraphic(parser, settings, scope, idsByName, fingerprint) {
   const { computedProps } = MathGraphics[settings.type]
-  const toEvaluate = computedProps.reduce((acc, prop) => {
-    acc[prop] = settings[prop]
-    return acc
-  }, {} )
+  // Parser caches a non-string's parse error under its string form, so only
+  // strings go to evalData.
+  const toEvaluate = computedProps
+    .filter(prop => typeof settings[prop] === 'string')
+    .reduce((acc, prop) => {
+      acc[prop] = settings[prop]
+      return acc
+    }, {} )
   const { evaluated, evalErrors, parseErrors } = evalData(parser, toEvaluate, scope)
   return computedProps.reduce((acc, prop) => {
     const raw = settings[prop]
     if (typeof raw !== 'string') {
-      // evalData can't parse it; MathBox receives the setting as is.
+      // MathBox receives the setting as is.
       acc[prop] = { status: 'ok', deps: [], value: fingerprint(raw) }
       return acc
     }
@@ -150,22 +185,22 @@ function evaluateGraphic(parser, settings, scope, idsByName, fingerprint) {
 }
 
 export function evaluateScene(scene, fingerprint) {
+  const { mathSymbols, mathGraphics, sliderValues } = scene
+  const sliderIds = Object.keys(mathSymbols).filter(id => mathSymbols[id].type === VARIABLE_SLIDER)
+  if (sliderIds.length > 0 && !sliderValues) {
+    // VariableSlider's mapStateToProps reads sliderValues[id].
+    throw Error('A scene with sliders has no sliderValues')
+  }
   // A fresh Parser per scene: Parser caches each expression, and
   // MathExpression memoizes its eval.
   const parser = new Parser()
   const items = {}
-  const { scope, idsByName } = evaluateSymbols(parser, scene, fingerprint, items)
-  Object.keys(scene.mathSymbols).forEach(id => {
-    const symbol = scene.mathSymbols[id]
-    if (symbol.type === VARIABLE_SLIDER) {
-      Object.assign(
-        items[id],
-        evaluateSliderRange(parser, symbol, scope, idsByName, fingerprint)
-      )
-    }
+  const { scope, idsByName } = evaluateSymbols(parser, scene, sliderValues || {}, fingerprint, items)
+  sliderIds.forEach(id => {
+    evaluateSlider(parser, id, mathSymbols[id], sliderValues[id], scope, idsByName, fingerprint, items[id] )
   } )
-  Object.keys(scene.mathGraphics).forEach(id => {
-    items[id] = evaluateGraphic(parser, scene.mathGraphics[id], scope, idsByName, fingerprint)
+  Object.keys(mathGraphics).forEach(id => {
+    items[id] = evaluateGraphic(parser, mathGraphics[id], scope, idsByName, fingerprint)
   } )
   return items
 }

@@ -42,7 +42,8 @@ export default function makeFingerprint(points) {
       f,
       Array.from(
         { length: arity },
-        (_a, i) => points[length][(j + i) % points[length].length]
+        // A copy: index assignment mutates an array in place.
+        (_a, i) => [...points[length][(j + i) % points[length].length]]
       ),
       depth
     ))
