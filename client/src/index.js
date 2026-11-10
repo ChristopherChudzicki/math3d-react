@@ -16,9 +16,10 @@ import { ThemeProvider } from 'styled-components'
 import { BrowserRouter } from 'react-router-dom'
 
 import ReactGA from 'react-ga'
+import { isFrameMode } from 'legacyAudit/frameMode'
 // TODO: Replace this with redux-beacon middleware
 ReactGA.initialize('UA-131928751-1', {
-  testMode: process.env.NODE_ENV === 'development'
+  testMode: process.env.NODE_ENV === 'development' || isFrameMode
 } )
 ReactGA.pageview(window.location.pathname + window.location.search)
 
